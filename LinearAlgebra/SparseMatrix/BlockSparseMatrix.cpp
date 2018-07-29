@@ -208,7 +208,7 @@ template<class MatrixType>
 void BlockSparseMatrix<MatrixType>::writeBinaryFile(const char* fileName) const
 {
     FILE* fptr;
-#ifdef __BANANA_WINDOWS__
+#ifdef __NT_WINDOWS_OS__
     fopen_s(&fptr, fileName, "wb");
 #else
     fptr = fopen(fileName, "wb");
@@ -231,7 +231,7 @@ void BlockSparseMatrix<MatrixType>::writeBinaryFile(const char* fileName) const
     // write data, row by row
     UInt rowSize;
     for(UInt i = 0; i < m_Size; ++i) {
-        __BNN_REQUIRE(m_ColIndex[i].size() == m_ColValue[i].size());
+        __NT_REQUIRE(m_ColIndex[i].size() == m_ColValue[i].size());
         rowSize = static_cast<UInt>(m_ColIndex[i].size());
         fwrite(&rowSize,             sizeof(UInt),       1,       fptr);
         fwrite(m_ColIndex[i].data(), sizeof(UInt),       rowSize, fptr);
@@ -274,11 +274,11 @@ bool BlockSparseMatrix<MatrixType>::loadFromBinaryFile(const char* fileName)
             bConsistentSize = false;
             Int N = MatrixType::length();
             if(elementSize > sizeof(MatrixType)) {
-                __BNN_REQUIRE(sizeof(double) * N * N == elementSize);
-                __BNN_REQUIRE(sizeof(float) * N * N == sizeof(MatrixType));
+                __NT_REQUIRE(sizeof(double) * N * N == elementSize);
+                __NT_REQUIRE(sizeof(float) * N * N == sizeof(MatrixType));
             } else {
-                __BNN_REQUIRE(sizeof(float) * N * N == elementSize);
-                __BNN_REQUIRE(sizeof(double) * N * N == sizeof(MatrixType));
+                __NT_REQUIRE(sizeof(float) * N * N == elementSize);
+                __NT_REQUIRE(sizeof(double) * N * N == sizeof(MatrixType));
             }
         }
     }

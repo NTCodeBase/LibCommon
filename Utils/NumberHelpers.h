@@ -311,7 +311,7 @@ public:
 
     /// Compute a pseudo-random integer
     /// Output value in range [0, 32767]
-    __BNN_INLINE Int rand()
+    __NT_INLINE Int rand()
     {
         s_Seed = (214013u * s_Seed + 2531011u);
         return static_cast<Int>((s_Seed >> 16) & 0x7FFF);

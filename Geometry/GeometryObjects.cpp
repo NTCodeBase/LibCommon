@@ -59,7 +59,7 @@ VecX<N, RealType> GeometryObject<N, RealType>::gradSignedDistance(const VecX<N, 
 
         return (Vec2<RealType>(ddx0, ddy0) + Vec2<RealType>(ddx1, ddy1)) * RealType(0.5);
     } else {
-        __BNN_REQUIRE_MSG(N == 3, "Array dimension != 2,3");
+        __NT_REQUIRE_MSG(N == 3, "Array dimension != 2,3");
 
         RealType v000 = signedDistance(Vec3<RealType>(ppos[0] - dx, ppos[1] - dx, ppos[2] - dx), bNegativeInside);
         RealType v001 = signedDistance(Vec3<RealType>(ppos[0] - dx, ppos[1] - dx, ppos[2] + dx), bNegativeInside);
@@ -195,10 +195,10 @@ void GeometryObject<N, RealType>::parseParameters(const JParams& jParams)
             JSONHelpers::readValue(jAnimation, startFrame, "StartFrame");
             aniObj.setPeriodic(bPeriodic, startFrame);
         }
-        __BNN_REQUIRE(jAnimation.find("KeyFrames") != jAnimation.end());
+        __NT_REQUIRE(jAnimation.find("KeyFrames") != jAnimation.end());
         for(auto& jKeyFrame : jAnimation["KeyFrames"]) {
             KeyFrame<N, RealType> keyFrame;
-            __BNN_REQUIRE(JSONHelpers::readValue(jKeyFrame, keyFrame.frame, "Frame"));
+            __NT_REQUIRE(JSONHelpers::readValue(jKeyFrame, keyFrame.frame, "Frame"));
             JSONHelpers::readVector(jKeyFrame, keyFrame.translation, "Translation");
 
             VecX<N, RealType> rotationEulerAngles;
@@ -399,10 +399,10 @@ void BoxObject<N, RealType>::parseParameters(const JParams& jParams)
             setPeriodic(bPeriodic, startFrame);
         }
 
-        __BNN_REQUIRE(jAnimation.find("KeyFrames") != jAnimation.end());
+        __NT_REQUIRE(jAnimation.find("KeyFrames") != jAnimation.end());
         for(auto& jKeyFrame : jAnimation["KeyFrames"]) {
             UInt frame;
-            __BNN_REQUIRE(JSONHelpers::readValue(jKeyFrame, frame, "Frame"));
+            __NT_REQUIRE(JSONHelpers::readValue(jKeyFrame, frame, "Frame"));
             if(JSONHelpers::readVector(jKeyFrame, bMin, "BoxMin") && JSONHelpers::readVector(jKeyFrame, bMax, "BoxMax")) {
                 addKeyFrame(frame, bMin, bMax);
             }
@@ -453,7 +453,7 @@ void TorusObject<N, RealType>::parseParameters(const JParams& jParams)
 template<Int N, class RealType>
 RealType Torus28Object<N, RealType>::signedDistance(const VecX<N, RealType>& ppos0, bool bNegativeInside /*= true*/) const
 {
-    __BNN_REQUIRE_MSG(N == 3, "Object dimension != 3");
+    __NT_REQUIRE_MSG(N == 3, "Object dimension != 3");
     auto           ppos = invTransform(ppos0);
     Vec2<RealType> q    = Vec2<RealType>(MathHelpers::norm2(ppos[0], ppos[2]) - this->m_OuterRadius, ppos[1]);
     RealType       d    = this->m_UniformScale * (MathHelpers::norm8(q[0], q[1]) - this->m_RingRadius);
@@ -464,7 +464,7 @@ RealType Torus28Object<N, RealType>::signedDistance(const VecX<N, RealType>& ppo
 template<Int N, class RealType>
 RealType Torus2InfObject<N, RealType>::signedDistance(const VecX<N, RealType>& ppos0, bool bNegativeInside /*= true*/) const
 {
-    __BNN_REQUIRE_MSG(N == 3, "Object dimension != 3");
+    __NT_REQUIRE_MSG(N == 3, "Object dimension != 3");
     auto ppos = invTransform(ppos0);
 
     Vec2<RealType> q = Vec2<RealType>(MathHelpers::norm2(ppos[0], ppos[2]) - this->m_OuterRadius, ppos[1]);
@@ -507,7 +507,7 @@ RealType TorusInfInfObject<N, RealType>::signedDistance(const VecX<N, RealType>&
 template<Int N, class RealType>
 RealType CylinderObject<N, RealType>::signedDistance(const VecX<N, RealType>& ppos0, bool bNegativeInside /*= true*/) const
 {
-    __BNN_REQUIRE_MSG(N == 3, "Object dimension != 3");
+    __NT_REQUIRE_MSG(N == 3, "Object dimension != 3");
     auto     ppos = invTransform(ppos0);
     RealType d    = this->m_UniformScale * MathHelpers::max(MathHelpers::norm2(ppos[0], ppos[2]) - m_Radius, std::abs(ppos[1]) - RealType(1.0));
     return bNegativeInside ? d : -d;
@@ -529,7 +529,7 @@ void CylinderObject<N, RealType>::parseParameters(const JParams& jParams)
 template<Int N, class RealType>
 RealType ConeObject<N, RealType>::signedDistance(const VecX<N, RealType>& ppos0, bool bNegativeInside /*= true*/) const
 {
-    __BNN_REQUIRE_MSG(N == 3, "Object dimension != 3");
+    __NT_REQUIRE_MSG(N == 3, "Object dimension != 3");
     auto     ppos  = invTransform(ppos0);
     RealType theta = std::atan(m_Radius);     // radius / h, where h = 1
     RealType d1    = MathHelpers::norm2(ppos[0], ppos[2]) * cos(theta) - std::abs(RealType(1) - ppos[1]) * sin(theta);
@@ -578,7 +578,7 @@ void PlaneObject<N, RealType>::parseParameters(const JParams& jParams)
 template<Int N, class RealType>
 RealType TriangleObject<N, RealType>::signedDistance(const VecX<N, RealType>& ppos0, bool bNegativeInside /*= true*/) const
 {
-    __BNN_REQUIRE_MSG(N == 2, "Object dimension != 2");
+    __NT_REQUIRE_MSG(N == 2, "Object dimension != 2");
     auto ppos = invTransform(ppos0);
     if constexpr(N == 2)
     {
@@ -620,9 +620,9 @@ void TriangleObject<N, RealType>::parseParameters(const JParams& jParams)
     GeometryObject<N, RealType>::parseParameters(jParams);
     ////////////////////////////////////////////////////////////////////////////////
     VecX<N, RealType> vertices[3];
-    __BNN_REQUIRE(JSONHelpers::readVector(jParams, vertices[0], "V0"));
-    __BNN_REQUIRE(JSONHelpers::readVector(jParams, vertices[1], "V1"));
-    __BNN_REQUIRE(JSONHelpers::readVector(jParams, vertices[2], "V2"));
+    __NT_REQUIRE(JSONHelpers::readVector(jParams, vertices[0], "V0"));
+    __NT_REQUIRE(JSONHelpers::readVector(jParams, vertices[1], "V1"));
+    __NT_REQUIRE(JSONHelpers::readVector(jParams, vertices[2], "V2"));
     for(UInt i = 0; i < 3; ++i) {
         setVertex(i, vertices[i]);
     }
@@ -632,7 +632,7 @@ void TriangleObject<N, RealType>::parseParameters(const JParams& jParams)
 template<Int N, class RealType>
 RealType HexagonObject<N, RealType>::signedDistance(const VecX<N, RealType>& ppos0, bool bNegativeInside /*= true*/) const
 {
-    __BNN_REQUIRE_MSG(N == 2, "Object dimension != 2");
+    __NT_REQUIRE_MSG(N == 2, "Object dimension != 2");
     auto     ppos = invTransform(ppos0);
     RealType dx   = fabs(ppos[0]);
     RealType dy   = fabs(ppos[1]);
@@ -644,7 +644,7 @@ RealType HexagonObject<N, RealType>::signedDistance(const VecX<N, RealType>& ppo
 template<Int N, class RealType>
 RealType TriangularPrismObject<N, RealType>::signedDistance(const VecX<N, RealType>& ppos0, bool bNegativeInside /*= true*/) const
 {
-    __BNN_REQUIRE_MSG(N == 3, "Object dimension != 3");
+    __NT_REQUIRE_MSG(N == 3, "Object dimension != 3");
     auto              ppos = invTransform(ppos0);
     VecX<N, RealType> q;
     for(Int d = 0; d < N; ++d) {
@@ -672,7 +672,7 @@ void TriangularPrismObject<N, RealType>::parseParameters(const JParams& jParams)
 template<Int N, class RealType>
 RealType HexagonalPrismObject<N, RealType>::signedDistance(const VecX<N, RealType>& ppos0, bool bNegativeInside /*= true*/) const
 {
-    __BNN_REQUIRE_MSG(N == 3, "Object dimension != 3");
+    __NT_REQUIRE_MSG(N == 3, "Object dimension != 3");
     auto              ppos = invTransform(ppos0);
     VecX<N, RealType> q;
     for(Int d = 0; d < N; ++d) {
@@ -756,7 +756,7 @@ template<class RealType>
 void computeSDFMesh(const Vector<Vec3ui>& faces, const Vec_Vec3<RealType>& vertices, const Vec3<RealType>& origin, RealType cellSize,
                     UInt ni, UInt nj, UInt nk, Array<3, RealType>& SDF, Int exactBand = 1)
 {
-    __BNN_REQUIRE(ni > 0 && nj > 0 && nk > 0);
+    __NT_REQUIRE(ni > 0 && nj > 0 && nk > 0);
 
     SDF.resize(ni, nj, nk);
     SDF.assign(RealType(ni + nj + nk) * cellSize);                   // upper bound on distance
@@ -858,11 +858,11 @@ template<Int N, class RealType>
 RealType TriMeshObject<N, RealType>::signedDistance(const VecX<N, RealType>& ppos0, bool bNegativeInside /*= true*/) const
 {
     if constexpr(N == 2) {
-        __BNN_UNUSED(ppos0);
-        __BNN_UNUSED(bNegativeInside);
+        __NT_UNUSED(ppos0);
+        __NT_UNUSED(bNegativeInside);
         return 0;
     } else {
-        __BNN_REQUIRE(m_bSDFGenerated);
+        __NT_REQUIRE(m_bSDFGenerated);
         auto     ppos    = invTransform(ppos0);
         auto     gridPos = m_Grid3D.getGridCoordinate(ppos);
         RealType d       = this->m_UniformScale * ArrayHelpers::interpolateValueLinear(gridPos, m_SDFData);
@@ -878,7 +878,7 @@ void TriMeshObject<N, RealType>::computeSDF()
         ////////////////////////////////////////////////////////////////////////////////
         // Load mesh
         MeshLoader meshLoader;
-        __BNN_REQUIRE(meshLoader.loadMesh(m_TriMeshFile));
+        __NT_REQUIRE(meshLoader.loadMesh(m_TriMeshFile));
         meshLoader.scaleToBox();
 
         ////////////////////////////////////////////////////////////////////////////////
@@ -907,7 +907,7 @@ void TriMeshObject<N, RealType>::parseParameters(const JParams& jParams)
 {
     GeometryObject<N, RealType>::parseParameters(jParams);
     ////////////////////////////////////////////////////////////////////////////////
-    __BNN_REQUIRE(JSONHelpers::readValue(jParams, meshFile(), "MeshFile"));
+    __NT_REQUIRE(JSONHelpers::readValue(jParams, meshFile(), "MeshFile"));
     JSONHelpers::readValue(jParams, sdfStep(), "SDFStep");
     computeSDF();
 }
@@ -972,7 +972,7 @@ VecX<N, RealType> CSGObject<N, RealType>::domainDeform(const VecX<N, RealType>& 
 template<Int N, class RealType>
 VecX<N, RealType> CSGObject<N, RealType>::twist(const VecX<N, RealType>& ppos) const
 {
-    __BNN_UNUSED(ppos);
+    __NT_UNUSED(ppos);
     //RealType         c = cos(RealType(5.0) * ppos.z);
     //RealType         s = sin(RealType(5.0) * ppos.z);
     //Mat2x2<RealType> m = Mat2x2<RealType>(c, -s, s, c);
@@ -997,25 +997,25 @@ VecX<N, RealType> CSGObject<N, RealType>::cheapBend(const VecX<N, RealType>& ppo
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-__BNN_INSTANTIATE_CLASS_COMMON_DIMENSIONS_AND_TYPES(GeometryObject)
-__BNN_INSTANTIATE_CLASS_COMMON_DIMENSIONS_AND_TYPES(BoxObject)
-__BNN_INSTANTIATE_CLASS_COMMON_DIMENSIONS_AND_TYPES(SphereObject)
-__BNN_INSTANTIATE_CLASS_COMMON_DIMENSIONS_AND_TYPES(TorusObject)
-__BNN_INSTANTIATE_CLASS_COMMON_DIMENSIONS_AND_TYPES(Torus28Object)
-__BNN_INSTANTIATE_CLASS_COMMON_DIMENSIONS_AND_TYPES(Torus2InfObject)
-__BNN_INSTANTIATE_CLASS_COMMON_DIMENSIONS_AND_TYPES(Torus88Object)
-__BNN_INSTANTIATE_CLASS_COMMON_DIMENSIONS_AND_TYPES(TorusInfInfObject)
-__BNN_INSTANTIATE_CLASS_COMMON_DIMENSIONS_AND_TYPES(CylinderObject)
-__BNN_INSTANTIATE_CLASS_COMMON_DIMENSIONS_AND_TYPES(ConeObject)
-__BNN_INSTANTIATE_CLASS_COMMON_DIMENSIONS_AND_TYPES(PlaneObject)
-__BNN_INSTANTIATE_CLASS_COMMON_DIMENSIONS_AND_TYPES(TriangleObject)
-__BNN_INSTANTIATE_CLASS_COMMON_DIMENSIONS_AND_TYPES(HexagonObject)
-__BNN_INSTANTIATE_CLASS_COMMON_DIMENSIONS_AND_TYPES(TriangularPrismObject)
-__BNN_INSTANTIATE_CLASS_COMMON_DIMENSIONS_AND_TYPES(HexagonalPrismObject)
-__BNN_INSTANTIATE_CLASS_COMMON_DIMENSIONS_AND_TYPES(CapsuleObject)
-__BNN_INSTANTIATE_CLASS_COMMON_DIMENSIONS_AND_TYPES(EllipsoidObject)
-__BNN_INSTANTIATE_CLASS_COMMON_DIMENSIONS_AND_TYPES(TriMeshObject)
-__BNN_INSTANTIATE_CLASS_COMMON_DIMENSIONS_AND_TYPES(CSGObject)
+__NT_INSTANTIATE_CLASS_COMMON_DIMENSIONS_AND_TYPES(GeometryObject)
+__NT_INSTANTIATE_CLASS_COMMON_DIMENSIONS_AND_TYPES(BoxObject)
+__NT_INSTANTIATE_CLASS_COMMON_DIMENSIONS_AND_TYPES(SphereObject)
+__NT_INSTANTIATE_CLASS_COMMON_DIMENSIONS_AND_TYPES(TorusObject)
+__NT_INSTANTIATE_CLASS_COMMON_DIMENSIONS_AND_TYPES(Torus28Object)
+__NT_INSTANTIATE_CLASS_COMMON_DIMENSIONS_AND_TYPES(Torus2InfObject)
+__NT_INSTANTIATE_CLASS_COMMON_DIMENSIONS_AND_TYPES(Torus88Object)
+__NT_INSTANTIATE_CLASS_COMMON_DIMENSIONS_AND_TYPES(TorusInfInfObject)
+__NT_INSTANTIATE_CLASS_COMMON_DIMENSIONS_AND_TYPES(CylinderObject)
+__NT_INSTANTIATE_CLASS_COMMON_DIMENSIONS_AND_TYPES(ConeObject)
+__NT_INSTANTIATE_CLASS_COMMON_DIMENSIONS_AND_TYPES(PlaneObject)
+__NT_INSTANTIATE_CLASS_COMMON_DIMENSIONS_AND_TYPES(TriangleObject)
+__NT_INSTANTIATE_CLASS_COMMON_DIMENSIONS_AND_TYPES(HexagonObject)
+__NT_INSTANTIATE_CLASS_COMMON_DIMENSIONS_AND_TYPES(TriangularPrismObject)
+__NT_INSTANTIATE_CLASS_COMMON_DIMENSIONS_AND_TYPES(HexagonalPrismObject)
+__NT_INSTANTIATE_CLASS_COMMON_DIMENSIONS_AND_TYPES(CapsuleObject)
+__NT_INSTANTIATE_CLASS_COMMON_DIMENSIONS_AND_TYPES(EllipsoidObject)
+__NT_INSTANTIATE_CLASS_COMMON_DIMENSIONS_AND_TYPES(TriMeshObject)
+__NT_INSTANTIATE_CLASS_COMMON_DIMENSIONS_AND_TYPES(CSGObject)
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+

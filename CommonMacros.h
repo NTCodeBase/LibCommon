@@ -21,19 +21,18 @@
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 #if defined(_WIN32) || defined(_WIN64)
-#   define __BANANA_WINDOWS__
+#   define __NT_WINDOWS_OS__
 #elif defined(__APPLE__)
-#   define __BANANA_APPLE__
-#   define __BANANA_MACX__
+#   define __NT_OSX__
 #elif defined(linux) || defined(__linux__)
-#   define __BANANA_LINUX__
+#   define __NT_LINUX_OS__
 #endif
 
-#ifndef __BNN_UNUSED
-#   define __BNN_UNUSED(x) ((void)x)
+#ifndef __NT_UNUSED
+#   define __NT_UNUSED(x) ((void)x)
 #endif
 
-#ifdef __BANANA_WINDOWS__
+#ifdef __NT_WINDOWS_OS__
 //  Exclude rarely-used stuff from Windows headers
 #   define WIN32_LEAN_AND_MEAN
 #   ifndef NOMINMAX
@@ -51,22 +50,22 @@ inline void throwIfFailed(HRESULT hr)
     }
 }
 
-#endif  // __BANANA_WINDOWS__
+#endif  // __NT_WINDOWS_OS__
 
-#ifdef __BANANA_WINDOWS__
-#   define __BNN_SPRINT sprintf_s
-#   define __BNN_SSCAN  sscanf_s
+#ifdef __NT_WINDOWS_OS__
+#   define __NT_SPRINT sprintf_s
+#   define __NT_SSCAN  sscanf_s
 #else
-#   define __BNN_SPRINT sprintf
-#   define __BNN_SSCAN  sscanf
+#   define __NT_SPRINT sprintf
+#   define __NT_SSCAN  sscanf
 #endif
 
 #if defined(DEBUG) || defined(_DEBUG)
-#  define __BANANA_DEBUG__
+#  define __NT_DEBUG__
 #endif
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-#ifdef __BANANA_WINDOWS__
+#ifdef __NT_WINDOWS_OS__
 // Enable memory leak detection
 #  ifdef _DEBUG
 #    define _CRTDBG_MAP_ALLOC
@@ -83,83 +82,82 @@ inline void throwIfFailed(HRESULT hr)
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 #include <csignal>
-#define __BANANA_EARLY_TERMINATION \
-    {                              \
-        std::raise(SIGTERM);       \
+#define __NT_EARLY_TERMINATION \
+    {                          \
+        std::raise(SIGTERM);   \
     }
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 // Constants
 #ifndef M_PI
-# define M_PI  3.1415926535897932384626433832795028841971694
+# define M_PI 3.1415926535897932384626433832795028841971694
 #endif
-# define M_PIr Real(3.1415926535897932384626433832795028841971694)
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 // Utility
-#define _STR(x)            #x
-#define __BNN_TO_STRING(x) _STR(x)
+#define _STR(x)           #x
+#define __NT_TO_STRING(x) _STR(x)
 
-#ifdef __BANANA_WINDOWS__
-#define __BNN_INLINE __forceinline
+#ifdef __NT_WINDOWS_OS__
+#define __NT_INLINE __forceinline
 #else
-#define __BNN_INLINE __attribute__((always_inline))
+#define __NT_INLINE __attribute__((always_inline))
 #endif
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-#ifdef __BANANA_WINDOWS__
+#ifdef __NT_WINDOWS_OS__
 #ifdef QT_CORE_LIB
-#  define __BNN_COMPILER_MESSAGE(msg) \
+#  define __NT_COMPILER_MESSAGE(msg) \
     __pragma(message("\033[38;5;214m+++>" msg "\033[0m"))
 
-#  define __BNN_TODO \
-    __pragma(message("\033[38;5;214m+++>TODO: => " __FILE__ "(" __BNN_TO_STRING(__LINE__) ") \033[0m"))
+#  define __NT_TODO \
+    __pragma(message("\033[38;5;214m+++>TODO: => " __FILE__ "(" __NT_TO_STRING(__LINE__) ") \033[0m"))
 
-#  define __BNN_TODO_MSG(msg) \
-    __pragma(message("\033[38;5;214m+++>TODO: " msg " => " __FILE__ "(" __BNN_TO_STRING(__LINE__) ") \033[0m"))
+#  define __NT_TODO_MSG(msg) \
+    __pragma(message("\033[38;5;214m+++>TODO: " msg " => " __FILE__ "(" __NT_TO_STRING(__LINE__) ") \033[0m"))
 #else
-#  define __BNN_COMPILER_MESSAGE(msg) \
+#  define __NT_COMPILER_MESSAGE(msg) \
     __pragma(message("+++>" msg))
 
-#  define __BNN_TODO \
-    __pragma(message("+++>TODO: => " __FILE__ "(" __BNN_TO_STRING(__LINE__) ") "))
+#  define __NT_TODO \
+    __pragma(message("+++>TODO: => " __FILE__ "(" __NT_TO_STRING(__LINE__) ") "))
 
-#  define __BNN_TODO_MSG(msg) \
-    __pragma(message("+++>TODO: " msg " => " __FILE__ "(" __BNN_TO_STRING(__LINE__) ") "))
+#  define __NT_TODO_MSG(msg) \
+    __pragma(message("+++>TODO: " msg " => " __FILE__ "(" __NT_TO_STRING(__LINE__) ") "))
 #endif
-#else // __BANANA_WINDOWS__
+#else // __NT_WINDOWS_OS__
 #ifdef QT_CORE_LIB
 #  define PRAGMA_MESSAGE(x) _Pragma(#x)
-#  define __BNN_COMPILER_MESSAGE(msg) \
+#  define __NT_COMPILER_MESSAGE(msg) \
     PRAGMA_MESSAGE(message "\033[38;5;214m+++>" msg "\033[0m")
 
-#  define __BNN_TODO \
-    PRAGMA_MESSAGE(message "\033[38;5;214m+++>TODO: => " __FILE__ "(" __BNN_TO_STRING(__LINE__) ") \033[0m")
+#  define __NT_TODO \
+    PRAGMA_MESSAGE(message "\033[38;5;214m+++>TODO: => " __FILE__ "(" __NT_TO_STRING(__LINE__) ") \033[0m")
 
-#  define __BNN_TODO_MSG(msg) \
-    PRAGMA_MESSAGE(message "\033[38;5;214m+++>TODO: " msg " => " __FILE__ "(" __BNN_TO_STRING(__LINE__) ") \033[0m")
+#  define __NT_TODO_MSG(msg) \
+    PRAGMA_MESSAGE(message "\033[38;5;214m+++>TODO: " msg " => " __FILE__ "(" __NT_TO_STRING(__LINE__) ") \033[0m")
 #else
-#  define __BNN_COMPILER_MESSAGE(msg) \
+#  define __NT_COMPILER_MESSAGE(msg) \
     PRAGMA_MESSAGE(message "+++>" msg)
 
-#  define __BNN_TODO \
-    PRAGMA_MESSAGE(message "+++>TODO: => " __FILE__ "(" __BNN_TO_STRING(__LINE__) ") ")
+#  define __NT_TODO \
+    PRAGMA_MESSAGE(message "+++>TODO: => " __FILE__ "(" __NT_TO_STRING(__LINE__) ") ")
 
-#  define __BNN_TODO_MSG(msg) \
-    PRAGMA_MESSAGE(message "+++>TODO: " msg " => " __FILE__ "(" __BNN_TO_STRING(__LINE__) ") ")
+#  define __NT_TODO_MSG(msg) \
+    PRAGMA_MESSAGE(message "+++>TODO: " msg " => " __FILE__ "(" __NT_TO_STRING(__LINE__) ") ")
 #endif
 
 #endif
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-#define __BNN_PRINT_LINE                        \
+#define __NT_PRINT_LINE                         \
     {                                           \
         printf("%d: %s\n", __LINE__, __FILE__); \
         fflush(stdout);                         \
     }
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-#define __BNN_PRINT_EXP(x)                                                                    \
+#define __NT_PRINT_EXP(x)                                                                     \
     {                                                                                         \
         std::stringstream ss;                                                                 \
         ss << "Printing at line: " << __LINE__ << ", file: " << __FILE__ << ":" << std::endl; \
@@ -169,7 +167,7 @@ inline void throwIfFailed(HRESULT hr)
     }
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-#define __BNN_PRINT_LOCATION                                  \
+#define __NT_PRINT_LOCATION                                   \
     {                                                         \
         std::stringstream ss;                                 \
         ss << "Function: " << __func__ << std::endl;          \
@@ -179,123 +177,123 @@ inline void throwIfFailed(HRESULT hr)
     }
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-#ifndef __BNN_INFO
-#   define __BNN_INFO(info)    \
+#ifndef __NT_INFO
+#   define __NT_INFO(info)     \
     {                          \
         fprintf(stderr, info); \
     }
 #endif
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-#ifndef __BNN_ERROR
-#   define __BNN_ERROR(err)   \
+#ifndef __NT_ERROR
+#   define __NT_ERROR(err)    \
     {                         \
         fprintf(stderr, err); \
-        __BNN_PRINT_LOCATION  \
+        __NT_PRINT_LOCATION   \
     }
 #endif
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-#define __BNN_DIE(err)             \
-    {                              \
-        __BNN_ERROR(err)           \
-        __BANANA_EARLY_TERMINATION \
+#define __NT_DIE(err)          \
+    {                          \
+        __NT_ERROR(err)        \
+        __NT_EARLY_TERMINATION \
     }
 //exit(EXIT_FAILURE);
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-#ifdef __BANANA_DEBUG__
-#  define __BNN_REQUIRE(condition)                                            \
+#ifdef __NT_DEBUG__
+#  define __NT_REQUIRE(condition)                                             \
     {                                                                         \
         if(!(condition))                                                      \
         {                                                                     \
             String erMsg = String("Assertion failed: ") + String(#condition); \
             printf("%s\n", erMsg.c_str());                                    \
-            __BNN_PRINT_LOCATION                                              \
+            __NT_PRINT_LOCATION                                               \
             assert(false);                                                    \
         }                                                                     \
     }
 #else
-#  define __BNN_REQUIRE(condition)                                            \
+#  define __NT_REQUIRE(condition)                                             \
     {                                                                         \
         if(!(condition))                                                      \
         {                                                                     \
             String erMsg = String("Assertion failed: ") + String(#condition); \
             printf("%s\n", erMsg.c_str());                                    \
-            __BNN_PRINT_LOCATION                                              \
+            __NT_PRINT_LOCATION                                               \
             exit(EXIT_FAILURE);                                               \
         }                                                                     \
     }
 #endif
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-#ifdef __BANANA_DEBUG__
-#  define __BNN_REQUIRE_MSG(condition, msg)                                   \
+#ifdef __NT_DEBUG__
+#  define __NT_REQUIRE_MSG(condition, msg)                                    \
     {                                                                         \
         if(!(condition))                                                      \
         {                                                                     \
             String erMsg = String("Assertion failed: ") + String(#condition); \
             String rsMsg = String("Reason: ") + String(msg);                  \
             printf("%s\n%s\n", erMsg.c_str(), rsMsg.c_str());                 \
-            __BNN_PRINT_LOCATION                                              \
+            __NT_PRINT_LOCATION                                               \
             assert(false);                                                    \
         }                                                                     \
     }
 #else
-#  define __BNN_REQUIRE_MSG(condition, msg)                                   \
+#  define __NT_REQUIRE_MSG(condition, msg)                                    \
     {                                                                         \
         if(!(condition))                                                      \
         {                                                                     \
             String erMsg = String("Assertion failed: ") + String(#condition); \
             String rsMsg = String("Reason: ") + String(msg);                  \
             printf("%s\n%s\n", erMsg.c_str(), rsMsg.c_str());                 \
-            __BNN_PRINT_LOCATION                                              \
+            __NT_PRINT_LOCATION                                               \
             exit(EXIT_FAILURE);                                               \
         }                                                                     \
     }
 #endif
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-#define __BNN_CHECK_ERROR(condition, msg)                                     \
+#define __NT_CHECK_ERROR(condition, msg)                                      \
     {                                                                         \
         if(!(condition))                                                      \
         {                                                                     \
             String erMsg = String("Assertion failed: ") + String(#condition); \
             String rsMsg = String("Reason: ") + String(msg);                  \
             printf("%s\n%s\n", erMsg.c_str(), rsMsg.c_str());                 \
-            __BNN_PRINT_LOCATION                                              \
+            __NT_PRINT_LOCATION                                               \
         }                                                                     \
     }
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-#define __BNN_UNIMPLEMENTED_FUNC          __BNN_DIE("Called function is unimplemented.")
-#define __BNN_CALLED_TO_WRONG_PLACE       __BNN_DIE("This function should not be reached.")
-#define __BNN_DENIED_CALL_TO_BASE_CLASS   __BNN_DIE("This function should not be called from base class.")
-#define __BNN_DENIED_SWITCH_DEFAULT_VALUE __BNN_DIE("Invalid default value in switch statement.")
-#define __BNN_DIE_UNKNOWN_ERROR           __BNN_DIE("An unknown error has occured...")
+#define __NT_UNIMPLEMENTED_FUNC          __NT_DIE("Called function is unimplemented.")
+#define __NT_CALLED_TO_WRONG_PLACE       __NT_DIE("This function should not be reached.")
+#define __NT_DENIED_CALL_TO_BASE_CLASS   __NT_DIE("This function should not be called from base class.")
+#define __NT_DENIED_SWITCH_DEFAULT_VALUE __NT_DIE("Invalid default value in switch statement.")
+#define __NT_DIE_UNKNOWN_ERROR           __NT_DIE("An unknown error has occured...")
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 // test
-#define __BNN_PERORMANCE_TEST_BEGIN \
-    Timer testTimer;                \
+#define __NT_PERORMANCE_TEST_BEGIN \
+    Timer testTimer;               \
     testTimer.tick();
 
-#define __BNN_PERORMANCE_TEST_END(funcName) \
-    testTimer.tock();                       \
+#define __NT_PERORMANCE_TEST_END(funcName) \
+    testTimer.tock();                      \
     printf("Test %s finished. Time: %s\n", funcName, testTimer.getRunTime().c_str());
 
-#define __BNN_PERORMANCE_TEST_END_WITH_RUN_TIME(funcName, runTime)                    \
+#define __NT_PERORMANCE_TEST_END_WITH_RUN_TIME(funcName, runTime)                     \
     runTime = testTimer.tock();                                                       \
     printf("Test %s finished. Time: %s\n", funcName, testTimer.getRunTime().c_str()); \
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 // data macros
-#define __BNN_REQUIRE_EQUAL(a, b)                     __BNN_REQUIRE_MSG(a == b, "Numbers are not equal.");
-#define __BNN_REQUIRE_APPROX_NUMBERS(a, b, threshold) __BNN_REQUIRE_MSG(threshold > fabs(a - b), "Numbers are not equal.");
-#define __BNN_TO_CSTRING(x)                           Formatters::toString(x).c_str()
-#define __BNN_TO_CSTRING_5(x)                         Formatters::toString5(x).c_str()
-#define __BNN_TO_CSTRING_7(x)                         Formatters::toString7(x).c_str()
+#define __NT_REQUIRE_EQUAL(a, b)                     __NT_REQUIRE_MSG(a == b, "Numbers are not equal.");
+#define __NT_REQUIRE_APPROX_NUMBERS(a, b, threshold) __NT_REQUIRE_MSG(threshold > fabs(a - b), "Numbers are not equal.");
+#define __NT_TO_CSTRING(x)                           Formatters::toString(x).c_str()
+#define __NT_TO_CSTRING_5(x)                         Formatters::toString5(x).c_str()
+#define __NT_TO_CSTRING_7(x)                         Formatters::toString7(x).c_str()
 
-#define __BNN_TYPE_ALIASING                             \
+#define __NT_TYPE_ALIASING                              \
     using VecN            = VecX<N, RealType>;          \
     using MatNxN          = MatXxX<N, RealType>;        \
     using Vec_VecN        = Vec_VecX<N, RealType>;      \
@@ -305,22 +303,22 @@ inline void throwIfFailed(HRESULT hr)
     using Vec_RealType    = Vector<RealType>;           \
     using Vec_VecRealType = Vector<Vector<RealType>>;
 
-#define __BNN_INSTANTIATE_CLASS_COMMON_TYPES(ClassName) \
-    template class ClassName<float>;                    \
+#define __NT_INSTANTIATE_CLASS_COMMON_TYPES(ClassName) \
+    template class ClassName<float>;                   \
     template class ClassName<double>;
 
-#define __BNN_INSTANTIATE_STRUCT_COMMON_TYPES(StructName) \
-    template struct StructName<float>;                    \
+#define __NT_INSTANTIATE_STRUCT_COMMON_TYPES(StructName) \
+    template struct StructName<float>;                   \
     template struct StructName<double>;
 
-#define __BNN_INSTANTIATE_CLASS_COMMON_DIMENSIONS_AND_TYPES(ClassName) \
-    template class ClassName<2, float>;                                \
-    template class ClassName<3, float>;                                \
-    template class ClassName<2, double>;                               \
+#define __NT_INSTANTIATE_CLASS_COMMON_DIMENSIONS_AND_TYPES(ClassName) \
+    template class ClassName<2, float>;                               \
+    template class ClassName<3, float>;                               \
+    template class ClassName<2, double>;                              \
     template class ClassName<3, double>;
 
-#define __BNN_INSTANTIATE_STRUCT_COMMON_DIMENSIONS_AND_TYPES(StructName) \
-    template struct StructName<2, float>;                                \
-    template struct StructName<3, float>;                                \
-    template struct StructName<2, double>;                               \
+#define __NT_INSTANTIATE_STRUCT_COMMON_DIMENSIONS_AND_TYPES(StructName) \
+    template struct StructName<2, float>;                               \
+    template struct StructName<3, float>;                               \
+    template struct StructName<2, double>;                              \
     template struct StructName<3, double>;

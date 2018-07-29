@@ -104,7 +104,7 @@ public:
         return std::make_shared<Logger>(loggerName, bDefaultLogPolicy, bPrint2Console, bWriteLog2File, true);
     }
 
-    static void registerDataLogFile(const String& logFile) { __BNN_REQUIRE(!s_bInitialized); s_DataLogFiles.push_back(logFile); }
+    static void registerDataLogFile(const String& logFile) { __NT_REQUIRE(!s_bInitialized); s_DataLogFiles.push_back(logFile); }
     static void initialize(bool bPrint2Console                         = true, bool bWriteLog2File = false);
     static void initialize(const String& dataPath, bool bPrint2Console = true, bool bWriteLog2File = false);
     static void shutdown();
@@ -126,7 +126,7 @@ private:
     static inline Clock::time_point s_StartupTime {};
     static inline Clock::time_point s_ShutdownTime {};
 
-#ifdef __BANANA_WINDOWS__
+#ifdef __NT_WINDOWS_OS__
     static inline SharedPtr<spdlog::sinks::wincolor_stdout_sink_mt> s_ConsoleSink = std::make_shared<spdlog::sinks::wincolor_stdout_sink_mt>();
 #else
     static inline SharedPtr<spdlog::sinks::ansicolor_stdout_sink_mt> s_ConsoleSink = std::make_shared<spdlog::sinks::ansicolor_stdout_sink_mt>();

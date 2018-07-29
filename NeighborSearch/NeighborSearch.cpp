@@ -700,9 +700,9 @@ template<Int N, class RealType>
 void NeighborSearch<N, RealType>::query2D(UInt point_set_id, UInt point_index, Vec_VecUInt& neighbors)
 {
     if constexpr(N == 3) {
-        __BNN_UNUSED(point_set_id);
-        __BNN_UNUSED(point_index);
-        __BNN_UNUSED(neighbors);
+        __NT_UNUSED(point_set_id);
+        __NT_UNUSED(point_index);
+        __NT_UNUSED(neighbors);
     }
 
     if constexpr(N == 2) {
@@ -790,9 +790,9 @@ template<Int N, class RealType>
 void NeighborSearch<N, RealType>::query3D(UInt point_set_id, UInt point_index, Vec_VecUInt& neighbors)
 {
     if constexpr(N == 2) {
-        __BNN_UNUSED(point_set_id);
-        __BNN_UNUSED(point_index);
-        __BNN_UNUSED(neighbors);
+        __NT_UNUSED(point_set_id);
+        __NT_UNUSED(point_index);
+        __NT_UNUSED(neighbors);
     }
 
     if constexpr(N == 3) {
@@ -881,7 +881,7 @@ void NeighborSearch<N, RealType>::query3D(UInt point_set_id, UInt point_index, V
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-__BNN_INSTANTIATE_CLASS_COMMON_DIMENSIONS_AND_TYPES(NeighborSearch)
+__NT_INSTANTIATE_CLASS_COMMON_DIMENSIONS_AND_TYPES(NeighborSearch)
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 }   // end namespace NeighborSearch

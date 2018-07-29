@@ -110,7 +110,7 @@ inline void DataIO::flushBufferAsync(Int fileID)
 inline String DataIO::getFilePath(Int fileID)
 {
     char filePath[1024];
-    __BNN_SPRINT(filePath, "%s/%s/%s.%04d.%s", m_DataFolder.c_str(), m_DataSubFolder.c_str(), m_FileName.c_str(), fileID, m_FileExtension.c_str());
+    __NT_SPRINT(filePath, "%s/%s/%s.%04d.%s", m_DataFolder.c_str(), m_DataSubFolder.c_str(), m_FileName.c_str(), fileID, m_FileExtension.c_str());
     return String(filePath);
 }
 
@@ -121,7 +121,7 @@ inline void DataIO::createOutputFolders()
         return;
     }
     char outputFolder[512];
-    __BNN_SPRINT(outputFolder, "%s/%s", m_DataFolder.c_str(), m_DataSubFolder.c_str());
+    __NT_SPRINT(outputFolder, "%s/%s", m_DataFolder.c_str(), m_DataSubFolder.c_str());
     FileHelpers::createFolder(outputFolder);
     m_bOutputFolderCreated = true;
 }

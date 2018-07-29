@@ -349,7 +349,7 @@ auto orientedSVD(const MatXxX<N, RealType>& M)
 template<class RealType>
 void QRDifferential(const Mat2x2<RealType>& Q, const Mat2x2<RealType>& R, const Mat2x2<RealType>& dF, Mat2x2<RealType>& dQ, Mat2x2<RealType>& dR)
 {
-    __BNN_REQUIRE(R[0][0] != 0);
+    __NT_REQUIRE(R[0][0] != 0);
     Mat2x2<RealType> QtdF = glm::transpose(Q) * dF;
     RealType         a    = -QtdF[0][1] / R[0][0];
     Mat2x2<RealType> QtdQ(0, -a, a, 0);
@@ -360,7 +360,7 @@ void QRDifferential(const Mat2x2<RealType>& Q, const Mat2x2<RealType>& R, const 
 template<class RealType>
 void QRDifferential(const Mat3x3<RealType>& Q, const Mat3x3<RealType>& R, const Mat3x3<RealType>& dF, Mat3x3<RealType>& dQ, Mat3x3<RealType>& dR)
 {
-    __BNN_REQUIRE(R[0][0] != 0 && R[1][1] != 0);
+    __NT_REQUIRE(R[0][0] != 0 && R[1][1] != 0);
     Mat3x3<RealType> QtdF = glm::transpose(Q) * dF;
     RealType         w3   = QtdF[0][1] / R[0][0];
     RealType         w2   = -QtdF[0][2] / R[0][0];

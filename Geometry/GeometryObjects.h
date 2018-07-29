@@ -148,7 +148,7 @@ public:
     TorusObject(const JParams& jParams) : GeometryObject<N, RealType>(jParams) { parseParameters(jParams); }
     virtual String   name() override { return String("TorusObject"); }
     virtual RealType signedDistance(const VecX<N, RealType>& ppos0, bool bNegativeInside = true) const override;
-    void setRingRadius(RealType ringRadius) { __BNN_REQUIRE(ringRadius > 0); m_RingRadius = ringRadius; }
+    void setRingRadius(RealType ringRadius) { __NT_REQUIRE(ringRadius > 0); m_RingRadius = ringRadius; }
 protected:
     virtual void parseParameters(const JParams& jParams) override;
     RealType m_OuterRadius = RealType(1);

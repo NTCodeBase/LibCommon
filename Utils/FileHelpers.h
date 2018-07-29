@@ -104,21 +104,21 @@ inline Vec_String getFolderSizeInfo(const String& folderName)
 inline String getFullFilePath(const String& topFolder, const String& dataSubFolder, const String& fileName, const String& fileExtension, int fileID)
 {
     char buff[512];
-    __BNN_SPRINT(buff, "%s/%s/%s.%04d.%s", topFolder.c_str(), dataSubFolder.c_str(), fileName.c_str(), fileID, fileExtension.c_str());
+    __NT_SPRINT(buff, "%s/%s/%s.%04d.%s", topFolder.c_str(), dataSubFolder.c_str(), fileName.c_str(), fileID, fileExtension.c_str());
     return String(buff);
 }
 
 inline String getFullFilePath(const char* topFolder, const char* dataSubFolder, const char* fileName, const char* fileExtension, int fileID)
 {
     char buff[512];
-    __BNN_SPRINT(buff, "%s/%s/%s.%04d.%s", topFolder, dataSubFolder, fileName, fileID, fileExtension);
+    __NT_SPRINT(buff, "%s/%s/%s.%04d.%s", topFolder, dataSubFolder, fileName, fileID, fileExtension);
     return String(buff);
 }
 
 inline String getFullFilePath(const String& topFolder, const char* dataSubFolder, const char* fileName, const char* fileExtension, int fileID)
 {
     char buff[512];
-    __BNN_SPRINT(buff, "%s/%s/%s.%04d.%s", topFolder.c_str(), dataSubFolder, fileName, fileID, fileExtension);
+    __NT_SPRINT(buff, "%s/%s/%s.%04d.%s", topFolder.c_str(), dataSubFolder, fileName, fileID, fileExtension);
     return String(buff);
 }
 
@@ -143,7 +143,7 @@ inline void copyFile(const char* srcFile, const char* dstFile)
 
     FILE* src = nullptr;
     FILE* dst = nullptr;
-#ifdef __BANANA_WINDOWS__
+#ifdef __NT_WINDOWS_OS__
     fopen_s(&src, srcFile, "r");
     fopen_s(&dst, dstFile, "w");
 #else
@@ -232,7 +232,7 @@ inline std::future<void> writeFileAsync(const void* dataBuffer, size_t dataSize,
     std::future<void> futureObj = std::async(std::launch::async, [&]
                                              {
                                                  std::ofstream file(fileName, std::ios::binary | std::ios::out);
-                                                 __BNN_REQUIRE_MSG(file.is_open(), "Could not open file for writing.");
+                                                 __NT_REQUIRE_MSG(file.is_open(), "Could not open file for writing.");
 
                                                  file.write((char*)dataBuffer, dataSize);
                                                  file.close();

@@ -158,7 +158,7 @@ public:
 
             printf("%s\n", ss.str().c_str());
         }
-        __BNN_REQUIRE(bIndexValid);
+        __NT_REQUIRE(bIndexValid);
     }
 
     bool equalSize(const Array<N, T>& other) const
@@ -344,7 +344,7 @@ public:
     }
 
     void assign(const T& value) { m_Data.assign(m_Data.size(), value); }
-    void copyDataFrom(const Array<N, T>& other) { __BNN_REQUIRE(equalSize(other)); m_Data = other.m_Data; }
+    void copyDataFrom(const Array<N, T>& other) { __NT_REQUIRE(equalSize(other)); m_Data = other.m_Data; }
     void setZero() { m_Data.assign(m_Data.size(), 0); }
     void clear() { m_Data.resize(0); m_Size = VecX<N, size_type>(0); }
     void swap(Array<N, T>& other) { std::swap(m_Size, other.m_Size); m_Data.swap(other.m_Data); }
@@ -462,7 +462,7 @@ public:
             buffer.getData<UInt>(tmp, sizeof(UInt) * d);
             m_Size[d] = static_cast<size_type>(tmp);
         }
-        __BNN_REQUIRE(buffer.buffer().size() == N * sizeof(UInt) + sizeof(T) * glm::compMul(m_Size));
+        __NT_REQUIRE(buffer.buffer().size() == N * sizeof(UInt) + sizeof(T) * glm::compMul(m_Size));
         buffer.getData(m_Data, sizeof(UInt) * N, static_cast<UInt>(glm::compMul(m_Size)));
         return true;
     }

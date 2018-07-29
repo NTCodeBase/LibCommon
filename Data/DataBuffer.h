@@ -92,7 +92,7 @@ inline void DataBuffer::append(const void* dataPtr, size_t dataSize)
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 inline size_t DataBuffer::getData(void* dataPtr, size_t dataSize, size_t startOffset /*= 0*/)
 {
-    __BNN_REQUIRE(startOffset + dataSize <= m_Buffer.size());
+    __NT_REQUIRE(startOffset + dataSize <= m_Buffer.size());
     memcpy(dataPtr, (void*)data(startOffset), dataSize);
     return dataSize;
 }

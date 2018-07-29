@@ -22,7 +22,7 @@
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 Logger::Logger(const String& loggerName, bool bDefaultLogPolicy, bool bPrint2Console, bool bWriteLog2File, bool bDataLogger)
 {
-    __BNN_REQUIRE(s_bInitialized);
+    __NT_REQUIRE(s_bInitialized);
 
     if(bDefaultLogPolicy) {
         m_bPrint2Console = s_bPrint2Console;
@@ -39,10 +39,10 @@ Logger::Logger(const String& loggerName, bool bDefaultLogPolicy, bool bPrint2Con
 
     if(m_bWriteLog2File) {
         if(!bDataLogger) {
-            __BNN_REQUIRE(s_SystemLogFileSink != nullptr);
+            __NT_REQUIRE(s_SystemLogFileSink != nullptr);
             m_FileLogger = std::make_shared<spdlog::async_logger>(loggerName, s_SystemLogFileSink, 1024);
         } else {
-            __BNN_REQUIRE(s_DataLogSinks.find(loggerName) != s_DataLogSinks.end() && s_DataLogSinks[loggerName] != nullptr);
+            __NT_REQUIRE(s_DataLogSinks.find(loggerName) != s_DataLogSinks.end() && s_DataLogSinks[loggerName] != nullptr);
             m_FileLogger = std::make_shared<spdlog::async_logger>(loggerName, s_DataLogSinks[loggerName], 1024);
         }
         m_FileLogger->set_pattern("[%Y-%m-%d] [%H:%M:%S.%e] [%^%l%$] %v");
@@ -314,13 +314,13 @@ void Logger::initialize(bool bPrint2Console /*= true*/, bool bWriteLog2File /*= 
 
             ++i;
 
-            __BNN_REQUIRE(i < 1000);
+            __NT_REQUIRE(i < 1000);
         } while(true);
 
         ////////////////////////////////////////////////////////////////////////////////
         time_t currentTime = Clock::to_time_t(s_StartupTime - std::chrono::hours(24));
 
-#ifdef __BANANA_WINDOWS__
+#ifdef __NT_WINDOWS_OS__
         struct tm ltime;
         localtime_s(&ltime, &currentTime);
 #else
@@ -361,7 +361,7 @@ void Logger::shutdown()
 
     if(s_bWriteLog2File) {
         time_t currentTime = Clock::to_time_t(s_ShutdownTime - std::chrono::hours(24));;
-#ifdef __BANANA_WINDOWS__
+#ifdef __NT_WINDOWS_OS__
         struct tm ltime;
         localtime_s(&ltime, &currentTime);
 #else
