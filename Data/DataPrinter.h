@@ -14,9 +14,9 @@
 
 #pragma once
 
-#include <Core/Array/Array.h>
-#include <Core/Utils/Logger.h>
-#include <Core/Utils/FileHelpers.h>
+#include <Array/Array.h>
+#include <Utils/Logger.h>
+#include <Utils/FileHelpers.h>
 
 #include <cstdio>
 #include <vector>

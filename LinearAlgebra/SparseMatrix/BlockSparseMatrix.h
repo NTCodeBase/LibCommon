@@ -14,10 +14,10 @@
 
 #pragma once
 
-#include <Setup.h>
-#include <Core/Utils/STLHelpers.h>
-#include <Core/Utils/NumberHelpers.h>
-#include <Core/ParallelHelpers/Scheduler.h>
+#include <CommonSetup.h>
+#include <Utils/STLHelpers.h>
+#include <Utils/NumberHelpers.h>
+#include <ParallelHelpers/Scheduler.h>
 
 #include <iostream>
 #include <cstdio>

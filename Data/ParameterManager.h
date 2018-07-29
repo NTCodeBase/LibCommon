@@ -14,7 +14,7 @@
 
 #pragma once
 
-#include <Setup.h>
+#include <CommonSetup.h>
 
 #include <unordered_map>
 #include <string>

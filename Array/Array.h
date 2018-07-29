@@ -14,9 +14,9 @@
 
 #pragma once
 
-#include <Setup.h>
-#include <Core/Data/DataIO.h>
-#include <Core/Utils/FileHelpers.h>
+#include <CommonSetup.h>
+#include <Data/DataIO.h>
+#include <Utils/FileHelpers.h>
 
 #include <algorithm>
 #include <cassert>

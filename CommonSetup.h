@@ -275,4 +275,5 @@ template<class T> constexpr auto Tiny() { return std::numeric_limits<T>::min(); 
 template<class T> constexpr auto Huge() { return std::numeric_limits<T>::max(); }
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-#include <Macros.h>
+#include <CommonMacros.h>
+#include <CommonForward.h>

@@ -12,10 +12,10 @@
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 
-#include <Core/Utils/Logger.h>
-#include <Core/Utils/FileHelpers.h>
-#include <Core/Utils/Formatters.h>
-#include <Core/Utils/MemoryUsage.h>
+#include <Utils/Logger.h>
+#include <Utils/FileHelpers.h>
+#include <Utils/Formatters.h>
+#include <Utils/MemoryUsage.h>
 
 #include <csignal>
 

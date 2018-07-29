@@ -12,18 +12,16 @@
 #-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 #-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 
-INCLUDEPATH += $$PWD/Externals/Catch2/single_include
-INCLUDEPATH += $$PWD/Externals/glm
-INCLUDEPATH += $$PWD/Externals/json/single_include/nlohmann
-INCLUDEPATH += $$PWD/Externals/spdlog/include
-INCLUDEPATH += $$PWD/Externals/tinyobjloader
-INCLUDEPATH += $$PWD/Externals/PartioBgeo
+INCLUDEPATH += $$PWD/
+INCLUDEPATH += $$PWD/../../Externals/Catch2/single_include
+INCLUDEPATH += $$PWD/../../Externals/glm
+INCLUDEPATH += $$PWD/../../Externals/json/single_include/nlohmann
+INCLUDEPATH += $$PWD/../../Externals/spdlog/include
+INCLUDEPATH += $$PWD/../../Externals/tinyobjloader
 
-win32: INCLUDEPATH += $$PWD/Externals/tbb_win/include
-macx: INCLUDEPATH += $$PWD/Externals/tbb_osx/include
-unix: INCLUDEPATH += $$PWD/Externals/tbb_linux/include
-
-INCLUDEPATH += $$PWD/Engine
+win32: INCLUDEPATH += $$PWD/../../Externals/tbb_win/include
+macx: INCLUDEPATH += $$PWD/../../Externals/tbb_osx/include
+unix: INCLUDEPATH += $$PWD/../../Externals/tbb_linux/include
 
 #-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 CONFIG += c++17

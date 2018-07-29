@@ -14,8 +14,8 @@
 
 #pragma once
 
-#include <Setup.h>
-#include <Core/Utils/MathHelpers.h>
+#include <CommonSetup.h>
+#include <Utils/MathHelpers.h>
 
 #include <cstdio>
 #include <cassert>

@@ -14,7 +14,7 @@
 
 #pragma once
 
-#include <Setup.h>
+#include <CommonSetup.h>
 
 #include <cstdlib>
 #include <cstdio>

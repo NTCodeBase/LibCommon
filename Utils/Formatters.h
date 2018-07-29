@@ -14,8 +14,8 @@
 
 #pragma once
 
-#include <Setup.h>
-#include <Core/ParallelHelpers/ParallelObjects.h>
+#include <CommonSetup.h>
+#include <ParallelHelpers/ParallelObjects.h>
 
 #include <sstream>
 #include <locale>

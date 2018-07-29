@@ -12,13 +12,13 @@
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 
-#include <Core/LinearAlgebra/SparseMatrix/BlockSparseMatrix.h>
-#include <Core/LinearAlgebra/SparseMatrix/SparseMatrix.h>
+#include <LinearAlgebra/SparseMatrix/BlockSparseMatrix.h>
+#include <LinearAlgebra/SparseMatrix/SparseMatrix.h>
 
-#include <Core/LinearAlgebra/LinearSolvers/BlockPCGSolver.h>
-#include <Core/LinearAlgebra/LinearSolvers/PCGSolver.h>
+#include <LinearAlgebra/LinearSolvers/BlockPCGSolver.h>
+#include <LinearAlgebra/LinearSolvers/PCGSolver.h>
 
-#include <Setup.h>
+#include <CommonSetup.h>
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 //namespace _LinearAlgebra_Test

@@ -14,10 +14,10 @@
 
 #pragma once
 
-#include <Setup.h>
-#include <Core/Array/Array.h>
-#include <Core/Utils/MathHelpers.h>
-#include <Core/ParallelHelpers/ParallelObjects.h>
+#include <CommonSetup.h>
+#include <Array/Array.h>
+#include <Utils/MathHelpers.h>
+#include <ParallelHelpers/ParallelObjects.h>
 #include <cassert>
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+

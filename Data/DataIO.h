@@ -14,9 +14,9 @@
 
 #pragma once
 
-#include <Setup.h>
-#include <Core/Data/DataBuffer.h>
-#include <Core/Utils/FileHelpers.h>
+#include <CommonSetup.h>
+#include <Data/DataBuffer.h>
+#include <Utils/FileHelpers.h>
 
 #include <string>
 #include <vector>

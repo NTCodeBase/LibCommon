@@ -15,11 +15,11 @@
 #pragma once
 #define NOMINMAX
 
-#include <Core/Utils/Formatters.h>
-#include <Core/Utils/MathHelpers.h>
-#include <Core/ParallelHelpers/Scheduler.h>
-#include <Core/NeighborSearch/NeighborSearch.h>
-#include <Core/Grid/Grid.h>
+#include <Utils/Formatters.h>
+#include <Utils/MathHelpers.h>
+#include <ParallelHelpers/Scheduler.h>
+#include <NeighborSearch/NeighborSearch.h>
+#include <Grid/Grid.h>
 #include <catch.hpp>
 
 #include <iostream>

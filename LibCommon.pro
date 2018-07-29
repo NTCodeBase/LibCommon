@@ -12,21 +12,18 @@
 #-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 #-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 
-include($$PWD/../../Common.pri)
+include($$PWD/LibCommon.pri)
 
-TARGET = HairMPMCore
+TARGET = LibCommon
 TEMPLATE = lib
 CONFIG += staticlib
 
-HEADERS = ../Setup.h
-HEADERS = ../Forward.h
-HEADERS = ../Macros.h
 HEADERS += $$files(*.h, true)
 HEADERS += $$files(*.hpp, true)
 SOURCES += $$files(*.cpp, true)
 SOURCES += $$PWD/../../Externals/tinyobjloader/tiny_obj_loader.cc
 
-DISTFILES += Core.pri
+DISTFILES += LibCommon.pri
 
 #-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 CONFIG(debug, debug|release) {

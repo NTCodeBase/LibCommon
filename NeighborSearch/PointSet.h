@@ -14,8 +14,8 @@
 
 #pragma once
 
-#include <Core/NeighborSearch/DataStructures.h>
-#include <Core/ParallelHelpers/ParallelObjects.h>
+#include <NeighborSearch/DataStructures.h>
+#include <ParallelHelpers/ParallelObjects.h>
 
 #include <iostream>
 

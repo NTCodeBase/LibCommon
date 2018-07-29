@@ -14,8 +14,8 @@
 
 #pragma once
 
-#include <Setup.h>
-#include <Core/Utils/Timer.h>
+#include <CommonSetup.h>
+#include <Utils/Timer.h>
 
 #include <spdlog/spdlog.h>
 

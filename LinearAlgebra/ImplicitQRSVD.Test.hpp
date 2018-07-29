@@ -12,10 +12,10 @@
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 
-#include <Core/LinearAlgebra/ImplicitQRSVD.h>
-#include <Core/LinearAlgebra/LinaHelpers.h>
-#include <Core/Utils/NumberHelpers.h>
-#include <Core/Utils/Timer.h>
+#include <LinearAlgebra/ImplicitQRSVD.h>
+#include <LinearAlgebra/LinaHelpers.h>
+#include <Utils/NumberHelpers.h>
+#include <Utils/Timer.h>
 
 #include <catch.hpp>
 #include <chrono>

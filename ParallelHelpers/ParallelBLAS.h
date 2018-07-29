@@ -18,8 +18,8 @@
 #include <vector>
 
 #include <tbb/tbb.h>
-#include <Core/ParallelHelpers/ParallelObjects.h>
-#include <Core/ParallelHelpers/Scheduler.h>
+#include <ParallelHelpers/ParallelObjects.h>
+#include <ParallelHelpers/Scheduler.h>
 
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+

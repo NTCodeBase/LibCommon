@@ -14,10 +14,10 @@
 
 #pragma once
 
-#include <Setup.h>
-#include <Core/Utils/MathHelpers.h>
-#include <Core/Utils/NumberHelpers.h>
-#include <Core/LinearAlgebra/ImplicitQRSVD.h>
+#include <CommonSetup.h>
+#include <Utils/MathHelpers.h>
+#include <Utils/NumberHelpers.h>
+#include <LinearAlgebra/ImplicitQRSVD.h>
 
 #include <random>
 

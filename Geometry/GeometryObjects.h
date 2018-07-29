@@ -14,10 +14,10 @@
 
 #pragma once
 
-#include <Setup.h>
-#include <Core/Grid/Grid.h>
-#include <Core/Array/Array.h>
-#include <Core/Animation/Animation.h>
+#include <CommonSetup.h>
+#include <Grid/Grid.h>
+#include <Array/Array.h>
+#include <Animation/Animation.h>
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 namespace GeometryObjects

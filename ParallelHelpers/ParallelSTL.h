@@ -19,7 +19,7 @@
 #include <cmath>
 
 #include <tbb/tbb.h>
-#include <Core/ParallelHelpers/ParallelObjects.h>
+#include <ParallelHelpers/ParallelObjects.h>
 
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+

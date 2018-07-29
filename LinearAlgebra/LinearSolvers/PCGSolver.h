@@ -14,9 +14,9 @@
 
 #pragma once
 
-#include <Core/LinearAlgebra/SparseMatrix/SparseMatrix.h>
-#include <Core/ParallelHelpers/ParallelBLAS.h>
-#include <Core/ParallelHelpers/ParallelSTL.h>
+#include <LinearAlgebra/SparseMatrix/SparseMatrix.h>
+#include <ParallelHelpers/ParallelBLAS.h>
+#include <ParallelHelpers/ParallelSTL.h>
 
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
