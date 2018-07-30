@@ -38,6 +38,20 @@ bool isValidNumber(T x)
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 template<class IndexType, Int N, class RealType>
+VecX<N, IndexType> createGrid(const VecX<N, RealType>& bmin, const VecX<N, RealType>& bmax, const VecX<N, RealType>& spacing)
+{
+    VecX<N, RealType>  fgrid = (bmax - bmin) / spacing;
+    VecX<N, IndexType> result;
+
+    for(Int d = 0; d < N; ++d) {
+        result[d] = static_cast<IndexType>(ceil(fgrid[d]));
+    }
+
+    return result;
+}
+
+//-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+template<class IndexType, Int N, class RealType>
 VecX<N, IndexType> createGrid(const VecX<N, RealType>& bmin, const VecX<N, RealType>& bmax, RealType spacing)
 {
     VecX<N, RealType>  fgrid = (bmax - bmin) / spacing;
