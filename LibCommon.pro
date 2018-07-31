@@ -18,10 +18,10 @@ TARGET = LibCommon
 TEMPLATE = lib
 CONFIG += staticlib
 
-HEADERS += $$files(*.h, true)
-HEADERS += $$files(*.hpp, true)
-SOURCES += $$files(*.cpp, true)
-SOURCES += $$PWD/../../Externals/tinyobjloader/tiny_obj_loader.cc
+HEADERS += $$files($$PWD/LibCommon/*.h, true)
+HEADERS += $$files($$PWD/LibCommon/*.hpp, true)
+SOURCES += $$files($$PWD/LibCommon/*.cpp, true)
+SOURCES += $$PWD/Externals/tinyobjloader/tiny_obj_loader.cc
 
 DISTFILES += LibCommon.pri
 
