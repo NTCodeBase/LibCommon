@@ -1,0 +1,15 @@
+[submodule "Externals/Catch2"]
+	path = Externals/Catch2
+	url = https://github.com/catchorg/Catch2.git
+[submodule "Externals/glm"]
+	path = Externals/glm
+	url = https://github.com/g-truc/glm.git
+[submodule "Externals/json"]
+	path = Externals/json
+	url = https://github.com/nlohmann/json.git
+[submodule "Externals/spdlog"]
+	path = Externals/spdlog
+	url = https://github.com/gabime/spdlog.git
+[submodule "Externals/tinyobjloader"]
+	path = Externals/tinyobjloader
+	url = https://github.com/syoyo/tinyobjloader.git
