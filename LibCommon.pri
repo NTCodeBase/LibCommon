@@ -36,9 +36,11 @@ win32 {
         message("~~~ Debug build ~~~")
         QMAKE_CXXFLAGS += /D "_DEBUG"
         QMAKE_CXXFLAGS += /Od /MDd
+        LIBS += -ltbb_debug
     } else {
         QMAKE_CXXFLAGS += /Zo /Qpar /Gy /O2 /Ob2 /Oi /Ot /GF
         QMAKE_CXXFLAGS += /D "NDEBUG"
+        LIBS += -ltbb
         static {
             message("~~~ Static Release build ~~~")
             CONFIG += static
@@ -49,6 +51,8 @@ win32 {
             QMAKE_CXXFLAGS += /MD
         }
     }
+
+    LIBS += -L$$PWD/Externals/tbb_win/lib/intel64/vc14
 }
 
 macx|unix {
@@ -67,5 +71,13 @@ macx|unix {
         message("~~~ Release build ~~~")
         QMAKE_CXXFLAGS += -O3
         QMAKE_CXXFLAGS += -DNDEBUG
+    }
+
+    macx {
+        QMAKE_LFLAGS += -Wl,-rpath=$$PWD/../Externals/tbb_osx/lib
+        LIBS += -ltbb -L$$PWD/Externals/tbb_osx/lib
+    } else {
+        QMAKE_LFLAGS += -Wl,-rpath=$$PWD/../Externals/tbb_linux/lib/intel64/gcc4.7
+        LIBS += -ltbb -L$$PWD/Externals/tbb_linux/lib/intel64/gcc4.7
     }
 }
