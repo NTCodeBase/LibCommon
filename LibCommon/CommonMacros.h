@@ -82,9 +82,14 @@ inline void throwIfFailed(HRESULT hr)
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 #include <csignal>
-#define __NT_EARLY_TERMINATION \
-    {                          \
-        std::raise(SIGTERM);   \
+#define __NT_RAISE_TERMINATION_SIGNAL \
+    {                                 \
+        std::raise(SIGTERM);          \
+    }
+
+#define __NT_RAISE_ABORT_SIGNAL \
+    {                           \
+        std::raise(SIGABRT);    \
     }
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
@@ -126,28 +131,27 @@ inline void throwIfFailed(HRESULT hr)
 #  define __NT_TODO_MSG(msg) \
     __pragma(message("+++>TODO: " msg " => " __FILE__ "(" __NT_TO_STRING(__LINE__) ") "))
 #endif
-#else // __NT_WINDOWS_OS__
-#ifdef QT_CORE_LIB
-#  define PRAGMA_MESSAGE(x) _Pragma(#x)
-#  define __NT_COMPILER_MESSAGE(msg) \
+#else // not __NT_WINDOWS_OS__
+#  ifdef QT_CORE_LIB
+#    define PRAGMA_MESSAGE(x) _Pragma(#x)
+#    define __NT_COMPILER_MESSAGE(msg) \
     PRAGMA_MESSAGE(message "\033[38;5;214m+++>" msg "\033[0m")
 
-#  define __NT_TODO \
+#    define __NT_TODO \
     PRAGMA_MESSAGE(message "\033[38;5;214m+++>TODO: => " __FILE__ "(" __NT_TO_STRING(__LINE__) ") \033[0m")
 
-#  define __NT_TODO_MSG(msg) \
+#    define __NT_TODO_MSG(msg) \
     PRAGMA_MESSAGE(message "\033[38;5;214m+++>TODO: " msg " => " __FILE__ "(" __NT_TO_STRING(__LINE__) ") \033[0m")
-#else
-#  define __NT_COMPILER_MESSAGE(msg) \
+#  else
+#    define __NT_COMPILER_MESSAGE(msg) \
     PRAGMA_MESSAGE(message "+++>" msg)
 
-#  define __NT_TODO \
+#    define __NT_TODO \
     PRAGMA_MESSAGE(message "+++>TODO: => " __FILE__ "(" __NT_TO_STRING(__LINE__) ") ")
 
-#  define __NT_TODO_MSG(msg) \
+#    define __NT_TODO_MSG(msg) \
     PRAGMA_MESSAGE(message "+++>TODO: " msg " => " __FILE__ "(" __NT_TO_STRING(__LINE__) ") ")
-#endif
-
+#  endif
 #endif
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 #define __NT_PRINT_LINE                         \
@@ -194,10 +198,10 @@ inline void throwIfFailed(HRESULT hr)
 #endif
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-#define __NT_DIE(err)          \
-    {                          \
-        __NT_ERROR(err)        \
-        __NT_EARLY_TERMINATION \
+#define __NT_DIE(err)                 \
+    {                                 \
+        __NT_ERROR(err)               \
+        __NT_RAISE_TERMINATION_SIGNAL \
     }
 //exit(EXIT_FAILURE);
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
