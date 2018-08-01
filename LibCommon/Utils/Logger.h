@@ -33,10 +33,9 @@ class Logger
 {
     using Clock = std::chrono::system_clock;
 public:
-    Logger(const String& loggerName, bool bDefaultLogPolicy = true, bool bPrint2Console = true, bool bWriteLog2File = false, bool bDataLogger = false);
-    void setLoglevel(spdlog::level::level_enum level);
+    Logger(const String& loggerName, const String& rootPath, bool bLog2Console = true, bool bLog2File = false,
+           spdlog::level::level_enum level                                     = spdlog::level::level_enum::trace);
     ////////////////////////////////////////////////////////////////////////////////
-
     void newLine() { printLog(""); }
     void newLineIf(bool bCondition) { if(bCondition) { printLog(""); } }
     void printSeparator();
@@ -91,56 +90,21 @@ public:
     void printLogIf(bool bCondition, const String& s, spdlog::level::level_enum level);
     void printLogIndentIf(bool bCondition, const String& s, UInt indentLevel = 1, char trailing = ' ');
 
+    ////////////////////////////////////////////////////////////////////////////////
+    void flush();
     void printMemoryUsage();
-
+    void printTotalRunTime();
     ////////////////////////////////////////////////////////////////////////////////
-    static auto createLogger(const String& loggerName, bool bDefaultLogPolicy = true, bool bPrint2Console = true, bool bWriteLog2File = false)
-    {
-        return std::make_shared<Logger>(loggerName, bDefaultLogPolicy, bPrint2Console, bWriteLog2File);
-    }
+    void        cleanup(int signal = 0);
+    static void signalHandler(int signal);
 
-    static auto createDataLogger(const String& loggerName, bool bDefaultLogPolicy = true, bool bPrint2Console = true, bool bWriteLog2File = false)
-    {
-        return std::make_shared<Logger>(loggerName, bDefaultLogPolicy, bPrint2Console, bWriteLog2File, true);
-    }
-
-    static void registerDataLogFile(const String& logFile) { __NT_REQUIRE(!s_bInitialized); s_DataLogFiles.push_back(logFile); }
-    static void initialize(bool bPrint2Console                         = true, bool bWriteLog2File = false);
-    static void initialize(const String& dataPath, bool bPrint2Console = true, bool bWriteLog2File = false);
-    static void shutdown();
-    static void setDataPath(const String& dataPath) { s_DataPath = dataPath; }
-    static auto& mainLogger() noexcept { assert(s_MainLogger != nullptr); return *s_MainLogger; }
-
-    static String getTotalRunTime();
-    static void   signalHandler(int signum);
-
-    ////////////////////////////////////////////////////////////////////////////////
-    static inline bool s_bPrint2Console = true;
-    static inline bool s_bWriteLog2File = false;
 private:
-    static inline bool s_bInitialized = false;
-    static inline bool s_bShutdown    = false;
-
-    static inline String            s_DataPath    = String(".");
-    static inline String            s_TimeLogFile = String("time.txt");
-    static inline Clock::time_point s_StartupTime {};
-    static inline Clock::time_point s_ShutdownTime {};
-
-#ifdef __NT_WINDOWS_OS__
-    static inline SharedPtr<spdlog::sinks::wincolor_stdout_sink_mt> s_ConsoleSink = std::make_shared<spdlog::sinks::wincolor_stdout_sink_mt>();
-#else
-    static inline SharedPtr<spdlog::sinks::ansicolor_stdout_sink_mt> s_ConsoleSink = std::make_shared<spdlog::sinks::ansicolor_stdout_sink_mt>();
-#endif
-
-    static inline Vector<String>                                                  s_DataLogFiles {};
-    static inline std::map<String, SharedPtr<spdlog::sinks::simple_file_sink_mt>> s_DataLogSinks {};
-
-    static inline SharedPtr<spdlog::sinks::simple_file_sink_mt> s_SystemLogFileSink = nullptr;
-    static inline SharedPtr<Logger>                             s_MainLogger        = nullptr;
-
+    String getTotalRunTime();
     ////////////////////////////////////////////////////////////////////////////////
-    SharedPtr<spdlog::logger>       m_ConsoleLogger = nullptr;
-    SharedPtr<spdlog::async_logger> m_FileLogger    = nullptr;
-    bool                            m_bPrint2Console;
-    bool                            m_bWriteLog2File;
+    static inline Vector<Logger*> s_Instances {};
+    Clock::time_point             m_StartupTime {};
+    SharedPtr<spdlog::logger>     m_ConsoleLogger = nullptr;
+    SharedPtr<spdlog::logger>     m_FileLogger    = nullptr;
+    bool                          m_bLog2Console;
+    bool                          m_bLog2File;
 };
