@@ -57,12 +57,11 @@ Logger::Logger(const String& loggerName, const String& rootPath, bool bLog2Conso
     m_StartupTime = Clock::now();
     ////////////////////////////////////////////////////////////////////////////////
     s_Instances.push_back(this);
-    signal(SIGINT,   Logger::signalHandler);
-    signal(SIGFPE,   Logger::signalHandler);
-    signal(SIGSEGV,  Logger::signalHandler);
-    signal(SIGTERM,  Logger::signalHandler);
-    signal(SIGBREAK, Logger::signalHandler);
-    signal(SIGABRT,  Logger::signalHandler);
+    signal(SIGINT,  Logger::signalHandler);
+    signal(SIGFPE,  Logger::signalHandler);
+    signal(SIGSEGV, Logger::signalHandler);
+    signal(SIGTERM, Logger::signalHandler);
+    signal(SIGABRT, Logger::signalHandler);
 }
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
@@ -317,9 +316,6 @@ void Logger::cleanup(int signal /*= 0*/)
             case SIGTERM:
                 printWarning("Termination signal caught");
                 break;
-            case SIGBREAK:
-                printWarning("Ctrl-Break pressed");
-                break;
             case SIGABRT:
                 // dont handle this case: this is normal termination, signal raised by main window
                 break;
@@ -348,7 +344,7 @@ void getDuration(std::chrono::duration<Rep, Period> t, UInt& n_days, UInt& n_hou
     assert(0 <= t.count());
 
     // approximate because a day doesn't have a fixed length
-    typedef std::chrono::duration<int, std::ratio<60* 60* 24>> days_t;
+    typedef std::chrono::duration<int, std::ratio<60 * 60 * 24>> days_t;
 
     auto days  = std::chrono::duration_cast<days_t>(t);
     auto hours = std::chrono::duration_cast<std::chrono::hours>(t - days);
