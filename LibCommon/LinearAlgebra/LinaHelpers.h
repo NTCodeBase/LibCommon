@@ -383,4 +383,15 @@ auto symmetryDecomposition(const MatXxX<N, RealType>& M)
 }
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+template<Int N, class RealType>
+auto extractFiberCotangentStress(const MatXxX<N, RealType>& VP, const MatXxX<N, RealType>& F)
+{
+    if constexpr (N == 2) {
+        return glm::outerProduct(VP[1], F[1]);
+    } else {
+        return MatMxN<3, 2, RealType>(VP[1], VP[2]) * glm::transpose(MatMxN<3, 2, RealType>(F[1], F[2]));
+    }
+}
+
+//-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 }   // end namespace LinaHelpers
