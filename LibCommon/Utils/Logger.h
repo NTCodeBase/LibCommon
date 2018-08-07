@@ -35,6 +35,7 @@ class Logger
 public:
     Logger(const String& loggerName, const String& rootPath, bool bLog2Console = true, bool bLog2File = false,
            spdlog::level::level_enum level                                     = spdlog::level::level_enum::trace);
+    ~Logger();
     ////////////////////////////////////////////////////////////////////////////////
     void newLine() { printLog(""); }
     void newLineIf(bool bCondition) { if(bCondition) { printLog(""); } }

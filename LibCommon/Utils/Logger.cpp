@@ -65,6 +65,17 @@ Logger::Logger(const String& loggerName, const String& rootPath, bool bLog2Conso
 }
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+Logger::~Logger()
+{
+    if(m_bLog2Console) {
+        spdlog::drop(m_ConsoleLogger->name());
+    }
+    if(m_bLog2File) {
+        spdlog::drop(m_FileLogger->name());
+    }
+}
+
+//-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 void Logger::printSeparator()
 {
     printAligned("", '=');
@@ -344,7 +355,7 @@ void getDuration(std::chrono::duration<Rep, Period> t, UInt& n_days, UInt& n_hou
     assert(0 <= t.count());
 
     // approximate because a day doesn't have a fixed length
-    typedef std::chrono::duration<int, std::ratio<60 * 60 * 24>> days_t;
+    typedef std::chrono::duration<int, std::ratio<60* 60* 24>> days_t;
 
     auto days  = std::chrono::duration_cast<days_t>(t);
     auto hours = std::chrono::duration_cast<std::chrono::hours>(t - days);
