@@ -380,8 +380,8 @@ void scale(Vec_VecX<N, RealType>& points, const VecX<N, RealType>& scale)
 template<Int N, class RealType>
 void rotate(Vec_VecX<N, RealType>& points, const VecX<N, RealType>& rotation)
 {
-    RealType azimuth = rotation[0];
-    RealType elevation = rotation[1];
+    RealType azimuth = rotation[1];
+    RealType elevation = rotation[0];
     RealType roll = rotation[2];
     RealType sinA, cosA, sinE, cosE, sinR, cosR;
 
