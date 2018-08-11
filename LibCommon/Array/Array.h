@@ -305,10 +305,16 @@ public:
     ////////////////////////////////////////////////////////////////////////////////
 
     ////////////////////////////////////////////////////////////////////////////////
-    // iterators
-    auto& data() { return m_Data; }
-    const auto& data() const { return m_Data; }
+    // flat data
+    auto& flatData() { return m_Data; }
+    const auto& flatData() const { return m_Data; }
 
+    template<class IndexType> auto& flatData(IndexType flatIdx) { return m_Data[flatIdx]; }
+    template<class IndexType> const auto& flatData(IndexType flatIdx) const { return m_Data[flatIdx]; }
+    ////////////////////////////////////////////////////////////////////////////////
+
+    ////////////////////////////////////////////////////////////////////////////////
+    // iterators
     const auto& front(void) const { assert(m_Data.size() > 0); return m_Data.front(); }
     auto& front(void) { assert(m_Data.size() > 0); return m_Data.front(); }
 

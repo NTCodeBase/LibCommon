@@ -103,7 +103,7 @@ void Grid<N, RealType>::collectIndexToCells(const StdVT_VecN& positions)
         m_bCellIdxNeedResize = false;
     }
 
-    for(auto& cell : m_ParticleIdxInCell.data()) {
+    for(auto& cell : m_ParticleIdxInCell.flatData()) {
         cell.resize(0);
     }
 
@@ -132,7 +132,7 @@ void Grid<N, RealType>::collectIndexToCells(const StdVT_VecN& positions, StdVT<V
         m_bCellIdxNeedResize = false;
     }
 
-    for(auto& cell : m_ParticleIdxInCell.data()) {
+    for(auto& cell : m_ParticleIdxInCell.flatData()) {
         cell.resize(0);
     }
 
@@ -163,7 +163,7 @@ void Grid<N, RealType>::collectIndexToCells(const StdVT_VecN& positions, StdVT_V
         m_bCellIdxNeedResize = false;
     }
 
-    for(auto& cell : m_ParticleIdxInCell.data()) {
+    for(auto& cell : m_ParticleIdxInCell.flatData()) {
         cell.resize(0);
     }
 
@@ -196,8 +196,7 @@ template<Int N, class RealType>
 void Grid<N, RealType>::getNeighborList(const VecN& ppos, StdVT_UInt& neighborList, Int cellSpan /*= 1*/)
 {
     neighborList.resize(0);
-    if constexpr(N == 2)
-    {
+    if constexpr(N == 2) {
         Vec2i cellIdx = getCellIdx<Int>(ppos);
         for(Int lj = -cellSpan; lj <= cellSpan; ++lj) {
             for(Int li = -cellSpan; li <= cellSpan; ++li) {
@@ -247,8 +246,7 @@ void Grid<N, RealType>::getNeighborList(const StdVT_VecN& positions, const VecN&
 {
     neighborList.resize(0);
 
-    if constexpr(N == 2)
-    {
+    if constexpr(N == 2) {
         Vec2i cellIdx = getCellIdx<Int>(ppos);
         for(Int lj = -cellSpan; lj <= cellSpan; ++lj) {
             for(Int li = -cellSpan; li <= cellSpan; ++li) {
@@ -320,7 +318,7 @@ const StdVT_UInt& Grid<N, RealType>::getParticleIdxSortedByCell()
     if(m_ParticleIdxSortedByCell.size() > 0) {
         return m_ParticleIdxSortedByCell;
     }
-    for(auto& cell : m_ParticleIdxInCell.data()) {
+    for(auto& cell : m_ParticleIdxInCell.flatData()) {
         if(cell.size() > 0) {
             m_ParticleIdxSortedByCell.insert(m_ParticleIdxSortedByCell.end(), cell.begin(), cell.end());
         }
