@@ -50,6 +50,7 @@ public:
     void resetTransformation();
 
     auto& getAnimation() { return m_Animation; }
+    auto transformed() const { return m_bTransformed; }
     const auto& getTransformationMatrix() const { return m_TransformationMatrix; }
 
     VecX<N, RealType> getVelocityAt(const VecX<N, RealType>& ppos) const;
