@@ -79,9 +79,12 @@ using Paird = std::pair<double, double>;
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 // generic types
-template<class K, class V> using Map = std::map<K, V>;
+template<class Type> using SharedPtr = std::shared_ptr<Type>;
+template<class Type> using UniquePtr = std::unique_ptr<Type>;
 
-template<class Type> using Vector = std::vector<Type>;
+template<class K, class V> using Map = std::map<K, V>;
+template<class Type> using StdVT     = std::vector<Type>;
+
 template<class Type> using Set    = std::set<Type>;
 template<class Type> using Quat   = glm::tquat<Type>;
 template<class Type> using Vec2   = glm::vec<2, Type>;
@@ -95,25 +98,18 @@ template<int N, class Type> using VecX          = glm::vec<N, Type>;
 template<int N, class Type> using MatXxX        = glm::mat<N, N, Type>;
 template<int M, int N, class Type> using MatMxN = glm::mat<N, M, Type>; // col major: N = cols, M = rows
 
-template<int N, class Type> using Vec_VecX          = Vector<VecX<N, Type>>;
-template<int N, class Type> using Vec_MatXxX        = Vector<MatXxX<N, Type>>;
-template<int M, int N, class Type> using Vec_MatMxN = Vector<MatMxN<M, N, Type>>;
-
-template<int N, class Type> using Vec_VecVecX          = Vector<Vector<VecX<N, Type>>>;
-template<int N, class Type> using Vec_VecMatXxX        = Vector<Vector<MatXxX<N, Type>>>;
-template<int M, int N, class Type> using Vec_VecMatMxN = Vector<Vector<MatMxN<M, N, Type>>>;
+template<int N, class Type> using StdVT_VecX          = StdVT<VecX<N, Type>>;
+template<int N, class Type> using StdVT_MatXxX        = StdVT<MatXxX<N, Type>>;
+template<int M, int N, class Type> using StdVT_MatMxN = StdVT<MatMxN<M, N, Type>>;
 
 ////////////////////////////////////////////////////////////////////////////////
-template<class Type> using Vec_Vec    = Vector<Vector<Type>>;
-template<class Type> using Vec_Vec2   = Vector<Vec2<Type>>;
-template<class Type> using Vec_Vec3   = Vector<Vec3<Type>>;
-template<class Type> using Vec_Vec4   = Vector<Vec4<Type>>;
-template<class Type> using Vec_Mat2x2 = Vector<Mat2x2<Type>>;
-template<class Type> using Vec_Mat3x3 = Vector<Mat3x3<Type>>;
-template<class Type> using Vec_Mat4x4 = Vector<Mat4x4<Type>>;
-
-template<class Type> using SharedPtr = std::shared_ptr<Type>;
-template<class Type> using UniquePtr = std::unique_ptr<Type>;
+template<class Type> using StdVT_Vec    = StdVT<StdVT<Type>>;
+template<class Type> using StdVT_Vec2   = StdVT<Vec2<Type>>;
+template<class Type> using StdVT_Vec3   = StdVT<Vec3<Type>>;
+template<class Type> using StdVT_Vec4   = StdVT<Vec4<Type>>;
+template<class Type> using StdVT_Mat2x2 = StdVT<Mat2x2<Type>>;
+template<class Type> using StdVT_Mat3x3 = StdVT<Mat3x3<Type>>;
+template<class Type> using StdVT_Mat4x4 = StdVT<Mat4x4<Type>>;
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 using Quatf = Quat<float>;
@@ -144,89 +140,47 @@ using Mat3x3d = Mat3x3<double>;
 using Mat4x4d = Mat4x4<double>;
 
 ////////////////////////////////////////////////////////////////////////////////
-using Vec_Int8  = Vector<Int8>;
-using Vec_Int16 = Vector<Int16>;
-using Vec_Int   = Vector<Int>;
-using Vec_Int32 = Vector<Int>;
-using Vec_Int64 = Vector<Int64>;
+using StdVT_Int8  = StdVT<Int8>;
+using StdVT_Int16 = StdVT<Int16>;
+using StdVT_Int   = StdVT<Int>;
+using StdVT_Int32 = StdVT<Int>;
+using StdVT_Int64 = StdVT<Int64>;
 
-using Vec_UInt8  = Vector<UInt8>;
-using Vec_UInt16 = Vector<UInt16>;
-using Vec_UInt   = Vector<UInt>;
-using Vec_UInt32 = Vector<UInt>;
-using Vec_UInt64 = Vector<UInt64>;
+using StdVT_UInt8  = StdVT<UInt8>;
+using StdVT_UInt16 = StdVT<UInt16>;
+using StdVT_UInt   = StdVT<UInt>;
+using StdVT_UInt32 = StdVT<UInt>;
+using StdVT_UInt64 = StdVT<UInt64>;
 
-using Vec_Char   = Vector<char>;
-using Vec_UChar  = Vector<unsigned char>;
-using Vec_Float  = Vector<float>;
-using Vec_Double = Vector<double>;
-using Vec_String = Vector<String>;
+using StdVT_Char   = StdVT<char>;
+using StdVT_UChar  = StdVT<unsigned char>;
+using StdVT_Float  = StdVT<float>;
+using StdVT_Double = StdVT<double>;
+using StdVT_String = StdVT<String>;
 
-using Vec_Vec2i = Vector<Vec2i>;
-using Vec_Vec3i = Vector<Vec3i>;
-using Vec_Vec4i = Vector<Vec4i>;
+using StdVT_Vec2i = StdVT<Vec2i>;
+using StdVT_Vec3i = StdVT<Vec3i>;
+using StdVT_Vec4i = StdVT<Vec4i>;
 
-using Vec_Vec2ui = Vector<Vec2ui>;
-using Vec_Vec3ui = Vector<Vec3ui>;
-using Vec_Vec4ui = Vector<Vec4ui>;
+using StdVT_Vec2ui = StdVT<Vec2ui>;
+using StdVT_Vec3ui = StdVT<Vec3ui>;
+using StdVT_Vec4ui = StdVT<Vec4ui>;
 
-using Vec_Vec2f = Vector<Vec2f>;
-using Vec_Vec3f = Vector<Vec3f>;
-using Vec_Vec4f = Vector<Vec4f>;
+using StdVT_Vec2f = StdVT<Vec2f>;
+using StdVT_Vec3f = StdVT<Vec3f>;
+using StdVT_Vec4f = StdVT<Vec4f>;
 
-using Vec_Vec2d = Vector<Vec2d>;
-using Vec_Vec3d = Vector<Vec3d>;
-using Vec_Vec4d = Vector<Vec4d>;
+using StdVT_Vec2d = StdVT<Vec2d>;
+using StdVT_Vec3d = StdVT<Vec3d>;
+using StdVT_Vec4d = StdVT<Vec4d>;
 
-using Vec_Mat2x2f = Vector<Mat2x2f>;
-using Vec_Mat3x3f = Vector<Mat3x3f>;
-using Vec_Mat4x4f = Vector<Mat4x4f>;
+using StdVT_Mat2x2f = StdVT<Mat2x2f>;
+using StdVT_Mat3x3f = StdVT<Mat3x3f>;
+using StdVT_Mat4x4f = StdVT<Mat4x4f>;
 
-using Vec_Mat2x2d = Vector<Mat2x2d>;
-using Vec_Mat3x3d = Vector<Mat3x3d>;
-using Vec_Mat4x4d = Vector<Mat4x4d>;
-
-////////////////////////////////////////////////////////////////////////////////
-using Vec_VecInt8  = Vector<Vector<Int8>>;
-using Vec_VecInt16 = Vector<Vector<Int16>>;
-using Vec_VecInt   = Vector<Vector<Int>>;
-using Vec_VecInt32 = Vector<Vector<Int>>;
-using Vec_VecInt64 = Vector<Vector<Int64>>;
-
-using Vec_VecUInt8  = Vector<Vector<UInt8>>;
-using Vec_VecUInt16 = Vector<Vector<UInt16>>;
-using Vec_VecUInt   = Vector<Vector<UInt>>;
-using Vec_VecUInt32 = Vector<Vector<UInt>>;
-using Vec_VecUInt64 = Vector<Vector<UInt64>>;
-
-using Vec_VecChar   = Vector<Vector<char>>;
-using Vec_VecUChar  = Vector<Vector<unsigned char>>;
-using Vec_VecFloat  = Vector<Vector<float>>;
-using Vec_VecDouble = Vector<Vector<double>>;
-
-using Vec_VecVec2i = Vector<Vector<Vec2i>>;
-using Vec_VecVec3i = Vector<Vector<Vec3i>>;
-using Vec_VecVec4i = Vector<Vector<Vec4i>>;
-
-using Vec_VecVec2ui = Vector<Vector<Vec2ui>>;
-using Vec_VecVec3ui = Vector<Vector<Vec3ui>>;
-using Vec_VecVec4ui = Vector<Vector<Vec4ui>>;
-
-using Vec_VecVec2f = Vector<Vector<Vec2f>>;
-using Vec_VecVec3f = Vector<Vector<Vec3f>>;
-using Vec_VecVec4f = Vector<Vector<Vec4f>>;
-
-using Vec_VecVec2d = Vector<Vector<Vec2d>>;
-using Vec_VecVec3d = Vector<Vector<Vec3d>>;
-using Vec_VecVec4d = Vector<Vector<Vec4d>>;
-
-using Vec_VecMat2x2f = Vector<Vector<Mat2x2f>>;
-using Vec_VecMat3x3f = Vector<Vector<Mat3x3f>>;
-using Vec_VecMat4x4f = Vector<Vector<Mat4x4f>>;
-
-using Vec_VecMat2x2d = Vector<Vector<Mat2x2d>>;
-using Vec_VecMat3x3d = Vector<Vector<Mat3x3d>>;
-using Vec_VecMat4x4d = Vector<Vector<Mat4x4d>>;
+using StdVT_Mat2x2d = StdVT<Mat2x2d>;
+using StdVT_Mat3x3d = StdVT<Mat3x3d>;
+using StdVT_Mat4x4d = StdVT<Mat4x4d>;
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 // Conversion operators

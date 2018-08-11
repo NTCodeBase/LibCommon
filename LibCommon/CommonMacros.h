@@ -297,15 +297,14 @@ inline void throwIfFailed(HRESULT hr)
 #define __NT_TO_CSTRING_5(x)                         Formatters::toString5(x).c_str()
 #define __NT_TO_CSTRING_7(x)                         Formatters::toString7(x).c_str()
 
-#define __NT_TYPE_ALIASING                              \
-    using VecN            = VecX<N, RealType>;          \
-    using MatNxN          = MatXxX<N, RealType>;        \
-    using Vec_VecN        = Vec_VecX<N, RealType>;      \
-    using Vec_MatNxN      = Vec_MatXxX<N, RealType>;    \
-    using Vec_VecVecN     = Vec_VecVecX<N, RealType>;   \
-    using Vec_VecMatNxN   = Vec_VecMatXxX<N, RealType>; \
-    using Vec_RealType    = Vector<RealType>;           \
-    using Vec_VecRealType = Vector<Vector<RealType>>;
+#define __NT_TYPE_ALIASING                                                            \
+    using VecN           = VecX<N, RealType>;                                         \
+    using MatNxN         = MatXxX<N, RealType>;                                       \
+    using StdVT_VecN     = StdVT_VecX<N, RealType>;                                   \
+    using StdVT_MatNxN   = StdVT_MatXxX<N, RealType>;                                 \
+    using StdVT_RealType = StdVT<RealType>;                                           \
+    static constexpr auto TinyReal() { return std::numeric_limits<RealType>::min(); } \
+    static constexpr auto HugeReal() { return std::numeric_limits<RealType>::max(); }
 
 #define __NT_INSTANTIATE_CLASS_COMMON_TYPES(ClassName) \
     template class ClassName<float>;                   \
