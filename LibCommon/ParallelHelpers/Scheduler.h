@@ -29,7 +29,7 @@
 namespace Scheduler
 {
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-inline void warmUp()
+inline void  warmUp()
 {
     tbb::parallel_for(tbb::blocked_range<Int>(0, 1048576),
                       [&](tbb::blocked_range<Int> r)

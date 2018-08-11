@@ -30,13 +30,13 @@ template<class RealType>
 RealType point_triangle_distance(const Vec3<RealType>& x0, const Vec3<RealType>& x1, const Vec3<RealType>& x2, const Vec3<RealType>& x3);
 
 template<class RealType>
-void check_neighbour(const Vector<Vec3ui>& tri, const Vec_Vec3<RealType>& x, Array<3, RealType>& phi, Array3ui& closest_tri,
+void check_neighbour(const StdVT<Vec3ui>& tri, const StdVT_Vec3<RealType>& x, Array<3, RealType>& phi, Array3ui& closest_tri,
                      const Vec3<RealType>& gx,
                      Int i0, Int j0, Int k0,
                      Int i1, Int j1, Int k1);
 
 template<class RealType>
-void sweep(const Vector<Vec3ui>& tri, const Vec_Vec3<RealType>& x,
+void sweep(const StdVT<Vec3ui>& tri, const StdVT_Vec3<RealType>& x,
            Array<3, RealType>& phi, Array3ui& closest_tri, const Vec3<RealType>& origin, RealType dx,
            Int di, Int dj, Int dk);
 

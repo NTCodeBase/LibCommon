@@ -109,7 +109,7 @@ bool readVector(const JParams& j, VecX<N, T>& vec, const String& valueName)
     if(jval.is_null()) {
         return false;
     }
-    Vector<T> values = jval.get<Vector<T>>();
+    StdVT<T> values = jval.get<StdVT<T>>();
 
     Int minSize = static_cast<Int>(values.size());
     Int maxSize = N;
@@ -140,9 +140,9 @@ auto readVector(const JParams& j, const String& valueName)
         return std::make_pair(VecX<N, T>(), false);
     }
 
-    Vector<T> values  = jval.get<Vector<T>>();
-    Int       minSize = static_cast<Int>(values.size());
-    Int       maxSize = N;
+    StdVT<T> values  = jval.get<StdVT<T>>();
+    Int      minSize = static_cast<Int>(values.size());
+    Int      maxSize = N;
     if(minSize > maxSize) {
         std::swap(minSize, maxSize);
     }
@@ -156,7 +156,7 @@ auto readVector(const JParams& j, const String& valueName)
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 template<class T>
-bool readVector(const JParams& j, Vector<T>& vec, const String& valueName)
+bool readVector(const JParams& j, StdVT<T>& vec, const String& valueName)
 {
     if(j.find(valueName) == j.end()) {
         return false;
@@ -167,7 +167,7 @@ bool readVector(const JParams& j, Vector<T>& vec, const String& valueName)
         return false;
     }
 
-    vec = jval.get<Vector<T>>();
+    vec = jval.get<StdVT<T>>();
     return true;
 }
 
@@ -175,15 +175,15 @@ template<class T>
 auto readVector(const JParams& j, const String& valueName)
 {
     if(j.find(valueName) == j.end()) {
-        return std::make_pair(Vector<T>(), false);
+        return std::make_pair(StdVT<T>(), false);
     }
     const JParams jval = j[valueName];
 
     if(jval.is_null()) {
-        return std::make_pair(Vector<T>(), false);
+        return std::make_pair(StdVT<T>(), false);
     }
 
-    Vector<T> vec = jval.get<Vector<T>>();
+    StdVT<T> vec = jval.get<StdVT<T>>();
     return std::make_pair(vec, true);
 }
 

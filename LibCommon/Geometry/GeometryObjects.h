@@ -31,6 +31,10 @@ namespace GeometryObjects
 template<Int N, class RealType>
 class GeometryObject
 {
+protected:
+    ////////////////////////////////////////////////////////////////////////////////
+    __NT_TYPE_ALIASING
+    ////////////////////////////////////////////////////////////////////////////////
 public:
     GeometryObject() = delete;
     GeometryObject(const JParams& jParams) : m_jParams(jParams) {}
@@ -120,7 +124,7 @@ protected:
         VecX<N, RealType> bMax  = VecX<N, RealType>(1.0);
     };
 
-    Vector<BoxKeyFrame>   m_KeyFrames;
+    StdVT<BoxKeyFrame>    m_KeyFrames;
     CubicSpline<RealType> m_BoxMinSpline[N];
     CubicSpline<RealType> m_BoxMaxSpline[N];
     UInt                  m_StartFrame      = 0;
@@ -396,7 +400,7 @@ protected:
     VecX<N, RealType> cheapBend(const VecX<N, RealType>& ppos) const;
 
     ////////////////////////////////////////////////////////////////////////////////
-    Vector<CSGData>   m_Objects;
+    StdVT<CSGData>    m_Objects;
     DomainDeformation m_DeformOp = None;
 };
 

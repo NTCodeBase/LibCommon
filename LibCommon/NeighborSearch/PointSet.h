@@ -66,7 +66,7 @@ public:
      * @param i Point index for which the neighbors should be returned.
      * @returns Indices of neighboring point i in point set point_set.
      */
-    const Vec_UInt& neighbors(UInt point_set, UInt i) const
+    const StdVT_UInt& neighbors(UInt point_set, UInt i) const
     {
         return m_neighbors[point_set][i];
     }
@@ -112,7 +112,7 @@ public:
             return;
         }
 
-        Vector<T> tmp(lst, lst + m_sort_table.size());
+        StdVT<T> tmp(lst, lst + m_sort_table.size());
         std::transform(m_sort_table.begin(), m_sort_table.end(),
 #ifdef _MSC_VER
                        stdext::unchecked_array_iterator<T*>(lst),
@@ -140,7 +140,7 @@ private:
 
     void resize_keys(UInt n)
     {
-        if constexpr(N == 2) {
+        if constexpr (N == 2) {
             m_keys.resize(n, {
                     std::numeric_limits<int>::lowest(),
                     std::numeric_limits<int>::lowest()
@@ -165,7 +165,7 @@ private:
 
     const RealType* point(UInt i) const
     {
-        if constexpr(N == 2) {
+        if constexpr (N == 2) {
             return &m_x[2 * i];
         } else {
             return &m_x[3 * i];
@@ -178,11 +178,11 @@ private:
     UInt            m_n;
     bool            m_dynamic;
 
-    Vector<HashKey<N>> m_keys, m_old_keys;
-    Vec_UInt           m_sort_table;
+    StdVT<HashKey<N>> m_keys, m_old_keys;
+    StdVT_UInt        m_sort_table;
 
-    Vector<Vector<Vec_UInt>>                  m_neighbors;
-    Vector<Vector<ParallelObjects::SpinLock>> m_locks;
+    StdVT<StdVT<StdVT_UInt>>                m_neighbors;
+    StdVT<StdVT<ParallelObjects::SpinLock>> m_locks;
 };
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+

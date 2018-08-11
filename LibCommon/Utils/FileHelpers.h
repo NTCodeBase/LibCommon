@@ -70,10 +70,10 @@ inline size_t getFileSize(const String& fileName)
 }
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-inline Vec_String getFolderSizeInfo(const char* folderName)
+inline StdVT_String getFolderSizeInfo(const char* folderName)
 {
-    size_t     totalSize = 0;
-    Vec_String strs;
+    size_t       totalSize = 0;
+    StdVT_String strs;
     strs.emplace_back(String("Data size: "));
     if(fileExisted(folderName)) {
         for(auto& p : fs::directory_iterator(folderName)) {
@@ -95,7 +95,7 @@ inline Vec_String getFolderSizeInfo(const char* folderName)
     return strs;
 }
 
-inline Vec_String getFolderSizeInfo(const String& folderName)
+inline StdVT_String getFolderSizeInfo(const String& folderName)
 {
     return getFolderSizeInfo(folderName.c_str());
 }
@@ -188,7 +188,7 @@ inline bool writeFile(const String& str, const String& fileName)
 }
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-inline bool writeFile(const Vector<String>& vecStr, const char* fileName)
+inline bool writeFile(const StdVT<String>& vecStr, const char* fileName)
 {
     std::ofstream file(fileName, std::ios::out);
     if(!file.is_open()) {
@@ -203,7 +203,7 @@ inline bool writeFile(const Vector<String>& vecStr, const char* fileName)
     return true;
 }
 
-inline bool writeFile(const Vector<String>& vecStr, const String& fileName)
+inline bool writeFile(const StdVT<String>& vecStr, const String& fileName)
 {
     return writeFile(vecStr, fileName.c_str());
 }
@@ -265,7 +265,7 @@ inline bool appendToFile(const String& str, const String& fileName)
 }
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-inline bool appendToFile(const Vector<String>& vecStr, const char* fileName)
+inline bool appendToFile(const StdVT<String>& vecStr, const char* fileName)
 {
     std::ofstream file(fileName, std::ios::out | std::ofstream::app);
     if(!file.is_open()) {
@@ -279,7 +279,7 @@ inline bool appendToFile(const Vector<String>& vecStr, const char* fileName)
     return true;
 }
 
-inline bool appendToFile(const Vector<String>& vecStr, const String& fileName)
+inline bool appendToFile(const StdVT<String>& vecStr, const String& fileName)
 {
     return appendToFile(vecStr, fileName.c_str());
 }
@@ -309,7 +309,7 @@ inline bool readFile(unsigned char*& dataBuffer, size_t bufferSize, const String
 }
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-inline bool readFile(Vector<unsigned char>& dataBuffer, const char* fileName)
+inline bool readFile(StdVT<unsigned char>& dataBuffer, const char* fileName)
 {
     std::ifstream file(fileName, std::ios::binary | std::ios::ate);
     if(!file.is_open()) {
@@ -325,13 +325,13 @@ inline bool readFile(Vector<unsigned char>& dataBuffer, const char* fileName)
     return true;
 }
 
-inline bool readFile(Vector<unsigned char>& dataBuffer, const String& fileName)
+inline bool readFile(StdVT<unsigned char>& dataBuffer, const String& fileName)
 {
     return readFile(dataBuffer, fileName.c_str());
 }
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-inline bool readFile(Vector<String>& vecStr, const char* fileName)
+inline bool readFile(StdVT<String>& vecStr, const char* fileName)
 {
     std::ifstream file(fileName, std::ios::in);
     if(!file.is_open()) {
@@ -349,7 +349,7 @@ inline bool readFile(Vector<String>& vecStr, const char* fileName)
     return true;
 }
 
-inline bool readFile(Vector<String>& vecStr, const String& fileName)
+inline bool readFile(StdVT<String>& vecStr, const String& fileName)
 {
     return readFile(vecStr, fileName.c_str());
 }
@@ -357,25 +357,25 @@ inline bool readFile(Vector<String>& vecStr, const String& fileName)
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 // template funcs
 template<class T>
-inline bool writeBinaryFile(const Vector<T>& dvec, const char* fileName)
+inline bool writeBinaryFile(const StdVT<T>& dvec, const char* fileName)
 {
     return writeFile((unsigned char*)dvec.data(), dvec.size() * sizeof(T), fileName);
 }
 
 template<class T>
-inline bool writeBinaryFile(const Vector<T>& dvec, const String& fileName)
+inline bool writeBinaryFile(const StdVT<T>& dvec, const String& fileName)
 {
     return writeBinaryFile(dvec, fileName.c_str());
 }
 
 template<class T>
-inline std::future<void> writeBinaryFileAsync(const Vector<T>& dvec, const char* fileName)
+inline std::future<void> writeBinaryFileAsync(const StdVT<T>& dvec, const char* fileName)
 {
     return writeFileAsync((unsigned char*)dvec.data(), dvec.size() * sizeof(T), fileName);
 }
 
 template<class T>
-inline std::future<void> writeBinaryFileAsync(const Vector<T>& dvec, const String& fileName)
+inline std::future<void> writeBinaryFileAsync(const StdVT<T>& dvec, const String& fileName)
 {
     return writeBinaryFileAsync(dvec, fileName.c_str());
 }

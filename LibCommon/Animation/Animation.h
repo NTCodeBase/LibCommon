@@ -28,7 +28,6 @@ inline Mat3x3<T> rotate(Mat3x3<T> const& m, T angle, Vec2<T> const&)
 }
 }
 
-
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 template<Int N, class RealType>
 struct KeyFrame
@@ -116,10 +115,10 @@ public:
     {
         size_t nKeyFrames = m_KeyFrames.size();
 
-        Vector<RealType> frames;
-        Vector<RealType> translations[N];
-        Vector<RealType> rotations[N + 1];
-        Vector<RealType> scales;
+        StdVT<RealType> frames;
+        StdVT<RealType> translations[N];
+        StdVT<RealType> rotations[N + 1];
+        StdVT<RealType> scales;
 
         for(Int d = 0; d < N; ++d) {
             translations[d].reserve(nKeyFrames);
@@ -247,14 +246,13 @@ public:
     //}
 
 private:
-    Vector<KeyFrame<N, RealType>> m_KeyFrames;
-    CubicSpline<RealType>         m_TranslationSpline[N];
-    CubicSpline<RealType>         m_RotationSpline[N + 1];
-    CubicSpline<RealType>         m_ScaleSpline;
+    StdVT<KeyFrame<N, RealType>> m_KeyFrames;
+    CubicSpline<RealType>        m_TranslationSpline[N];
+    CubicSpline<RealType>        m_RotationSpline[N + 1];
+    CubicSpline<RealType>        m_ScaleSpline;
 
     UInt m_StartFrame = 0;
     UInt m_MaxFrame   = 0;
     bool m_bReady     = false;
     bool m_bPeriodic  = false;
 };
-

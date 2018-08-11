@@ -30,11 +30,11 @@ template<Int N, class T>
 class Array
 {
 public:
-    using iterator               = typename Vector<T>::iterator;
-    using const_iterator         = typename Vector<T>::const_iterator;
-    using reverse_iterator       = typename Vector<T>::reverse_iterator;
-    using const_reverse_iterator = typename Vector<T>::const_reverse_iterator;
-    using size_type              = typename Vector<T>::size_type;
+    using iterator               = typename StdVT<T>::iterator;
+    using const_iterator         = typename StdVT<T>::const_iterator;
+    using reverse_iterator       = typename StdVT<T>::reverse_iterator;
+    using const_reverse_iterator = typename StdVT<T>::const_reverse_iterator;
+    using size_type              = typename StdVT<T>::size_type;
 
     ////////////////////////////////////////////////////////////////////////////////
     // constructors & destructor
@@ -74,7 +74,7 @@ public:
     }
 
     template<class IndexType>
-    Array(IndexType sizeX, IndexType sizeY, const Vector<T>& data) : m_Size(sizeX, sizeY), m_Data(data)
+    Array(IndexType sizeX, IndexType sizeY, const StdVT<T>& data) : m_Size(sizeX, sizeY), m_Data(data)
     {
         static_assert(N == 2, "Array dimension != 2");
     }
@@ -103,7 +103,7 @@ public:
     }
 
     template<class IndexType>
-    Array(IndexType sizeX, IndexType sizeY, IndexType sizeZ, Vector<T>& data) : m_Size(sizeX, sizeY, sizeZ), m_Data(data)
+    Array(IndexType sizeX, IndexType sizeY, IndexType sizeZ, StdVT<T>& data) : m_Size(sizeX, sizeY, sizeZ), m_Data(data)
     {
         static_assert(N == 3, "Array dimension != 3");
     }
@@ -469,13 +469,13 @@ public:
 
 private:
     VecX<N, size_type> m_Size = VecX<N, size_type>(0);
-    Vector<T>          m_Data;
+    StdVT<T>           m_Data;
 };  // end class Array
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 template<class T> using Array2 = Array<2, T>;
 template<class T> using Array3 = Array<3, T>;
-
+////////////////////////////////////////////////////////////////////////////////
 using Array2c   = Array2<char>;
 using Array2uc  = Array2<unsigned char>;
 using Array2s   = Array2<short>;
@@ -486,13 +486,6 @@ using Array2i   = Array2<int>;
 using Array2ui  = Array2<unsigned int>;
 using Array2f   = Array2<float>;
 using Array2d   = Array2<double>;
-
-using Array2_VecChar   = Array2<Vector<char>>;
-using Array2_VecInt    = Array2<Vector<int>>;
-using Array2_VecUInt   = Array2<Vector<unsigned int>>;
-using Array2_VecFloat  = Array2<Vector<float>>;
-using Array2_VecDouble = Array2<Vector<double>>;
-
 ////////////////////////////////////////////////////////////////////////////////
 using Array3c   = Array3<char>;
 using Array3uc  = Array3<unsigned char>;
@@ -504,9 +497,3 @@ using Array3i   = Array3<int>;
 using Array3ui  = Array3<unsigned int>;
 using Array3f   = Array3<float>;
 using Array3d   = Array3<double>;
-
-using Array3_VecChar   = Array3<Vector<char>>;
-using Array3_VecInt    = Array3<Vector<int>>;
-using Array3_VecUInt   = Array3<Vector<unsigned int>>;
-using Array3_VecFloat  = Array3<Vector<float>>;
-using Array3_VecDouble = Array3<Vector<double>>;

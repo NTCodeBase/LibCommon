@@ -352,7 +352,7 @@ void FixedBlockSparseMatrix<MatrixType>::constructFromSparseMatrix(const BlockSp
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 // perform result=matrix*x
 template<class MatrixType>
-void FixedBlockSparseMatrix<MatrixType>::multiply(const FixedBlockSparseMatrix<MatrixType>& matrix, const Vector<VectorType>& x, Vector<VectorType>& result)
+void FixedBlockSparseMatrix<MatrixType>::multiply(const FixedBlockSparseMatrix<MatrixType>& matrix, const StdVT<VectorType>& x, StdVT<VectorType>& result)
 {
     assert(matrix.size() == static_cast<UInt>(x.size()));
     result.resize(matrix.size());

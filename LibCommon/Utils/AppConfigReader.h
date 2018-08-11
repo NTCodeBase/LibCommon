@@ -19,7 +19,6 @@
 #include <fstream>
 #include <sstream>
 
-
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 class AppConfigReader
 {
@@ -76,4 +75,3 @@ private:
 
     std::map<std::string, std::string> m_AppConfigs;
 };
-

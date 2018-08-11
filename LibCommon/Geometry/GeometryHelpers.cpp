@@ -91,7 +91,7 @@ template double point_triangle_distance<double>(const Vec3<double>& x0, const Ve
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 template<class RealType>
-void check_neighbour(const Vector<Vec3ui>& tri, const Vec_Vec3<RealType>& x, Array<3, RealType>& phi, Array3ui& closest_tri,
+void check_neighbour(const StdVT<Vec3ui>& tri, const StdVT_Vec3<RealType>& x, Array<3, RealType>& phi, Array3ui& closest_tri,
                      const Vec3<RealType>& gx,
                      Int i0, Int j0, Int k0,
                      Int i1, Int j1, Int k1)
@@ -110,11 +110,11 @@ void check_neighbour(const Vector<Vec3ui>& tri, const Vec_Vec3<RealType>& x, Arr
     }
 }
 
-template void check_neighbour<float>(const Vector<Vec3ui>& tri, const Vec_Vec3<float>& x, Array<3, float>& phi, Array3ui& closest_tri,
+template void check_neighbour<float>(const StdVT<Vec3ui>& tri, const StdVT_Vec3<float>& x, Array<3, float>& phi, Array3ui& closest_tri,
                                      const Vec3<float>& gx,
                                      Int i0, Int j0, Int k0,
                                      Int i1, Int j1, Int k1);
-template void check_neighbour<double>(const Vector<Vec3ui>& tri, const Vec_Vec3<double>& x, Array<3, double>& phi, Array3ui& closest_tri,
+template void check_neighbour<double>(const StdVT<Vec3ui>& tri, const StdVT_Vec3<double>& x, Array<3, double>& phi, Array3ui& closest_tri,
                                       const Vec3<double>& gx,
                                       Int i0, Int j0, Int k0,
                                       Int i1, Int j1, Int k1);
@@ -122,7 +122,7 @@ template void check_neighbour<double>(const Vector<Vec3ui>& tri, const Vec_Vec3<
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 
 template<class RealType>
-void sweep(const Vector<Vec3ui>& tri, const Vec_Vec3<RealType>& x,
+void sweep(const StdVT<Vec3ui>& tri, const StdVT_Vec3<RealType>& x,
            Array<3, RealType>& phi, Array3ui& closest_tri, const Vec3<RealType>& origin, RealType dx,
            Int di, Int dj, Int dk)
 {
@@ -174,12 +174,12 @@ void sweep(const Vector<Vec3ui>& tri, const Vec_Vec3<RealType>& x,
     }
 }
 
-template void sweep<float>(const Vector<Vec3ui>& tri,
-                           const Vec_Vec3<float>& x,
+template void sweep<float>(const StdVT<Vec3ui>& tri,
+                           const StdVT_Vec3<float>& x,
                            Array<3, float>& phi, Array3ui& closest_tri, const Vec3<float>& origin, float dx,
                            Int di, Int dj, Int dk);
-template void sweep<double>(const Vector<Vec3ui>& tri,
-                            const Vec_Vec3<double>& x,
+template void sweep<double>(const StdVT<Vec3ui>& tri,
+                            const StdVT_Vec3<double>& x,
                             Array<3, double>& phi, Array3ui& closest_tri, const Vec3<double>& origin, double dx,
                             Int di, Int dj, Int dk);
 

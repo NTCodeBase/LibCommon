@@ -80,7 +80,7 @@ void PCGSolver<RealType>::resize(UInt size)
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 template<class RealType>
-bool PCGSolver<RealType>::solve(const SparseMatrix<RealType>& matrix, const Vector<RealType>& rhs, Vector<RealType>& result)
+bool PCGSolver<RealType>::solve(const SparseMatrix<RealType>& matrix, const StdVT<RealType>& rhs, StdVT<RealType>& result)
 {
     resize(matrix.nRows);
 
@@ -138,7 +138,7 @@ bool PCGSolver<RealType>::solve(const SparseMatrix<RealType>& matrix, const Vect
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 template<class RealType>
-bool PCGSolver<RealType>::solve_precond(const SparseMatrix<RealType>& matrix, const Vector<RealType>& rhs, Vector<RealType>& result)
+bool PCGSolver<RealType>::solve_precond(const SparseMatrix<RealType>& matrix, const StdVT<RealType>& rhs, StdVT<RealType>& result)
 {
     resize(matrix.nRows);
 
@@ -218,7 +218,7 @@ void PCGSolver<RealType>::formPreconditioner(const SparseMatrix<RealType>& matri
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 template<class RealType>
-void PCGSolver<RealType>::applyPreconditioner(const Vector<RealType>& x, Vector<RealType>& result)
+void PCGSolver<RealType>::applyPreconditioner(const StdVT<RealType>& x, StdVT<RealType>& result)
 {
     if(m_PreconditionerType != Preconditioner::JACOBI) {
         solveLower(x, result);
@@ -230,7 +230,7 @@ void PCGSolver<RealType>::applyPreconditioner(const Vector<RealType>& x, Vector<
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 template<class RealType>
-void PCGSolver<RealType>::applyJacobiPreconditioner(const Vector<RealType>& x, Vector<RealType>& result)
+void PCGSolver<RealType>::applyJacobiPreconditioner(const StdVT<RealType>& x, StdVT<RealType>& result)
 {
     Scheduler::parallel_for<size_t>(0, x.size(),
                                     [&](size_t i)
@@ -243,7 +243,7 @@ void PCGSolver<RealType>::applyJacobiPreconditioner(const Vector<RealType>& x, V
 // Solution routines with lower triangular matrix.
 // solve L*result=rhs
 template<class RealType>
-void PCGSolver<RealType>::solveLower(const Vector<RealType>& rhs, Vector<RealType>& result)
+void PCGSolver<RealType>::solveLower(const StdVT<RealType>& rhs, StdVT<RealType>& result)
 {
     result = rhs;
 
@@ -259,7 +259,7 @@ void PCGSolver<RealType>::solveLower(const Vector<RealType>& rhs, Vector<RealTyp
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 // solve L^T*result=rhs
 template<class RealType>
-void PCGSolver<RealType>::solveLower_TransposeInPlace(Vector<RealType>& x)
+void PCGSolver<RealType>::solveLower_TransposeInPlace(StdVT<RealType>& x)
 {
     UInt i = m_ICCPrecond.nRows;
 

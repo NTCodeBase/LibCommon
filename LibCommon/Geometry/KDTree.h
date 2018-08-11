@@ -20,7 +20,6 @@
 
 #include <CommonSetup.h>
 
-
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 struct Point
 {
@@ -58,13 +57,12 @@ public:
 
     void buildTree(const std::shared_ptr<KDNode>& treeNode);
     void printTree(const std::shared_ptr<KDNode>& treeNode);
-    void getNeighborList(const Point& target, const std::shared_ptr<KDNode>& treeNode, Real radius, Vec_UInt& result);
+    void getNeighborList(const Point& target, const std::shared_ptr<KDNode>& treeNode, Real radius, StdVT_UInt& result);
 
 private:
-    void findNeighbors(const Point& target, const std::shared_ptr<KDNode>& treeNode, Real radius, Vec_UInt& result);
+    void findNeighbors(const Point& target, const std::shared_ptr<KDNode>& treeNode, Real radius, StdVT_UInt& result);
     Real getMedian(Point* points, UInt size, UInt axis);
 
     ////////////////////////////////////////////////////////////////////////////////
     UInt m_MaxItermsPerNode;
 };
-

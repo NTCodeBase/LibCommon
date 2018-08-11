@@ -23,7 +23,6 @@
 #include <cstdlib>
 #include <sstream>
 
-
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 // DataBuffer class
@@ -39,11 +38,11 @@ public:
     void   reserve(size_t bufferSize) { m_Buffer.reserve(bufferSize); }
     void   clearBuffer() { m_Buffer.resize(0); }
 
-    unsigned char*       data(size_t offset = 0) { return &m_Buffer.data()[offset]; }
+    unsigned char* data(size_t offset       = 0) { return &m_Buffer.data()[offset]; }
     const unsigned char* data(size_t offset = 0) const { return &m_Buffer.data()[offset]; }
 
-    Vector<UChar>&       buffer() { return m_Buffer; }
-    const Vector<UChar>& buffer() const { return m_Buffer; }
+    StdVT<UChar>& buffer() { return m_Buffer; }
+    const StdVT<UChar>& buffer() const { return m_Buffer; }
 
     //////////////////////////////////////////////////////////////////////
     // set data (= clear + append)
@@ -51,8 +50,8 @@ public:
     void setData(const void* dataPtr, size_t dataSize) { clearBuffer(); append(dataPtr, dataSize); }
 
     template<class T> void setData(T data) { clearBuffer(); append<T>(data); }
-    template<class T> void setData(const Vector<T>& dvec, bool bWriteVectorSize = true) { clearBuffer(); append<T>(dvec, bWriteVectorSize); }
-    template<class T> void setData(const Vector<Vector<T> >& dvec, bool bWriteVectorSize = true) { clearBuffer(); append<T>(dvec, bWriteVectorSize); }
+    template<class T> void setData(const StdVT<T>& dvec, bool bWriteVectorSize        = true) { clearBuffer(); append<T>(dvec, bWriteVectorSize); }
+    template<class T> void setData(const StdVT<StdVT<T>>& dvec, bool bWriteVectorSize = true) { clearBuffer(); append<T>(dvec, bWriteVectorSize); }
 
     //////////////////////////////////////////////////////////////////////
     // append data
@@ -60,21 +59,21 @@ public:
     void append(const void* dataPtr, size_t dataSize);
 
     template<class T> void        append(T value) { append((const void*)&value, sizeof(T)); }
-    template<class T> void        append(const Vector<T>& dvec, bool bWriteVectorSize = true);
-    template<class T> void        append(const Vector<Vector<T> >& dvec, bool bWriteVectorSize = true);
-    template<Int N, class T> void append(const Vector<VecX<N, T> >& dvec, bool bWriteVectorSize = true);
+    template<class T> void        append(const StdVT<T>& dvec, bool bWriteVectorSize          = true);
+    template<class T> void        append(const StdVT<StdVT<T>>& dvec, bool bWriteVectorSize   = true);
+    template<Int N, class T> void append(const StdVT<VecX<N, T>>& dvec, bool bWriteVectorSize = true);
 
     ////////////////////////////////////////////////////////////////////////////////
     // get data
     size_t getData(void* dataPtr, size_t dataSize, size_t startOffset = 0);
 
-    template<class T> size_t        getData(T& value, size_t startOffset = 0) { return getData((void*)&value, sizeof(T), startOffset); }
-    template<class T> size_t        getData(Vector<T>& dvec, size_t startOffset = 0, UInt vSize = 0);
-    template<class T> size_t        getData(Vector<Vector<T> >& dvec, size_t startOffset = 0, UInt vSize = 0);
-    template<Int N, class T> size_t getData(Vector<VecX<N, T> >& dvec, size_t startOffset = 0, UInt vSize = 0);
+    template<class T> size_t        getData(T& value, size_t startOffset                = 0) { return getData((void*)&value, sizeof(T), startOffset); }
+    template<class T> size_t        getData(StdVT<T>& dvec, size_t startOffset          = 0, UInt vSize = 0);
+    template<class T> size_t        getData(StdVT<StdVT<T>>& dvec, size_t startOffset   = 0, UInt vSize = 0);
+    template<Int N, class T> size_t getData(StdVT<VecX<N, T>>& dvec, size_t startOffset = 0, UInt vSize = 0);
 
 private:
-    Vector<UChar> m_Buffer;
+    StdVT<UChar> m_Buffer;
 };
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
@@ -99,7 +98,7 @@ inline size_t DataBuffer::getData(void* dataPtr, size_t dataSize, size_t startOf
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 template<class T>
-void DataBuffer::append(const Vector<T>& dvec, bool bWriteVectorSize /*= true*/)
+void DataBuffer::append(const StdVT<T>& dvec, bool bWriteVectorSize /*= true*/)
 {
     // any vector data can begin with the number of vector elements
     if(bWriteVectorSize) {
@@ -110,7 +109,7 @@ void DataBuffer::append(const Vector<T>& dvec, bool bWriteVectorSize /*= true*/)
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 template<class T>
-void DataBuffer::append(const Vector<Vector<T> >& dvec, bool bWriteVectorSize /*= true*/)
+void DataBuffer::append(const StdVT<StdVT<T>>& dvec, bool bWriteVectorSize /*= true*/)
 {
     if(bWriteVectorSize) {
         append<UInt>(static_cast<UInt>(dvec.size()));
@@ -123,7 +122,7 @@ void DataBuffer::append(const Vector<Vector<T> >& dvec, bool bWriteVectorSize /*
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 template<Int N, class T>
-void DataBuffer::append(const Vector<VecX<N, T> >& dvec, bool bWriteVectorSize /*= true*/)
+void DataBuffer::append(const StdVT<VecX<N, T>>& dvec, bool bWriteVectorSize /*= true*/)
 {
     if(bWriteVectorSize) {
         append<UInt>(static_cast<UInt>(dvec.size()));
@@ -133,7 +132,7 @@ void DataBuffer::append(const Vector<VecX<N, T> >& dvec, bool bWriteVectorSize /
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 template<class T>
-size_t DataBuffer::getData(Vector<T>& dvec, size_t startOffset /*= 0*/, UInt vSize /*= 0*/)
+size_t DataBuffer::getData(StdVT<T>& dvec, size_t startOffset /*= 0*/, UInt vSize /*= 0*/)
 {
     size_t segmentStart = startOffset;
     UInt   nElements    = vSize;
@@ -149,7 +148,7 @@ size_t DataBuffer::getData(Vector<T>& dvec, size_t startOffset /*= 0*/, UInt vSi
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 template<class T>
-size_t DataBuffer::getData(Vector<Vector<T> >& dvec, size_t startOffset /*= 0*/, UInt vSize /*= 0*/)
+size_t DataBuffer::getData(StdVT<StdVT<T>>& dvec, size_t startOffset /*= 0*/, UInt vSize /*= 0*/)
 {
     size_t segmentStart = startOffset;
     UInt   nElements    = vSize;
@@ -168,7 +167,7 @@ size_t DataBuffer::getData(Vector<Vector<T> >& dvec, size_t startOffset /*= 0*/,
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 template<Int N, class T>
-size_t DataBuffer::getData(Vector<VecX<N, T> >& dvec, size_t startOffset /*= 0*/, UInt vSize /*= 0*/)
+size_t DataBuffer::getData(StdVT<VecX<N, T>>& dvec, size_t startOffset /*= 0*/, UInt vSize /*= 0*/)
 {
     size_t segmentStart = startOffset;
     UInt   nElements    = vSize;
@@ -181,4 +180,3 @@ size_t DataBuffer::getData(Vector<VecX<N, T> >& dvec, size_t startOffset /*= 0*/
     segmentStart += getData((void*)dvec.data(), sizeof(T) * N * nElements, segmentStart);
     return (segmentStart - startOffset);
 }
-

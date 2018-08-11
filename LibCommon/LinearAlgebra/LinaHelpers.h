@@ -301,13 +301,13 @@ MatXxX<N, RealType> randMatrix(RealType minVal = RealType(0), RealType maxVal = 
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 template<Int N, class SizeType, class RealType>
-Vector<MatXxX<N, RealType>> randVecMatrices(SizeType size, RealType minVal = RealType(0), RealType maxVal = RealType(1.0))
+StdVT<MatXxX<N, RealType>> randVecMatrices(SizeType size, RealType minVal = RealType(0), RealType maxVal = RealType(1.0))
 {
     std::random_device                       rd;
     std::mt19937                             gen(rd());
     std::uniform_real_distribution<RealType> dis(minVal, maxVal);
 
-    Vector<MatXxX<N, RealType>> results;
+    StdVT<MatXxX<N, RealType>> results;
     results.resize(size);
     for(SizeType idx = 0; idx < size; ++idx) {
         for(Int i = 0; i < N; ++i) {

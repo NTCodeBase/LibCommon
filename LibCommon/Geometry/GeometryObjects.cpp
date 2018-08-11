@@ -264,7 +264,7 @@ template<Int N, class RealType>
 RealType BoxObject<N, RealType>::signedDistance(const VecX<N, RealType>& ppos0, bool bNegativeInside /*= true*/) const
 {
     auto     ppos = invTransform(ppos0);
-    RealType mind = Huge<RealType>();
+    RealType mind = HugeReal();
 
     if(NumberHelpers::isInside(ppos, m_BoxMin, m_BoxMax)) {
         for(Int d = 0; d < N; ++d) {
@@ -320,9 +320,9 @@ void BoxObject<N, RealType>::makeReadyAnimation()
         return;
     }
 
-    Vector<RealType> frames;
-    Vector<RealType> bMins[N];
-    Vector<RealType> bMaxs[N];
+    StdVT<RealType> frames;
+    StdVT<RealType> bMins[N];
+    StdVT<RealType> bMaxs[N];
 
     for(Int d = 0; d < N; ++d) {
         bMins[d].reserve(nKeyFrames);
@@ -753,7 +753,7 @@ void EllipsoidObject<N, RealType>::parseParameters(const JParams& jParams)
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 // sign distance field for triangle mesh
 template<class RealType>
-void computeSDFMesh(const Vector<Vec3ui>& faces, const Vec_Vec3<RealType>& vertices, const Vec3<RealType>& origin, RealType cellSize,
+void computeSDFMesh(const StdVT<Vec3ui>& faces, const StdVT_Vec3<RealType>& vertices, const Vec3<RealType>& origin, RealType cellSize,
                     UInt ni, UInt nj, UInt nk, Array<3, RealType>& SDF, Int exactBand = 1)
 {
     __NT_REQUIRE(ni > 0 && nj > 0 && nk > 0);
@@ -887,8 +887,8 @@ void TriMeshObject<N, RealType>::computeSDF()
                          VecX<N, RealType>(meshLoader.getAABBMax()) + VecX<N, RealType>(RealType(3.0) * m_Step),
                          m_Step);
 
-        Vec_Vec3<RealType> vertexList(meshLoader.getNVertices());
-        Vector<Vec3ui>     faceList(meshLoader.getNFaces());
+        StdVT_Vec3<RealType> vertexList(meshLoader.getNVertices());
+        StdVT<Vec3ui>        faceList(meshLoader.getNFaces());
 
         std::memcpy(vertexList.data(), meshLoader.getVertices().data(), meshLoader.getVertices().size() * sizeof(RealType));
         std::memcpy(faceList.data(),   meshLoader.getFaces().data(),    meshLoader.getFaces().size() * sizeof(UInt));
@@ -917,7 +917,7 @@ template<Int N, class RealType>
 RealType CSGObject<N, RealType>::signedDistance(const VecX<N, RealType>& ppos0, bool bNegativeInside /*= true*/) const
 {
     if(m_Objects.size() == 0) {
-        return Huge<RealType>();
+        return HugeReal();
     }
 
     auto     ppos = domainDeform(transform(ppos0));

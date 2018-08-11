@@ -76,13 +76,11 @@ void KdTree::printTree(const std::shared_ptr<KDNode>& treeNode)
             }
         }
 
-
         for(UInt i = 0; i < treeNode->count - 1; ++i) {
             printf("%u, ", treeNode->points[i].index);
         }
 
         printf("%u", treeNode->points[treeNode->count - 1].index);
-
 
         printf("\n\n\n");
     } else {
@@ -94,7 +92,7 @@ void KdTree::printTree(const std::shared_ptr<KDNode>& treeNode)
 }
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-void KdTree::getNeighborList(const Point& target, const std::shared_ptr<KDNode>& treeNode, Real radius, Vec_UInt& result)
+void KdTree::getNeighborList(const Point& target, const std::shared_ptr<KDNode>& treeNode, Real radius, StdVT_UInt& result)
 {
     result.resize(0);
     findNeighbors(target, treeNode, radius, result);
@@ -102,7 +100,7 @@ void KdTree::getNeighborList(const Point& target, const std::shared_ptr<KDNode>&
 }
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-void KdTree::findNeighbors(const Point& target, const std::shared_ptr<KDNode>& treeNode, Real radius, Vec_UInt& result)
+void KdTree::findNeighbors(const Point& target, const std::shared_ptr<KDNode>& treeNode, Real radius, StdVT_UInt& result)
 {
     if(fmax(SignDistanceField::distanceToBox(target.position, treeNode->boxMin, treeNode->boxMax), 0) > radius) {
         return;

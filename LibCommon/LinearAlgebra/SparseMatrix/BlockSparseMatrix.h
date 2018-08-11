@@ -22,7 +22,6 @@
 #include <iostream>
 #include <cstdio>
 
-
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 // Dynamic compressed sparse row matrix
@@ -37,10 +36,10 @@ private:
     UInt m_Size;
 
     // for each row, a list of all column indices (sorted)
-    Vec_VecUInt m_ColIndex;
+    StdVT<StdVT_UInt> m_ColIndex;
 
     // values corresponding to indices
-    Vec_Vec<MatrixType> m_ColValue;
+    StdVT_Vec<MatrixType> m_ColValue;
 
     MatrixType m_Zero = MatrixType(0);
 
@@ -82,13 +81,13 @@ private:
     UInt m_Size;
 
     // nonzero values row by row
-    Vector<MatrixType> m_ColValue;
+    StdVT<MatrixType> m_ColValue;
 
     // corresponding column indices
-    Vec_UInt m_ColIndex;
+    StdVT_UInt m_ColIndex;
 
     // where each row starts in value and col index (and last entry is one past the end, the number of non zeros)
-    Vec_UInt m_RowStart;
+    StdVT_UInt m_RowStart;
 
 public:
     explicit FixedBlockSparseMatrix(UInt size = 0) : m_Size(size), m_ColValue(0), m_ColIndex(0), m_RowStart(size + 1) {}
@@ -103,6 +102,5 @@ public:
     template<class IndexType> const auto& getValues(IndexType row) const { assert(static_cast<UInt>(row) < m_Size); return m_ColValue[row]; }
 
     ////////////////////////////////////////////////////////////////////////////////
-    static void multiply(const FixedBlockSparseMatrix<MatrixType>& matrix, const Vector<VectorType>& x, Vector<VectorType>& result);
+    static void multiply(const FixedBlockSparseMatrix<MatrixType>& matrix, const StdVT<VectorType>& x, StdVT<VectorType>& result);
 };
-

@@ -22,14 +22,13 @@
 #include <vector>
 #include <algorithm>
 
-
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 template<class RealType>
 class BandMatrix
 {
 private:
-    Vector<Vector<RealType>> m_Upper;       // upper band
-    Vector<Vector<RealType>> m_Lower;       // lower band
+    StdVT<StdVT<RealType>> m_Upper;       // upper band
+    StdVT<StdVT<RealType>> m_Lower;       // lower band
 public:
     BandMatrix() = default;
     BandMatrix(Int dim, Int n_u, Int n_l) { resize(dim, n_u, n_l); }
@@ -41,12 +40,12 @@ public:
     RealType& operator()(Int i, Int j);
     RealType  operator()(Int i, Int j) const;
 
-    RealType&        saved_diag(Int i);
-    RealType         saved_diag(Int i) const;
-    void             lu_decompose();
-    Vector<RealType> r_solve(const Vector<RealType>& b) const;
-    Vector<RealType> l_solve(const Vector<RealType>& b) const;
-    Vector<RealType> lu_solve(const Vector<RealType>& b, bool is_lu_decomposed = false);
+    RealType&       saved_diag(Int i);
+    RealType        saved_diag(Int i) const;
+    void            lu_decompose();
+    StdVT<RealType> r_solve(const StdVT<RealType>& b) const;
+    StdVT<RealType> l_solve(const StdVT<RealType>& b) const;
+    StdVT<RealType> lu_solve(const StdVT<RealType>& b, bool is_lu_decomposed = false);
 };
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
@@ -64,14 +63,14 @@ public:
 
     // optional, but if called it has to come be before setPoints()
     void     setBoundary(BDType left, RealType leftValue, BDType right, RealType rightValue, bool bLinearExtrapolation = false);
-    void     setPoints(const Vector<RealType>& X, const Vector<RealType>& Y, bool bCubicSpline = true);
+    void     setPoints(const StdVT<RealType>& X, const StdVT<RealType>& Y, bool bCubicSpline                           = true);
     RealType operator()(RealType x) const;
     RealType deriv(Int order, RealType x) const;
 
 private:
-    Vector<RealType> m_X, m_Y;               // x,y coordinates of poInts
-    Vector<RealType> m_a, m_b, m_c;          // CubicSpline coefficients
-    RealType         m_b0, m_c0;             // for left extrapolation
+    StdVT<RealType> m_X, m_Y;               // x,y coordinates of poInts
+    StdVT<RealType> m_a, m_b, m_c;          // CubicSpline coefficients
+    RealType        m_b0, m_c0;             // for left extrapolation
     // f(x) = a*(x-x_i)^3 + b*(x-x_i)^2 + c*(x-x_i) + y_i
 
     BDType   m_Left                 = BDType::SecondOrder;
@@ -190,12 +189,12 @@ void BandMatrix<RealType>::lu_decompose()
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 // solves Ly=b
 template<class RealType>
-Vector<RealType> BandMatrix<RealType>::l_solve(const Vector<RealType>& b) const
+StdVT<RealType> BandMatrix<RealType>::l_solve(const StdVT<RealType>& b) const
 {
     assert(dim() == (Int)b.size());
-    Vector<RealType> x(dim());
-    Int              j_start;
-    RealType         sum;
+    StdVT<RealType> x(dim());
+    Int             j_start;
+    RealType        sum;
     for(Int i = 0; i < dim(); ++i) {
         sum     = 0;
         j_start = MathHelpers::max(0, i - nLower());
@@ -210,12 +209,12 @@ Vector<RealType> BandMatrix<RealType>::l_solve(const Vector<RealType>& b) const
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 // solves Rx=y
 template<class RealType>
-Vector<RealType> BandMatrix<RealType>::r_solve(const Vector<RealType>& b) const
+StdVT<RealType> BandMatrix<RealType>::r_solve(const StdVT<RealType>& b) const
 {
     assert(dim() == (Int)b.size());
-    Vector<RealType> x(dim());
-    Int              j_stop;
-    RealType         sum;
+    StdVT<RealType> x(dim());
+    Int             j_stop;
+    RealType        sum;
     for(Int i = dim() - 1; i >= 0; i--) {
         sum    = 0;
         j_stop = MathHelpers::min(dim() - 1, i + nUpper());
@@ -229,10 +228,10 @@ Vector<RealType> BandMatrix<RealType>::r_solve(const Vector<RealType>& b) const
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 template<class RealType>
-Vector<RealType> BandMatrix<RealType>::lu_solve(const Vector<RealType>& b, bool is_lu_decomposed)
+StdVT<RealType> BandMatrix<RealType>::lu_solve(const StdVT<RealType>& b, bool is_lu_decomposed)
 {
     assert(dim() == (Int)b.size());
-    Vector<RealType> x, y;
+    StdVT<RealType> x, y;
     if(is_lu_decomposed == false) {
         this->lu_decompose();
     }
@@ -255,7 +254,7 @@ void CubicSpline<RealType>::setBoundary(BDType left, RealType leftValue, BDType 
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 template<class RealType>
-void CubicSpline<RealType>::setPoints(const Vector<RealType>& X, const Vector<RealType>& Y, bool bCubicSpline /*= true*/)
+void CubicSpline<RealType>::setPoints(const StdVT<RealType>& X, const StdVT<RealType>& Y, bool bCubicSpline /*= true*/)
 {
     assert(X.size() == Y.size());
     assert(X.size() > 2);
@@ -271,7 +270,7 @@ void CubicSpline<RealType>::setPoints(const Vector<RealType>& X, const Vector<Re
         // setting up the matrix and right hand side of the equation system
         // for the parameters b[]
         BandMatrix<RealType> A(n, 1, 1);
-        Vector<RealType>     rhs(n);
+        StdVT<RealType>      rhs(n);
         for(Int i = 1; i < n - 1; ++i) {
             A(i, i - 1) = RealType(1.0 / 3.0) * (X[i] - X[i - 1]);
             A(i, i)     = RealType(2.0 / 3.0) * (X[i + 1] - X[i - 1]);
@@ -428,4 +427,3 @@ RealType CubicSpline<RealType>::deriv(Int order, RealType x) const
     }
     return Interpol;
 }
-

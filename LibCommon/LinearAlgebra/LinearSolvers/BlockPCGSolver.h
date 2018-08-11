@@ -37,16 +37,16 @@ public:
     void enableZeroInitial() { m_bZeroInitial = true; }
     void disableZeroInitial() { m_bZeroInitial = false; }
 
-    bool solve(const BlockSparseMatrix<MatNxN>& matrix, const Vec_VecN& rhs, Vec_VecN& result);
-    bool solve_precond(const BlockSparseMatrix<MatNxN>& matrix, const Vec_VecN& rhs, Vec_VecN& result);
+    bool solve(const BlockSparseMatrix<MatNxN>& matrix, const StdVT_VecN& rhs, StdVT_VecN& result);
+    bool solve_precond(const BlockSparseMatrix<MatNxN>& matrix, const StdVT_VecN& rhs, StdVT_VecN& result);
 
 private:
     void formPreconditioner(const BlockSparseMatrix<MatNxN>& matrix);
-    void applyPreconditioner(const Vec_VecN& x, Vec_VecN& result);
+    void applyPreconditioner(const StdVT_VecN& x, StdVT_VecN& result);
 
     ////////////////////////////////////////////////////////////////////////////////
-    Vec_VecN                       z, s, r;
-    Vec_MatNxN                     m_JacobiPreconditioner;
+    StdVT_VecN                     z, s, r;
+    StdVT_MatNxN                   m_JacobiPreconditioner;
     FixedBlockSparseMatrix<MatNxN> m_FixedSparseMatrix;
 
     RealType m_ToleranceFactor = RealType(1e-20);

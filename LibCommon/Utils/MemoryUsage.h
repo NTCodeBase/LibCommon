@@ -44,8 +44,6 @@
 #error "Cannot define getPeakRSS( ) or getCurrentRSS( ) for an unknown OS."
 #endif
 
-
-
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 /**
  * Returns the peak (maximum so far) resident set size (physical
@@ -134,4 +132,3 @@ inline size_t getCurrentRSS()
     return (size_t)0L;                  /* Unsupported. */
 #endif
 }
-

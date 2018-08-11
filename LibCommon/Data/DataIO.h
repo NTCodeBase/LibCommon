@@ -27,7 +27,6 @@
 #include <cstdlib>
 #include <sstream>
 
-
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 class DataIO
 {
@@ -59,9 +58,9 @@ public:
     void flushBufferAsync(Int fileID);
 
     ////////////////////////////////////////////////////////////////////////////////
-    String            getFilePath(Int fileID);
+    String getFilePath(Int fileID);
     const DataBuffer& getBuffer() const { return m_DataBuffer; }
-    DataBuffer&       getBuffer() { return m_DataBuffer; }
+    DataBuffer& getBuffer() { return m_DataBuffer; }
 
 private:
     bool              m_bOutputFolderCreated;
@@ -125,4 +124,3 @@ inline void DataIO::createOutputFolders()
     FileHelpers::createFolder(outputFolder);
     m_bOutputFolderCreated = true;
 }
-

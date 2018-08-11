@@ -114,7 +114,7 @@ void Logger::printTextBox(const String& s)
 }
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-void Logger::printTextBox(const Vector<String>& strs)
+void Logger::printTextBox(const StdVT<String>& strs)
 {
     printSeparator();
     printAligned("", ' ');

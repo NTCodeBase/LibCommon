@@ -21,7 +21,6 @@
 #include <cassert>
 #include <array>
 
-
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 template<class KeyType>
 class ParameterManager
@@ -214,4 +213,3 @@ private:
     std::unordered_map<KeyType, VariantField> m_VariantData;
     std::unordered_map<KeyType, std::string>  m_StringData;
 };
-

@@ -19,7 +19,6 @@
 
 #include <fstream>
 
-
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 bool MeshLoader::loadMesh(const String& meshFile)
 {
@@ -284,7 +283,7 @@ void MeshLoader::computeFaceVertexData()
             UInt v1 = m_Faces[3 * f + 1];
             UInt v2 = m_Faces[3 * f + 2];
 
-            Vec_Vec3f fNormals(3, Vec3f(0));
+            StdVT_Vec3f fNormals(3, Vec3f(0));
             for(Int k = 0; k < 3; ++k) {
                 fNormals[0][k] = m_Normals[3 * v0 + k];
                 fNormals[1][k] = m_Normals[3 * v1 + k];
@@ -300,4 +299,3 @@ void MeshLoader::computeFaceVertexData()
         }
     }
 }
-

@@ -51,7 +51,7 @@ void Grid<N, RealType>::setCellSize(RealType cellSize)
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 template<Int N, class RealType>
-void Grid<N, RealType>::getGridCoordinate(const Vec_VecN& positions, Vec_VecN& gridCoordinates) const
+void Grid<N, RealType>::getGridCoordinate(const StdVT_VecN& positions, StdVT_VecN& gridCoordinates) const
 {
     assert(positions.size() == gridCoordinates.size());
     Scheduler::parallel_for(positions.size(), [&](size_t p) { gridCoordinates[p] = getGridCoordinate(positions[p]); });
@@ -72,7 +72,7 @@ bool Grid<N, RealType>::isInsideGrid(const VecN& ppos) const noexcept
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 template<Int N, class RealType>
-void Grid<N, RealType>::constrainToGrid(Vec_VecN& positions)
+void Grid<N, RealType>::constrainToGrid(StdVT_VecN& positions)
 {
     Scheduler::parallel_for(positions.size(),
                             [&](size_t p)
@@ -95,7 +95,7 @@ void Grid<N, RealType>::constrainToGrid(Vec_VecN& positions)
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 template<Int N, class RealType>
-void Grid<N, RealType>::collectIndexToCells(const Vec_VecN& positions)
+void Grid<N, RealType>::collectIndexToCells(const StdVT_VecN& positions)
 {
     if(m_bCellIdxNeedResize) {
         m_ParticleIdxInCell.resize(getNCells());
@@ -123,7 +123,7 @@ void Grid<N, RealType>::collectIndexToCells(const Vec_VecN& positions)
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 template<Int N, class RealType>
-void Grid<N, RealType>::collectIndexToCells(const Vec_VecN& positions, Vector<VecX<N, Int>>& particleCellIdx)
+void Grid<N, RealType>::collectIndexToCells(const StdVT_VecN& positions, StdVT<VecX<N, Int>>& particleCellIdx)
 {
     assert(positions.size() == particleCellIdx.size());
     if(m_bCellIdxNeedResize) {
@@ -154,7 +154,7 @@ void Grid<N, RealType>::collectIndexToCells(const Vec_VecN& positions, Vector<Ve
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 template<Int N, class RealType>
-void Grid<N, RealType>::collectIndexToCells(const Vec_VecN& positions, Vec_VecN& gridCoordinates)
+void Grid<N, RealType>::collectIndexToCells(const StdVT_VecN& positions, StdVT_VecN& gridCoordinates)
 {
     assert(positions.size() == gridCoordinates.size());
     if(m_bCellIdxNeedResize) {
@@ -186,14 +186,14 @@ void Grid<N, RealType>::collectIndexToCells(const Vec_VecN& positions, Vec_VecN&
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 template<Int N, class RealType>
-void Grid<N, RealType>::getNeighborList(const Vec_VecN& positions, Vec_VecUInt& neighborList, Int cellSpan /*= 1*/)
+void Grid<N, RealType>::getNeighborList(const StdVT_VecN& positions, StdVT<StdVT_UInt>& neighborList, Int cellSpan /*= 1*/)
 {
     Scheduler::parallel_for(positions.size(), [&](size_t p) { getNeighborList(positions[p], neighborList[p], cellSpan); });
 }
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 template<Int N, class RealType>
-void Grid<N, RealType>::getNeighborList(const VecN& ppos, Vec_UInt& neighborList, Int cellSpan /*= 1*/)
+void Grid<N, RealType>::getNeighborList(const VecN& ppos, StdVT_UInt& neighborList, Int cellSpan /*= 1*/)
 {
     neighborList.resize(0);
     if constexpr(N == 2)
@@ -236,14 +236,14 @@ void Grid<N, RealType>::getNeighborList(const VecN& ppos, Vec_UInt& neighborList
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 template<Int N, class RealType>
-void Grid<N, RealType>::getNeighborList(const Vec_VecN& positions, Vec_VecUInt& neighborList, RealType d2, Int cellSpan /*= 1*/)
+void Grid<N, RealType>::getNeighborList(const StdVT_VecN& positions, StdVT<StdVT_UInt>& neighborList, RealType d2, Int cellSpan /*= 1*/)
 {
     Scheduler::parallel_for(positions.size(), [&](size_t p) { getNeighborList(positions, positions[p], neighborList[p], d2, cellSpan); });
 }
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 template<Int N, class RealType>
-void Grid<N, RealType>::getNeighborList(const Vec_VecN& positions, const VecN& ppos, Vec_UInt& neighborList, RealType d2, Int cellSpan /*= 1*/)
+void Grid<N, RealType>::getNeighborList(const StdVT_VecN& positions, const VecN& ppos, StdVT_UInt& neighborList, RealType d2, Int cellSpan /*= 1*/)
 {
     neighborList.resize(0);
 
@@ -298,12 +298,12 @@ void Grid<N, RealType>::getNeighborList(const Vec_VecN& positions, const VecN& p
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 template<Int N, class RealType>
-void Grid<N, RealType>::sortData(Vec_VecN& data)
+void Grid<N, RealType>::sortData(StdVT_VecN& data)
 {
     const auto& sortedIdx = getParticleIdxSortedByCell();
     assert(sortedIdx.size() == data.size());
 
-    Vec_VecN tmp(data.begin(), data.end());
+    StdVT_VecN tmp(data.begin(), data.end());
     std::transform(sortedIdx.cbegin(), sortedIdx.cend(),
 #ifdef _MSC_VER
                    stdext::unchecked_array_iterator<VecN*>(data.data()),
@@ -315,7 +315,7 @@ void Grid<N, RealType>::sortData(Vec_VecN& data)
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 template<Int N, class RealType>
-const Vec_UInt& Grid<N, RealType>::getParticleIdxSortedByCell()
+const StdVT_UInt& Grid<N, RealType>::getParticleIdxSortedByCell()
 {
     if(m_ParticleIdxSortedByCell.size() > 0) {
         return m_ParticleIdxSortedByCell;

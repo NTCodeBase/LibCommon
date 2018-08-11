@@ -25,10 +25,10 @@ using namespace Banana;
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 template<class T>
-void testAccuracy(const Vector<Mat3x3<T> >& AA,
-                  const Vector<Mat3x3<T> >& UU,
-                  const Vector<Vec3<T> >&   SS,
-                  const Vector<Mat3x3<T> >& VV)
+void testAccuracy(const StdVT<Mat3x3<T>>& AA,
+                  const StdVT<Mat3x3<T>>& UU,
+                  const StdVT<Vec3<T>>&   SS,
+                  const StdVT<Mat3x3<T>>& VV)
 {
     T max_UUt_error = 0, max_VVt_error = 0, max_detU_error = 0, max_detV_error = 0, max_reconstruction_error = 0;
     T ave_UUt_error = 0, ave_VVt_error = 0, ave_detU_error = 0, ave_detV_error = 0, ave_reconstruction_error = 0;
@@ -52,14 +52,12 @@ void testAccuracy(const Vector<Mat3x3<T> >& AA,
         ave_detV_error += fabs(error);
         error           = LinaHelpers::maxAbs(U * LinaHelpers::diagMatrix(S) * glm::transpose(V) - M);
 
-
         if(error > T(1.0)) {
             printf("err : m : %s, u = %s, S= %s, v = %s\n", NumberHelpers::toString(M).c_str(),
                    NumberHelpers::toString(U).c_str(),
                    NumberHelpers::toString(S).c_str(),
                    NumberHelpers::toString(V).c_str());
         }
-
 
         max_reconstruction_error  = (error > max_reconstruction_error) ? error : max_reconstruction_error;
         ave_reconstruction_error += fabs(error);
@@ -82,12 +80,12 @@ void testAccuracy(const Vector<Mat3x3<T> >& AA,
 }
 
 template<class T>
-void runImplicitQRSVD(const Int repeat, const Vector<Mat3x3<T> >& tests, const bool accuracy_test)
+void runImplicitQRSVD(const Int repeat, const StdVT<Mat3x3<T>>& tests, const bool accuracy_test)
 {
-    Vector<Mat3x3<T> > UU, VV;
-    Vector<Vec3<T> >   SS;
-    Timer              timer;
-    double             total_time = 0;
+    StdVT<Mat3x3<T>> UU, VV;
+    StdVT<Vec3<T>>   SS;
+    Timer            timer;
+    double           total_time = 0;
     for(Int test_iter = 0; test_iter < repeat; test_iter++) {
         timer.tick();
         for(size_t i = 0; i < tests.size(); i++) {
@@ -113,7 +111,7 @@ void runImplicitQRSVD(const Int repeat, const Vector<Mat3x3<T> >& tests, const b
 }
 
 template<class T>
-void addRandomCases(Vector<Mat3x3<T> >& tests, const T random_range, const Int N)
+void addRandomCases(StdVT<Mat3x3<T>>& tests, const T random_range, const Int N)
 {
     Int old_count = tests.size();
     std::cout << std::setprecision(10) << "Adding random test cases with range " << -random_range << " to " << random_range << std::endl;
@@ -127,7 +125,7 @@ void addRandomCases(Vector<Mat3x3<T> >& tests, const T random_range, const Int N
 }
 
 template<class T>
-void addIntegerCases(Vector<Mat3x3<T> >& tests, const Int int_range)
+void addIntegerCases(StdVT<Mat3x3<T>>& tests, const Int int_range)
 {
     Int old_count = tests.size();
     std::cout << std::setprecision(10) << "Adding integer test cases with range " << -int_range << " to " << int_range << std::endl;
@@ -150,11 +148,11 @@ void addIntegerCases(Vector<Mat3x3<T> >& tests, const Int int_range)
 }
 
 template<class T>
-void addPerturbationFromIdentityCases(Vector<Mat3x3<T> >& tests, const Int num_perturbations, const T perturb)
+void addPerturbationFromIdentityCases(StdVT<Mat3x3<T>>& tests, const Int num_perturbations, const T perturb)
 {
-    Int                old_count = tests.size();
-    Vector<Mat3x3<T> > tests_tmp;
-    Mat3x3<T>          Z = Mat3x3<T>(1.0);
+    Int              old_count = tests.size();
+    StdVT<Mat3x3<T>> tests_tmp;
+    Mat3x3<T>        Z = Mat3x3<T>(1.0);
     tests_tmp.push_back(Z);
     std::cout << std::setprecision(10) << "Adding perturbed identity test cases with perturbation " << perturb << std::endl;
     size_t special_cases = tests_tmp.size();
@@ -169,11 +167,11 @@ void addPerturbationFromIdentityCases(Vector<Mat3x3<T> >& tests, const Int num_p
 }
 
 template<class T>
-void addPerturbationCases(Vector<Mat3x3<T> >& tests, const Int int_range, const Int num_perturbations, const T perturb)
+void addPerturbationCases(StdVT<Mat3x3<T>>& tests, const Int int_range, const Int num_perturbations, const T perturb)
 {
-    Int                old_count = tests.size();
-    Vector<Mat3x3<T> > tests_tmp;
-    Mat3x3<T>          Z;
+    Int              old_count = tests.size();
+    StdVT<Mat3x3<T>> tests_tmp;
+    Mat3x3<T>        Z;
     LinaHelpers::fill(Z, -int_range);
     Int i = 0;
     tests_tmp.push_back(Z);
@@ -357,7 +355,7 @@ void runBenchmark()
 
         std::cout << std::setprecision(10) << "\n--- float test ---\n" << std::endl;
         if(test_float) {
-            Vector<Mat3x3f> tests;
+            StdVT<Mat3x3f> tests;
             if(test_integer) {
                 addIntegerCases(tests, integer_range);
             }
@@ -386,7 +384,7 @@ void runBenchmark()
 
         std::cout << std::setprecision(10) << "\n--- double test ---\n" << std::endl;
         if(test_double) {
-            Vector<Mat3x3d> tests;
+            StdVT<Mat3x3d> tests;
             if(test_integer) {
                 addIntegerCases(tests, integer_range);
             }
@@ -430,7 +428,6 @@ TEST_CASE("Test 1 matrix", "[Test 1 matrix]")
               7, 8, 9);
     M = glm::transpose(M);
 
-
     Vec3f   S;
     Mat3x3f U;
     Mat3x3f V;
@@ -443,7 +440,6 @@ TEST_CASE("Test 1 matrix", "[Test 1 matrix]")
     std::cout << "V: " << NumberHelpers::toString(V, true, 7) << std::endl << std::endl;
 
     std::cout << "Recon M1: " << NumberHelpers::toString(U * LinaHelpers::diagMatrix(S) * glm::transpose(V), true) << std::endl << std::endl;
-
 
     float error = LinaHelpers::maxAbs(U * LinaHelpers::diagMatrix(S) * glm::transpose(V) - M);
     std::cout << "error: " << error << std::endl << std::endl;

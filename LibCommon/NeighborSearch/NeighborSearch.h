@@ -73,12 +73,12 @@ public:
     /**
      * Get method to access the list of point sets.
      */
-    Vector<PointSet<N, RealType>> const& point_sets() const { return m_point_sets; }
+    StdVT<PointSet<N, RealType>> const& point_sets() const { return m_point_sets; }
 
     /**
      * Get method to access the list of point sets.
      */
-    Vector<PointSet<N, RealType>>& point_sets() { return m_point_sets; }
+    StdVT<PointSet<N, RealType>>& point_sets() { return m_point_sets; }
 
     /**
      * Increases the size of a point set under the assumption that the existing points remain at
@@ -119,7 +119,7 @@ public:
      * Performs the actual query for a single point. This method return a list of neighboring points. Note: That points_changed() must be called each time
      * when the positions of a point set changed.
      */
-    void find_neighbors(UInt point_set_id, UInt point_index, Vec_VecUInt& neighbors);
+    void find_neighbors(UInt point_set_id, UInt point_index, StdVT<StdVT_UInt>& neighbors);
 
     /**
      * Update neighborhood search data structures after a position change.
@@ -201,29 +201,29 @@ public:
 
 private:
     void init();
-    void update_hash_table(Vec_UInt& to_delete);
-    void erase_empty_entries(const Vec_UInt& to_delete);
+    void update_hash_table(StdVT_UInt& to_delete);
+    void erase_empty_entries(const StdVT_UInt& to_delete);
     ////////////////////////////////////////////////////////////////////////////////
     void query();
-    void query(UInt point_set_id, UInt point_index, Vec_VecUInt& neighbors);
+    void query(UInt point_set_id, UInt point_index, StdVT<StdVT_UInt>& neighbors);
 
     void query2D();
     void query3D();
-    void query2D(UInt point_set_id, UInt point_index, Vec_VecUInt& neighbors);
-    void query3D(UInt point_set_id, UInt point_index, Vec_VecUInt& neighbors);
+    void query2D(UInt point_set_id, UInt point_index, StdVT<StdVT_UInt>& neighbors);
+    void query3D(UInt point_set_id, UInt point_index, StdVT<StdVT_UInt>& neighbors);
 
     HashKey<N>    cell_index(const RealType* x) const;
     uint_fast64_t z_value(const HashKey<N>& key);     // Determines Morten value according to z-curve
 
     ////////////////////////////////////////////////////////////////////////////////
-    Vector<PointSet<N, RealType>> m_point_sets;
-    ActivationTable               m_activation_table, m_old_activation_table;
+    StdVT<PointSet<N, RealType>> m_point_sets;
+    ActivationTable              m_activation_table, m_old_activation_table;
 
     RealType m_inv_cell_size;
     RealType m_r2;
 
     std::unordered_map<HashKey<N>, UInt, SpatialHasher<N>> m_map;
-    Vector<HashEntry>                                      m_entries;
+    StdVT<HashEntry>                                       m_entries;
 
     bool m_erase_empty_cells;
     bool m_initialized;

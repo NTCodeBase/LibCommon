@@ -16,7 +16,7 @@
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 template<Int N, class RealType>
-bool BlockPCGSolver<N, RealType>::solve(const BlockSparseMatrix<MatNxN>& matrix, const Vec_VecN& rhs, Vec_VecN& result)
+bool BlockPCGSolver<N, RealType>::solve(const BlockSparseMatrix<MatNxN>& matrix, const StdVT_VecN& rhs, StdVT_VecN& result)
 {
     const UInt n = matrix.size();
     if(z.size() != n) {
@@ -84,7 +84,7 @@ bool BlockPCGSolver<N, RealType>::solve(const BlockSparseMatrix<MatNxN>& matrix,
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 template<Int N, class RealType>
-bool BlockPCGSolver<N, RealType>::solve_precond(const BlockSparseMatrix<MatNxN>& matrix, const Vec_VecN& rhs, Vec_VecN& result)
+bool BlockPCGSolver<N, RealType>::solve_precond(const BlockSparseMatrix<MatNxN>& matrix, const StdVT_VecN& rhs, StdVT_VecN& result)
 {
     UInt n = matrix.size();
 
@@ -185,7 +185,7 @@ void BlockPCGSolver<N, RealType>::formPreconditioner(const BlockSparseMatrix<Mat
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 template<Int N, class RealType>
-void BlockPCGSolver<N, RealType>::applyPreconditioner(const Vec_VecN& x, Vec_VecN& result)
+void BlockPCGSolver<N, RealType>::applyPreconditioner(const StdVT_VecN& x, StdVT_VecN& result)
 {
     Scheduler::parallel_for(x.size(), [&](size_t i) { result[i] = m_JacobiPreconditioner[i] * x[i]; });
 }

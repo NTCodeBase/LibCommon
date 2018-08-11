@@ -87,7 +87,7 @@ void NeighborSearch<N, RealType>::init()
     m_map.clear();
 
     // Determine existing entries.
-    Vector<HashKey<N>> temp_keys;
+    StdVT<HashKey<N>> temp_keys;
     for(UInt j = 0, jend = static_cast<UInt>(m_point_sets.size()); j < jend; ++j) {
         PointSet<N, RealType>& d = m_point_sets[j];
         d.m_locks.resize(m_point_sets.size());
@@ -137,7 +137,7 @@ void NeighborSearch<N, RealType>::resize_point_set(UInt index, const RealType* x
 
     // Delete old entries. (Shrink)
     if(old_size > size) {
-        Vec_UInt to_delete;
+        StdVT_UInt to_delete;
         if(m_erase_empty_cells) {
             to_delete.reserve(m_entries.size());
         }
@@ -239,7 +239,7 @@ void NeighborSearch<N, RealType>::update_point_sets()
         }
     }
 
-    Vec_UInt to_delete;
+    StdVT_UInt to_delete;
     if(m_erase_empty_cells) {
         to_delete.reserve(m_entries.size());
     }
@@ -253,14 +253,14 @@ void NeighborSearch<N, RealType>::update_point_sets()
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 template<Int N, class RealType>
-void NeighborSearch<N, RealType>::find_neighbors(UInt point_set_id, UInt point_index, Vec_VecUInt& neighbors)
+void NeighborSearch<N, RealType>::find_neighbors(UInt point_set_id, UInt point_index, StdVT<StdVT_UInt>& neighbors)
 {
     query(point_set_id, point_index, neighbors);
 }
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 template<Int N, class RealType>
-void NeighborSearch<N, RealType>::erase_empty_entries(const Vec_UInt& to_delete)
+void NeighborSearch<N, RealType>::erase_empty_entries(const StdVT_UInt& to_delete)
 {
     if(to_delete.empty()) {
         return;
@@ -283,7 +283,7 @@ void NeighborSearch<N, RealType>::erase_empty_entries(const Vec_UInt& to_delete)
         }
     }
 
-    Vector<std::pair<const HashKey<N>, UInt>*> kvps(m_map.size());
+    StdVT<std::pair<const HashKey<N>, UInt>*> kvps(m_map.size());
     std::transform(m_map.begin(), m_map.end(), kvps.begin(), [](std::pair<const HashKey<N>, UInt>& kvp) { return &kvp; });
 
     Scheduler::parallel_for(kvps.size(),
@@ -303,7 +303,7 @@ void NeighborSearch<N, RealType>::erase_empty_entries(const Vec_UInt& to_delete)
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 template<Int N, class RealType>
-void NeighborSearch<N, RealType>::update_hash_table(Vec_UInt& to_delete)
+void NeighborSearch<N, RealType>::update_hash_table(StdVT_UInt& to_delete)
 {
     // Indicate points changing inheriting cell.
     for(UInt j = 0; j < m_point_sets.size(); ++j) {
@@ -377,7 +377,7 @@ void NeighborSearch<N, RealType>::query2D()
             }
         }
 
-        Vector<const std::pair<const HashKey<N>, UInt>*> kvps(m_map.size());
+        StdVT<const std::pair<const HashKey<N>, UInt>*> kvps(m_map.size());
         std::transform(m_map.begin(), m_map.end(), kvps.begin(), [](std::pair<const HashKey<N>, UInt> const& kvp) { return &kvp; });
 
         // Perform neighborhood search.
@@ -424,8 +424,8 @@ void NeighborSearch<N, RealType>::query2D()
                                     }
                                 });
 
-        Vector<std::array<bool, 9>>       visited(m_entries.size(), { false });
-        Vector<ParallelObjects::SpinLock> entry_locks(m_entries.size());
+        StdVT<std::array<bool, 9>>       visited(m_entries.size(), { false });
+        StdVT<ParallelObjects::SpinLock> entry_locks(m_entries.size());
 
         Scheduler::parallel_for(kvps.size(),
                                 [&](size_t it)
@@ -539,7 +539,7 @@ void NeighborSearch<N, RealType>::query3D()
             }
         }
 
-        Vector<const std::pair<const HashKey<N>, UInt>*> kvps(m_map.size());
+        StdVT<const std::pair<const HashKey<N>, UInt>*> kvps(m_map.size());
         std::transform(m_map.begin(), m_map.end(), kvps.begin(), [](std::pair<const HashKey<N>, UInt> const& kvp) { return &kvp; });
 
         // Perform neighborhood search.
@@ -587,8 +587,8 @@ void NeighborSearch<N, RealType>::query3D()
                                     }
                                 });
 
-        Vector<std::array<bool, 27>>      visited(m_entries.size(), { false });
-        Vector<ParallelObjects::SpinLock> entry_locks(m_entries.size());
+        StdVT<std::array<bool, 27>>      visited(m_entries.size(), { false });
+        StdVT<ParallelObjects::SpinLock> entry_locks(m_entries.size());
 
         Scheduler::parallel_for(kvps.size(),
                                 [&](size_t it)
@@ -686,7 +686,7 @@ void NeighborSearch<N, RealType>::query3D()
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 template<Int N, class RealType>
-void NeighborSearch<N, RealType>::query(UInt point_set_id, UInt point_index, Vec_VecUInt& neighbors)
+void NeighborSearch<N, RealType>::query(UInt point_set_id, UInt point_index, StdVT<StdVT_UInt>& neighbors)
 {
     if constexpr(N == 2) {
         query2D(point_set_id, point_index, neighbors);
@@ -697,7 +697,7 @@ void NeighborSearch<N, RealType>::query(UInt point_set_id, UInt point_index, Vec
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 template<Int N, class RealType>
-void NeighborSearch<N, RealType>::query2D(UInt point_set_id, UInt point_index, Vec_VecUInt& neighbors)
+void NeighborSearch<N, RealType>::query2D(UInt point_set_id, UInt point_index, StdVT<StdVT_UInt>& neighbors)
 {
     if constexpr(N == 3) {
         __NT_UNUSED(point_set_id);
@@ -787,7 +787,7 @@ void NeighborSearch<N, RealType>::query2D(UInt point_set_id, UInt point_index, V
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 template<Int N, class RealType>
-void NeighborSearch<N, RealType>::query3D(UInt point_set_id, UInt point_index, Vec_VecUInt& neighbors)
+void NeighborSearch<N, RealType>::query3D(UInt point_set_id, UInt point_index, StdVT<StdVT_UInt>& neighbors)
 {
     if constexpr(N == 2) {
         __NT_UNUSED(point_set_id);

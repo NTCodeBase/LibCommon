@@ -16,7 +16,6 @@
 
 #include <CommonSetup.h>
 
-
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 // This class need to be a template, as it can be used in simulation(double) and rendering(float)
 class MeshLoader
@@ -74,13 +73,12 @@ private:
     Vec3f m_AABBMin;
     Vec3f m_AABBMax;
 
-    Vec_UInt  m_Faces;
-    Vec_Float m_Vertices;
-    Vec_Float m_Normals;
-    Vec_Float m_TexCoord2D;
-    Vec_Float m_FaceVertices;
-    Vec_Float m_FaceVertexNormals;
-    Vec_Float m_FaceVertexColors;
-    Vec_Float m_FaceVertexTexCoord2D;
+    StdVT_UInt  m_Faces;
+    StdVT_Float m_Vertices;
+    StdVT_Float m_Normals;
+    StdVT_Float m_TexCoord2D;
+    StdVT_Float m_FaceVertices;
+    StdVT_Float m_FaceVertexNormals;
+    StdVT_Float m_FaceVertexColors;
+    StdVT_Float m_FaceVertexTexCoord2D;
 };
-

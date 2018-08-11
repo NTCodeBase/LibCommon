@@ -211,21 +211,21 @@ public:
     }
 
     auto getGridCoordinate(const VecN& ppos) const { return (ppos - m_BMin) / m_CellSize; }
-    void getGridCoordinate(const Vec_VecN& positions, Vec_VecN& gridCoordinates) const;
+    void getGridCoordinate(const StdVT_VecN& positions, StdVT_VecN& gridCoordinates) const;
     ////////////////////////////////////////////////////////////////////////////////
     bool isInsideGrid(const VecN& ppos) const noexcept;
 
-    void constrainToGrid(Vec_VecN& positions);
-    void collectIndexToCells(const Vec_VecN& positions);
-    void collectIndexToCells(const Vec_VecN& positions, Vector<VecX<N, Int>>& particleCellIdx);
-    void collectIndexToCells(const Vec_VecN& positions, Vec_VecN& gridCoordinates);
-    void getNeighborList(const Vec_VecN& positions, Vec_VecUInt& neighborList, Int cellSpan                             = 1);
-    void getNeighborList(const VecN& ppos, Vec_UInt& neighborList, Int cellSpan                                         = 1);
-    void getNeighborList(const Vec_VecN& positions, Vec_VecUInt& neighborList, RealType d2, Int cellSpan                = 1);
-    void getNeighborList(const Vec_VecN& positions, const VecN& ppos, Vec_UInt& neighborList, RealType d2, Int cellSpan = 1);
-    void sortData(Vec_VecN& data);
+    void constrainToGrid(StdVT_VecN& positions);
+    void collectIndexToCells(const StdVT_VecN& positions);
+    void collectIndexToCells(const StdVT_VecN& positions, StdVT<VecX<N, Int>>& particleCellIdx);
+    void collectIndexToCells(const StdVT_VecN& positions, StdVT_VecN& gridCoordinates);
+    void getNeighborList(const StdVT_VecN& positions, StdVT<StdVT_UInt>& neighborList, Int cellSpan                         = 1);
+    void getNeighborList(const VecN& ppos, StdVT_UInt& neighborList, Int cellSpan                                           = 1);
+    void getNeighborList(const StdVT_VecN& positions, StdVT<StdVT_UInt>& neighborList, RealType d2, Int cellSpan            = 1);
+    void getNeighborList(const StdVT_VecN& positions, const VecN& ppos, StdVT_UInt& neighborList, RealType d2, Int cellSpan = 1);
+    void sortData(StdVT_VecN& data);
 
-    const Vec_UInt& getParticleIdxSortedByCell();
+    const StdVT_UInt& getParticleIdxSortedByCell();
 
     template<class IndexType>
     const auto& getParticleIdxInCell(const VecX<N, IndexType>& cellIdx) const { return m_ParticleIdxInCell(cellIdx); }
@@ -242,9 +242,9 @@ protected:
     RealType      m_CellSizeSqr  = RealType(1);
     RealType      m_CellVolume   = RealType(1);
 
-    Vec_UInt m_ParticleIdxSortedByCell;
-    bool     m_bCellIdxNeedResize = false;  // to track and resize the m_CellParticleIdx array
+    StdVT_UInt m_ParticleIdxSortedByCell;
+    bool       m_bCellIdxNeedResize = false; // to track and resize the m_CellParticleIdx array
 
-    Array<N, Vec_UInt>                  m_ParticleIdxInCell;
+    Array<N, StdVT_UInt>                m_ParticleIdxInCell;
     Array<N, ParallelObjects::SpinLock> m_Lock;
 };

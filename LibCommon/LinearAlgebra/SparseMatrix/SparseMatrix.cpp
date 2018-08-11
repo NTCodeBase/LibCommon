@@ -161,7 +161,7 @@ void SparseMatrix<RealType>::checkSymmetry(RealType threshold /* = RealType(1e-8
 template<class RealType>
 void SparseMatrix<RealType>::printTextFile(const char* fileName)
 {
-    Vector<String> matContent;
+    StdVT<String> matContent;
 
     for(UInt i = 0; i < nRows; ++i) {
         if(colIndex[i].size() == 0) {
@@ -209,7 +209,7 @@ void FixedSparseMatrix<RealType>::constructFromSparseMatrix(const SparseMatrix<R
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 // perform result=matrix*x
 template<class RealType>
-void FixedSparseMatrix<RealType>::multiply(const FixedSparseMatrix<RealType>& matrix, const Vector<RealType>& x, Vector<RealType>& result)
+void FixedSparseMatrix<RealType>::multiply(const FixedSparseMatrix<RealType>& matrix, const StdVT<RealType>& x, StdVT<RealType>& result)
 {
     assert(matrix.nRows == static_cast<UInt>(x.size()));
     result.resize(matrix.nRows);

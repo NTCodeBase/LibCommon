@@ -42,7 +42,7 @@ public:
     void printSeparator();
     void printAligned(const String& s, char padding = PADDING, const String& wrapper = WRAPPER, UInt maxSize = 100);
     void printTextBox(const String& s);
-    void printTextBox(const Vector<String>& strs);
+    void printTextBox(const StdVT<String>& strs);
     void printWarning(const String& s, UInt maxSize            = 100);
     void printWarningIndent(const String& s,  UInt indentLevel = 1, char trailing = ' ', UInt maxSize = 100);
     void printError(const String& s, UInt maxSize              = 100);
@@ -102,10 +102,10 @@ public:
 private:
     String getTotalRunTime();
     ////////////////////////////////////////////////////////////////////////////////
-    static inline Vector<Logger*> s_Instances {};
-    Clock::time_point             m_StartupTime {};
-    SharedPtr<spdlog::logger>     m_ConsoleLogger = nullptr;
-    SharedPtr<spdlog::logger>     m_FileLogger    = nullptr;
-    bool                          m_bLog2Console;
-    bool                          m_bLog2File;
+    static inline StdVT<Logger*> s_Instances {};
+    Clock::time_point            m_StartupTime {};
+    SharedPtr<spdlog::logger>    m_ConsoleLogger = nullptr;
+    SharedPtr<spdlog::logger>    m_FileLogger    = nullptr;
+    bool                         m_bLog2Console;
+    bool                         m_bLog2File;
 };

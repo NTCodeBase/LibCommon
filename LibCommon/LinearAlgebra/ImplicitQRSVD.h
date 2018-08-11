@@ -25,7 +25,7 @@ namespace QRSVD
    \brief SVD (singular value decomposition) A=USV'
    \param[in] A Input matrix.
    \param[out] U Robustly a rotation matrix.
-   \param[out] Sigma Vector of singular values sorted with decreasing magnitude. The second one can be negative.
+   \param[out] Sigma StdVT of singular values sorted with decreasing magnitude. The second one can be negative.
    \param[out] V Robustly a rotation matrix.
  */
 template<class T>
@@ -36,7 +36,7 @@ std::tuple<Mat2x2<T>, Vec2<T>, Mat2x2<T>> svd(const Mat2x2<T>& A);
    \param[in] A Input matrix.
    \param[out] std::tuple(U, Sigma, V), where
    \param[out] U Robustly a rotation matrix.
-   \param[out] Sigma Vector of singular values sorted with decreasing magnitude. The second one can be negative.
+   \param[out] Sigma StdVT of singular values sorted with decreasing magnitude. The second one can be negative.
    \param[out] V Robustly a rotation matrix.
  */
 template<class T>

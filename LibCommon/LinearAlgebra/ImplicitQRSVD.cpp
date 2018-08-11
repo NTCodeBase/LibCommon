@@ -377,7 +377,7 @@ std::pair<Mat2x2<T>, Mat2x2<T>> polarDecomposition(const Mat2x2<T>& A)
    \brief 2x2 SVD (singular value decomposition) A=USV'
    \param[in] A Input matrix.
    \param[out] U Robustly a rotation matrix in Givens form
-   \param[out] Sigma Vector of singular values sorted with decreasing magnitude. The second one can be negative.
+   \param[out] Sigma StdVT of singular values sorted with decreasing magnitude. The second one can be negative.
    \param[out] V Robustly a rotation matrix in Givens form
  */
 template<class T>
@@ -442,7 +442,7 @@ void svd(const Mat2x2<T>& A, GivensRotation<T>& U, const Vec2<T>& Sigma, GivensR
    \brief 2x2 SVD (singular value decomposition) A=USV'
    \param[in] A Input matrix.
    \param[out] U Robustly a rotation matrix.
-   \param[out] Sigma Vector of singular values sorted with decreasing magnitude. The second one can be negative.
+   \param[out] Sigma StdVT of singular values sorted with decreasing magnitude. The second one can be negative.
    \param[out] V Robustly a rotation matrix.
  */
 template<class T>

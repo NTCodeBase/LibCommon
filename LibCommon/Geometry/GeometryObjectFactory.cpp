@@ -99,7 +99,7 @@ SharedPtr<GeometryObjects::GeometryObject<N, RealType>> createGeometry(const Str
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 template<Int N, class RealType>
-SharedPtr<GeometryObjects::GeometryObject<N, RealType>> combineGeometryObjects(const Vector<SharedPtr<GeometryObjects::GeometryObject<N, RealType>>>& geometryObjs,
+SharedPtr<GeometryObjects::GeometryObject<N, RealType>> combineGeometryObjects(const StdVT<SharedPtr<GeometryObjects::GeometryObject<N, RealType>>>& geometryObjs,
                                                                                SharedPtr<GeometryObjects::GeometryObject<N, RealType>>& unifiedGeometry)
 {
     if(geometryObjs.size() == 0) {
@@ -124,10 +124,10 @@ template SharedPtr<GeometryObjects::GeometryObject<2, float>> createGeometry(con
 template SharedPtr<GeometryObjects::GeometryObject<3, float>> createGeometry(const String& geometryType, const JParams& jParams);
 
 template SharedPtr<GeometryObjects::GeometryObject<2, float>> combineGeometryObjects(
-    const Vector<SharedPtr<GeometryObjects::GeometryObject<2, float>>>& geometryObjs,
+    const StdVT<SharedPtr<GeometryObjects::GeometryObject<2, float>>>& geometryObjs,
     SharedPtr<GeometryObjects::GeometryObject<2, float>>& unifiedGeometry);
 template SharedPtr<GeometryObjects::GeometryObject<3, float>> combineGeometryObjects(
-    const Vector<SharedPtr<GeometryObjects::GeometryObject<3, float>>>& geometryObjs,
+    const StdVT<SharedPtr<GeometryObjects::GeometryObject<3, float>>>& geometryObjs,
     SharedPtr<GeometryObjects::GeometryObject<3, float>>& unifiedGeometry);
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
@@ -135,10 +135,10 @@ template SharedPtr<GeometryObjects::GeometryObject<2, double>> createGeometry(co
 template SharedPtr<GeometryObjects::GeometryObject<3, double>> createGeometry(const String& geometryType, const JParams& jParams);
 
 template SharedPtr<GeometryObjects::GeometryObject<2, double>> combineGeometryObjects(
-    const Vector<SharedPtr<GeometryObjects::GeometryObject<2, double>>>& geometryObjs,
+    const StdVT<SharedPtr<GeometryObjects::GeometryObject<2, double>>>& geometryObjs,
     SharedPtr<GeometryObjects::GeometryObject<2, double>>& unifiedGeometry);
 template SharedPtr<GeometryObjects::GeometryObject<3, double>> combineGeometryObjects(
-    const Vector<SharedPtr<GeometryObjects::GeometryObject<3, double>>>& geometryObjs,
+    const StdVT<SharedPtr<GeometryObjects::GeometryObject<3, double>>>& geometryObjs,
     SharedPtr<GeometryObjects::GeometryObject<3, double>>& unifiedGeometry);
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+

@@ -45,8 +45,8 @@ struct HashKey<2>
     HashKey() = default;
     HashKey(int i, int j) { this->k[0] = i, this->k[1] = j; }
     HashKey& operator=(HashKey const& other) { k[0] = other.k[0]; k[1] = other.k[1]; return *this; }
-    bool     operator==(HashKey const& other) const { return (k[0] == other.k[0] && k[1] == other.k[1]); }
-    bool     operator!=(HashKey const& other) const { return !(*this == other); }
+    bool operator==(HashKey const& other) const { return (k[0] == other.k[0] && k[1] == other.k[1]); }
+    bool operator!=(HashKey const& other) const { return !(*this == other); }
 };
 
 template<>
@@ -57,8 +57,8 @@ struct HashKey<3>
     HashKey() = default;
     HashKey(int i, int j, int k) { this->k[0] = i, this->k[1] = j, this->k[2] = k; }
     HashKey& operator=(HashKey const& other) { k[0] = other.k[0]; k[1] = other.k[1]; k[2] = other.k[2]; return *this; }
-    bool     operator==(HashKey const& other) const { return (k[0] == other.k[0] && k[1] == other.k[1] && k[2] == other.k[2]); }
-    bool     operator!=(HashKey const& other) const { return !(*this == other); }
+    bool operator==(HashKey const& other) const { return (k[0] == other.k[0] && k[1] == other.k[1] && k[2] == other.k[2]); }
+    bool operator!=(HashKey const& other) const { return !(*this == other); }
 };
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+

@@ -42,11 +42,9 @@ VecX<N, IndexType> createGrid(const VecX<N, RealType>& bmin, const VecX<N, RealT
 {
     VecX<N, RealType>  fgrid = (bmax - bmin) / spacing;
     VecX<N, IndexType> result;
-
     for(Int d = 0; d < N; ++d) {
         result[d] = static_cast<IndexType>(ceil(fgrid[d]));
     }
-
     return result;
 }
 
@@ -56,11 +54,9 @@ VecX<N, IndexType> createGrid(const VecX<N, RealType>& bmin, const VecX<N, RealT
 {
     VecX<N, RealType>  fgrid = (bmax - bmin) / spacing;
     VecX<N, IndexType> result;
-
     for(Int d = 0; d < N; ++d) {
         result[d] = static_cast<IndexType>(ceil(fgrid[d]));
     }
-
     return result;
 }
 
@@ -84,11 +80,11 @@ public:
         return tmp;
     }
 
-    template<class Vector>
-    Vector vrnd()
+    template<class StdVT>
+    StdVT vrnd()
     {
-        static_assert(sizeof(typename Vector::value_type) == sizeof(T));
-        UInt N = static_cast<UInt>(Vector::length());
+        static_assert(sizeof(typename StdVT::value_type) == sizeof(T));
+        UInt N = static_cast<UInt>(StdVT::length());
         m_Lock.lock();
         if(m_CacheIdx + N >= s_CacheSize) {
             m_CacheIdx = 0;
@@ -96,8 +92,8 @@ public:
         auto oldIdx = m_CacheIdx;
         m_CacheIdx += N;
         m_Lock.unlock();
-        Vector result;
-        std::memcpy(&result, &m_Cache[oldIdx], sizeof(Vector));
+        StdVT result;
+        std::memcpy(&result, &m_Cache[oldIdx], sizeof(StdVT));
         return result;
     }
 
@@ -154,11 +150,11 @@ public:
         return tmp;
     }
 
-    template<class Vector>
-    Vector vrnd()
+    template<class StdVT>
+    StdVT vrnd()
     {
-        static_assert(sizeof(typename Vector::value_type) == sizeof(T));
-        UInt N = static_cast<UInt>(Vector::length());
+        static_assert(sizeof(typename StdVT::value_type) == sizeof(T));
+        UInt N = static_cast<UInt>(StdVT::length());
         m_Lock.lock();
         if(m_CacheIdx + N >= s_CacheSize) {
             m_CacheIdx = 0;
@@ -166,8 +162,8 @@ public:
         auto oldIdx = m_CacheIdx;
         m_CacheIdx += N;
         m_Lock.unlock();
-        Vector result;
-        std::memcpy(&result, &m_Cache[oldIdx], sizeof(Vector));
+        StdVT result;
+        std::memcpy(&result, &m_Cache[oldIdx], sizeof(StdVT));
         return result;
     }
 
@@ -210,7 +206,7 @@ class iRand
 {
 public:
     static auto rnd() { return s_Rand.rnd(); }
-    template<class Vector> static auto vrnd() { return s_Rand.template vrnd<Vector>(); }
+    template<class StdVT> static auto vrnd() { return s_Rand.template vrnd<StdVT>(); }
     template<class Matrix> static auto mrnd() { return s_Rand.template mrnd<Matrix>(); }
 private:
     static inline MT_iRandom<T> s_Rand = MT_iRandom<T>();
@@ -221,7 +217,7 @@ class fRand
 {
 public:
     static auto rnd() { return s_Rand.rnd(); }
-    template<class Vector> static auto vrnd() { return s_Rand.template vrnd<Vector>(); }
+    template<class StdVT> static auto vrnd() { return s_Rand.template vrnd<StdVT>(); }
     template<class Matrix> static auto mrnd() { return s_Rand.template mrnd<Matrix>(); }
 private:
     static inline MT_fRandom<T> s_Rand = MT_fRandom<T>();
@@ -232,7 +228,7 @@ class fRand01
 {
 public:
     static auto rnd() { return s_Rand.rnd(); }
-    template<class Vector> static auto vrnd() { return s_Rand.template vrnd<Vector>(); }
+    template<class StdVT> static auto vrnd() { return s_Rand.template vrnd<StdVT>(); }
     template<class Matrix> static auto mrnd() { return s_Rand.template mrnd<Matrix>(); }
 private:
     static inline MT_fRandom<T> s_Rand = MT_fRandom<T>(T(0), T(1));
@@ -243,7 +239,7 @@ class fRand11
 {
 public:
     static auto rnd() { return s_Rand.rnd(); }
-    template<class Vector> static auto vrnd() { return s_Rand.template vrnd<Vector>(); }
+    template<class StdVT> static auto vrnd() { return s_Rand.template vrnd<StdVT>(); }
     template<class Matrix> static auto mrnd() { return s_Rand.template mrnd<Matrix>(); }
 private:
     static inline MT_fRandom<T> s_Rand = MT_fRandom<T>(T(-1), T(1));
@@ -251,9 +247,9 @@ private:
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 template<class IntType, class SizeType>
-Vector<IntType> generateRandomIntVector(SizeType size, IntType start = 0, IntType end = std::numeric_limits<IntType>::max())
+StdVT<IntType> generateRandomIntVector(SizeType size, IntType start = 0, IntType end = std::numeric_limits<IntType>::max())
 {
-    Vector<IntType> v(size);
+    StdVT<IntType> v(size);
     for(SizeType i = 0; i < size; ++i) {
         v[i] = MT_iRandom<IntType>::rnd();
     }
@@ -261,9 +257,9 @@ Vector<IntType> generateRandomIntVector(SizeType size, IntType start = 0, IntTyp
 }
 
 template<class RealType, class SizeType>
-Vector<RealType> generateRandomRealVector(SizeType size, RealType start = RealType(0), RealType end = std::numeric_limits<RealType>::max())
+StdVT<RealType> generateRandomRealVector(SizeType size, RealType start = RealType(0), RealType end = std::numeric_limits<RealType>::max())
 {
-    Vector<RealType> v(size);
+    StdVT<RealType> v(size);
     for(SizeType i = 0; i < size; ++i) {
         v[i] = MT_fRandom<RealType>::rnd();
     }
@@ -358,7 +354,7 @@ void jitter(VecX<N, RealType1>& ppos, RealType2 maxJitter)
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 template<Int N, class RealType>
-void translate(Vec_VecX<N, RealType>& points, const VecX<N, RealType>& translation)
+void translate(StdVT_VecX<N, RealType>& points, const VecX<N, RealType>& translation)
 {
     Scheduler::parallel_for(points.size(), [&](size_t i)
                             {
@@ -368,7 +364,7 @@ void translate(Vec_VecX<N, RealType>& points, const VecX<N, RealType>& translati
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 template<Int N, class RealType>
-void scale(Vec_VecX<N, RealType>& points, const VecX<N, RealType>& scale)
+void scale(StdVT_VecX<N, RealType>& points, const VecX<N, RealType>& scale)
 {
     Scheduler::parallel_for(points.size(), [&](size_t i)
                             {
@@ -378,7 +374,7 @@ void scale(Vec_VecX<N, RealType>& points, const VecX<N, RealType>& scale)
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 template<Int N, class RealType>
-void rotate(Vec_VecX<N, RealType>& points, const VecX<N, RealType>& rotation)
+void rotate(StdVT_VecX<N, RealType>& points, const VecX<N, RealType>& rotation)
 {
     RealType azimuth = rotation[1];
     RealType elevation = rotation[0];
@@ -417,7 +413,7 @@ void rotate(Vec_VecX<N, RealType>& points, const VecX<N, RealType>& rotation)
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 template<Int N, class RealType>
-void transform(Vec_VecX<N, RealType>& points, const VecX<N, RealType>& translation, const VecX<N, RealType>& scale)
+void transform(StdVT_VecX<N, RealType>& points, const VecX<N, RealType>& translation, const VecX<N, RealType>& scale)
 {
     Scheduler::parallel_for(points.size(), [&](size_t i)
                             {
@@ -427,7 +423,7 @@ void transform(Vec_VecX<N, RealType>& points, const VecX<N, RealType>& translati
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 template<class RealType>
-void transform(Vec_Vec3<RealType>& points, const Vec3<RealType>& translation, const Vec3<RealType>& scale, const Vec3<RealType>& rotation)
+void transform(StdVT_Vec3<RealType>& points, const Vec3<RealType>& translation, const Vec3<RealType>& scale, const Vec3<RealType>& rotation)
 {
     RealType azimuth = rotation[0];
     RealType elevation = rotation[1];

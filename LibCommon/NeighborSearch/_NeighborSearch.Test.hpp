@@ -40,8 +40,8 @@ using namespace Banana;
 #define TEST_GRID
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-Vector<VecX<DIM, RealType>> positions;
-Grid<DIM, RealType>         grid = Grid<DIM, RealType>(VecX<DIM, RealType>(-2), VecX<DIM, RealType>(2), RealType(1.0 / 128.0));
+StdVT<VecX<DIM, RealType>> positions;
+Grid<DIM, RealType>        grid = Grid<DIM, RealType>(VecX<DIM, RealType>(-2), VecX<DIM, RealType>(2), RealType(1.0 / 128.0));
 
 const size_t N               = 50;
 const size_t N_enright_steps = 5;
@@ -84,13 +84,13 @@ RealType compute_average_distance(const NeighborSearch::NeighborSearch<DIM, Real
 }
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-Vector<Vector<UInt>> brute_force_search(size_t n_positions)
+StdVT<StdVT<UInt>> brute_force_search(size_t n_positions)
 {
-    Vector<Vector<UInt>> brute_force_neighbors(n_positions);
+    StdVT<StdVT<UInt>> brute_force_neighbors(n_positions);
     Scheduler::parallel_for(n_positions,
                             [&](size_t i)
                             {
-                                Vector<UInt>& neighbors       = brute_force_neighbors[i];
+                                StdVT<UInt>& neighbors        = brute_force_neighbors[i];
                                 const VecX<DIM, RealType>& xa = positions[i];
 
                                 for(UInt j = 0, jend = UInt(n_positions); j < jend; ++j) {
@@ -150,7 +150,7 @@ bool compare_with_bruteforce_search(const NeighborSearch::NeighborSearch<DIM, Re
 }
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-bool compare_with_grid_search(const NeighborSearch::NeighborSearch<DIM, RealType>& nsearch, Vector<Vector<UInt>>& gridSearchResult)
+bool compare_with_grid_search(const NeighborSearch::NeighborSearch<DIM, RealType>& nsearch, StdVT<StdVT<UInt>>& gridSearchResult)
 {
     const auto& d0      = nsearch.point_set(0);
     bool        success = true;
@@ -177,10 +177,10 @@ bool compare_with_grid_search(const NeighborSearch::NeighborSearch<DIM, RealType
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 bool compare_single_query_with_bruteforce_search(NeighborSearch::NeighborSearch<DIM, RealType>& nsearch)
 {
-    Vector<Vector<UInt>> neighbors;
-    const auto&          d0                    = nsearch.point_set(0);
-    auto                 brute_force_neighbors = brute_force_search(d0.n_points());
-    bool                 success               = true;
+    StdVT<StdVT<UInt>> neighbors;
+    const auto&        d0                    = nsearch.point_set(0);
+    auto               brute_force_neighbors = brute_force_search(d0.n_points());
+    bool               success               = true;
 
     for(UInt i = 0, iend = UInt(d0.n_points()); i < iend; ++i) {
         const auto& bfn = brute_force_neighbors[i];
@@ -324,9 +324,9 @@ TEST_CASE("Test CompactNSearch", "[CompactNSearch]")
     }
 
     //nsearch.update_point_sets();
-    //Vector<Vector<UInt> > neighbors2;
+    //StdVT<StdVT<UInt> > neighbors2;
     //nsearch.find_neighbors(0, 1, neighbors2);
-    //Vector<Vector<UInt> > neighbors3;
+    //StdVT<StdVT<UInt> > neighbors3;
     //nsearch.find_neighbors(1, 2, neighbors3);
 
     std::cout << "#Points                                = " << Formatters::toString(positions.size()) << std::endl;
@@ -364,7 +364,7 @@ TEST_CASE("Test CompactNSearch", "[CompactNSearch]")
     ////////////////////////////////////////////////////////////////////////////////
     // search using grid3d
 #ifdef TEST_GRID
-    Vector<Vector<UInt>> neighborsByCell(positions.size());
+    StdVT<StdVT<UInt>> neighborsByCell(positions.size());
 
     {
         auto t0 = Clock::now();
