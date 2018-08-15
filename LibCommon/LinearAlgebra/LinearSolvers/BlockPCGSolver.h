@@ -14,9 +14,9 @@
 
 #pragma once
 
-#include <LinearAlgebra/SparseMatrix/BlockSparseMatrix.h>
-#include <ParallelHelpers/ParallelBLAS.h>
-#include <ParallelHelpers/ParallelSTL.h>
+#include <LibCommon/LinearAlgebra/SparseMatrix/BlockSparseMatrix.h>
+#include <LibCommon/ParallelHelpers/ParallelBLAS.h>
+#include <LibCommon/ParallelHelpers/ParallelSTL.h>
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 template<Int N, class RealType>

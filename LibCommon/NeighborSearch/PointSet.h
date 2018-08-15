@@ -14,10 +14,9 @@
 
 #pragma once
 
-#include <NeighborSearch/DataStructures.h>
-#include <ParallelHelpers/ParallelObjects.h>
-
 #include <iostream>
+#include <LibCommon/NeighborSearch/DataStructures.h>
+#include <LibCommon/ParallelHelpers/ParallelObjects.h>
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 namespace NeighborSearch

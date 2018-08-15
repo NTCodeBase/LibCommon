@@ -18,8 +18,8 @@
 #include <vector>
 
 #include <tbb/tbb.h>
-#include <ParallelHelpers/ParallelObjects.h>
-#include <ParallelHelpers/Scheduler.h>
+#include <LibCommon/ParallelHelpers/ParallelObjects.h>
+#include <LibCommon/ParallelHelpers/Scheduler.h>
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 namespace ParallelBLAS

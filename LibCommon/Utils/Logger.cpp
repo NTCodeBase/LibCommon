@@ -12,10 +12,10 @@
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 
-#include <Utils/Logger.h>
-#include <Utils/FileHelpers.h>
-#include <Utils/Formatters.h>
-#include <Utils/MemoryUsage.h>
+#include <LibCommon/Utils/Logger.h>
+#include <LibCommon/Utils/FileHelpers.h>
+#include <LibCommon/Utils/Formatters.h>
+#include <LibCommon/Utils/MemoryUsage.h>
 
 #include <spdlog/async.h>
 #include <spdlog/sinks/basic_file_sink.h>
@@ -355,7 +355,7 @@ void getDuration(std::chrono::duration<Rep, Period> t, UInt& n_days, UInt& n_hou
     assert(0 <= t.count());
 
     // approximate because a day doesn't have a fixed length
-    typedef std::chrono::duration<int, std::ratio<60* 60* 24>> days_t;
+    typedef std::chrono::duration<int, std::ratio<60 * 60 * 24>> days_t;
 
     auto days  = std::chrono::duration_cast<days_t>(t);
     auto hours = std::chrono::duration_cast<std::chrono::hours>(t - days);

@@ -12,12 +12,12 @@
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 
-#include <Array/ArrayHelpers.h>
-#include <Geometry/MeshLoader.h>
-#include <Utils/NumberHelpers.h>
-#include <Utils/JSONHelpers.h>
-#include <Geometry/GeometryObjects.h>
-#include <Geometry/GeometryHelpers.h>
+#include <LibCommon/Array/ArrayHelpers.h>
+#include <LibCommon/Geometry/MeshLoader.h>
+#include <LibCommon/Utils/NumberHelpers.h>
+#include <LibCommon/Utils/JSONHelpers.h>
+#include <LibCommon/Geometry/GeometryObjects.h>
+#include <LibCommon/Geometry/GeometryHelpers.h>
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 namespace GeometryObjects

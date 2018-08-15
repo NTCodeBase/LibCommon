@@ -12,9 +12,9 @@
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 
-#include <Utils/Formatters.h>
-#include <LinearAlgebra/SparseMatrix/BlockSparseMatrix.h>
 #include <fstream>
+#include <LibCommon/Utils/Formatters.h>
+#include <LibCommon/LinearAlgebra/SparseMatrix/BlockSparseMatrix.h>
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
@@ -372,8 +372,8 @@ void FixedBlockSparseMatrix<MatrixType>::multiply(const FixedBlockSparseMatrix<M
 
 #define __BNN_INSTANTIATE_BLOCK_SPARSE_MATRIX_FUNCS(matrixType, indexType)                                                          \
     template const auto& BlockSparseMatrix<matrixType >::operator()(indexType i, indexType j) const;                                \
-    template void BlockSparseMatrix<matrixType>::setElement<indexType>(indexType i, indexType j, const matrixType& newValue);       \
-    template void BlockSparseMatrix<matrixType>::addElement<indexType>(indexType i, indexType j, const matrixType& incrementValue); \
+    template void BlockSparseMatrix<matrixType>::setElement<indexType>(indexType i, indexType j, const matrixType &newValue);       \
+    template void BlockSparseMatrix<matrixType>::addElement<indexType>(indexType i, indexType j, const matrixType &incrementValue); \
     template void BlockSparseMatrix<matrixType>::eraseElement<indexType>(indexType i, indexType j);
 
 __BNN_INSTANTIATE_BLOCK_SPARSE_MATRIX_FUNCS(Mat2x2f, Int)

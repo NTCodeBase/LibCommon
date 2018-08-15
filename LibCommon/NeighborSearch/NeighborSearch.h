@@ -13,9 +13,10 @@
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 
 #pragma once
-#include <CommonSetup.h>
-#include <NeighborSearch/PointSet.h>
+
 #include <unordered_map>
+#include <LibCommon/CommonSetup.h>
+#include <LibCommon/NeighborSearch/PointSet.h>
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 namespace NeighborSearch
@@ -102,7 +103,7 @@ public:
      * set.
      */
     UInt add_point_set(const RealType* x, UInt n, bool is_dynamic = true,
-                       bool search_neighbors                      = true, bool find_neighbors = true)
+                       bool search_neighbors = true, bool find_neighbors = true)
     {
         m_point_sets.push_back({ x, n, is_dynamic });
         m_activation_table.add_point_set(search_neighbors, find_neighbors);

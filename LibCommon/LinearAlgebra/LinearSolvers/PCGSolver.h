@@ -14,9 +14,9 @@
 
 #pragma once
 
-#include <LinearAlgebra/SparseMatrix/SparseMatrix.h>
-#include <ParallelHelpers/ParallelBLAS.h>
-#include <ParallelHelpers/ParallelSTL.h>
+#include <LibCommon/LinearAlgebra/SparseMatrix/SparseMatrix.h>
+#include <LibCommon/ParallelHelpers/ParallelBLAS.h>
+#include <LibCommon/ParallelHelpers/ParallelSTL.h>
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
@@ -75,7 +75,7 @@ private:
     void solveLower_TransposeInPlace(StdVT<RealType>& x);
 
     void formPreconditioner_Jacobi(const SparseMatrix<RealType>& matrix);
-    void formPreconditioner_MICC0L0(const SparseMatrix<RealType>& matrix, RealType MICCL0Param                = RealType(0.97), RealType minDiagonalRatio = RealType(0.25));
+    void formPreconditioner_MICC0L0(const SparseMatrix<RealType>& matrix, RealType MICCL0Param = RealType(0.97), RealType minDiagonalRatio = RealType(0.25));
     void formPreconditioner_Symmetric_MICC0L0(const SparseMatrix<RealType>& matrix, RealType minDiagonalRatio = RealType(0.25));
 
     ////////////////////////////////////////////////////////////////////////////////

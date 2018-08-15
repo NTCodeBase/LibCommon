@@ -14,13 +14,13 @@
 
 #pragma once
 
-#include <CommonSetup.h>
-#include <Utils/STLHelpers.h>
-#include <Utils/NumberHelpers.h>
-#include <ParallelHelpers/Scheduler.h>
-
 #include <iostream>
 #include <cstdio>
+
+#include <LibCommon/CommonSetup.h>
+#include <LibCommon/Utils/STLHelpers.h>
+#include <LibCommon/Utils/NumberHelpers.h>
+#include <LibCommon/ParallelHelpers/Scheduler.h>
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+

@@ -14,11 +14,11 @@
 
 #pragma once
 
-#include <CommonSetup.h>
-#include <Utils/STLHelpers.h>
-#include <Utils/FileHelpers.h>
-#include <Utils/NumberHelpers.h>
-#include <ParallelHelpers/Scheduler.h>
+#include <LibCommon/CommonSetup.h>
+#include <LibCommon/Utils/STLHelpers.h>
+#include <LibCommon/Utils/FileHelpers.h>
+#include <LibCommon/Utils/NumberHelpers.h>
+#include <LibCommon/ParallelHelpers/Scheduler.h>
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
@@ -48,7 +48,7 @@ public:
     template<class IndexType> void     addElement(IndexType i, IndexType j, RealType incrementValue);
     template<class IndexType> void     eraseElement(IndexType i, IndexType j);
 
-    void printDebug(UInt maxRows          = 0) const noexcept;
+    void printDebug(UInt maxRows = 0) const noexcept;
     void checkSymmetry(RealType threshold = RealType(1e-8)) const noexcept;
     void printTextFile(const char* fileName);
 
