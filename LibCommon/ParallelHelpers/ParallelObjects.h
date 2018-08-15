@@ -14,12 +14,11 @@
 
 #pragma once
 
-#include <CommonSetup.h>
-
 #include <atomic>
 #include <limits>
 #include <tbb/tbb.h>
 
+#include <LibCommon/CommonSetup.h>
 #undef min
 #undef max
 

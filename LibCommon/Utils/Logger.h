@@ -14,8 +14,8 @@
 
 #pragma once
 
-#include <CommonSetup.h>
-#include <Utils/Timer.h>
+#include <LibCommon/CommonSetup.h>
+#include <LibCommon/Utils/Timer.h>
 
 #include <spdlog/spdlog.h>
 
@@ -34,7 +34,7 @@ class Logger
     using Clock = std::chrono::system_clock;
 public:
     Logger(const String& loggerName, const String& rootPath, bool bLog2Console = true, bool bLog2File = false,
-           spdlog::level::level_enum level                                     = spdlog::level::level_enum::trace);
+           spdlog::level::level_enum level = spdlog::level::level_enum::trace);
     ~Logger();
     ////////////////////////////////////////////////////////////////////////////////
     void newLine() { printLog(""); }
@@ -43,10 +43,10 @@ public:
     void printAligned(const String& s, char padding = PADDING, const String& wrapper = WRAPPER, UInt maxSize = 100);
     void printTextBox(const String& s);
     void printTextBox(const StdVT<String>& strs);
-    void printWarning(const String& s, UInt maxSize            = 100);
+    void printWarning(const String& s, UInt maxSize = 100);
     void printWarningIndent(const String& s,  UInt indentLevel = 1, char trailing = ' ', UInt maxSize = 100);
-    void printError(const String& s, UInt maxSize              = 100);
-    void printErrorIndent(const String& s, UInt indentLevel    = 1, char trailing = ' ', UInt maxSize = 100);
+    void printError(const String& s, UInt maxSize           = 100);
+    void printErrorIndent(const String& s, UInt indentLevel = 1, char trailing = ' ', UInt maxSize = 100);
 
     ////////////////////////////////////////////////////////////////////////////////
     template<class Function> void printRunTime(const char* caption, const Function& function)
@@ -82,9 +82,9 @@ public:
     void printLog(const String& s, spdlog::level::level_enum level);
     void printLogIndent(const String& s, UInt indentLevel = 1, char trailing = ' ');
 
-    void printLogPadding(const String& s, UInt maxSize                                            = 100);
-    void printLogPadding(const String& s, spdlog::level::level_enum level, UInt maxSize           = 100);
-    void printLogPaddingIndent(const String& s, UInt indentLevel                                  = 1, char trailing = ' ', UInt maxSize = 100);
+    void printLogPadding(const String& s, UInt maxSize = 100);
+    void printLogPadding(const String& s, spdlog::level::level_enum level, UInt maxSize = 100);
+    void printLogPaddingIndent(const String& s, UInt indentLevel = 1, char trailing = ' ', UInt maxSize = 100);
     void printLogPaddingIndent(const String& s, spdlog::level::level_enum level, UInt indentLevel = 1, char trailing = ' ', UInt maxSize = 100);
 
     void printLogIf(bool bCondition, const String& s);

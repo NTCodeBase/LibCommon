@@ -14,10 +14,10 @@
 
 #pragma once
 
-#include <BasicTypes.h>
-#include <MathTypes.h>
-#include <CommonForward.h>
-#include <CommonMacros.h>
+#include <LibCommon/BasicTypes.h>
+#include <LibCommon/MathTypes.h>
+#include <LibCommon/CommonForward.h>
+#include <LibCommon/CommonMacros.h>
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 // more advanced types
