@@ -39,7 +39,7 @@ private:
     StdVT<StdVT_UInt> m_ColIndex;
 
     // values corresponding to indices
-    StdVT_Vec<MatrixType> m_ColValue;
+    StdVT_StdVec<MatrixType> m_ColValue;
 
     MatrixType m_Zero = MatrixType(0);
 

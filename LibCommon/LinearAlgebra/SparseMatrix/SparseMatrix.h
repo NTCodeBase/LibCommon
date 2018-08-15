@@ -34,7 +34,7 @@ public:
     StdVT<StdVT_UInt> colIndex;
 
     // values corresponding to indices
-    StdVT_Vec<RealType> colValue;
+    StdVT_StdVec<RealType> colValue;
 
     ////////////////////////////////////////////////////////////////////////////////
     explicit SparseMatrix(UInt size = 0) : nRows(size), colIndex(size), colValue(size) {}
