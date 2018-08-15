@@ -55,6 +55,8 @@ using PairUInt32 = std::pair<UInt, UInt>;
 using PairUInt   = std::pair<UInt, UInt>;
 using PairUInt64 = std::pair<UInt64, UInt64>;
 
+using FuncPtr = const void*;
+
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 template<class Type> using SharedPtr = std::shared_ptr<Type>;
 template<class Type> using UniquePtr = std::unique_ptr<Type>;
