@@ -21,10 +21,10 @@
 #include <locale>
 #include <random>
 
-#include <CommonSetup.h>
-#include <ParallelHelpers/Scheduler.h>
-#include <ParallelHelpers/ParallelObjects.h>
-#include <Utils/MathHelpers.h>
+#include <LibCommon/CommonSetup.h>
+#include <LibCommon/ParallelHelpers/Scheduler.h>
+#include <LibCommon/ParallelHelpers/ParallelObjects.h>
+#include <LibCommon/Utils/MathHelpers.h>
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 namespace NumberHelpers

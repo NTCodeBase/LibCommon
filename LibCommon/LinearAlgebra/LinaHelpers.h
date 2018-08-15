@@ -14,12 +14,12 @@
 
 #pragma once
 
-#include <CommonSetup.h>
-#include <Utils/MathHelpers.h>
-#include <Utils/NumberHelpers.h>
-#include <LinearAlgebra/ImplicitQRSVD.h>
-
 #include <random>
+
+#include <LibCommon/CommonSetup.h>
+#include <LibCommon/Utils/MathHelpers.h>
+#include <LibCommon/Utils/NumberHelpers.h>
+#include <LibCommon/LinearAlgebra/ImplicitQRSVD.h>
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 namespace LinaHelpers

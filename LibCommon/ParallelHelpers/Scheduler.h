@@ -14,7 +14,7 @@
 
 #pragma once
 
-#include <CommonSetup.h>
+#include <LibCommon/CommonSetup.h>
 
 #include <tbb/tbb.h>
 

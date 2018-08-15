@@ -14,10 +14,10 @@
 
 #pragma once
 
-#include <CommonSetup.h>
-#include <Grid/Grid.h>
-#include <Array/Array.h>
-#include <Animation/Animation.h>
+#include <LibCommon/CommonSetup.h>
+#include <LibCommon/Grid/Grid.h>
+#include <LibCommon/Array/Array.h>
+#include <LibCommon/Animation/Animation.h>
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 namespace GeometryObjects
@@ -40,7 +40,7 @@ public:
     GeometryObject(const JParams& jParams) : m_jParams(jParams) {}
     static constexpr UInt objDimension() noexcept { return static_cast<UInt>(N); }
 
-    virtual String            name()                                                              = 0;
+    virtual String            name() = 0;
     virtual RealType          signedDistance(const VecX<N, RealType>& ppos0, bool bNegativeInside = true) const = 0;
     virtual VecX<N, RealType> getAABBMin() const;
     virtual VecX<N, RealType> getAABBMax() const;
@@ -71,8 +71,8 @@ protected:
     RealType m_UniformScale = RealType(1.0);
     //RealType m_InvScale     = RealType(1.0);
 
-    RealType                m_LastTime                 = 0_f;
-    RealType                m_CurrentTime              = 0_f;
+    RealType                m_LastTime    = 0_f;
+    RealType                m_CurrentTime = 0_f;
     MatXxX<N + 1, RealType> m_LastTransformationMatrix = MatXxX<N + 1, RealType>(1.0);
 
     MatXxX<N + 1, RealType> m_TransformationMatrix    = MatXxX<N + 1, RealType>(1.0);

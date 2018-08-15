@@ -14,10 +14,11 @@
 
 #pragma once
 
-#include <CommonSetup.h>
-#include <Utils/MathHelpers.h>
 #include <array>
 #include <cassert>
+
+#include <LibCommon/CommonSetup.h>
+#include <LibCommon/Utils/MathHelpers.h>
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 template<Int Span, Int N, class NodeIdxType, class FlatIdxType>

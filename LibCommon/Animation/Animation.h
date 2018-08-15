@@ -14,8 +14,8 @@
 
 #pragma once
 
-#include <CommonSetup.h>
-#include <Animation/CubicSpline.h>
+#include <LibCommon/CommonSetup.h>
+#include <LibCommon/Animation/CubicSpline.h>
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 // utility to hack glm error

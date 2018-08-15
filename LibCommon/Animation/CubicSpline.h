@@ -14,8 +14,8 @@
 
 #pragma once
 
-#include <CommonSetup.h>
-#include <Utils/MathHelpers.h>
+#include <LibCommon/CommonSetup.h>
+#include <LibCommon/Utils/MathHelpers.h>
 
 #include <cstdio>
 #include <cassert>
@@ -63,7 +63,7 @@ public:
 
     // optional, but if called it has to come be before setPoints()
     void     setBoundary(BDType left, RealType leftValue, BDType right, RealType rightValue, bool bLinearExtrapolation = false);
-    void     setPoints(const StdVT<RealType>& X, const StdVT<RealType>& Y, bool bCubicSpline                           = true);
+    void     setPoints(const StdVT<RealType>& X, const StdVT<RealType>& Y, bool bCubicSpline = true);
     RealType operator()(RealType x) const;
     RealType deriv(Int order, RealType x) const;
 
@@ -175,9 +175,9 @@ void BandMatrix<RealType>::lu_decompose()
         i_max = MathHelpers::min(dim() - 1, k + nLower());                  // nLower not a mistake!
         for(Int i = k + 1; i <= i_max; ++i) {
             assert(this->operator()(k, k) != RealType(0));
-            x                      = -this->operator()(i, k) / this->operator()(k, k);
+            x = -this->operator()(i, k) / this->operator()(k, k);
             this->operator()(i, k) = -x;                                                 // assembly part of L
-            j_max                  = MathHelpers::min(dim() - 1, k + nUpper());
+            j_max = MathHelpers::min(dim() - 1, k + nUpper());
             for(Int j = k + 1; j <= j_max; j++) {
                 // assembly part of R
                 this->operator()(i, j) = this->operator()(i, j) + x * this->operator()(k, j);

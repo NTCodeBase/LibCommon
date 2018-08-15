@@ -14,10 +14,10 @@
 
 #pragma once
 
-#include <CommonSetup.h>
-#include <Array/Array.h>
-#include <Utils/MathHelpers.h>
-#include <ParallelHelpers/ParallelObjects.h>
+#include <LibCommon/CommonSetup.h>
+#include <LibCommon/Array/Array.h>
+#include <LibCommon/Utils/MathHelpers.h>
+#include <LibCommon/ParallelHelpers/ParallelObjects.h>
 #include <cassert>
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
@@ -219,9 +219,9 @@ public:
     void collectIndexToCells(const StdVT_VecN& positions);
     void collectIndexToCells(const StdVT_VecN& positions, StdVT<VecX<N, Int>>& particleCellIdx);
     void collectIndexToCells(const StdVT_VecN& positions, StdVT_VecN& gridCoordinates);
-    void getNeighborList(const StdVT_VecN& positions, StdVT<StdVT_UInt>& neighborList, Int cellSpan                         = 1);
-    void getNeighborList(const VecN& ppos, StdVT_UInt& neighborList, Int cellSpan                                           = 1);
-    void getNeighborList(const StdVT_VecN& positions, StdVT<StdVT_UInt>& neighborList, RealType d2, Int cellSpan            = 1);
+    void getNeighborList(const StdVT_VecN& positions, StdVT<StdVT_UInt>& neighborList, Int cellSpan = 1);
+    void getNeighborList(const VecN& ppos, StdVT_UInt& neighborList, Int cellSpan = 1);
+    void getNeighborList(const StdVT_VecN& positions, StdVT<StdVT_UInt>& neighborList, RealType d2, Int cellSpan = 1);
     void getNeighborList(const StdVT_VecN& positions, const VecN& ppos, StdVT_UInt& neighborList, RealType d2, Int cellSpan = 1);
     void sortData(StdVT_VecN& data);
 

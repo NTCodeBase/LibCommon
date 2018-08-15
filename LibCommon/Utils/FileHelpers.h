@@ -14,8 +14,6 @@
 
 #pragma once
 
-#include <CommonSetup.h>
-
 #include <cstdlib>
 #include <cstdio>
 #include <fstream>
@@ -26,6 +24,8 @@
 
 #include <filesystem>
 namespace fs = std::filesystem;
+
+#include <LibCommon/CommonSetup.h>
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 namespace FileHelpers
