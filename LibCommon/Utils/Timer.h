@@ -55,10 +55,10 @@ public:
         if(m_TimerTicked) {
             tock();
         }
-        m_StrBuilder.str("");
-        m_StrBuilder << Formatters::toString(m_ElapsedTime);
-        m_StrBuilder << "ms";
-        return m_StrBuilder.str();
+        m_Str.clear();
+        m_Str += Formatters::toString(m_ElapsedTime);
+        m_Str += String("ms");
+        return m_Str;
     }
 
     String getRunTime(const String& caption)
@@ -67,13 +67,13 @@ public:
             tock();
         }
 
-        m_StrBuilder.str("");
-        m_StrBuilder << caption;
-        m_StrBuilder << ": ";
-        m_StrBuilder << Formatters::toString(m_ElapsedTime);
-        m_StrBuilder << "ms";
+        m_Str.clear();
+        m_Str += caption;
+        m_Str += String(": ");
+        m_Str += Formatters::toString(m_ElapsedTime);
+        m_Str += String("ms");
 
-        return m_StrBuilder.str();
+        return m_Str;
     }
 
     template<class Function>
@@ -91,7 +91,7 @@ public:
 private:
     Clock::time_point m_StartTime;
     Clock::time_point m_EndTime;
-    std::stringstream m_StrBuilder;
+    String            m_Str;
 
     double m_ElapsedTime { 0.0 };
     bool   m_TimerTicked { false };
