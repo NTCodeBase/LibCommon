@@ -394,4 +394,34 @@ auto extractFiberCotangentStress(const MatXxX<N, RealType>& VP, const MatXxX<N, 
 }
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+template<Int N, class RealType>
+MatXxX<N, RealType> getOrthogonalSystem(const VecX<N, RealType>& d1)
+{
+    if constexpr (N == 2) {
+        MatXxX<N, RealType> M;
+        M[0] = glm::normalize(d1);
+        M[1] = glm::normalize(Vec2<RealType>(-d1.y, d1.x));
+        return M;
+    } else {
+        const Vec3<RealType> basis[3] = { Vec3<RealType>(1, 0, 0), Vec3<RealType>(0, 1, 0), Vec3<RealType>(0, 0, 1) };
+        Vec3<RealType>       u;
+        MatXxX<N, RealType>  M;
+        M[0] = glm::normalize(d1);
+
+        for(UInt i = 0; i < 3; ++i) {
+            if(auto de = glm::dot(M[0], basis[i]); de > RealType(0.1)) {
+                u = basis[i];
+                break;
+            }
+        }
+        auto v = glm::cross(d1, u);
+        u = glm::cross(v, d1);
+
+        M[1] = glm::normalize(u);
+        M[2] = glm::normalize(v);
+        return M;
+    }
+}
+
+//-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 }   // end namespace LinaHelpers
