@@ -48,6 +48,8 @@ template<int N, class Type> using StdVT_MatXxX        = StdVT<MatXxX<N, Type>>;
 template<int M, int N, class Type> using StdVT_MatMxN = StdVT<MatMxN<M, N, Type>>;
 
 ////////////////////////////////////////////////////////////////////////////////
+template<class Type> using StdVT_Quat = StdVT<Quat<Type>>;
+
 template<class Type> using StdVT_Vec2   = StdVT<Vec2<Type>>;
 template<class Type> using StdVT_Vec3   = StdVT<Vec3<Type>>;
 template<class Type> using StdVT_Vec4   = StdVT<Vec4<Type>>;
@@ -84,6 +86,9 @@ using Mat3x3d = Mat3x3<double>;
 using Mat4x4d = Mat4x4<double>;
 
 ////////////////////////////////////////////////////////////////////////////////
+using StdVT_Quatf = StdVT<Quatf>;
+using StdVT_Quatd = StdVT<Quatd>;
+
 using StdVT_Vec2i = StdVT<Vec2i>;
 using StdVT_Vec3i = StdVT<Vec3i>;
 using StdVT_Vec4i = StdVT<Vec4i>;
