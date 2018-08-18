@@ -15,7 +15,7 @@
 #pragma once
 
 #include <LibCommon/CommonSetup.h>
-#include <LibCommon/Utils/Timer.h>
+#include <LibCommon/Timer/Timer.h>
 
 #include <spdlog/spdlog.h>
 
