@@ -20,6 +20,9 @@
 #include <sstream>
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+//#define __NT_SUPPORT_DOUBLE_NUMBER
+
+//-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 #if defined(_WIN32) || defined(_WIN64)
 #   define __NT_WINDOWS_OS__
 #elif defined(__APPLE__)
@@ -306,22 +309,38 @@ inline void throwIfFailed(HRESULT hr)
     static constexpr auto TinyReal() { return std::numeric_limits<RealType>::min(); } \
     static constexpr auto HugeReal() { return std::numeric_limits<RealType>::max(); }
 
-#define __NT_INSTANTIATE_CLASS_COMMON_TYPES(ClassName) \
-    template class ClassName<float>;                   \
+#ifdef __NT_SUPPORT_DOUBLE_NUMBER
+#  define __NT_INSTANTIATE_CLASS_COMMON_TYPES(ClassName) \
+    template class ClassName<float>;                     \
     template class ClassName<double>;
 
-#define __NT_INSTANTIATE_STRUCT_COMMON_TYPES(StructName) \
-    template struct StructName<float>;                   \
+#  define __NT_INSTANTIATE_STRUCT_COMMON_TYPES(StructName) \
+    template struct StructName<float>;                     \
     template struct StructName<double>;
 
-#define __NT_INSTANTIATE_CLASS_COMMON_DIMENSIONS_AND_TYPES(ClassName) \
-    template class ClassName<2, float>;                               \
-    template class ClassName<3, float>;                               \
-    template class ClassName<2, double>;                              \
+#  define __NT_INSTANTIATE_CLASS_COMMON_DIMENSIONS_AND_TYPES(ClassName) \
+    template class ClassName<2, float>;                                 \
+    template class ClassName<3, float>;                                 \
+    template class ClassName<2, double>;                                \
     template class ClassName<3, double>;
 
-#define __NT_INSTANTIATE_STRUCT_COMMON_DIMENSIONS_AND_TYPES(StructName) \
-    template struct StructName<2, float>;                               \
-    template struct StructName<3, float>;                               \
-    template struct StructName<2, double>;                              \
+#  define __NT_INSTANTIATE_STRUCT_COMMON_DIMENSIONS_AND_TYPES(StructName) \
+    template struct StructName<2, float>;                                 \
+    template struct StructName<3, float>;                                 \
+    template struct StructName<2, double>;                                \
     template struct StructName<3, double>;
+#else
+#  define __NT_INSTANTIATE_CLASS_COMMON_TYPES(ClassName) \
+    template class ClassName<float>;
+
+#  define __NT_INSTANTIATE_STRUCT_COMMON_TYPES(StructName) \
+    template struct StructName<float>;
+
+#  define __NT_INSTANTIATE_CLASS_COMMON_DIMENSIONS_AND_TYPES(ClassName) \
+    template class ClassName<2, float>;                                 \
+    template class ClassName<3, float>;
+
+#  define __NT_INSTANTIATE_STRUCT_COMMON_DIMENSIONS_AND_TYPES(StructName) \
+    template struct StructName<2, float>;                                 \
+    template struct StructName<3, float>;
+#endif
