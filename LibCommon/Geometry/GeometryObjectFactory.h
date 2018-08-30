@@ -26,7 +26,6 @@ template<Int N, class RealType>
 SharedPtr<GeometryObjects::GeometryObject<N, RealType>> createGeometry(const String& geometryType, const JParams& jParams);
 
 template<Int N, class RealType>
-SharedPtr<GeometryObjects::GeometryObject<N, RealType>> combineGeometryObjects(const StdVT<SharedPtr<GeometryObjects::GeometryObject<N, RealType>>>& geometryObjs,
-                                                                               SharedPtr<GeometryObjects::GeometryObject<N, RealType>>& unifiedGeometry);
+SharedPtr<GeometryObjects::GeometryObject<N, RealType>> combineGeometryObjects(const StdVT<SharedPtr<GeometryObjects::GeometryObject<N, RealType>>>& geometryObjs);
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 }   // end namespace GeometryObjectFactory

@@ -232,7 +232,7 @@ bool MeshLoader::loadObj(const String& meshFile)
                 for(int k = 0; k < 2; ++k) {
                     tex[0][k] = attrib.texcoords[2 * t0 + k];
                     tex[1][k] = attrib.texcoords[2 * t1 + k];
-                    tex[2][k] = attrib.texcoords[2 * t1 + k];
+                    tex[2][k] = attrib.texcoords[2 * t2 + k];
                 }
 
                 for(int k = 0; k < 3; ++k) {

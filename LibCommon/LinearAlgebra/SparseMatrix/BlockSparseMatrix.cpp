@@ -23,8 +23,8 @@
 template<class MatrixType>
 void BlockSparseMatrix<MatrixType>::reserve(UInt size)
 {
-    m_ColIndex.reserve(m_Size);
-    m_ColValue.reserve(m_Size);
+    m_ColIndex.reserve(size);
+    m_ColValue.reserve(size);
 }
 
 template<class MatrixType>
@@ -372,8 +372,8 @@ void FixedBlockSparseMatrix<MatrixType>::multiply(const FixedBlockSparseMatrix<M
 
 #define __BNN_INSTANTIATE_BLOCK_SPARSE_MATRIX_FUNCS(matrixType, indexType)                                                          \
     template const auto& BlockSparseMatrix<matrixType >::operator()(indexType i, indexType j) const;                                \
-    template void BlockSparseMatrix<matrixType>::setElement<indexType>(indexType i, indexType j, const matrixType &newValue);       \
-    template void BlockSparseMatrix<matrixType>::addElement<indexType>(indexType i, indexType j, const matrixType &incrementValue); \
+    template void BlockSparseMatrix<matrixType>::setElement<indexType>(indexType i, indexType j, const matrixType& newValue);       \
+    template void BlockSparseMatrix<matrixType>::addElement<indexType>(indexType i, indexType j, const matrixType& incrementValue); \
     template void BlockSparseMatrix<matrixType>::eraseElement<indexType>(indexType i, indexType j);
 
 __BNN_INSTANTIATE_BLOCK_SPARSE_MATRIX_FUNCS(Mat2x2f, Int)

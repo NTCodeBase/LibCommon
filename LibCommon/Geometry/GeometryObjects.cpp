@@ -139,14 +139,14 @@ bool GeometryObject<N, RealType>::updateTransformation(UInt frame /*= 0*/, RealT
     }
 
     ////////////////////////////////////////////////////////////////////////////////
-    m_LastTime                 = m_CurrentTime;
-    m_CurrentTime              = frameDuration * RealType(frame + fraction);
+    m_LastTime    = m_CurrentTime;
+    m_CurrentTime = frameDuration * RealType(frame + fraction);
     m_LastTransformationMatrix = m_TransformationMatrix;
     ////////////////////////////////////////////////////////////////////////////////
     m_TransformationMatrix    = m_Animation.getTransformation(frame, fraction);
     m_InvTransformationMatrix = glm::inverse(m_TransformationMatrix);
-    m_UniformScale            = m_Animation.getUniformScale(frame, fraction);
-    m_bTransformed            = true;
+    m_UniformScale = m_Animation.getUniformScale(frame, fraction);
+    m_bTransformed = true;
     ////////////////////////////////////////////////////////////////////////////////
     return true;
 }
@@ -185,8 +185,8 @@ void GeometryObject<N, RealType>::parseParameters(const JParams& jParams)
         bool bCubicInterpolationTranslation = true;
         bool bCubicInterpolationRotation    = true;
         bool bCubicInterpolationScale       = true;
-        bool bPeriodic                      = false;
-        UInt startFrame                     = 0;
+        bool bPeriodic  = false;
+        UInt startFrame = 0;
 
         JSONHelpers::readBool(jAnimation, bCubicInterpolationTranslation, "CubicInterpolationTranslation");
         JSONHelpers::readBool(jAnimation, bCubicInterpolationRotation,    "CubicInterpolationRotation");
@@ -226,8 +226,8 @@ VecX<N, RealType> GeometryObject<N, RealType>::getVelocityAt(const VecX<N, RealT
         return VecX<N, RealType>(0);
     }
     auto currentCenter = transform(VecX<N, RealType>(0));
-    auto pC            = ppos - currentCenter;
-    auto lastPC        = VecX<N, RealType>(m_LastTransformationMatrix * VecX<N + 1, RealType>(invTransform(pC), 1.0));
+    auto pC     = ppos - currentCenter;
+    auto lastPC = VecX<N, RealType>(m_LastTransformationMatrix * VecX<N + 1, RealType>(invTransform(pC), 1.0));
 
     return (pC - lastPC) / (m_CurrentTime - m_LastTime);
 }
@@ -580,8 +580,7 @@ RealType TriangleObject<N, RealType>::signedDistance(const VecX<N, RealType>& pp
 {
     __NT_REQUIRE_MSG(N == 2, "Object dimension != 2");
     auto ppos = invTransform(ppos0);
-    if constexpr(N == 2)
-    {
+    if constexpr(N == 2) {
         auto p = VecX<N + 1, RealType>(ppos, 0);
         auto a = VecX<N + 1, RealType>(m_Vertices[0], 0);
         auto b = VecX<N + 1, RealType>(m_Vertices[1], 0);
@@ -600,15 +599,18 @@ RealType TriangleObject<N, RealType>::signedDistance(const VecX<N, RealType>& pp
         if(sgn(glm::dot(glm::cross(ba, nor), pa)) +
            sgn(glm::dot(glm::cross(cb, nor), pb)) +
            sgn(glm::dot(glm::cross(ac, nor), pc)) < 2) {
-            return sqrt(std::min(std::min(glm::length2(ba * MathHelpers::clamp(dot(ba, pa) / glm::length2(ba), RealType(0), RealType(1.0)) - pa),
-                                          glm::length2(cb * MathHelpers::clamp(dot(cb, pb) / glm::length2(cb), RealType(0), RealType(1.0)) - pb)),
-                                 glm::length2(ac * MathHelpers::clamp(dot(ac, pc) / glm::length2(ac), RealType(0), RealType(1.0)) - pc)));
+            auto d = sqrt(std::min(std::min(glm::length2(ba * MathHelpers::clamp(dot(ba, pa) / glm::length2(ba), RealType(0), RealType(1.0)) - pa),
+                                            glm::length2(cb * MathHelpers::clamp(dot(cb, pb) / glm::length2(cb), RealType(0), RealType(1.0)) - pb)),
+                                   glm::length2(ac * MathHelpers::clamp(dot(ac, pc) / glm::length2(ac), RealType(0), RealType(1.0)) - pc)));
+            return bNegativeInside ? d : -d;
         } else {
-            return -sqrt(std::min(std::min(glm::length2(ba * MathHelpers::clamp(dot(ba, pa) / glm::length2(ba), RealType(0), RealType(1.0)) - pa),
-                                           glm::length2(cb * MathHelpers::clamp(dot(cb, pb) / glm::length2(cb), RealType(0), RealType(1.0)) - pb)),
-                                  glm::length2(ac * MathHelpers::clamp(dot(ac, pc) / glm::length2(ac), RealType(0), RealType(1.0)) - pc)));
+            auto d = -sqrt(std::min(std::min(glm::length2(ba * MathHelpers::clamp(dot(ba, pa) / glm::length2(ba), RealType(0), RealType(1.0)) - pa),
+                                             glm::length2(cb * MathHelpers::clamp(dot(cb, pb) / glm::length2(cb), RealType(0), RealType(1.0)) - pb)),
+                                    glm::length2(ac * MathHelpers::clamp(dot(ac, pc) / glm::length2(ac), RealType(0), RealType(1.0)) - pc)));
+            return bNegativeInside ? d : -d;
         }
     } else {
+        __NT_CALLED_TO_WRONG_PLACE
         return 0;
     }
 }
