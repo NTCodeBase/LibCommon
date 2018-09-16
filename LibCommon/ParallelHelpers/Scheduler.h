@@ -21,9 +21,8 @@
 #include <utility>
 #include <algorithm>
 #include <functional>
-#include <vector>
 
-//#define __Banana_No_Parallel
+//#define __NT_NO_PARALLEL
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 namespace Scheduler
@@ -32,7 +31,7 @@ namespace Scheduler
 inline void  warmUp()
 {
     tbb::parallel_for(tbb::blocked_range<Int>(0, 1048576),
-                      [&](tbb::blocked_range<Int> r)
+                      [&](const tbb::blocked_range<Int>& r)
                       {
                           for(Int i = r.begin(), iEnd = r.end(); i != iEnd; ++i) {
                               volatile int x;
@@ -45,15 +44,15 @@ inline void  warmUp()
 template<class IndexType, class Function>
 inline void parallel_for(IndexType beginIdx, IndexType endIdx, Function&& function)
 {
-#if defined(__Banana_No_Parallel) || defined(__Banana_Disable_Parallel) || defined(__BNN_NO_PARALLEL) || defined(__BNN_DISABLE_PARALLEL)
+#if defined(__NT_NO_PARALLEL) || defined(__NT_DISABLE_PARALLEL)
     for(IndexType i = beginIdx; i < endIdx; ++i) {
         function(i);
     }
 #else
     tbb::parallel_for(tbb::blocked_range<IndexType>(beginIdx, endIdx),
-                      [&](tbb::blocked_range<IndexType> r)
+                      [&](const tbb::blocked_range<IndexType>& r)
                       {
-                          for(IndexType i = r.begin(), iEnd = r.end(); i != iEnd; ++i) {
+                          for(IndexType i = r.begin(), iEnd = r.end(); i < iEnd; ++i) {
                               function(i);
                           }
                       });
