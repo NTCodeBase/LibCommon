@@ -230,20 +230,6 @@ void GeometryObject<N, RealType>::parseParameters(const JParams& jParams)
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 template<Int N, class RealType>
-VecX<N, RealType> GeometryObject<N, RealType>::getVelocityAt(const VecN& ppos) const
-{
-    if(std::abs(m_CurrentTime - m_LastTime) < MEpsilon<RealType>()) {
-        return VecN(0);
-    }
-    auto currentCenter = transform(VecN(0));
-    auto pC     = ppos - currentCenter;
-    auto lastPC = VecN(m_LastTransformationMatrix * VecX<N + 1, RealType>(invTransform(pC), 1.0));
-
-    return (pC - lastPC) / (m_CurrentTime - m_LastTime);
-}
-
-//-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-template<Int N, class RealType>
 VecX<N, RealType> GeometryObject<N, RealType>::transform(const VecN& ppos) const
 {
     if(!m_bTransformed) {
@@ -272,7 +258,7 @@ VecX<N, RealType> GeometryObject<N, RealType>::invTransform(const VecN& ppos) co
 template<Int N, class RealType>
 RealType BoxObject<N, RealType>::signedDistance(const VecN& ppos0, bool bNegativeInside /*= true*/) const
 {
-    auto     ppos = invTransform(ppos0);
+    auto     ppos = this->invTransform(ppos0);
     RealType mind = HugeReal();
 
     if(NumberHelpers::isInside(ppos, m_BoxMin, m_BoxMax)) {
@@ -310,114 +296,12 @@ VecX<N, RealType> BoxObject<N, RealType>::getAABBMax() const
 }
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-////////////////////////////////////////////////////////////////////////////////
-template<Int N, class RealType>
-void BoxObject<N, RealType>::addKeyFrame(UInt frame, const VecN& bMin, const VecN& bMax)
-{
-    if(m_KeyFrames.size() == 0) {
-        m_KeyFrames.emplace_back(BoxKeyFrame(0, m_BoxMin, m_BoxMax));
-    }
-    m_KeyFrames.emplace_back(BoxKeyFrame(frame, bMin, bMax));
-}
-
-////////////////////////////////////////////////////////////////////////////////
-template<Int N, class RealType>
-void BoxObject<N, RealType>::makeReadyAnimation()
-{
-    size_t nKeyFrames = m_KeyFrames.size();
-    if(nKeyFrames <= 1) {
-        return;
-    }
-
-    StdVT<RealType> frames;
-    StdVT<RealType> bMins[N];
-    StdVT<RealType> bMaxs[N];
-
-    for(Int d = 0; d < N; ++d) {
-        bMins[d].reserve(nKeyFrames);
-        bMaxs[d].reserve(nKeyFrames);
-    }
-    frames.reserve(nKeyFrames);
-
-    ////////////////////////////////////////////////////////////////////////////////
-    for(const auto& keyFrame : m_KeyFrames) {
-        m_MaxFrame = (m_MaxFrame < keyFrame.frame) ? keyFrame.frame : m_MaxFrame;
-
-        for(Int d = 0; d < N; ++d) {
-            bMins[d].push_back(keyFrame.bMin[d]);
-            bMaxs[d].push_back(keyFrame.bMax[d]);
-        }
-        frames.push_back(static_cast<RealType>(keyFrame.frame));
-    }
-
-    for(Int d = 0; d < N; ++d) {
-        m_BoxMinSpline[d].setPoints(frames, bMins[d]);
-        m_BoxMaxSpline[d].setPoints(frames, bMaxs[d]);
-    }
-
-    ////////////////////////////////////////////////////////////////////////////////
-    m_bAnimationReady = true;
-}
-
-////////////////////////////////////////////////////////////////////////////////
-template<Int N, class RealType>
-bool BoxObject<N, RealType>::updateTransformation(UInt frame /*= 0*/, RealType fraction /*= RealType(0)*/,
-                                                  RealType frameDuration /*= RealType(1.0_f / 30.0_f)*/)
-{
-    GeometryObject<N, RealType>::updateTransformation(frame, fraction, frameDuration);
-
-    if(!m_bAnimationReady) {
-        return false;
-    }
-
-    if(m_bPeriodic) {
-        if(frame < m_StartFrame) {
-            return false;
-        } else {
-            frame = ((frame - m_StartFrame) % (m_MaxFrame - m_StartFrame)) + m_StartFrame;
-        }
-    }
-    RealType x = static_cast<RealType>(frame) + fraction;
-
-    for(Int d = 0; d < N; ++d) {
-        m_BoxMin[d] = m_BoxMinSpline[d](x);
-        m_BoxMax[d] = m_BoxMaxSpline[d](x);
-    }
-
-    return true;
-}
-
-////////////////////////////////////////////////////////////////////////////////
 template<Int N, class RealType>
 void BoxObject<N, RealType>::parseParameters(const JParams& jParams)
 {
     GeometryObject<N, RealType>::parseParameters(jParams);
-    ////////////////////////////////////////////////////////////////////////////////
-    VecN bMin, bMax;
-    if(JSONHelpers::readVector(jParams, bMin, "BoxMin") && JSONHelpers::readVector(jParams, bMax, "BoxMax")) {
+    if(VecN bMin, bMax; JSONHelpers::readVector(jParams, bMin, "BoxMin") || JSONHelpers::readVector(jParams, bMax, "BoxMax")) {
         setOriginalBox(bMin, bMax);
-    }
-
-    if(jParams.find("Animation") != jParams.end()) {
-        auto jAnimation = jParams["Animation"];
-        bool bPeriodic  = false;
-        UInt startFrame = 0;
-
-        if(JSONHelpers::readBool(jAnimation, bPeriodic, "Periodic")) {
-            JSONHelpers::readValue(jAnimation, startFrame, "StartFrame");
-            setPeriodic(bPeriodic, startFrame);
-        }
-
-        __NT_REQUIRE(jAnimation.find("KeyFrames") != jAnimation.end());
-        for(auto& jKeyFrame : jAnimation["KeyFrames"]) {
-            UInt frame;
-            __NT_REQUIRE(JSONHelpers::readValue(jKeyFrame, frame, "Frame"));
-            if(JSONHelpers::readVector(jKeyFrame, bMin, "BoxMin") && JSONHelpers::readVector(jKeyFrame, bMax, "BoxMax")) {
-                addKeyFrame(frame, bMin, bMax);
-            }
-        }
-
-        makeReadyAnimation();
     }
 }
 

@@ -56,11 +56,12 @@ public:
     auto transformed() const { return m_bTransformed; }
     const auto& getTransformationMatrix() const { return m_TransformationMatrix; }
 
-    VecN getVelocityAt(const VecN& ppos) const;
     VecN transform(const VecN& ppos) const;
     VecN invTransform(const VecN& ppos) const;
 
     virtual bool updateTransformation(UInt frame = 0, RealType frameFraction = RealType(0), RealType frameDuration = RealType(1.0 / 30.0));
+
+    VecN getLinearVelocity(const VecN& ppos) const;
 
 protected:
     virtual void parseParameters(const JParams& jParams);
@@ -110,35 +111,11 @@ public:
     const auto& originalBoxMin() const { return m_BoxMin; }
     const auto& originalBoxMax() const { return m_BoxMax; }
 
-    void addKeyFrame(UInt frame, const VecN& bMin, const VecN& bMax);
-    void setPeriodic(bool bPeriodic, UInt startFrame = 0) { m_bPeriodic = bPeriodic; m_StartFrame = startFrame; }
-
-    void         makeReadyAnimation();
-    virtual bool updateTransformation(UInt frame = 0, RealType fraction = RealType(0), RealType frameDuration = RealType(1.0_f / 30.0_f)) override;
-
 protected:
     virtual void parseParameters(const JParams& jParams) override;
 
     VecN m_BoxMin = VecN(-1.0);
     VecN m_BoxMax = VecN(1.0);
-    ////////////////////////////////////////////////////////////////////////////////
-    // animation data
-    struct BoxKeyFrame
-    {
-        BoxKeyFrame() = default;
-        BoxKeyFrame(UInt frame_, const VecN& bMin_, const VecN& bMax_) { frame = frame_; bMin = bMin_; bMax = bMax_; }
-        UInt frame = 0;
-        VecN bMin  = VecN(-1.0);
-        VecN bMax  = VecN(1.0);
-    };
-
-    StdVT<BoxKeyFrame>    m_KeyFrames;
-    CubicSpline<RealType> m_BoxMinSpline[N];
-    CubicSpline<RealType> m_BoxMaxSpline[N];
-    UInt                  m_StartFrame      = 0;
-    UInt                  m_MaxFrame        = 0;
-    bool                  m_bPeriodic       = false;
-    bool                  m_bAnimationReady = false;
 };
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
