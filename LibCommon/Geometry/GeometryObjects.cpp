@@ -190,7 +190,7 @@ void GeometryObject<N, RealType>::parseParameters(const JParams& jParams)
     // animation data
     if(jParams.find("Animation") != jParams.end()) {
         for(auto& jAnimation   : jParams["Animation"]) {
-            auto animationObj = getAnimation().emplace_back(RigidBodyAnimation<N, RealType> {});
+            auto& animationObj = getAnimation().emplace_back(RigidBodyAnimation<N, RealType> {});
 
             if(bool bPeriodic; JSONHelpers::readBool(jAnimation, bPeriodic, "Periodic")) {
                 animationObj.setPeriodic(bPeriodic);
