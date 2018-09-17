@@ -97,7 +97,7 @@ VecX<N, RealType> GeometryObject<N, RealType>::gradSignedDistance(const VecX<N, 
 template<Int N, class RealType>
 void GeometryObject<N, RealType>::setTranslation(const VecX<N, RealType>& translation)
 {
-    m_Animation.keyFrames()[0].translation = translation;
+    m_Animations.keyFrames()[0].translation = translation;
     updateTransformation();
 }
 
@@ -106,7 +106,7 @@ template<Int N, class RealType>
 void GeometryObject<N, RealType>::setRotation(const VecX<N + 1, RealType>& rotation)
 {
     if(rotation[N] != 0) {
-        m_Animation.keyFrames()[0].rotation = rotation;
+        m_Animations.keyFrames()[0].rotation = rotation;
         updateTransformation();
     }
 }
@@ -115,7 +115,7 @@ void GeometryObject<N, RealType>::setRotation(const VecX<N + 1, RealType>& rotat
 template<Int N, class RealType>
 void GeometryObject<N, RealType>::setUniformScale(const RealType scaleVal)
 {
-    m_Animation.keyFrames()[0].uniformScale = scaleVal;
+    m_Animations.keyFrames()[0].uniformScale = scaleVal;
     updateTransformation();
 }
 
@@ -134,7 +134,7 @@ void GeometryObject<N, RealType>::resetTransformation()
 template<Int N, class RealType>
 bool GeometryObject<N, RealType>::updateTransformation(UInt frame /*= 0*/, RealType fraction /*= RealType(0)*/, RealType frameDuration /*= RealType(1.0_f / 30.0_f)*/)
 {
-    if(frame > 0 && m_Animation.nKeyFrames() == 1) {
+    if(frame > 0 && m_Animations.nKeyFrames() == 1) {
         return false;
     }
 
@@ -143,9 +143,9 @@ bool GeometryObject<N, RealType>::updateTransformation(UInt frame /*= 0*/, RealT
     m_CurrentTime = frameDuration * RealType(frame + fraction);
     m_LastTransformationMatrix = m_TransformationMatrix;
     ////////////////////////////////////////////////////////////////////////////////
-    m_TransformationMatrix    = m_Animation.getTransformation(frame, fraction);
+    m_TransformationMatrix    = m_Animations.getTransformation(frame, fraction);
     m_InvTransformationMatrix = glm::inverse(m_TransformationMatrix);
-    m_UniformScale = m_Animation.getUniformScale(frame, fraction);
+    m_UniformScale = m_Animations.getUniformScale(frame, fraction);
     m_bTransformed = true;
     ////////////////////////////////////////////////////////////////////////////////
     return true;
@@ -173,46 +173,47 @@ void GeometryObject<N, RealType>::parseParameters(const JParams& jParams)
     ////////////////////////////////////////////////////////////////////////////////
     // animation data
     if(jParams.find("Animation") != jParams.end()) {
-        auto  jAnimation = jParams["Animation"];
-        auto& aniObj     = getAnimation();
+        for(auto& jAnimation   : jParams["Animation"]) {
+            auto animationObj = getAnimation().emplace_back(Animation<N, RealType> {});
 
-        if(bool bPeriodic; JSONHelpers::readBool(jAnimation, bPeriodic, "Periodic")) {
-            aniObj.setPeriodic(bPeriodic);
-        }
-        if(UInt startFrame, endFrame;
-           JSONHelpers::readValue(jAnimation, startFrame, "StartFrame") || JSONHelpers::readValue(jAnimation, endFrame, "EndFrame")) {
-            aniObj.setAnimationRange(startFrame, endFrame);
-        }
-
-        __NT_REQUIRE(jAnimation.find("KeyFrames") != jAnimation.end());
-        for(auto& jKeyFrame : jAnimation["KeyFrames"]) {
-            KeyFrame<N, RealType> keyFrame;
-            __NT_REQUIRE(JSONHelpers::readValue(jKeyFrame, keyFrame.frame, "Frame"));
-
-            // translation
-            JSONHelpers::readVector(jKeyFrame, keyFrame.translation, "Translation");
-
-            // rotation
-            if(VecX<N, RealType> rotationEulerAngles;
-               JSONHelpers::readVector(jKeyFrame, rotationEulerAngles, "RotationEulerAngles") ||
-               JSONHelpers::readVector(jKeyFrame, rotationEulerAngles, "RotationEulerAngle")) {
-                keyFrame.rotation = MathHelpers::EulerToAxisAngle(rotationEulerAngles, false, true);
-            } else if(JSONHelpers::readVector(jKeyFrame, keyFrame.rotation, "RotationAxisAngle")) {
-                keyFrame.rotation = glm::radians(keyFrame.rotation);
+            if(bool bPeriodic; JSONHelpers::readBool(jAnimation, bPeriodic, "Periodic")) {
+                animationObj.setPeriodic(bPeriodic);
+            }
+            if(UInt startFrame, endFrame;
+               JSONHelpers::readValue(jAnimation, startFrame, "StartFrame") || JSONHelpers::readValue(jAnimation, endFrame, "EndFrame")) {
+                animationObj.setAnimationRange(startFrame, endFrame);
             }
 
-            // scale
-            JSONHelpers::readValue(jKeyFrame, keyFrame.uniformScale, "Scale");
-            aniObj.addKeyFrame(keyFrame);
-        }
+            __NT_REQUIRE(jAnimation.find("KeyFrames") != jAnimation.end());
+            for(auto& jKeyFrame : jAnimation["KeyFrames"]) {
+                KeyFrame<N, RealType> keyFrame;
+                __NT_REQUIRE(JSONHelpers::readValue(jKeyFrame, keyFrame.frame, "Frame"));
 
-        bool bCubicInterpolationTranslation = true;
-        bool bCubicInterpolationRotation    = true;
-        bool bCubicInterpolationScale       = true;
-        JSONHelpers::readBool(jAnimation, bCubicInterpolationTranslation, "CubicInterpolationTranslation");
-        JSONHelpers::readBool(jAnimation, bCubicInterpolationRotation,    "CubicInterpolationRotation");
-        JSONHelpers::readBool(jAnimation, bCubicInterpolationScale,       "CubicInterpolationScale");
-        aniObj.makeReady(bCubicInterpolationTranslation, bCubicInterpolationRotation, bCubicInterpolationScale);
+                // translation
+                JSONHelpers::readVector(jKeyFrame, keyFrame.translation, "Translation");
+
+                // rotation
+                if(VecX<N, RealType> rotationEulerAngles;
+                   JSONHelpers::readVector(jKeyFrame, rotationEulerAngles, "RotationEulerAngles") ||
+                   JSONHelpers::readVector(jKeyFrame, rotationEulerAngles, "RotationEulerAngle")) {
+                    keyFrame.rotation = MathHelpers::EulerToAxisAngle(rotationEulerAngles, false, true);
+                } else if(JSONHelpers::readVector(jKeyFrame, keyFrame.rotation, "RotationAxisAngle")) {
+                    keyFrame.rotation = glm::radians(keyFrame.rotation);
+                }
+
+                // scale
+                JSONHelpers::readValue(jKeyFrame, keyFrame.uniformScale, "Scale");
+                animationObj.addKeyFrame(keyFrame);
+            }
+
+            bool bCubicInterpolationTranslation = true;
+            bool bCubicInterpolationRotation    = true;
+            bool bCubicInterpolationScale       = true;
+            JSONHelpers::readBool(jAnimation, bCubicInterpolationTranslation, "CubicInterpolationTranslation");
+            JSONHelpers::readBool(jAnimation, bCubicInterpolationRotation,    "CubicInterpolationRotation");
+            JSONHelpers::readBool(jAnimation, bCubicInterpolationScale,       "CubicInterpolationScale");
+            animationObj.makeReady(bCubicInterpolationTranslation, bCubicInterpolationRotation, bCubicInterpolationScale);
+        }
     }
 }
 

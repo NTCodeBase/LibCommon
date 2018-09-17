@@ -53,7 +53,7 @@ public:
     void setUniformScale(const RealType scaleVal);
     void resetTransformation();
 
-    auto& getAnimation() { return m_Animation; }
+    auto& getAnimation() { return m_Animations; }
     auto transformed() const { return m_bTransformed; }
     const auto& getTransformationMatrix() const { return m_TransformationMatrix; }
 
@@ -75,9 +75,9 @@ protected:
     RealType                m_CurrentTime = 0_f;
     MatXxX<N + 1, RealType> m_LastTransformationMatrix = MatXxX<N + 1, RealType>(1.0);
 
-    MatXxX<N + 1, RealType> m_TransformationMatrix    = MatXxX<N + 1, RealType>(1.0);
-    MatXxX<N + 1, RealType> m_InvTransformationMatrix = MatXxX<N + 1, RealType>(1.0);
-    Animation<N, RealType>  m_Animation;
+    MatXxX<N + 1, RealType>       m_TransformationMatrix    = MatXxX<N + 1, RealType>(1.0);
+    MatXxX<N + 1, RealType>       m_InvTransformationMatrix = MatXxX<N + 1, RealType>(1.0);
+    StdVT<Animation<N, RealType>> m_Animations;
 };
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
