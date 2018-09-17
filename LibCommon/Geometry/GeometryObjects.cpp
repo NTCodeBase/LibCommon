@@ -99,6 +99,7 @@ void GeometryObject<N, RealType>::setTranslation(const VecN& translation)
 {
     m_IntrinsicTranslation = translation;
     updateIntrinsicTransformation();
+    updateTransformation();
 }
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
@@ -108,6 +109,7 @@ void GeometryObject<N, RealType>::setRotation(const VecX<N + 1, RealType>& rotat
     if(rotation[N] != 0) {
         m_IntrinsicRotation = rotation;
         updateIntrinsicTransformation();
+        updateTransformation();
     }
 }
 
@@ -117,6 +119,7 @@ void GeometryObject<N, RealType>::setUniformScale(const RealType scaleVal)
 {
     m_UniformScale = scaleVal;
     updateIntrinsicTransformation();
+    updateTransformation();
 }
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
@@ -163,7 +166,6 @@ void GeometryObject<N, RealType>::updateIntrinsicTransformation()
     m_IntrinsicTransformationMatrix = glm::scale(m_IntrinsicTransformationMatrix, VecN(m_UniformScale));
     m_IntrinsicTransformationMatrix = glm::rotate(m_IntrinsicTransformationMatrix, m_IntrinsicRotation[N], VecN(m_IntrinsicRotation));
     m_IntrinsicTransformationMatrix = glm::translate(m_IntrinsicTransformationMatrix, m_IntrinsicTranslation);
-    m_bTransformed = true;
 }
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
