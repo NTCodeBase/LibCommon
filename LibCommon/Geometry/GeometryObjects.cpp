@@ -128,9 +128,8 @@ void GeometryObject<N, RealType>::resetTransformation()
     m_IntrinsicRotation             = VecNp1(VecN(1), 0);
     m_UniformScale                  = RealType(1.0);
     m_IntrinsicTransformationMatrix = MatNp1xNp1(1.0);
-
-    m_TransformationMatrix    = MatNp1xNp1(1.0);
-    m_InvTransformationMatrix = MatNp1xNp1(1.0);
+    m_TransformationMatrix          = MatNp1xNp1(1.0);
+    m_InvTransformationMatrix       = MatNp1xNp1(1.0);
 }
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
