@@ -284,14 +284,14 @@ RealType BoxObject<N, RealType>::signedDistance(const VecN& ppos0, bool bNegativ
 template<Int N, class RealType>
 VecX<N, RealType> BoxObject<N, RealType>::getAABBMin() const
 {
-    return transform(m_BoxMin) - VecN(this->m_UniformScale) * std::sqrt(glm::compAdd(VecN(1.0)));
+    return this->transform(m_BoxMin) - VecN(this->m_UniformScale) * std::sqrt(glm::compAdd(VecN(1.0)));
 }
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 template<Int N, class RealType>
 VecX<N, RealType> BoxObject<N, RealType>::getAABBMax() const
 {
-    return transform(m_BoxMax) + VecN(this->m_UniformScale) * std::sqrt(glm::compAdd(VecN(1.0)));
+    return this->transform(m_BoxMax) + VecN(this->m_UniformScale) * std::sqrt(glm::compAdd(VecN(1.0)));
 }
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
