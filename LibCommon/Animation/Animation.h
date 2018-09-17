@@ -21,11 +21,7 @@
 // utility to hack glm error
 namespace glm
 {
-template<class T>
-inline Mat3x3<T> rotate(Mat3x3<T> const& m, T angle, Vec2<T> const&)
-{
-    return glm::rotate(m, angle);
-}
+template<class T> Mat3x3<T> rotate(const Mat3x3<T>& m, T angle, const Vec2<T>&) { return glm::rotate(m, angle); }
 }
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
@@ -36,24 +32,17 @@ struct KeyFrame
     __NT_TYPE_ALIASING
     ////////////////////////////////////////////////////////////////////////////////
     KeyFrame() = default;
-    KeyFrame(UInt frame_, const VecN& translation_) { frame = frame_; translation = translation_; }
-    KeyFrame(UInt frame_, const VecX<N + 1, RealType>& rotation_) { frame = frame_; rotation = rotation_; }
-    KeyFrame(UInt frame_, RealType scale_) { frame = frame_; uniformScale = scale_; invScale = RealType(1.0) / scale_; }
+    KeyFrame(UInt frame_, const VecN& translation_) : frame(frame_), translation(translation_) {}
+    KeyFrame(UInt frame_, const VecX<N + 1, RealType>& rotation_) : frame(frame_), rotation(rotation_) {}
+    KeyFrame(UInt frame_, RealType scale_) : frame(frame_), uniformScale(scale_), invScale(RealType(1.0) / scale_) {}
     KeyFrame(UInt frame_, const VecN& translation_, const VecX<N + 1, RealType>& rotation_, RealType scale_)
-    {
-        frame        = frame_;
-        translation  = translation_;
-        rotation     = rotation_;
-        uniformScale = scale_;
-        invScale     = RealType(1.0) / scale_;
-    }
-
+        : frame(frame_), translation(translation_), rotation(rotation_), uniformScale(scale_), invScale(RealType(1.0) / scale_) {}
     ////////////////////////////////////////////////////////////////////////////////
-    UInt                  frame        = 0;
-    VecN                  translation  = VecN(0);
-    VecX<N + 1, RealType> rotation     = VecX<N + 1, RealType>(VecN(1), 0);
-    RealType              uniformScale = RealType(1.0);
-    RealType              invScale     = RealType(1.0);
+    UInt     frame        = 0;
+    VecN     translation  = VecN(0);
+    VecNp1   rotation     = VecNp1(VecN(1), 0);
+    RealType uniformScale = RealType(1.0);
+    RealType invScale     = RealType(1.0);
 };
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
