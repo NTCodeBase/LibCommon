@@ -156,24 +156,18 @@ bool GeometryObject<N, RealType>::updateTransformation(UInt frame /*= 0*/, RealT
 template<Int N, class RealType>
 void GeometryObject<N, RealType>::parseParameters(const JParams& jParams)
 {
-    VecX<N, RealType>     translation;
-    VecX<N, RealType>     rotationEulerAngles;
-    VecX<N + 1, RealType> rotationAxisAngle;
-    RealType              scale;
-
-    if(JSONHelpers::readVector(jParams, translation, "Translation")) {
+    if(VecX<N, RealType> translation; JSONHelpers::readVector(jParams, translation, "Translation")) {
         setTranslation(translation);
     }
-
-    if(JSONHelpers::readVector(jParams, rotationEulerAngles, "RotationEulerAngles") ||
+    if(VecX<N, RealType> rotationEulerAngles;
+       JSONHelpers::readVector(jParams, rotationEulerAngles, "RotationEulerAngles") ||
        JSONHelpers::readVector(jParams, rotationEulerAngles, "RotationEulerAngle")) {
         setRotation(MathHelpers::EulerToAxisAngle(rotationEulerAngles, false));
-    } else if(JSONHelpers::readVector(jParams, rotationAxisAngle, "RotationAxisAngle")) {
+    } else if(VecX<N + 1, RealType> rotationAxisAngle; JSONHelpers::readVector(jParams, rotationAxisAngle, "RotationAxisAngle")) {
         rotationAxisAngle[N] = glm::radians(rotationAxisAngle[N]);
         setRotation(rotationAxisAngle);
     }
-
-    if(JSONHelpers::readValue(jParams, scale, "Scale")) {
+    if(RealType scale; JSONHelpers::readValue(jParams, scale, "Scale")) {
         setUniformScale(scale);
     }
     ////////////////////////////////////////////////////////////////////////////////
@@ -182,38 +176,42 @@ void GeometryObject<N, RealType>::parseParameters(const JParams& jParams)
         auto  jAnimation = jParams["Animation"];
         auto& aniObj     = getAnimation();
 
-        bool bCubicInterpolationTranslation = true;
-        bool bCubicInterpolationRotation    = true;
-        bool bCubicInterpolationScale       = true;
-        bool bPeriodic  = false;
-        UInt startFrame = 0;
-
-        JSONHelpers::readBool(jAnimation, bCubicInterpolationTranslation, "CubicInterpolationTranslation");
-        JSONHelpers::readBool(jAnimation, bCubicInterpolationRotation,    "CubicInterpolationRotation");
-        JSONHelpers::readBool(jAnimation, bCubicInterpolationScale,       "CubicInterpolationScale");
-        if(JSONHelpers::readBool(jAnimation, bPeriodic, "Periodic")) {
-            JSONHelpers::readValue(jAnimation, startFrame, "StartFrame");
-            aniObj.setPeriodic(bPeriodic, startFrame);
+        if(bool bPeriodic; JSONHelpers::readBool(jAnimation, bPeriodic, "Periodic")) {
+            aniObj.setPeriodic(bPeriodic);
         }
+        if(UInt startFrame, endFrame;
+           JSONHelpers::readValue(jAnimation, startFrame, "StartFrame") || JSONHelpers::readValue(jAnimation, endFrame, "EndFrame")) {
+            aniObj.setAnimationRange(startFrame, endFrame);
+        }
+
         __NT_REQUIRE(jAnimation.find("KeyFrames") != jAnimation.end());
         for(auto& jKeyFrame : jAnimation["KeyFrames"]) {
             KeyFrame<N, RealType> keyFrame;
             __NT_REQUIRE(JSONHelpers::readValue(jKeyFrame, keyFrame.frame, "Frame"));
+
+            // translation
             JSONHelpers::readVector(jKeyFrame, keyFrame.translation, "Translation");
 
-            VecX<N, RealType> rotationEulerAngles;
-            if(JSONHelpers::readVector(jKeyFrame, rotationEulerAngles, "RotationEulerAngles") ||
+            // rotation
+            if(VecX<N, RealType> rotationEulerAngles;
+               JSONHelpers::readVector(jKeyFrame, rotationEulerAngles, "RotationEulerAngles") ||
                JSONHelpers::readVector(jKeyFrame, rotationEulerAngles, "RotationEulerAngle")) {
                 keyFrame.rotation = MathHelpers::EulerToAxisAngle(rotationEulerAngles, false, true);
-            } else {
-                JSONHelpers::readVector(jKeyFrame, keyFrame.rotation, "RotationAxisAngle");
+            } else if(JSONHelpers::readVector(jKeyFrame, keyFrame.rotation, "RotationAxisAngle")) {
                 keyFrame.rotation = glm::radians(keyFrame.rotation);
             }
 
+            // scale
             JSONHelpers::readValue(jKeyFrame, keyFrame.uniformScale, "Scale");
             aniObj.addKeyFrame(keyFrame);
         }
 
+        bool bCubicInterpolationTranslation = true;
+        bool bCubicInterpolationRotation    = true;
+        bool bCubicInterpolationScale       = true;
+        JSONHelpers::readBool(jAnimation, bCubicInterpolationTranslation, "CubicInterpolationTranslation");
+        JSONHelpers::readBool(jAnimation, bCubicInterpolationRotation,    "CubicInterpolationRotation");
+        JSONHelpers::readBool(jAnimation, bCubicInterpolationScale,       "CubicInterpolationScale");
         aniObj.makeReady(bCubicInterpolationTranslation, bCubicInterpolationRotation, bCubicInterpolationScale);
     }
 }
