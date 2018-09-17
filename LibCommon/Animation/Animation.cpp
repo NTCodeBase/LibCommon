@@ -106,8 +106,8 @@ void Animation<N, RealType>::getTransformation(VecN& translation, VecNp1& rotati
             frameFraction = RealType(0);
         }
     }
-    RealType x = static_cast<RealType>(frame) + frameFraction;
 
+    RealType x = static_cast<RealType>(frame) + frameFraction;
     for(Int d = 0; d < N; ++d) {
         translation[d] = m_TranslationInterpolator[d](x);
         rotation[d]    = m_RotationInterpolator[d](x);
@@ -139,8 +139,8 @@ MatXxX<N + 1, RealType> Animation<N, RealType>::getTransformation(UInt frame, Re
             frameFraction = RealType(0);
         }
     }
-    RealType x = static_cast<RealType>(frame) + frameFraction;
 
+    RealType x = static_cast<RealType>(frame) + frameFraction;
     for(Int d = 0; d < N; ++d) {
         translation[d] = m_TranslationInterpolator[d](x);
         rotation[d]    = m_RotationInterpolator[d](x);
