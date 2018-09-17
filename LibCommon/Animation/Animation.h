@@ -53,18 +53,24 @@ class Animation
     __NT_TYPE_ALIASING
     ////////////////////////////////////////////////////////////////////////////////
 public:
-    Animation() { m_KeyFrames.emplace_back(KeyFrame<N, RealType>()); }
+    Animation() = default;
     ////////////////////////////////////////////////////////////////////////////////
-    auto isActive(UInt frame) { return (frame >= m_StartFrame) && (m_bPeriodic || frame < m_EndFrame); }
-    auto  nKeyFrames() const { return static_cast<UInt>(m_KeyFrames.size()); }
+    auto isActive(UInt frame) { return (m_KeyFrames.size() > 0) && (frame >= m_StartFrame) && (m_bPeriodic || frame < m_EndFrame); }
+    auto nKeyFrames() const { return static_cast<UInt>(m_KeyFrames.size()); }
     auto& keyFrames() { return m_KeyFrames; }
-    void  setPeriodic(bool bPeriodic, UInt startFrame = 0) { m_bPeriodic = bPeriodic; m_StartFrame = startFrame; }
+    void setPeriodic(bool bPeriodic) { m_bPeriodic = bPeriodic; }
+    void setAnimationRange(UInt startFrame, UInt endFrame = 0);
+
     ////////////////////////////////////////////////////////////////////////////////
-    void addKeyFrame(const KeyFrame<N, RealType>& keyFrame);
-    void addKeyFrame(UInt frame, const VecN& translation);
-    void addKeyFrame(UInt frame, const VecNp1& rotation);
-    void addKeyFrame(UInt frame, RealType scale);
-    void addKeyFrame(UInt frame, const VecN& translation, const VecNp1& rotation, RealType scale);
+    void addKeyFrame(const KeyFrame<N, RealType>& keyFrame) { m_KeyFrames.push_back(keyFrame); }
+    void addKeyFrame(UInt frame, const VecN& translation) { m_KeyFrames.emplace_back(KeyFrame<N, RealType>(frame, translation)); }
+    void addKeyFrame(UInt frame, const VecNp1& rotation) { m_KeyFrames.emplace_back(KeyFrame<N, RealType>(frame, rotation)); }
+    void addKeyFrame(UInt frame, RealType scale) { m_KeyFrames.emplace_back(KeyFrame<N, RealType>(frame, scale)); }
+    void addKeyFrame(UInt frame, const VecN& translation, const VecNp1& rotation, RealType scale)
+    {
+        m_KeyFrames.emplace_back(KeyFrame<N, RealType>(frame, translation, rotation, scale));
+    }
+
     ////////////////////////////////////////////////////////////////////////////////
     void       makeReady(bool bCubicIntTranslation = true, bool bCubicIntRotation = true, bool bCubicIntScale = true);
     void       getTransformation(VecN& translation, VecNp1& rotation, RealType& scale, UInt frame, RealType frameFraction = RealType(0));
@@ -79,7 +85,8 @@ private:
     CubicSpline<RealType>        m_ScaleInterpolator;
 
     UInt m_StartFrame = 0;
-    UInt m_EndFrame   = 0;
+    UInt m_EndFrame   = 1u;
+    UInt m_FrameRange = 1u;
     bool m_bReady     = false;
     bool m_bPeriodic  = false;
 };

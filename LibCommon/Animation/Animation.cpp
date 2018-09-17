@@ -18,58 +18,12 @@
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 template<Int N, class RealType>
-void Animation<N, RealType>::addKeyFrame(const KeyFrame<N, RealType>& keyFrame)
+void Animation<N, RealType>::setAnimationRange(UInt startFrame, UInt endFrame)
 {
-    if(keyFrame.frame == 0) {
-        m_KeyFrames[0] = keyFrame;
-    } else {
-        m_KeyFrames.push_back(keyFrame);
-    }
-}
-
-//-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-template<Int N, class RealType>
-void Animation<N, RealType>::addKeyFrame(UInt frame, const VecN& translation)
-{
-    if(frame == 0) {
-        m_KeyFrames[0].translation = translation;
-    } else {
-        m_KeyFrames.emplace_back(KeyFrame<N, RealType>(frame, translation));
-    }
-}
-
-//-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-template<Int N, class RealType>
-void Animation<N, RealType>::addKeyFrame(UInt frame, const VecNp1& rotation)
-{
-    if(frame == 0) {
-        m_KeyFrames[0].rotation = rotation;
-    } else {
-        m_KeyFrames.emplace_back(KeyFrame<N, RealType>(frame, rotation));
-    }
-}
-
-//-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-template<Int N, class RealType>
-void Animation<N, RealType>::addKeyFrame(UInt frame, RealType scale)
-{
-    if(frame == 0) {
-        m_KeyFrames[0].uniformScale = scale;
-    } else {
-        m_KeyFrames.emplace_back(KeyFrame<N, RealType>(frame, scale));
-    }
-}
-
-//-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-template<Int N, class RealType>
-void Animation<N, RealType>::addKeyFrame(UInt frame, const VecN& translation, const VecNp1& rotation, RealType scale)
-{
-    if(frame == 0) {
-        m_KeyFrames[0].translation  = translation;
-        m_KeyFrames[0].rotation     = rotation;
-        m_KeyFrames[0].uniformScale = scale;
-    } else {
-        m_KeyFrames.emplace_back(KeyFrame<N, RealType>(frame, translation, rotation, scale));
+    m_StartFrame = startFrame;
+    if(endFrame > 0) {
+        m_EndFrame   = endFrame;
+        m_FrameRange = m_EndFrame - m_StartFrame;
     }
 }
 
@@ -77,6 +31,10 @@ void Animation<N, RealType>::addKeyFrame(UInt frame, const VecN& translation, co
 template<Int N, class RealType>
 void Animation<N, RealType>::makeReady(bool bCubicIntTranslation, bool bCubicIntRotation, bool bCubicIntScale)
 {
+    if(m_KeyFrames.size() == 0) {
+        return;
+    }
+    ////////////////////////////////////////////////////////////////////////////////
     StdVT<RealType> frames;
     StdVT<RealType> translations[N];
     StdVT<RealType> rotations[N + 1];
@@ -94,7 +52,7 @@ void Animation<N, RealType>::makeReady(bool bCubicIntTranslation, bool bCubicInt
         if(m_bPeriodic && keyFrame.frame < m_StartFrame) { // ignore frame before start frame
             continue;
         }
-        m_EndFrame = (m_EndFrame < keyFrame.frame) ? keyFrame.frame : m_EndFrame; // set end frame to the latest frame if applicable
+        m_EndFrame = (m_EndFrame == 0) ? keyFrame.frame : m_EndFrame; // set end frame to the latest frame if end frame has not been set
 
         for(Int d = 0; d < N; ++d) {
             translations[d].push_back(keyFrame.translation[d]);
@@ -117,23 +75,32 @@ void Animation<N, RealType>::makeReady(bool bCubicIntTranslation, bool bCubicInt
     m_ScaleInterpolator.setBoundary(CubicSpline<RealType>::BDType::FirstOrder, 0, CubicSpline<RealType>::BDType::FirstOrder, 0);
     m_ScaleInterpolator.setPoints(frames, scales, bCubicIntScale);
     ////////////////////////////////////////////////////////////////////////////////
-    m_bReady = true;
+    __NT_REQUIRE(m_EndFrame > m_StartFrame);
+    m_FrameRange = m_EndFrame - m_StartFrame;
+    m_bReady     = true;
 }
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 template<Int N, class RealType>
 void Animation<N, RealType>::getTransformation(VecN& translation, VecNp1& rotation, RealType& scale, UInt frame, RealType frameFraction /*= RealType(0)*/)
 {
-    if(m_KeyFrames.size() == 1 || (m_bPeriodic && frame < m_StartFrame)) {
-        translation = m_KeyFrames[0].translation;
-        rotation    = m_KeyFrames[0].rotation;
-        scale       = m_KeyFrames[0].uniformScale;
+    if(nKeyFrames() == 0) {
+        translation = VecN(0);
+        rotation    = VecNp1(0);
+        scale       = RealType(1);
         return;
     }
     ////////////////////////////////////////////////////////////////////////////////
     __NT_REQUIRE(m_bReady)
-    if(m_bPeriodic && frame >= m_EndFrame) {
-        frame = ((frame - m_StartFrame) % (m_EndFrame - m_StartFrame)) + m_StartFrame;
+    if(frame < m_StartFrame) {
+        frame = m_StartFrame;
+    } else if(frame >= m_EndFrame) {
+        if(m_bPeriodic) {
+            frame = ((frame - m_StartFrame) % m_FrameRange) + m_StartFrame;
+        } else {
+            frame         = m_EndFrame;
+            frameFraction = RealType(0);
+        }
     }
     RealType x = static_cast<RealType>(frame) + frameFraction;
 
@@ -149,11 +116,8 @@ void Animation<N, RealType>::getTransformation(VecN& translation, VecNp1& rotati
 template<Int N, class RealType>
 MatXxX<N + 1, RealType> Animation<N, RealType>::getTransformation(UInt frame, RealType frameFraction /*= RealType(0)*/)
 {
-    if(m_KeyFrames.size() == 1 || (m_bPeriodic && frame < m_StartFrame)) {
-        MatNp1xNp1 translationMatrix = glm::translate(MatNp1xNp1(1.0), m_KeyFrames[0].translation);
-        MatNp1xNp1 rotationMatrix    = glm::rotate(MatNp1xNp1(1.0), m_KeyFrames[0].rotation[N], VecN(m_KeyFrames[0].rotation));
-        MatNp1xNp1 scaleMatrix       = glm::scale(MatNp1xNp1(1.0), VecN(m_KeyFrames[0].uniformScale));
-        return (translationMatrix * rotationMatrix * scaleMatrix);
+    if(nKeyFrames() == 0) {
+        return MatNp1xNp1(1);
     }
     ////////////////////////////////////////////////////////////////////////////////
     __NT_REQUIRE(m_bReady)
@@ -161,8 +125,15 @@ MatXxX<N + 1, RealType> Animation<N, RealType>::getTransformation(UInt frame, Re
     VecNp1   rotation;
     RealType scale;
 
-    if(m_bPeriodic && frame >= m_EndFrame) {
-        frame = ((frame - m_StartFrame) % (m_EndFrame - m_StartFrame)) + m_StartFrame;
+    if(frame < m_StartFrame) {
+        frame = m_StartFrame;
+    } else if(frame >= m_EndFrame) {
+        if(m_bPeriodic) {
+            frame = ((frame - m_StartFrame) % m_FrameRange) + m_StartFrame;
+        } else {
+            frame         = m_EndFrame;
+            frameFraction = RealType(0);
+        }
     }
     RealType x = static_cast<RealType>(frame) + frameFraction;
 
@@ -173,16 +144,21 @@ MatXxX<N + 1, RealType> Animation<N, RealType>::getTransformation(UInt frame, Re
     rotation[N] = m_RotationInterpolator[N](x);
     scale       = m_ScaleInterpolator(x);
 
-    MatNp1xNp1 translationMatrix = glm::translate(MatNp1xNp1(1.0), translation);
-    MatNp1xNp1 rotationMatrix    = glm::rotate(MatNp1xNp1(1.0), rotation[N], VecN(rotation));
-    MatNp1xNp1 scaleMatrix       = glm::scale(MatNp1xNp1(1.0), VecN(scale));
-    return (translationMatrix * rotationMatrix * scaleMatrix);
+    MatNp1xNp1 transMatrix(1);
+    transMatrix = glm::scale(transMatrix, VecN(scale));
+    transMatrix = glm::rotate(transMatrix, rotation[N], VecN(rotation));
+    transMatrix = glm::translate(transMatrix, translation);
+    return transMatrix;
 }
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 template<Int N, class RealType>
 MatXxX<N + 1, RealType> Animation<N, RealType>::getInvTransformation(UInt frame, RealType frameFraction /*= RealType(0)*/)
 {
+    if(nKeyFrames() == 0) {
+        return MatNp1xNp1(1);
+    }
+    ////////////////////////////////////////////////////////////////////////////////
     __NT_REQUIRE(m_bReady);
     return glm::inverse(getTransformation(frame, frameFraction));
 }
@@ -191,12 +167,19 @@ MatXxX<N + 1, RealType> Animation<N, RealType>::getInvTransformation(UInt frame,
 template<Int N, class RealType>
 RealType Animation<N, RealType>::getUniformScale(UInt frame, RealType frameFraction /*= RealType(0)*/)
 {
-    if(m_KeyFrames.size() == 1 || (m_bPeriodic && frame < m_StartFrame)) {
-        return m_KeyFrames[0].uniformScale;
+    if(nKeyFrames() == 0) {
+        return RealType(1);
     }
-
-    if(m_bPeriodic && frame >= m_EndFrame) {
-        frame = ((frame - m_StartFrame) % (m_EndFrame - m_StartFrame)) + m_StartFrame;
+    ////////////////////////////////////////////////////////////////////////////////
+    if(frame < m_StartFrame) {
+        frame = m_StartFrame;
+    } else if(frame >= m_EndFrame) {
+        if(m_bPeriodic) {
+            frame = ((frame - m_StartFrame) % m_FrameRange) + m_StartFrame;
+        } else {
+            frame         = m_EndFrame;
+            frameFraction = RealType(0);
+        }
     }
     RealType x = static_cast<RealType>(frame) + frameFraction;
     return m_ScaleInterpolator(x);
