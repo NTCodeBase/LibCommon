@@ -40,29 +40,33 @@ void Animation<N, RealType>::makeReady(bool bCubicIntTranslation, bool bCubicInt
     StdVT<RealType> rotations[N + 1];
     StdVT<RealType> scales;
 
+    frames.reserve(nKeyFrames());
     for(Int d = 0; d < N; ++d) {
         translations[d].reserve(nKeyFrames());
         rotations[d].reserve(nKeyFrames());
     }
     rotations[N].reserve(nKeyFrames());
-    frames.reserve(nKeyFrames());
     scales.reserve(nKeyFrames());
     ////////////////////////////////////////////////////////////////////////////////
+    UInt maxFrame = 0;
     for(const auto& keyFrame : m_KeyFrames) {
-        if(m_bPeriodic && keyFrame.frame < m_StartFrame) { // ignore frame before start frame
-            continue;
-        }
-        m_EndFrame = (m_EndFrame == 0) ? keyFrame.frame : m_EndFrame; // set end frame to the latest frame if end frame has not been set
-
+        frames.push_back(static_cast<RealType>(keyFrame.frame));
         for(Int d = 0; d < N; ++d) {
             translations[d].push_back(keyFrame.translation[d]);
             rotations[d].push_back(keyFrame.rotation[d]);
         }
         rotations[N].push_back(keyFrame.rotation[N]);
         scales.push_back(keyFrame.uniformScale);
-        frames.push_back(static_cast<RealType>(keyFrame.frame));
+        ////////////////////////////////////////////////////////////////////////////////
+        if(maxFrame < keyFrame.frame) {
+            maxFrame = keyFrame.frame;
+        }
     }
-
+    if(m_EndFrame == 0) {
+        // if end frame has not been set, set it to the latest key frame
+        m_EndFrame = maxFrame;
+    }
+    ////////////////////////////////////////////////////////////////////////////////
     for(Int d = 0; d < N; ++d) {
         m_TranslationInterpolator[d].setBoundary(CubicSpline<RealType>::BDType::FirstOrder, 0, CubicSpline<RealType>::BDType::FirstOrder, 0);
         m_TranslationInterpolator[d].setPoints(frames, translations[d], bCubicIntTranslation);
