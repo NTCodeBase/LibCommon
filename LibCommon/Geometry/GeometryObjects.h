@@ -69,15 +69,14 @@ protected:
     JParams  m_jParams;
     bool     m_bTransformed = false;
     RealType m_UniformScale = RealType(1.0);
-    //RealType m_InvScale     = RealType(1.0);
 
     RealType                m_LastTime    = 0_f;
     RealType                m_CurrentTime = 0_f;
     MatXxX<N + 1, RealType> m_LastTransformationMatrix = MatXxX<N + 1, RealType>(1.0);
 
-    MatXxX<N + 1, RealType>       m_TransformationMatrix    = MatXxX<N + 1, RealType>(1.0);
-    MatXxX<N + 1, RealType>       m_InvTransformationMatrix = MatXxX<N + 1, RealType>(1.0);
-    StdVT<Animation<N, RealType>> m_Animations;
+    MatXxX<N + 1, RealType>                m_TransformationMatrix    = MatXxX<N + 1, RealType>(1.0);
+    MatXxX<N + 1, RealType>                m_InvTransformationMatrix = MatXxX<N + 1, RealType>(1.0);
+    StdVT<RigidBodyAnimation<N, RealType>> m_Animations;
 };
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+

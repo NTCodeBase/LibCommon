@@ -174,7 +174,7 @@ void GeometryObject<N, RealType>::parseParameters(const JParams& jParams)
     // animation data
     if(jParams.find("Animation") != jParams.end()) {
         for(auto& jAnimation   : jParams["Animation"]) {
-            auto animationObj = getAnimation().emplace_back(Animation<N, RealType> {});
+            auto animationObj = getAnimation().emplace_back(RigidBodyAnimation<N, RealType> {});
 
             if(bool bPeriodic; JSONHelpers::readBool(jAnimation, bPeriodic, "Periodic")) {
                 animationObj.setPeriodic(bPeriodic);
@@ -200,19 +200,13 @@ void GeometryObject<N, RealType>::parseParameters(const JParams& jParams)
                 } else if(JSONHelpers::readVector(jKeyFrame, keyFrame.rotation, "RotationAxisAngle")) {
                     keyFrame.rotation = glm::radians(keyFrame.rotation);
                 }
-
-                // scale
-                JSONHelpers::readValue(jKeyFrame, keyFrame.uniformScale, "Scale");
-                animationObj.addKeyFrame(keyFrame);
             }
 
             bool bCubicInterpolationTranslation = true;
             bool bCubicInterpolationRotation    = true;
-            bool bCubicInterpolationScale       = true;
             JSONHelpers::readBool(jAnimation, bCubicInterpolationTranslation, "CubicInterpolationTranslation");
             JSONHelpers::readBool(jAnimation, bCubicInterpolationRotation,    "CubicInterpolationRotation");
-            JSONHelpers::readBool(jAnimation, bCubicInterpolationScale,       "CubicInterpolationScale");
-            animationObj.makeReady(bCubicInterpolationTranslation, bCubicInterpolationRotation, bCubicInterpolationScale);
+            animationObj.makeReady(bCubicInterpolationTranslation, bCubicInterpolationRotation);
         }
     }
 }
