@@ -24,8 +24,7 @@
 #include <csignal>
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-Logger::Logger(const String& loggerName, const String& rootPath, bool bLog2Console /*= true*/, bool bLog2File /*= false*/,
-               spdlog::level::level_enum level /*= spdlog::level::level_enum::trace*/) :
+Logger::Logger(const String& loggerName, const String& rootPath, bool bLog2Console /*= true*/, bool bLog2File /*= false*/, LogLevel logLevel /*= LogLevel::trace*/) :
     m_bLog2Console(bLog2Console), m_bLog2File(bLog2File)
 {
     if(!m_bLog2Console && !m_bLog2File) {
@@ -35,7 +34,7 @@ Logger::Logger(const String& loggerName, const String& rootPath, bool bLog2Conso
     if(m_bLog2Console) {
         m_ConsoleLogger = spdlog::stdout_color_mt(loggerName + String("[console_logger]"));
         m_ConsoleLogger->set_pattern("[%Y-%m-%d] [%H:%M:%S.%e] [%^%l%$] %v");
-        m_ConsoleLogger->set_level(level);
+        m_ConsoleLogger->set_level(logLevel);
     }
     ////////////////////////////////////////////////////////////////////////////////
     if(m_bLog2File) {
@@ -47,7 +46,7 @@ Logger::Logger(const String& loggerName, const String& rootPath, bool bLog2Conso
                !FileHelpers::fileExisted(file)) {
                 m_FileLogger = spdlog::create_async<spdlog::sinks::basic_file_sink_mt>(loggerName + String("[file_logger]"), file);
                 m_FileLogger->set_pattern("[%Y-%m-%d] [%H:%M:%S.%e] [%^%l%$] %v");
-                m_FileLogger->set_level(level);
+                m_FileLogger->set_level(logLevel);
                 break;
             }
             ++i;
@@ -55,8 +54,8 @@ Logger::Logger(const String& loggerName, const String& rootPath, bool bLog2Conso
     }
     ////////////////////////////////////////////////////////////////////////////////
     m_StartupTime = Clock::now();
-    ////////////////////////////////////////////////////////////////////////////////
     s_Instances.push_back(this);
+    ////////////////////////////////////////////////////////////////////////////////
     signal(SIGINT,  Logger::signalHandler);
     signal(SIGFPE,  Logger::signalHandler);
     signal(SIGSEGV, Logger::signalHandler);
@@ -76,203 +75,78 @@ Logger::~Logger()
 }
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-void Logger::printSeparator()
+void Logger::printLogIndent(const String& s, UInt indentLevel /*= 1*/, LogLevel logLevel /*= LogLevel::info*/)
 {
-    printAligned("", '=');
+    String s_formatted;
+    s_formatted.reserve(256);
+    s_formatted += String(s_IndentSize * indentLevel, s_PrefixPadding);
+    s_formatted += s;
+    ////////////////////////////////////////////////////////////////////////////////
+    printLog(s_formatted, logLevel);
 }
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-void Logger::printAligned(const String& s, char padding, const String& wrapper, UInt maxSize /*= 100*/)
+void Logger::printLogPadding(const String& s, LogLevel logLevel /*= LogLevel::info*/)
+{
+    auto s_formatted = s;
+    s_formatted.reserve(256);
+    s_formatted += String(" ");
+    s_formatted += String(s_PaddingMaxSize - s_formatted.length(), s_SuffixPadding);
+    printLog(s_formatted, logLevel);
+}
+
+//-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+void Logger::printLogPaddingIndent(const String& s, UInt indentLevel /*= 1*/, LogLevel logLevel /*= LogLevel::info*/)
+{
+    String s_formatted;
+    s_formatted.reserve(256);
+    s_formatted += String(s_IndentSize * indentLevel, s_PrefixPadding);
+    s_formatted += s;
+    s_formatted += String(" ");
+    s_formatted += String(s_PaddingMaxSize - s_formatted.length(), s_SuffixPadding);
+    printLog(s_formatted, logLevel);
+}
+
+//-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+void Logger::printCenterAligned(const String& s, char paddingChar /*= Logger::s_PrefixPadding*/, LogLevel logLevel /*= LogLevel::info*/)
 {
     size_t       length = s.length();
     const String str    = length == 0 ? s : String(" " + s + " ");
     length = str.length();
 
-    size_t paddingSize = ((size_t)maxSize - length - 2 * wrapper.length()) / 2;
-    size_t finalLength = wrapper.length() * 2 + length + paddingSize * 2;
+    size_t paddingSize = (s_PaddingMaxSize - length - 2 * s_Wrapper.length()) / 2;
+    size_t finalLength = s_Wrapper.length() * 2 + length + paddingSize * 2;
 
-    String finalStr;
-    finalStr.reserve(finalLength + 1);
-
-    finalStr += wrapper;
-    finalStr += String(paddingSize, padding);
-    finalStr += str;
-    finalStr += (finalLength == static_cast<size_t>(maxSize)) ? String(paddingSize, padding) : String(paddingSize + 1, padding);
-    finalStr += wrapper;
-
-    printLog(finalStr);
+    String s_formatted;
+    s_formatted.reserve(finalLength + 1);
+    s_formatted += s_Wrapper;
+    s_formatted += String(paddingSize, paddingChar);
+    s_formatted += str;
+    s_formatted += (finalLength == s_PaddingMaxSize) ? String(paddingSize, paddingChar) : String(paddingSize + 1, paddingChar);
+    s_formatted += s_Wrapper;
+    printLog(s_formatted, logLevel);
 }
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-void Logger::printTextBox(const String& s)
+void Logger::printTextBox(const String& s, LogLevel logLevel /*= LogLevel::info*/)
 {
-    printSeparator();
-    printAligned("", ' ');
-    printAligned(s);
-    printAligned("", ' ');
-    printSeparator();
+    separatorLine(logLevel);
+    printCenterAligned("", ' ', logLevel);
+    printCenterAligned(s,  ' ', logLevel);
+    printCenterAligned("", ' ', logLevel);
+    separatorLine(logLevel);
 }
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-void Logger::printTextBox(const StdVT<String>& strs)
+void Logger::printTextBox(const StdVT<String>& strs, LogLevel logLevel /*= LogLevel::info*/)
 {
-    printSeparator();
-    printAligned("", ' ');
+    separatorLine(logLevel);
+    printCenterAligned("", ' ', logLevel);
     for(const auto& s: strs) {
-        printAligned(s);
+        printCenterAligned(s, ' ', logLevel);
     }
-    printAligned("", ' ');
-    printSeparator();
-}
-
-//-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-void Logger::printWarning(const String& s, UInt maxSize)
-{
-    printLogPadding(s, spdlog::level::warn, maxSize);
-}
-
-void Logger::printWarningIndent(const String& s, UInt indentLevel /* = 1 */, char trailing /* = ' ' */, UInt maxSize /* = 100 */)
-{
-    printLogPaddingIndent(s, spdlog::level::warn, indentLevel, trailing, maxSize);
-}
-
-//-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-void Logger::printError(const String& s, UInt maxSize)
-{
-    printLogPadding(s, spdlog::level::err, maxSize);
-}
-
-void Logger::printErrorIndent(const String& s, UInt indentLevel /* = 1 */, char trailing /* = ' ' */, UInt maxSize /* = 100 */)
-{
-    printLogPaddingIndent(s, spdlog::level::err, indentLevel, trailing, maxSize);
-}
-
-//-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-void Logger::printLog(const String& s)
-{
-    if(m_bLog2Console) {
-        m_ConsoleLogger->info(s);
-    }
-
-    if(m_bLog2File) {
-        m_FileLogger->info(s);
-    }
-}
-
-//-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-void Logger::printLog(const String& s, spdlog::level::level_enum level)
-{
-    if(m_bLog2Console) {
-        m_ConsoleLogger->log(level, s);
-    }
-
-    if(m_bLog2File) {
-        m_FileLogger->log(level, s);
-    }
-}
-
-//-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-void Logger::printLogIndent(const String& s, UInt indentLevel /*= 1*/, char trailing /*= ' '*/)
-{
-    String str;
-    str.reserve(256);
-    str += String(INDENT_SIZE * indentLevel, trailing);
-    str += s;
-
-    printLog(str);
-}
-
-//-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-void Logger::printLogPadding(const String& s, UInt maxSize /*= 100*/)
-{
-    auto str = s;
-    str += String(" ");
-    size_t paddingSize = (static_cast<size_t>(maxSize) - str.length());
-    str += String(paddingSize, '*');
-
-    if(m_bLog2Console) {
-        m_ConsoleLogger->info(str);
-    }
-
-    if(m_bLog2File) {
-        m_FileLogger->info(str);
-    }
-}
-
-//-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-void Logger::printLogPadding(const String& s, spdlog::level::level_enum level, UInt maxSize /*= 100*/)
-{
-    auto str = s;
-    str += String(" ");
-    size_t paddingSize = (static_cast<size_t>(maxSize) - str.length());
-    str += String(paddingSize, '*');
-
-    if(m_bLog2Console) {
-        m_ConsoleLogger->log(level, str);
-    }
-
-    if(m_bLog2File) {
-        m_FileLogger->log(level, str);
-    }
-}
-
-//-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-void Logger::printLogPaddingIndent(const String& s, UInt indentLevel /*= 1*/, char trailing /*= ' '*/, UInt maxSize /* = 100 */)
-{
-    String str;
-    str.reserve(256);
-    str += String(INDENT_SIZE * indentLevel, trailing);
-    str += s;
-    str += String(" ");
-
-    size_t paddingSize = (static_cast<size_t>(maxSize) - str.length());
-    str += String(paddingSize, '*');
-
-    printLog(str);
-}
-
-void Logger::printLogPaddingIndent(const String& s, spdlog::level::level_enum level, UInt indentLevel /*= 1*/, char trailing /*= ' '*/, UInt maxSize /* = 100 */)
-{
-    String str;
-    str.reserve(256);
-    str += String(INDENT_SIZE * indentLevel, trailing);
-    str += s;
-    str += String(" ");
-
-    size_t paddingSize = (static_cast<size_t>(maxSize) - str.length());
-    str += String(paddingSize, '*');
-
-    if(m_bLog2Console) {
-        m_ConsoleLogger->log(level, str);
-    }
-
-    if(m_bLog2File) {
-        m_FileLogger->log(level, str);
-    }
-}
-
-//-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-void Logger::printLogIf(bool bCondition, const String& s)
-{
-    if(bCondition) {
-        printLog(s);
-    }
-}
-
-//-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-void Logger::printLogIf(bool bCondition, const String& s, spdlog::level::level_enum level)
-{
-    if(bCondition) {
-        printLog(s, level);
-    }
-}
-
-//-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-void Logger::printLogIndentIf(bool bCondition, const String& s, UInt indentLevel /*= 1*/, char trailing /*= ' '*/)
-{
-    if(bCondition) {
-        printLogIndent(s, indentLevel, trailing);
-    }
+    printCenterAligned("", ' ', logLevel);
+    separatorLine(logLevel);
 }
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
@@ -287,7 +161,7 @@ void Logger::flush()
 }
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-void Logger::printMemoryUsage()
+void Logger::printMemoryUsage(LogLevel logLevel /*= LogLevel::info*/)
 {
     String str;
     str.reserve(256);
@@ -295,14 +169,13 @@ void Logger::printMemoryUsage()
     str += Formatters::toString(static_cast<double>(getCurrentRSS()) / 1048576.0);
     str += String(" MB(s). Peak: ");
     str += Formatters::toString(static_cast<double>(getPeakRSS()) / 1048576.0) + " MB(s).";
-
-    printLog(str);
+    printLog(str, logLevel);
 }
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-void Logger::printTotalRunTime()
+void Logger::printTotalRunTime(LogLevel logLevel /*= LogLevel::info*/)
 {
-    printLogPadding(getTotalRunTime(), 120);
+    printLogPadding(getTotalRunTime(), logLevel);
 }
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
@@ -355,7 +228,7 @@ void getDuration(std::chrono::duration<Rep, Period> t, UInt& n_days, UInt& n_hou
     assert(0 <= t.count());
 
     // approximate because a day doesn't have a fixed length
-    typedef std::chrono::duration<int, std::ratio<60 * 60 * 24>> days_t;
+    typedef std::chrono::duration<int, std::ratio<60* 60* 24>> days_t;
 
     auto days  = std::chrono::duration_cast<days_t>(t);
     auto hours = std::chrono::duration_cast<std::chrono::hours>(t - days);
