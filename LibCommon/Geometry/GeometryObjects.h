@@ -61,21 +61,27 @@ public:
     VecN transform(const VecN& ppos) const;
     VecN invTransform(const VecN& ppos) const;
 
-    virtual bool updateTransformation(UInt frame = 0, RealType fraction = RealType(0), RealType frameDuration = RealType(1.0 / 30.0));
+    virtual bool updateTransformation(UInt frame = 0, RealType frameFraction = RealType(0), RealType frameDuration = RealType(1.0 / 30.0));
 
 protected:
     virtual void parseParameters(const JParams& jParams);
+    void         updateIntrinsicTransformation();
     ////////////////////////////////////////////////////////////////////////////////
-    JParams  m_jParams;
-    bool     m_bTransformed = false;
-    RealType m_UniformScale = RealType(1.0);
+    JParams m_jParams;
+    bool    m_bTransformed = false;
 
-    RealType                m_LastTime    = 0_f;
-    RealType                m_CurrentTime = 0_f;
-    MatXxX<N + 1, RealType> m_LastTransformationMatrix = MatXxX<N + 1, RealType>(1.0);
+    RealType   m_LastTime    = 0;
+    RealType   m_CurrentTime = 0;
+    MatNp1xNp1 m_LastTransformationMatrix = MatNp1xNp1(1.0);
 
-    MatXxX<N + 1, RealType>                m_TransformationMatrix    = MatXxX<N + 1, RealType>(1.0);
-    MatXxX<N + 1, RealType>                m_InvTransformationMatrix = MatXxX<N + 1, RealType>(1.0);
+    MatNp1xNp1 m_TransformationMatrix    = MatNp1xNp1(1.0);
+    MatNp1xNp1 m_InvTransformationMatrix = MatNp1xNp1(1.0);
+
+    VecN       m_IntrinsicTranslation          = VecN(0);
+    VecNp1     m_IntrinsicRotation             = VecNp1(VecN(1), 0);
+    RealType   m_UniformScale                  = RealType(1.0);
+    MatNp1xNp1 m_IntrinsicTransformationMatrix = MatNp1xNp1(1.0);
+
     StdVT<RigidBodyAnimation<N, RealType>> m_Animations;
 };
 
