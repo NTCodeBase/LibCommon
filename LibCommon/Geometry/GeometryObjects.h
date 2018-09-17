@@ -56,6 +56,7 @@ public:
     auto transformed() const { return m_bTransformed; }
     const auto& getTransformationMatrix() const { return m_TransformationMatrix; }
 
+    VecN transformAnimation(const VecN& ppos) const;
     VecN transform(const VecN& ppos) const;
     VecN invTransform(const VecN& ppos) const;
 
@@ -82,6 +83,7 @@ protected:
     MatNp1xNp1 m_TransformationMatrix    = MatNp1xNp1(1.0);
     MatNp1xNp1 m_InvTransformationMatrix = MatNp1xNp1(1.0);
 
+    MatNp1xNp1                             m_AnimationTransformationMatrix = MatNp1xNp1(1.0);
     StdVT<RigidBodyAnimation<N, RealType>> m_Animations;
 };
 

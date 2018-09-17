@@ -147,10 +147,13 @@ bool GeometryObject<N, RealType>::updateTransformation(UInt frame /*= 0*/, RealT
     m_LastTime    = m_CurrentTime;
     m_CurrentTime = frameDuration * (RealType(frame) + frameFraction);
     ////////////////////////////////////////////////////////////////////////////////
-    m_TransformationMatrix = m_IntrinsicTransformationMatrix;
+    m_AnimationTransformationMatrix = MatNp1xNp1(1.0);
     for(auto& animation : m_Animations) {
-        m_TransformationMatrix = animation.getTransformationMatrix(frame, frameFraction) * m_TransformationMatrix;
+        if(animation.isActive(frame)) {
+            m_AnimationTransformationMatrix = animation.getTransformationMatrix(frame, frameFraction) * m_AnimationTransformationMatrix;
+        }
     }
+    m_TransformationMatrix    = m_AnimationTransformationMatrix * m_IntrinsicTransformationMatrix;
     m_InvTransformationMatrix = glm::inverse(m_TransformationMatrix);
     m_bTransformed = true;
     ////////////////////////////////////////////////////////////////////////////////
@@ -224,6 +227,18 @@ void GeometryObject<N, RealType>::parseParameters(const JParams& jParams)
             JSONHelpers::readBool(jAnimation, bCubicInterpolationRotation,    "CubicInterpolationRotation");
             animationObj.makeReady(bCubicInterpolationTranslation, bCubicInterpolationRotation);
         }
+        updateTransformation();
+    }
+}
+
+//-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+template<Int N, class RealType>
+VecX<N, RealType> GeometryObject<N, RealType>::transformAnimation(const VecN& ppos) const
+{
+    if(!m_bTransformed || m_Animations.size() == 0) {
+        return ppos;
+    } else {
+        return VecN(m_AnimationTransformationMatrix * VecX<N + 1, RealType>(ppos, 1.0));
     }
 }
 
