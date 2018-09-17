@@ -299,7 +299,7 @@ template<Int N, class RealType>
 void BoxObject<N, RealType>::parseParameters(const JParams& jParams)
 {
     GeometryObject<N, RealType>::parseParameters(jParams);
-    if(VecN bMin, bMax; JSONHelpers::readVector(jParams, bMin, "BoxMin") || JSONHelpers::readVector(jParams, bMax, "BoxMax")) {
+    if(VecN bMin, bMax; JSONHelpers::readVector(jParams, bMin, "BoxMin") && JSONHelpers::readVector(jParams, bMax, "BoxMax")) {
         setOriginalBox(bMin, bMax);
     }
 }
