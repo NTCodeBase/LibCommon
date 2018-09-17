@@ -62,6 +62,7 @@ public:
     void setAnimationRange(UInt startFrame, UInt endFrame = 0);
 
     ////////////////////////////////////////////////////////////////////////////////
+    auto& addKeyFrame() { return m_KeyFrames.emplace_back(KeyFrame<N, RealType>()); }
     void addKeyFrame(const KeyFrame<N, RealType>& keyFrame) { m_KeyFrames.push_back(keyFrame); }
     void addKeyFrame(UInt frame, const VecN& translation) { m_KeyFrames.emplace_back(KeyFrame<N, RealType>(frame, translation)); }
     void addKeyFrame(UInt frame, const VecNp1& rotation) { m_KeyFrames.emplace_back(KeyFrame<N, RealType>(frame, rotation)); }
