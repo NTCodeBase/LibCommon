@@ -35,6 +35,20 @@ void RigidBodyAnimation<N, RealType>::makeReady(bool bCubicIntTranslation, bool 
         return;
     }
     ////////////////////////////////////////////////////////////////////////////////
+    // add more 1 point if there are only 2 key frames
+    if(m_KeyFrames.size() == 2) {
+        auto& keyFrame  = m_KeyFrames.emplace_back(KeyFrame<N, RealType>());
+        auto& keyFrame0 = m_KeyFrames[0];
+        auto& keyFrame1 = m_KeyFrames[1];
+        keyFrame.frame        = (keyFrame0.frame + keyFrame1.frame) / 2;
+        keyFrame.translation  = (keyFrame0.translation + keyFrame1.translation) * RealType(0.5);
+        keyFrame.rotation     = (keyFrame0.rotation + keyFrame1.rotation) * RealType(0.5);
+        keyFrame.uniformScale = (keyFrame0.uniformScale + keyFrame1.uniformScale) * RealType(0.5);
+        keyFrame.invScale     = RealType(1) / keyFrame.uniformScale;
+        std::swap(keyFrame, keyFrame1);
+    }
+
+    ////////////////////////////////////////////////////////////////////////////////
     StdVT<RealType> frames;
     StdVT<RealType> translations[N];
     StdVT<RealType> rotations[N + 1];
@@ -110,7 +124,9 @@ MatXxX<N + 1, RealType> RigidBodyAnimation<N, RealType>::getTransformationMatrix
     rotation[N] = m_RotationInterpolator[N](x);
 
     MatNp1xNp1 transMatrix(1);
-    transMatrix = glm::rotate(transMatrix, rotation[N], VecN(rotation));
+    if(rotation[N] > 0) {
+        transMatrix = glm::rotate(transMatrix, rotation[N], VecN(rotation));
+    }
     transMatrix = glm::translate(transMatrix, translation);
     return transMatrix;
 }
@@ -242,7 +258,9 @@ MatXxX<N + 1, RealType> Animation<N, RealType>::getTransformationMatrix(UInt fra
 
     MatNp1xNp1 transMatrix(1);
     transMatrix = glm::scale(transMatrix, VecN(scale));
-    transMatrix = glm::rotate(transMatrix, rotation[N], VecN(rotation));
+    if(rotation[N] > 0) {
+        transMatrix = glm::rotate(transMatrix, rotation[N], VecN(rotation));
+    }
     transMatrix = glm::translate(transMatrix, translation);
     return transMatrix;
 }
