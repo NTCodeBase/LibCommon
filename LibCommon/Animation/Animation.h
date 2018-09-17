@@ -55,7 +55,7 @@ class Animation
 public:
     Animation() = default;
     ////////////////////////////////////////////////////////////////////////////////
-    auto isActive(UInt frame) { return (m_KeyFrames.size() > 0) && (frame >= m_StartFrame) && (m_bPeriodic || frame < m_EndFrame); }
+    auto isActive(UInt frame) { return (m_KeyFrames.size() > 0) && (frame >= m_StartFrame) && (m_bPeriodic || frame <= m_EndFrame); }
     auto nKeyFrames() const { return static_cast<UInt>(m_KeyFrames.size()); }
     auto& keyFrames() { return m_KeyFrames; }
     void setPeriodic(bool bPeriodic) { m_bPeriodic = bPeriodic; }
