@@ -72,11 +72,13 @@ protected:
     RealType   m_CurrentTime = 0;
     MatNp1xNp1 m_LastTransformationMatrix = MatNp1xNp1(1.0);
 
+    // intrinsic object transformation
     VecN       m_IntrinsicTranslation          = VecN(0);
     VecNp1     m_IntrinsicRotation             = VecNp1(VecN(1), 0);
     RealType   m_UniformScale                  = RealType(1.0);
     MatNp1xNp1 m_IntrinsicTransformationMatrix = MatNp1xNp1(1.0);
 
+    // current transformation = animationTransformation(t) * intrinsicTransformation
     MatNp1xNp1 m_TransformationMatrix    = MatNp1xNp1(1.0);
     MatNp1xNp1 m_InvTransformationMatrix = MatNp1xNp1(1.0);
 
