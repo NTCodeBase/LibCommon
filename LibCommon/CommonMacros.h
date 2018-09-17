@@ -301,11 +301,15 @@ inline void throwIfFailed(HRESULT hr)
 #define __NT_TO_CSTRING_7(x)                         Formatters::toString7(x).c_str()
 
 #define __NT_TYPE_ALIASING                                                            \
-    using VecN           = VecX<N, RealType>;                                         \
-    using MatNxN         = MatXxX<N, RealType>;                                       \
-    using StdVT_VecN     = StdVT_VecX<N, RealType>;                                   \
-    using StdVT_MatNxN   = StdVT_MatXxX<N, RealType>;                                 \
-    using StdVT_RealType = StdVT<RealType>;                                           \
+    using VecN             = VecX<N, RealType>;                                       \
+    using VecNp1           = VecX<N + 1, RealType>;                                   \
+    using MatNxN           = MatXxX<N, RealType>;                                     \
+    using MatNp1xNp1       = MatXxX<N + 1, RealType>;                                 \
+    using StdVT_VecN       = StdVT_VecX<N, RealType>;                                 \
+    using StdVT_VecNp1     = StdVT_VecX<N + 1, RealType>;                             \
+    using StdVT_MatNxN     = StdVT_MatXxX<N, RealType>;                               \
+    using StdVT_MatNp1xNp1 = StdVT_MatXxX<N + 1, RealType>;                           \
+    using StdVT_RealType   = StdVT<RealType>;                                         \
     static constexpr auto TinyReal() { return std::numeric_limits<RealType>::min(); } \
     static constexpr auto HugeReal() { return std::numeric_limits<RealType>::max(); }
 
