@@ -30,19 +30,19 @@ namespace GeometryObjects
 template<Int N, class RealType>
 VecX<N, RealType> GeometryObject<N, RealType>::getAABBMin() const
 {
-    return transform(VecX<N, RealType>(0)) - VecX<N, RealType>(m_UniformScale) * std::sqrt(glm::compAdd(VecX<N, RealType>(1.0)));
+    return transform(VecN(0)) - VecN(m_UniformScale) * std::sqrt(glm::compAdd(VecN(1.0)));
 }
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 template<Int N, class RealType>
 VecX<N, RealType> GeometryObject<N, RealType>::getAABBMax() const
 {
-    return transform(VecX<N, RealType>(0)) + VecX<N, RealType>(m_UniformScale) * std::sqrt(glm::compAdd(VecX<N, RealType>(1.0)));
+    return transform(VecN(0)) + VecN(m_UniformScale) * std::sqrt(glm::compAdd(VecN(1.0)));
 }
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 template<Int N, class RealType>
-VecX<N, RealType> GeometryObject<N, RealType>::gradSignedDistance(const VecX<N, RealType>& ppos, bool bNegativeInside /*= true*/, RealType dx /*= RealType(1e-4)*/) const
+VecX<N, RealType> GeometryObject<N, RealType>::gradSignedDistance(const VecN& ppos, bool bNegativeInside /*= true*/, RealType dx /*= RealType(1e-4)*/) const
 {
     if constexpr(N == 2)
     {
@@ -95,7 +95,7 @@ VecX<N, RealType> GeometryObject<N, RealType>::gradSignedDistance(const VecX<N, 
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 template<Int N, class RealType>
-void GeometryObject<N, RealType>::setTranslation(const VecX<N, RealType>& translation)
+void GeometryObject<N, RealType>::setTranslation(const VecN& translation)
 {
     m_Animations.keyFrames()[0].translation = translation;
     updateTransformation();
@@ -156,10 +156,10 @@ bool GeometryObject<N, RealType>::updateTransformation(UInt frame /*= 0*/, RealT
 template<Int N, class RealType>
 void GeometryObject<N, RealType>::parseParameters(const JParams& jParams)
 {
-    if(VecX<N, RealType> translation; JSONHelpers::readVector(jParams, translation, "Translation")) {
+    if(VecN translation; JSONHelpers::readVector(jParams, translation, "Translation")) {
         setTranslation(translation);
     }
-    if(VecX<N, RealType> rotationEulerAngles;
+    if(VecN rotationEulerAngles;
        JSONHelpers::readVector(jParams, rotationEulerAngles, "RotationEulerAngles") ||
        JSONHelpers::readVector(jParams, rotationEulerAngles, "RotationEulerAngle")) {
         setRotation(MathHelpers::EulerToAxisAngle(rotationEulerAngles, false));
@@ -193,7 +193,7 @@ void GeometryObject<N, RealType>::parseParameters(const JParams& jParams)
                 JSONHelpers::readVector(jKeyFrame, keyFrame.translation, "Translation");
 
                 // rotation
-                if(VecX<N, RealType> rotationEulerAngles;
+                if(VecN rotationEulerAngles;
                    JSONHelpers::readVector(jKeyFrame, rotationEulerAngles, "RotationEulerAngles") ||
                    JSONHelpers::readVector(jKeyFrame, rotationEulerAngles, "RotationEulerAngle")) {
                     keyFrame.rotation = MathHelpers::EulerToAxisAngle(rotationEulerAngles, false, true);
@@ -219,37 +219,37 @@ void GeometryObject<N, RealType>::parseParameters(const JParams& jParams)
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 template<Int N, class RealType>
-VecX<N, RealType> GeometryObject<N, RealType>::getVelocityAt(const VecX<N, RealType>& ppos) const
+VecX<N, RealType> GeometryObject<N, RealType>::getVelocityAt(const VecN& ppos) const
 {
     if(std::abs(m_CurrentTime - m_LastTime) < MEpsilon<RealType>()) {
-        return VecX<N, RealType>(0);
+        return VecN(0);
     }
-    auto currentCenter = transform(VecX<N, RealType>(0));
+    auto currentCenter = transform(VecN(0));
     auto pC     = ppos - currentCenter;
-    auto lastPC = VecX<N, RealType>(m_LastTransformationMatrix * VecX<N + 1, RealType>(invTransform(pC), 1.0));
+    auto lastPC = VecN(m_LastTransformationMatrix * VecX<N + 1, RealType>(invTransform(pC), 1.0));
 
     return (pC - lastPC) / (m_CurrentTime - m_LastTime);
 }
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 template<Int N, class RealType>
-VecX<N, RealType> GeometryObject<N, RealType>::transform(const VecX<N, RealType>& ppos) const
+VecX<N, RealType> GeometryObject<N, RealType>::transform(const VecN& ppos) const
 {
     if(!m_bTransformed) {
         return ppos;
     } else {
-        return VecX<N, RealType>(m_TransformationMatrix * VecX<N + 1, RealType>(ppos, 1.0));
+        return VecN(m_TransformationMatrix * VecX<N + 1, RealType>(ppos, 1.0));
     }
 }
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 template<Int N, class RealType>
-VecX<N, RealType> GeometryObject<N, RealType>::invTransform(const VecX<N, RealType>& ppos) const
+VecX<N, RealType> GeometryObject<N, RealType>::invTransform(const VecN& ppos) const
 {
     if(!m_bTransformed) {
         return ppos;
     } else {
-        return VecX<N, RealType>(m_InvTransformationMatrix * VecX<N + 1, RealType>(ppos, 1.0));
+        return VecN(m_InvTransformationMatrix * VecX<N + 1, RealType>(ppos, 1.0));
     }
 }
 
@@ -260,7 +260,7 @@ VecX<N, RealType> GeometryObject<N, RealType>::invTransform(const VecX<N, RealTy
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 template<Int N, class RealType>
-RealType BoxObject<N, RealType>::signedDistance(const VecX<N, RealType>& ppos0, bool bNegativeInside /*= true*/) const
+RealType BoxObject<N, RealType>::signedDistance(const VecN& ppos0, bool bNegativeInside /*= true*/) const
 {
     auto     ppos = invTransform(ppos0);
     RealType mind = HugeReal();
@@ -271,7 +271,7 @@ RealType BoxObject<N, RealType>::signedDistance(const VecX<N, RealType>& ppos0, 
         }
         mind = -mind;         // negative because inside
     } else {
-        VecX<N, RealType> cp;
+        VecN cp;
         for(Int d = 0; d < N; ++d) {
             cp[d] = MathHelpers::max(MathHelpers::min(ppos[d], m_BoxMax[d]), m_BoxMin[d]);
         }
@@ -289,20 +289,20 @@ RealType BoxObject<N, RealType>::signedDistance(const VecX<N, RealType>& ppos0, 
 template<Int N, class RealType>
 VecX<N, RealType> BoxObject<N, RealType>::getAABBMin() const
 {
-    return transform(m_BoxMin) - VecX<N, RealType>(this->m_UniformScale) * std::sqrt(glm::compAdd(VecX<N, RealType>(1.0)));
+    return transform(m_BoxMin) - VecN(this->m_UniformScale) * std::sqrt(glm::compAdd(VecN(1.0)));
 }
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 template<Int N, class RealType>
 VecX<N, RealType> BoxObject<N, RealType>::getAABBMax() const
 {
-    return transform(m_BoxMax) + VecX<N, RealType>(this->m_UniformScale) * std::sqrt(glm::compAdd(VecX<N, RealType>(1.0)));
+    return transform(m_BoxMax) + VecN(this->m_UniformScale) * std::sqrt(glm::compAdd(VecN(1.0)));
 }
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 ////////////////////////////////////////////////////////////////////////////////
 template<Int N, class RealType>
-void BoxObject<N, RealType>::addKeyFrame(UInt frame, const VecX<N, RealType>& bMin, const VecX<N, RealType>& bMax)
+void BoxObject<N, RealType>::addKeyFrame(UInt frame, const VecN& bMin, const VecN& bMax)
 {
     if(m_KeyFrames.size() == 0) {
         m_KeyFrames.emplace_back(BoxKeyFrame(0, m_BoxMin, m_BoxMax));
@@ -383,7 +383,7 @@ void BoxObject<N, RealType>::parseParameters(const JParams& jParams)
 {
     GeometryObject<N, RealType>::parseParameters(jParams);
     ////////////////////////////////////////////////////////////////////////////////
-    VecX<N, RealType> bMin, bMax;
+    VecN bMin, bMax;
     if(JSONHelpers::readVector(jParams, bMin, "BoxMin") && JSONHelpers::readVector(jParams, bMax, "BoxMax")) {
         setOriginalBox(bMin, bMax);
     }
@@ -413,7 +413,7 @@ void BoxObject<N, RealType>::parseParameters(const JParams& jParams)
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 template<Int N, class RealType>
-RealType SphereObject<N, RealType>::signedDistance(const VecX<N, RealType>& ppos0, bool bNegativeInside /*= true*/) const
+RealType SphereObject<N, RealType>::signedDistance(const VecN& ppos0, bool bNegativeInside /*= true*/) const
 {
     auto     ppos = invTransform(ppos0);
     RealType d    = this->m_UniformScale * (glm::length(ppos) - RealType(1.0));
@@ -422,7 +422,7 @@ RealType SphereObject<N, RealType>::signedDistance(const VecX<N, RealType>& ppos
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 template<Int N, class RealType>
-RealType TorusObject<N, RealType>::signedDistance(const VecX<N, RealType>& ppos0, bool bNegativeInside /*= true*/) const
+RealType TorusObject<N, RealType>::signedDistance(const VecN& ppos0, bool bNegativeInside /*= true*/) const
 {
     auto ppos = invTransform(ppos0);
     if constexpr(N == 2) {
@@ -450,7 +450,7 @@ void TorusObject<N, RealType>::parseParameters(const JParams& jParams)
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 template<Int N, class RealType>
-RealType Torus28Object<N, RealType>::signedDistance(const VecX<N, RealType>& ppos0, bool bNegativeInside /*= true*/) const
+RealType Torus28Object<N, RealType>::signedDistance(const VecN& ppos0, bool bNegativeInside /*= true*/) const
 {
     __NT_REQUIRE_MSG(N == 3, "Object dimension != 3");
     auto           ppos = invTransform(ppos0);
@@ -461,7 +461,7 @@ RealType Torus28Object<N, RealType>::signedDistance(const VecX<N, RealType>& ppo
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 template<Int N, class RealType>
-RealType Torus2InfObject<N, RealType>::signedDistance(const VecX<N, RealType>& ppos0, bool bNegativeInside /*= true*/) const
+RealType Torus2InfObject<N, RealType>::signedDistance(const VecN& ppos0, bool bNegativeInside /*= true*/) const
 {
     __NT_REQUIRE_MSG(N == 3, "Object dimension != 3");
     auto ppos = invTransform(ppos0);
@@ -473,7 +473,7 @@ RealType Torus2InfObject<N, RealType>::signedDistance(const VecX<N, RealType>& p
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 template<Int N, class RealType>
-RealType Torus88Object<N, RealType>::signedDistance(const VecX<N, RealType>& ppos0, bool bNegativeInside /*= true*/) const
+RealType Torus88Object<N, RealType>::signedDistance(const VecN& ppos0, bool bNegativeInside /*= true*/) const
 {
     auto ppos = invTransform(ppos0);
     if constexpr(N == 2) {
@@ -488,7 +488,7 @@ RealType Torus88Object<N, RealType>::signedDistance(const VecX<N, RealType>& ppo
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 template<Int N, class RealType>
-RealType TorusInfInfObject<N, RealType>::signedDistance(const VecX<N, RealType>& ppos0, bool bNegativeInside /*= true*/) const
+RealType TorusInfInfObject<N, RealType>::signedDistance(const VecN& ppos0, bool bNegativeInside /*= true*/) const
 {
     auto ppos = invTransform(ppos0);
     if constexpr(N == 2) {
@@ -504,7 +504,7 @@ RealType TorusInfInfObject<N, RealType>::signedDistance(const VecX<N, RealType>&
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 template<Int N, class RealType>
-RealType CylinderObject<N, RealType>::signedDistance(const VecX<N, RealType>& ppos0, bool bNegativeInside /*= true*/) const
+RealType CylinderObject<N, RealType>::signedDistance(const VecN& ppos0, bool bNegativeInside /*= true*/) const
 {
     __NT_REQUIRE_MSG(N == 3, "Object dimension != 3");
     auto     ppos = invTransform(ppos0);
@@ -526,7 +526,7 @@ void CylinderObject<N, RealType>::parseParameters(const JParams& jParams)
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 template<Int N, class RealType>
-RealType ConeObject<N, RealType>::signedDistance(const VecX<N, RealType>& ppos0, bool bNegativeInside /*= true*/) const
+RealType ConeObject<N, RealType>::signedDistance(const VecN& ppos0, bool bNegativeInside /*= true*/) const
 {
     __NT_REQUIRE_MSG(N == 3, "Object dimension != 3");
     auto     ppos  = invTransform(ppos0);
@@ -550,7 +550,7 @@ void ConeObject<N, RealType>::parseParameters(const JParams& jParams)
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 template<Int N, class RealType>
-RealType PlaneObject<N, RealType>::signedDistance(const VecX<N, RealType>& ppos0, bool bNegativeInside /*= true*/) const
+RealType PlaneObject<N, RealType>::signedDistance(const VecN& ppos0, bool bNegativeInside /*= true*/) const
 {
     auto     ppos = invTransform(ppos0);
     RealType d    = glm::dot(ppos, m_Normal) - m_Offset;
@@ -563,8 +563,8 @@ void PlaneObject<N, RealType>::parseParameters(const JParams& jParams)
 {
     GeometryObject<N, RealType>::parseParameters(jParams);
     ////////////////////////////////////////////////////////////////////////////////
-    VecX<N, RealType> normal;
-    RealType          offset;
+    VecN     normal;
+    RealType offset;
     if(JSONHelpers::readVector(jParams, normal, "Normal")) {
         setNormal(normal);
     }
@@ -575,7 +575,7 @@ void PlaneObject<N, RealType>::parseParameters(const JParams& jParams)
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 template<Int N, class RealType>
-RealType TriangleObject<N, RealType>::signedDistance(const VecX<N, RealType>& ppos0, bool bNegativeInside /*= true*/) const
+RealType TriangleObject<N, RealType>::signedDistance(const VecN& ppos0, bool bNegativeInside /*= true*/) const
 {
     __NT_REQUIRE_MSG(N == 2, "Object dimension != 2");
     auto ppos = invTransform(ppos0);
@@ -620,7 +620,7 @@ void TriangleObject<N, RealType>::parseParameters(const JParams& jParams)
 {
     GeometryObject<N, RealType>::parseParameters(jParams);
     ////////////////////////////////////////////////////////////////////////////////
-    VecX<N, RealType> vertices[3];
+    VecN vertices[3];
     __NT_REQUIRE(JSONHelpers::readVector(jParams, vertices[0], "V0"));
     __NT_REQUIRE(JSONHelpers::readVector(jParams, vertices[1], "V1"));
     __NT_REQUIRE(JSONHelpers::readVector(jParams, vertices[2], "V2"));
@@ -631,7 +631,7 @@ void TriangleObject<N, RealType>::parseParameters(const JParams& jParams)
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 template<Int N, class RealType>
-RealType HexagonObject<N, RealType>::signedDistance(const VecX<N, RealType>& ppos0, bool bNegativeInside /*= true*/) const
+RealType HexagonObject<N, RealType>::signedDistance(const VecN& ppos0, bool bNegativeInside /*= true*/) const
 {
     __NT_REQUIRE_MSG(N == 2, "Object dimension != 2");
     auto     ppos = invTransform(ppos0);
@@ -643,11 +643,11 @@ RealType HexagonObject<N, RealType>::signedDistance(const VecX<N, RealType>& ppo
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 template<Int N, class RealType>
-RealType TriangularPrismObject<N, RealType>::signedDistance(const VecX<N, RealType>& ppos0, bool bNegativeInside /*= true*/) const
+RealType TriangularPrismObject<N, RealType>::signedDistance(const VecN& ppos0, bool bNegativeInside /*= true*/) const
 {
     __NT_REQUIRE_MSG(N == 3, "Object dimension != 3");
-    auto              ppos = invTransform(ppos0);
-    VecX<N, RealType> q;
+    auto ppos = invTransform(ppos0);
+    VecN q;
     for(Int d = 0; d < N; ++d) {
         q[d] = std::abs(ppos[d]);
     }
@@ -671,11 +671,11 @@ void TriangularPrismObject<N, RealType>::parseParameters(const JParams& jParams)
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 template<Int N, class RealType>
-RealType HexagonalPrismObject<N, RealType>::signedDistance(const VecX<N, RealType>& ppos0, bool bNegativeInside /*= true*/) const
+RealType HexagonalPrismObject<N, RealType>::signedDistance(const VecN& ppos0, bool bNegativeInside /*= true*/) const
 {
     __NT_REQUIRE_MSG(N == 3, "Object dimension != 3");
-    auto              ppos = invTransform(ppos0);
-    VecX<N, RealType> q;
+    auto ppos = invTransform(ppos0);
+    VecN q;
     for(Int d = 0; d < N; ++d) {
         q[d] = std::abs(ppos[d]);
     }
@@ -698,11 +698,11 @@ void HexagonalPrismObject<N, RealType>::parseParameters(const JParams& jParams)
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 template<Int N, class RealType>
-RealType CapsuleObject<N, RealType>::signedDistance(const VecX<N, RealType>& ppos0, bool bNegativeInside /*= true*/) const
+RealType CapsuleObject<N, RealType>::signedDistance(const VecN& ppos0, bool bNegativeInside /*= true*/) const
 {
-    auto              ppos = invTransform(ppos0);
-    VecX<N, RealType> pa   = ppos - m_Start;
-    VecX<N, RealType> ba   = m_End - m_Start;
+    auto ppos = invTransform(ppos0);
+    VecN pa   = ppos - m_Start;
+    VecN ba   = m_End - m_Start;
 
     RealType h = MathHelpers::clamp(glm::dot(pa, ba) / glm::dot(ba, ba), RealType(0.0), RealType(1.0));
     RealType d = this->m_UniformScale * (glm::length(pa - ba * h) - m_Radius);
@@ -729,7 +729,7 @@ void CapsuleObject<N, RealType>::parseParameters(const JParams& jParams)
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 template<Int N, class RealType>
-RealType EllipsoidObject<N, RealType>::signedDistance(const VecX<N, RealType>& ppos0, bool bNegativeInside /*= true*/) const
+RealType EllipsoidObject<N, RealType>::signedDistance(const VecN& ppos0, bool bNegativeInside /*= true*/) const
 {
     auto ppos = invTransform(ppos0);
     for(Int d = 0; d < N; ++d) {
@@ -745,7 +745,7 @@ void EllipsoidObject<N, RealType>::parseParameters(const JParams& jParams)
 {
     GeometryObject<N, RealType>::parseParameters(jParams);
     ////////////////////////////////////////////////////////////////////////////////
-    VecX<N, RealType> radiusRatio;
+    VecN radiusRatio;
     if(JSONHelpers::readVector(jParams, radiusRatio, "RadiusRatio")) {
         setRadiusRatio(radiusRatio);
     }
@@ -856,7 +856,7 @@ void computeSDFMesh(const StdVT<Vec3ui>& faces, const StdVT_Vec3<RealType>& vert
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 template<Int N, class RealType>
-RealType TriMeshObject<N, RealType>::signedDistance(const VecX<N, RealType>& ppos0, bool bNegativeInside /*= true*/) const
+RealType TriMeshObject<N, RealType>::signedDistance(const VecN& ppos0, bool bNegativeInside /*= true*/) const
 {
     if constexpr(N == 2) {
         __NT_UNUSED(ppos0);
@@ -884,8 +884,8 @@ void TriMeshObject<N, RealType>::computeSDF()
 
         ////////////////////////////////////////////////////////////////////////////////
         // Init grid and array of data
-        m_Grid3D.setGrid(VecX<N, RealType>(meshLoader.getAABBMin()) - VecX<N, RealType>(RealType(3.0) * m_Step),
-                         VecX<N, RealType>(meshLoader.getAABBMax()) + VecX<N, RealType>(RealType(3.0) * m_Step),
+        m_Grid3D.setGrid(VecN(meshLoader.getAABBMin()) - VecN(RealType(3.0) * m_Step),
+                         VecN(meshLoader.getAABBMax()) + VecN(RealType(3.0) * m_Step),
                          m_Step);
 
         StdVT_Vec3<RealType> vertexList(meshLoader.getNVertices());
@@ -896,7 +896,7 @@ void TriMeshObject<N, RealType>::computeSDF()
 
         ////////////////////////////////////////////////////////////////////////////////
         // Compute SDF data
-        computeSDFMesh(faceList, vertexList, VecX<N, RealType>(meshLoader.getAABBMin()),
+        computeSDFMesh(faceList, vertexList, VecN(meshLoader.getAABBMin()),
                        m_Step, m_Grid3D.getNCells()[0], m_Grid3D.getNCells()[1], m_Grid3D.getNCells()[2], m_SDFData);
         m_bSDFGenerated = true;
     }
@@ -915,7 +915,7 @@ void TriMeshObject<N, RealType>::parseParameters(const JParams& jParams)
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 template<Int N, class RealType>
-RealType CSGObject<N, RealType>::signedDistance(const VecX<N, RealType>& ppos0, bool bNegativeInside /*= true*/) const
+RealType CSGObject<N, RealType>::signedDistance(const VecN& ppos0, bool bNegativeInside /*= true*/) const
 {
     if(m_Objects.size() == 0) {
         return HugeReal();
@@ -955,7 +955,7 @@ RealType CSGObject<N, RealType>::signedDistance(const VecX<N, RealType>& ppos0, 
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 template<Int N, class RealType>
-VecX<N, RealType> CSGObject<N, RealType>::domainDeform(const VecX<N, RealType>& ppos) const
+VecX<N, RealType> CSGObject<N, RealType>::domainDeform(const VecN& ppos) const
 {
     switch(m_DeformOp) {
         case None:
@@ -971,7 +971,7 @@ VecX<N, RealType> CSGObject<N, RealType>::domainDeform(const VecX<N, RealType>& 
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 template<Int N, class RealType>
-VecX<N, RealType> CSGObject<N, RealType>::twist(const VecX<N, RealType>& ppos) const
+VecX<N, RealType> CSGObject<N, RealType>::twist(const VecN& ppos) const
 {
     __NT_UNUSED(ppos);
     //RealType         c = cos(RealType(5.0) * ppos.z);
@@ -979,21 +979,21 @@ VecX<N, RealType> CSGObject<N, RealType>::twist(const VecX<N, RealType>& ppos) c
     //Mat2x2<RealType> m = Mat2x2<RealType>(c, -s, s, c);
     //Mat2x2<RealType> m = Mat2x2<RealType>(c, s, -s, c);
 
-    //return VecX<N, RealType>(m * VecX<N, RealType>(ppos[0], ppos[1]), ppos.z);
-    return VecX<N, RealType>(0);
+    //return VecN(m * VecN(ppos[0], ppos[1]), ppos.z);
+    return VecN(0);
 }
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 template<Int N, class RealType>
-VecX<N, RealType> CSGObject<N, RealType>::cheapBend(const VecX<N, RealType>& ppos) const
+VecX<N, RealType> CSGObject<N, RealType>::cheapBend(const VecN& ppos) const
 {
     RealType c = cos(RealType(0.5) * ppos.y);
     RealType s = sin(RealType(0.5) * ppos.y);
     //Mat2x2<RealType> m = Mat2x2<RealType>(c, -s, s, c);
     Mat2x2<RealType> m = Mat2x2<RealType>(c, s, -s, c);
 
-    //return VecX<N, RealType>(m * VecX<N, RealType>(ppos[0], ppos[1]), ppos.z);
-    return VecX<N, RealType>(0);
+    //return VecN(m * VecN(ppos[0], ppos[1]), ppos.z);
+    return VecN(0);
 }
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
