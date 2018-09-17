@@ -146,7 +146,6 @@ bool GeometryObject<N, RealType>::updateTransformation(UInt frame /*= 0*/, RealT
     ////////////////////////////////////////////////////////////////////////////////
     m_LastTime    = m_CurrentTime;
     m_CurrentTime = frameDuration * (RealType(frame) + frameFraction);
-    m_LastTransformationMatrix = m_TransformationMatrix;
     ////////////////////////////////////////////////////////////////////////////////
     m_TransformationMatrix = m_IntrinsicTransformationMatrix;
     for(auto& animation : m_Animations) {

@@ -69,9 +69,8 @@ protected:
     ////////////////////////////////////////////////////////////////////////////////
     bool m_bTransformed = false;
 
-    RealType   m_LastTime    = 0;
-    RealType   m_CurrentTime = 0;
-    MatNp1xNp1 m_LastTransformationMatrix = MatNp1xNp1(1.0);
+    RealType m_LastTime    = 0;
+    RealType m_CurrentTime = 0;
 
     // intrinsic object transformation
     VecN       m_IntrinsicTranslation          = VecN(0);
