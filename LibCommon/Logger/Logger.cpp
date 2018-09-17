@@ -24,7 +24,8 @@
 #include <csignal>
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-Logger::Logger(const String& loggerName, const String& rootPath, bool bLog2Console /*= true*/, bool bLog2File /*= false*/, LogLevel logLevel /*= LogLevel::trace*/) :
+Logger::Logger(const String& loggerName, const String& rootPath, bool bLog2Console /*= true*/, bool bLog2File /*= false*/,
+               LogLevel consoleLogLevel /*= LogLevel::trace*/, LogLevel fileLogLevel /*= LogLevel::trace*/) :
     m_bLog2Console(bLog2Console), m_bLog2File(bLog2File)
 {
     if(!m_bLog2Console && !m_bLog2File) {
@@ -34,7 +35,7 @@ Logger::Logger(const String& loggerName, const String& rootPath, bool bLog2Conso
     if(m_bLog2Console) {
         m_ConsoleLogger = spdlog::stdout_color_mt(loggerName + String("[console_logger]"));
         m_ConsoleLogger->set_pattern("[%Y-%m-%d] [%H:%M:%S.%e] [%^%l%$] %v");
-        m_ConsoleLogger->set_level(logLevel);
+        m_ConsoleLogger->set_level(consoleLogLevel);
     }
     ////////////////////////////////////////////////////////////////////////////////
     if(m_bLog2File) {
@@ -46,7 +47,7 @@ Logger::Logger(const String& loggerName, const String& rootPath, bool bLog2Conso
                !FileHelpers::fileExisted(file)) {
                 m_FileLogger = spdlog::create_async<spdlog::sinks::basic_file_sink_mt>(loggerName + String("[file_logger]"), file);
                 m_FileLogger->set_pattern("[%Y-%m-%d] [%H:%M:%S.%e] [%^%l%$] %v");
-                m_FileLogger->set_level(logLevel);
+                m_FileLogger->set_level(fileLogLevel);
                 break;
             }
             ++i;
@@ -75,28 +76,30 @@ Logger::~Logger()
 }
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-void Logger::printLogIndent(const String& s, UInt indentLevel /*= 1*/, LogLevel logLevel /*= LogLevel::info*/)
+void Logger::printLogIndent(const String& s, UInt indentLevel /*= 1*/,
+                            LogLevel consoleLogLevel /*= LogLevel::trace*/, LogLevel fileLogLevel /*= LogLevel::trace*/)
 {
     String s_formatted;
     s_formatted.reserve(256);
     s_formatted += String(s_IndentSize * indentLevel, s_PrefixPadding);
     s_formatted += s;
     ////////////////////////////////////////////////////////////////////////////////
-    printLog(s_formatted, logLevel);
+    printLog(s_formatted, consoleLogLevel, fileLogLevel);
 }
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-void Logger::printLogPadding(const String& s, LogLevel logLevel /*= LogLevel::info*/)
+void Logger::printLogPadding(const String& s, LogLevel consoleLogLevel /*= LogLevel::trace*/, LogLevel fileLogLevel /*= LogLevel::trace*/)
 {
     auto s_formatted = s;
     s_formatted.reserve(256);
     s_formatted += String(" ");
     s_formatted += String(s_PaddingMaxSize - s_formatted.length(), s_SuffixPadding);
-    printLog(s_formatted, logLevel);
+    printLog(s_formatted, consoleLogLevel, fileLogLevel);
 }
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-void Logger::printLogPaddingIndent(const String& s, UInt indentLevel /*= 1*/, LogLevel logLevel /*= LogLevel::info*/)
+void Logger::printLogPaddingIndent(const String& s, UInt indentLevel /*= 1*/, LogLevel consoleLogLevel /*= LogLevel::trace*/,
+                                   LogLevel fileLogLevel /*= LogLevel::trace*/)
 {
     String s_formatted;
     s_formatted.reserve(256);
@@ -104,11 +107,12 @@ void Logger::printLogPaddingIndent(const String& s, UInt indentLevel /*= 1*/, Lo
     s_formatted += s;
     s_formatted += String(" ");
     s_formatted += String(s_PaddingMaxSize - s_formatted.length(), s_SuffixPadding);
-    printLog(s_formatted, logLevel);
+    printLog(s_formatted, consoleLogLevel, fileLogLevel);
 }
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-void Logger::printCenterAligned(const String& s, char paddingChar /*= Logger::s_PrefixPadding*/, LogLevel logLevel /*= LogLevel::info*/)
+void Logger::printCenterAligned(const String& s, char paddingChar /*= Logger::s_PrefixPadding*/,
+                                LogLevel consoleLogLevel /*= LogLevel::trace*/, LogLevel fileLogLevel /*= LogLevel::trace*/)
 {
     size_t       length = s.length();
     const String str    = length == 0 ? s : String(" " + s + " ");
@@ -124,29 +128,29 @@ void Logger::printCenterAligned(const String& s, char paddingChar /*= Logger::s_
     s_formatted += str;
     s_formatted += (finalLength == s_PaddingMaxSize) ? String(paddingSize, paddingChar) : String(paddingSize + 1, paddingChar);
     s_formatted += s_Wrapper;
-    printLog(s_formatted, logLevel);
+    printLog(s_formatted, consoleLogLevel, fileLogLevel);
 }
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-void Logger::printTextBox(const String& s, LogLevel logLevel /*= LogLevel::info*/)
+void Logger::printTextBox(const String& s, LogLevel consoleLogLevel /*= LogLevel::trace*/, LogLevel fileLogLevel /*= LogLevel::trace*/)
 {
-    separatorLine(logLevel);
-    printCenterAligned("", ' ', logLevel);
-    printCenterAligned(s,  ' ', logLevel);
-    printCenterAligned("", ' ', logLevel);
-    separatorLine(logLevel);
+    separatorLine(consoleLogLevel, fileLogLevel);
+    printCenterAligned("", ' ', consoleLogLevel, fileLogLevel);
+    printCenterAligned(s,  ' ', consoleLogLevel, fileLogLevel);
+    printCenterAligned("", ' ', consoleLogLevel, fileLogLevel);
+    separatorLine(consoleLogLevel, fileLogLevel);
 }
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-void Logger::printTextBox(const StdVT<String>& strs, LogLevel logLevel /*= LogLevel::info*/)
+void Logger::printTextBox(const StdVT<String>& strs, LogLevel consoleLogLevel /*= LogLevel::trace*/, LogLevel fileLogLevel /*= LogLevel::trace*/)
 {
-    separatorLine(logLevel);
-    printCenterAligned("", ' ', logLevel);
+    separatorLine(consoleLogLevel, fileLogLevel);
+    printCenterAligned("", ' ', consoleLogLevel, fileLogLevel);
     for(const auto& s: strs) {
-        printCenterAligned(s, ' ', logLevel);
+        printCenterAligned(s, ' ', consoleLogLevel, fileLogLevel);
     }
-    printCenterAligned("", ' ', logLevel);
-    separatorLine(logLevel);
+    printCenterAligned("", ' ', consoleLogLevel, fileLogLevel);
+    separatorLine(consoleLogLevel, fileLogLevel);
 }
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
@@ -161,7 +165,7 @@ void Logger::flush()
 }
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-void Logger::printMemoryUsage(LogLevel logLevel /*= LogLevel::info*/)
+void Logger::printMemoryUsage(LogLevel consoleLogLevel /*= LogLevel::trace*/, LogLevel fileLogLevel /*= LogLevel::trace*/)
 {
     String str;
     str.reserve(256);
@@ -169,13 +173,13 @@ void Logger::printMemoryUsage(LogLevel logLevel /*= LogLevel::info*/)
     str += Formatters::toString(static_cast<double>(getCurrentRSS()) / 1048576.0);
     str += String(" MB(s). Peak: ");
     str += Formatters::toString(static_cast<double>(getPeakRSS()) / 1048576.0) + " MB(s).";
-    printLog(str, logLevel);
+    printLog(str, consoleLogLevel, fileLogLevel);
 }
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-void Logger::printTotalRunTime(LogLevel logLevel /*= LogLevel::info*/)
+void Logger::printTotalRunTime(LogLevel consoleLogLevel /*= LogLevel::trace*/, LogLevel fileLogLevel /*= LogLevel::trace*/)
 {
-    printLogPadding(getTotalRunTime(), logLevel);
+    printLogPadding(getTotalRunTime(), consoleLogLevel, fileLogLevel);
 }
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+

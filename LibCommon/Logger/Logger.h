@@ -29,74 +29,95 @@ class Logger
 public:
     using LogLevel = spdlog::level::level_enum;
     ////////////////////////////////////////////////////////////////////////////////
-    Logger(const String& loggerName, const String& rootPath, bool bLog2Console = true, bool bLog2File = false, LogLevel logLevel = LogLevel::trace);
+    Logger(const String& loggerName, const String& rootPath, bool bLog2Console = true, bool bLog2File = false,
+           LogLevel consoleLogLevel = LogLevel::trace, LogLevel fileLogLevel = LogLevel::trace);
     ~Logger();
     ////////////////////////////////////////////////////////////////////////////////
-    void printLog(const String& s, LogLevel logLevel = LogLevel::info)
+    void printLog(const String& s, LogLevel consoleLogLevel = LogLevel::info, LogLevel fileLogLevel = LogLevel::info)
     {
-        if(m_bLog2Console) { m_ConsoleLogger->log(logLevel, s); }
-        if(m_bLog2File) { m_FileLogger->log(logLevel, s); }
+        if(m_bLog2Console) { m_ConsoleLogger->log(consoleLogLevel, s); }
+        if(m_bLog2File) { m_FileLogger->log(fileLogLevel, s); }
     }
 
-    void printLogPadding(const String& s, LogLevel logLevel       = LogLevel::info);
-    void printLogIndent(const String& s, UInt indentLevel         = 1, LogLevel logLevel = LogLevel::info);
-    void printLogPaddingIndent(const String& s,  UInt indentLevel = 1, LogLevel logLevel = LogLevel::info);
+    void printLogPadding(const String& s, LogLevel consoleLogLevel = LogLevel::info, LogLevel fileLogLevel = LogLevel::info);
+    void printLogIndent(const String& s, UInt indentLevel          = 1, LogLevel consoleLogLevel = LogLevel::info, LogLevel fileLogLevel = LogLevel::info);
+    void printLogPaddingIndent(const String& s,  UInt indentLevel  = 1, LogLevel consoleLogLevel = LogLevel::info, LogLevel fileLogLevel = LogLevel::info);
 
-    void printCenterAligned(const String& s, char paddingChar      = Logger::s_PrefixPadding, LogLevel logLevel = LogLevel::info);
-    void printTextBox(const String& s, LogLevel logLevel           = LogLevel::info);
-    void printTextBox(const StdVT<String>& strs, LogLevel logLevel = LogLevel::info);
+    void printCenterAligned(const String& s, char paddingChar             = Logger::s_PrefixPadding, LogLevel consoleLogLevel = LogLevel::info, LogLevel fileLogLevel = LogLevel::info);
+    void printTextBox(const String& s, LogLevel consoleLogLevel           = LogLevel::info, LogLevel fileLogLevel = LogLevel::info);
+    void printTextBox(const StdVT<String>& strs, LogLevel consoleLogLevel = LogLevel::info, LogLevel fileLogLevel = LogLevel::info);
 
-    void newLine(LogLevel logLevel       = LogLevel::info) { printLog("", logLevel); }
-    void separatorLine(LogLevel logLevel = LogLevel::info) { printCenterAligned("", '=', logLevel); }
+    void newLine(LogLevel consoleLogLevel       = LogLevel::info, LogLevel fileLogLevel = LogLevel::info) { printLog("", consoleLogLevel, fileLogLevel); }
+    void separatorLine(LogLevel consoleLogLevel = LogLevel::info, LogLevel fileLogLevel = LogLevel::info) { printCenterAligned("", '=', consoleLogLevel, fileLogLevel); }
     ////////////////////////////////////////////////////////////////////////////////
-    template<typename... Args> void printLogIf(bool bCondition, Args&& ... args) { if(bCondition) { printLog(std::forward<Args>(args)...); } }
-    template<typename... Args> void printLogIndentIf(bool bCondition, Args&& ... args) { if(bCondition) { printLogIndent(std::forward<Args>(args)...); } }
-    template<typename... Args> void printLogPaddingIf(bool bCondition, Args&& ... args) { if(bCondition) { printLogPadding(std::forward<Args>(args)...); } }
-    template<typename... Args> void printLogPaddingIndentIf(bool bCondition, Args&& ... args) { if(bCondition) { printLogPaddingIndent(std::forward<Args>(args)...); } }
-    template<typename... Args> void printCenterAlignedIf(bool bCondition, Args&& ... args) { if(bCondition) { printCenterAligned(std::forward<Args>(args)...); } }
-    template<typename... Args> void printTextBoxIf(bool bCondition, Args&& ... args) { if(bCondition) { printTextBox(std::forward<Args>(args)...); } }
-    template<typename... Args> void newLineIf(bool bCondition, Args&& ... args) { if(bCondition) { newLine(std::forward<Args>(args)...); } }
-    template<typename... Args> void separatorLineIf(bool bCondition, Args&& ... args) { if(bCondition) { separatorLine(std::forward<Args>(args)...); } }
+    template<class... Args> void printLogIf(bool bCondition, Args&& ... args) { if(bCondition) { printLog(std::forward<Args>(args)...); } }
+    template<class... Args> void printLogIndentIf(bool bCondition, Args&& ... args) { if(bCondition) { printLogIndent(std::forward<Args>(args)...); } }
+    template<class... Args> void printLogPaddingIf(bool bCondition, Args&& ... args) { if(bCondition) { printLogPadding(std::forward<Args>(args)...); } }
+    template<class... Args> void printLogPaddingIndentIf(bool bCondition, Args&& ... args) { if(bCondition) { printLogPaddingIndent(std::forward<Args>(args)...); } }
+    template<class... Args> void printCenterAlignedIf(bool bCondition, Args&& ... args) { if(bCondition) { printCenterAligned(std::forward<Args>(args)...); } }
+    template<class... Args> void printTextBoxIf(bool bCondition, Args&& ... args) { if(bCondition) { printTextBox(std::forward<Args>(args)...); } }
+    template<class... Args> void newLineIf(bool bCondition, Args&& ... args) { if(bCondition) { newLine(std::forward<Args>(args)...); } }
+    template<class... Args> void separatorLineIf(bool bCondition, Args&& ... args) { if(bCondition) { separatorLine(std::forward<Args>(args)...); } }
     ////////////////////////////////////////////////////////////////////////////////
-    void printDebug(const String& s) { printLog(s, LogLevel::debug); }
-    void printDebugIndent(const String& s, UInt indentLevel = 1) { printLogIndent(s, indentLevel, LogLevel::debug); }
-    void printWarning(const String& s) { printLog(s, LogLevel::warn); }
-    void printWarningIndent(const String& s, UInt indentLevel = 1) { printLogIndent(s, indentLevel, LogLevel::warn); }
-    void printError(const String& s) { printLog(s, LogLevel::err); }
-    void printErrorIndent(const String& s, UInt indentLevel = 1) { printLogIndent(s, indentLevel, LogLevel::err); }
+    void printDebug(const String& s) { printLog(s, LogLevel::debug, LogLevel::debug); }
+    void printDebugIndent(const String& s, UInt indentLevel = 1) { printLogIndent(s, indentLevel, LogLevel::debug, LogLevel::debug); }
+    void printWarning(const String& s) { printLog(s, LogLevel::warn, LogLevel::warn); }
+    void printWarningIndent(const String& s, UInt indentLevel = 1) { printLogIndent(s, indentLevel, LogLevel::warn, LogLevel::warn); }
+    void printError(const String& s) { printLog(s, LogLevel::err, LogLevel::err); }
+    void printErrorIndent(const String& s, UInt indentLevel = 1) { printLogIndent(s, indentLevel, LogLevel::err, LogLevel::err); }
     ////////////////////////////////////////////////////////////////////////////////
-    template<class Function> void printRunTime(const char* caption, const Function& function, LogLevel logLevel = LogLevel::info)
+    template<class Function, class... Args>
+    void printRunTime(const char* caption, Function&& function, Args&& ... args)
     {
-        printLog(Timer::getRunTime<Function>(caption, function), logLevel);
+        printLog(Timer::getRunTime<Function>(caption, std::forward<Function>(function)), std::forward<Args>(args)...);
     }
 
-    template<class Function> void printRunTimeIndent(const char* caption, const Function& function, UInt indentLevel = 1, LogLevel logLevel = LogLevel::info)
+    template<class Function, class... Args>
+    void printRunTimeIndent(const char* caption, Function&& function, UInt indentLevel = 1, Args&& ... args)
     {
-        printLogIndent(Timer::getRunTime<Function>(caption, function), indentLevel, logLevel);
+        printLogIndent(Timer::getRunTime<Function>(caption, std::forward<Function>(function)), indentLevel, std::forward<Args>(args)...);
     }
 
-    template<class Function> void printRunTimeIf(const char* caption, const Function& function, LogLevel logLevel = LogLevel::info)
+    template<class Function, class... Args>
+    void printRunTimeIf(const char* caption, Function&& function, Args&& ... args)
     {
         Timer timer;
         timer.tick();
         bool bResult = function();
         timer.tock();
-        printLogIf(bResult, timer.getRunTime(caption), logLevel);
+        printLogIf(bResult, timer.getRunTime(caption), std::forward<Args>(args)...);
     }
 
-    template<class Function> void printRunTimeIndentIf(const char* caption, const Function& function, UInt indentLevel = 1, LogLevel logLevel = LogLevel::info)
+    template<class Function, class... Args>
+    void printRunTimeIndentIf(const char* caption, Function&& function, UInt indentLevel = 1, Args&& ... args)
     {
         Timer timer;
         timer.tick();
         bool bResult = function();
         timer.tock();
-        printLogIndentIf(bResult, timer.getRunTime(caption), indentLevel, logLevel);
+        printLogIndentIf(bResult, timer.getRunTime(caption), indentLevel, std::forward<Args>(args)...);
+    }
+
+    ////////////////////////////////////////////////////////////////////////////////
+    template<class... Args> void printRunTimeDebug(Args&& ... args) { printRunTime(std::forward<Args>(args)..., LogLevel::debug, LogLevel::debug); }
+    template<class... Args> void printRunTimeIfDebug(Args&& ... args) { printRunTimeIf(std::forward<Args>(args)..., LogLevel::debug, LogLevel::debug); }
+
+    template<class Function>
+    void printRunTimeIndentDebug(const char* caption, Function&& function, UInt indentLevel = 1)
+    {
+        printRunTimeIndent(caption, std::forward<Function>(function), indentLevel, LogLevel::debug, LogLevel::debug);
+    }
+
+    template<class Function>
+    void printRunTimeIndentIfDebug(const char* caption, Function&& function, UInt indentLevel = 1)
+    {
+        printRunTimeIndentIf(caption, std::forward<Function>(function), indentLevel, LogLevel::debug, LogLevel::debug);
     }
 
     ////////////////////////////////////////////////////////////////////////////////
     void flush();
-    void printMemoryUsage(LogLevel logLevel  = LogLevel::info);
-    void printTotalRunTime(LogLevel logLevel = LogLevel::info);
+    void printMemoryUsage(LogLevel consoleLogLevel  = LogLevel::info, LogLevel fileLogLevel = LogLevel::info);
+    void printTotalRunTime(LogLevel consoleLogLevel = LogLevel::info, LogLevel fileLogLevel = LogLevel::info);
     ////////////////////////////////////////////////////////////////////////////////
     void        cleanup(int signal = 0);
     static void signalHandler(int signal);
