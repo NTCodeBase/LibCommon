@@ -154,6 +154,16 @@ void Logger::printTextBox(const StdVT<String>& strs, LogLevel consoleLogLevel /*
 }
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+void Logger::separatorLine(int stype /*= 0*/, LogLevel consoleLogLevel /*= LogLevel::info*/, LogLevel fileLogLevel /*= LogLevel::info*/)
+{
+    if(stype == 0) {
+        printCenterAligned("", '=', consoleLogLevel, fileLogLevel);
+    } else {
+        printLog(String(s_PaddingMaxSize, s_SuffixPadding), consoleLogLevel, fileLogLevel);
+    }
+}
+
+//-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 void Logger::flush()
 {
     if(m_bLog2Console) {

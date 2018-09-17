@@ -47,8 +47,8 @@ public:
     void printTextBox(const String& s, LogLevel consoleLogLevel           = LogLevel::info, LogLevel fileLogLevel = LogLevel::info);
     void printTextBox(const StdVT<String>& strs, LogLevel consoleLogLevel = LogLevel::info, LogLevel fileLogLevel = LogLevel::info);
 
-    void newLine(LogLevel consoleLogLevel       = LogLevel::info, LogLevel fileLogLevel = LogLevel::info) { printLog("", consoleLogLevel, fileLogLevel); }
-    void separatorLine(LogLevel consoleLogLevel = LogLevel::info, LogLevel fileLogLevel = LogLevel::info) { printCenterAligned("", '=', consoleLogLevel, fileLogLevel); }
+    void newLine(LogLevel consoleLogLevel = LogLevel::info, LogLevel fileLogLevel = LogLevel::info) { printLog("", consoleLogLevel, fileLogLevel); }
+    void separatorLine(int stype          = 0, LogLevel consoleLogLevel = LogLevel::info, LogLevel fileLogLevel = LogLevel::info);
     ////////////////////////////////////////////////////////////////////////////////
     template<class... Args> void printLogIf(bool bCondition, Args&& ... args) { if(bCondition) { printLog(std::forward<Args>(args)...); } }
     template<class... Args> void printLogIndentIf(bool bCondition, Args&& ... args) { if(bCondition) { printLogIndent(std::forward<Args>(args)...); } }
@@ -61,10 +61,10 @@ public:
     ////////////////////////////////////////////////////////////////////////////////
     void printDebug(const String& s) { printLog(s, LogLevel::debug, LogLevel::debug); }
     void printDebugIndent(const String& s, UInt indentLevel = 1) { printLogIndent(s, indentLevel, LogLevel::debug, LogLevel::debug); }
-    void printWarning(const String& s) { printLog(s, LogLevel::warn, LogLevel::warn); }
-    void printWarningIndent(const String& s, UInt indentLevel = 1) { printLogIndent(s, indentLevel, LogLevel::warn, LogLevel::warn); }
-    void printError(const String& s) { printLog(s, LogLevel::err, LogLevel::err); }
-    void printErrorIndent(const String& s, UInt indentLevel = 1) { printLogIndent(s, indentLevel, LogLevel::err, LogLevel::err); }
+    void printWarning(const String& s) { printLogPadding(s, LogLevel::warn, LogLevel::warn); }
+    void printWarningIndent(const String& s, UInt indentLevel = 1) { printLogPaddingIndent(s, indentLevel, LogLevel::warn, LogLevel::warn); }
+    void printError(const String& s) { printLogPadding(s, LogLevel::err, LogLevel::err); }
+    void printErrorIndent(const String& s, UInt indentLevel = 1) { printLogPaddingIndent(s, indentLevel, LogLevel::err, LogLevel::err); }
     ////////////////////////////////////////////////////////////////////////////////
     template<class Function, class... Args>
     void printRunTime(const char* caption, Function&& function, Args&& ... args)
@@ -126,7 +126,7 @@ public:
     inline const static char     s_PrefixPadding { ' ' };
     inline const static char     s_SuffixPadding { '*' };
     inline const static UInt     s_IndentSize { 4u };
-    inline const static size_t   s_PaddingMaxSize { 100u };
+    inline const static size_t   s_PaddingMaxSize { 120u };
     inline const static UInt     s_BufferLength { 128u };
     inline static StdVT<Logger*> s_Instances {};
 private:
