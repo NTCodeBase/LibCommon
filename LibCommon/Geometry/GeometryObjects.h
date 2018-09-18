@@ -56,22 +56,16 @@ public:
     auto transformed() const { return m_bTransformed; }
     const auto& getTransformationMatrix() const { return m_TransformationMatrix; }
 
+    bool updateTransformation(UInt frame = 0, RealType frameFraction = RealType(0));
     VecN transformAnimation(const VecN& ppos) const;
     VecN transform(const VecN& ppos) const;
     VecN invTransform(const VecN& ppos) const;
-
-    virtual bool updateTransformation(UInt frame = 0, RealType frameFraction = RealType(0), RealType frameDuration = RealType(1.0 / 30.0));
-
-    VecN getLinearVelocity(const VecN& ppos) const;
 
 protected:
     virtual void parseParameters(const JParams& jParams);
     void         updateIntrinsicTransformation();
     ////////////////////////////////////////////////////////////////////////////////
     bool m_bTransformed = false;
-
-    RealType m_LastTime    = 0;
-    RealType m_CurrentTime = 0;
 
     // intrinsic object transformation
     VecN       m_IntrinsicTranslation          = VecN(0);

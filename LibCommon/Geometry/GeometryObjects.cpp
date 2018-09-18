@@ -137,15 +137,11 @@ void GeometryObject<N, RealType>::resetTransformation()
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 template<Int N, class RealType>
-bool GeometryObject<N, RealType>::updateTransformation(UInt frame /*= 0*/, RealType frameFraction /*= RealType(0)*/,
-                                                       RealType frameDuration /*= RealType(1.0_f / 30.0_f)*/)
+bool GeometryObject<N, RealType>::updateTransformation(UInt frame /*= 0*/, RealType frameFraction /*= RealType(0)*/)
 {
     if(frame > 0 && m_Animations.size() == 0) {
         return false;
     }
-    ////////////////////////////////////////////////////////////////////////////////
-    m_LastTime    = m_CurrentTime;
-    m_CurrentTime = frameDuration * (RealType(frame) + frameFraction);
     ////////////////////////////////////////////////////////////////////////////////
     m_AnimationTransformationMatrix = MatNp1xNp1(1.0);
     for(auto& animation : m_Animations) {
@@ -170,6 +166,39 @@ void GeometryObject<N, RealType>::updateIntrinsicTransformation()
     m_IntrinsicTransformationMatrix = glm::scale(m_IntrinsicTransformationMatrix, VecN(m_UniformScale));
     m_IntrinsicTransformationMatrix = glm::rotate(m_IntrinsicTransformationMatrix, m_IntrinsicRotation[N], VecN(m_IntrinsicRotation));
     m_IntrinsicTransformationMatrix = glm::translate(m_IntrinsicTransformationMatrix, m_IntrinsicTranslation);
+}
+
+//-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+template<Int N, class RealType>
+VecX<N, RealType> GeometryObject<N, RealType>::transformAnimation(const VecN& ppos) const
+{
+    if(!m_bTransformed || m_Animations.size() == 0) {
+        return ppos;
+    } else {
+        return VecN(m_AnimationTransformationMatrix * VecX<N + 1, RealType>(ppos, 1.0));
+    }
+}
+
+//-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+template<Int N, class RealType>
+VecX<N, RealType> GeometryObject<N, RealType>::transform(const VecN& ppos) const
+{
+    if(!m_bTransformed) {
+        return ppos;
+    } else {
+        return VecN(m_TransformationMatrix * VecX<N + 1, RealType>(ppos, 1.0));
+    }
+}
+
+//-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+template<Int N, class RealType>
+VecX<N, RealType> GeometryObject<N, RealType>::invTransform(const VecN& ppos) const
+{
+    if(!m_bTransformed) {
+        return ppos;
+    } else {
+        return VecN(m_InvTransformationMatrix * VecX<N + 1, RealType>(ppos, 1.0));
+    }
 }
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
@@ -230,39 +259,6 @@ void GeometryObject<N, RealType>::parseParameters(const JParams& jParams)
             animationObj.makeReady(bCubicInterpolationTranslation, bCubicInterpolationRotation);
         }
         updateTransformation();
-    }
-}
-
-//-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-template<Int N, class RealType>
-VecX<N, RealType> GeometryObject<N, RealType>::transformAnimation(const VecN& ppos) const
-{
-    if(!m_bTransformed || m_Animations.size() == 0) {
-        return ppos;
-    } else {
-        return VecN(m_AnimationTransformationMatrix * VecX<N + 1, RealType>(ppos, 1.0));
-    }
-}
-
-//-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-template<Int N, class RealType>
-VecX<N, RealType> GeometryObject<N, RealType>::transform(const VecN& ppos) const
-{
-    if(!m_bTransformed) {
-        return ppos;
-    } else {
-        return VecN(m_TransformationMatrix * VecX<N + 1, RealType>(ppos, 1.0));
-    }
-}
-
-//-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-template<Int N, class RealType>
-VecX<N, RealType> GeometryObject<N, RealType>::invTransform(const VecN& ppos) const
-{
-    if(!m_bTransformed) {
-        return ppos;
-    } else {
-        return VecN(m_InvTransformationMatrix * VecX<N + 1, RealType>(ppos, 1.0));
     }
 }
 
