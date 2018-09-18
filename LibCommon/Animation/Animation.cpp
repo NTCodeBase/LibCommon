@@ -91,6 +91,22 @@ void RigidBodyAnimation<N, RealType>::makeReady(bool bCubicIntTranslation, bool 
     __NT_REQUIRE(m_EndFrame > m_StartFrame);
     m_FrameRange = m_EndFrame - m_StartFrame;
     m_bReady     = true;
+    ////////////////////////////////////////////////////////////////////////////////
+    m_StartFrameTransformationMatrix = getTransformationMatrix(m_StartFrame);
+    m_EndFrameTransformationMatrix   = getTransformationMatrix(m_EndFrame);
+}
+
+//-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+template<Int N, class RealType>
+MatXxX<N + 1, RealType> RigidBodyAnimation<N, RealType>::getInactiveTransformationMatrix(UInt frame)
+{
+    if(frame < m_StartFrame) {
+        return m_StartFrameTransformationMatrix;
+    } else if(frame > m_EndFrame) {
+        return m_EndFrameTransformationMatrix;
+    } else {
+        return getTransformationMatrix(frame);
+    }
 }
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+

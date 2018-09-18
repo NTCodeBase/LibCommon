@@ -70,6 +70,7 @@ public:
     ////////////////////////////////////////////////////////////////////////////////
     void       makeReady(bool bCubicIntTranslation = true, bool bCubicIntRotation = true);
     MatNp1xNp1 getInvTransformation(UInt frame, RealType frameFraction = RealType(0));
+    MatNp1xNp1 getInactiveTransformationMatrix(UInt frame);
     ////////////////////////////////////////////////////////////////////////////////
     virtual MatNp1xNp1 getTransformationMatrix(UInt frame, RealType frameFraction = RealType(0));
 
@@ -77,6 +78,9 @@ protected:
     StdVT<KeyFrame<N, RealType>> m_KeyFrames;
     CubicSpline<RealType>        m_TranslationInterpolator[N];
     CubicSpline<RealType>        m_RotationInterpolator[N + 1];
+
+    MatNp1xNp1 m_StartFrameTransformationMatrix = MatNp1xNp1(1);
+    MatNp1xNp1 m_EndFrameTransformationMatrix   = MatNp1xNp1(1);
 
     UInt m_StartFrame = 0;
     UInt m_EndFrame   = 1u;
