@@ -151,6 +151,8 @@ bool GeometryObject<N, RealType>::updateTransformation(UInt frame /*= 0*/, RealT
     for(auto& animation : m_Animations) {
         if(animation.isActive(frame)) {
             m_AnimationTransformationMatrix = animation.getTransformationMatrix(frame, frameFraction) * m_AnimationTransformationMatrix;
+        } else {
+            m_AnimationTransformationMatrix = animation.getInactiveTransformationMatrix(frame) * m_AnimationTransformationMatrix;
         }
     }
     m_TransformationMatrix    = m_AnimationTransformationMatrix * m_IntrinsicTransformationMatrix;
