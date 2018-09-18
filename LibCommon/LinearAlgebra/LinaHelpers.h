@@ -424,4 +424,42 @@ MatXxX<N, RealType> getOrthogonalSystem(const VecX<N, RealType>& d1)
 }
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+// Compute the rotation quaternion to rotate from position p1 to p2
+template<class T>
+auto angleAxisFromPositions(const Vec3<T>& p1, const Vec3<T>& p2)
+{
+    auto tmp = glm::dot(glm::normalize(p1), glm::normalize(p2));
+    if(tmp > T(1)) { tmp = T(1); }
+    auto angle = std::acos(tmp);
+    auto axis  = glm::normalize(glm::cross(p1, p2));
+    return std::make_pair(angle, axis);
+}
+
+template<class T>
+Quat<T> quaternionFromPositions(const Vec3<T>& p1, const Vec3<T>& p2)
+{
+    auto [angle, axis] = angleAxisFromPositions(p1, p2);
+    return glm::angleAxis(angle, axis);
+}
+
+//-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+template<class Quaternion>
+auto quaternionMatrix(const Quaternion& q)
+{
+    return Mat4x4<Quaternion::value_type>(q.w, q.z, -q.y, -q.x, // col 0
+                                          -q.z, q.w, q.x, -q.y, // col 1
+                                          q.y, -q.x, q.w, -q.z, // col 2
+                                          q.x, q.y, q.z, q.w);  // col 3
+}
+
+template<class Quaternion>
+auto quaternionMatrixTransposed3x4(const Quaternion& q)
+{
+    return MatMxN<3, 4, Quaternion::value_type>(q.w, -q.z, q.y,    // col 0
+                                                q.z, q.w, -q.x,    // col 1
+                                                -q.y, q.x, q.w,    // col 2
+                                                -q.x, -q.y, -q.z); // col 3
+}
+
+//-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 }   // end namespace LinaHelpers
