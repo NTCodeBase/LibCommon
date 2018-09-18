@@ -151,8 +151,9 @@ bool GeometryObject<N, RealType>::updateTransformation(UInt frame /*= 0*/, RealT
             m_AnimationTransformationMatrix = animation.getInactiveTransformationMatrix(frame) * m_AnimationTransformationMatrix;
         }
     }
-    m_TransformationMatrix    = m_AnimationTransformationMatrix * m_IntrinsicTransformationMatrix;
-    m_InvTransformationMatrix = glm::inverse(m_TransformationMatrix);
+    m_PrevTransformationMatrix = m_TransformationMatrix;
+    m_TransformationMatrix     = m_AnimationTransformationMatrix * m_IntrinsicTransformationMatrix;
+    m_InvTransformationMatrix  = glm::inverse(m_TransformationMatrix);
     m_bTransformed = true;
     ////////////////////////////////////////////////////////////////////////////////
     return true;

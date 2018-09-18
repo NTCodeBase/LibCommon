@@ -55,6 +55,7 @@ public:
     auto& getAnimation() { return m_Animations; }
     auto transformed() const { return m_bTransformed; }
     const auto& getTransformationMatrix() const { return m_TransformationMatrix; }
+    const auto& getPrevTransformationMatrix() const { return m_PrevTransformationMatrix; }
 
     bool updateTransformation(UInt frame = 0, RealType frameFraction = RealType(0));
     VecN transformAnimation(const VecN& ppos) const;
@@ -74,8 +75,9 @@ protected:
     MatNp1xNp1 m_IntrinsicTransformationMatrix = MatNp1xNp1(1.0);
 
     // current transformation = animationTransformation(t) * intrinsicTransformation
-    MatNp1xNp1 m_TransformationMatrix    = MatNp1xNp1(1.0);
-    MatNp1xNp1 m_InvTransformationMatrix = MatNp1xNp1(1.0);
+    MatNp1xNp1 m_TransformationMatrix     = MatNp1xNp1(1.0);
+    MatNp1xNp1 m_InvTransformationMatrix  = MatNp1xNp1(1.0);
+    MatNp1xNp1 m_PrevTransformationMatrix = MatNp1xNp1(1.0);
 
     MatNp1xNp1                             m_AnimationTransformationMatrix = MatNp1xNp1(1.0);
     StdVT<RigidBodyAnimation<N, RealType>> m_Animations;
