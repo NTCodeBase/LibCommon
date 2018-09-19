@@ -228,7 +228,7 @@ void GeometryObject<N, RealType>::parseParameters(const JParams& jParams)
             auto& animationObj = getAnimation().emplace_back(RigidBodyAnimation<N, RealType> {});
 
             if(bool bPeriodic; JSONHelpers::readBool(jAnimation, bPeriodic, "Periodic")) {
-                animationObj.setPeriodic(bPeriodic);
+                animationObj.periodic() = bPeriodic;
             }
 
             __NT_REQUIRE(jAnimation.find("KeyFrames") != jAnimation.end());
