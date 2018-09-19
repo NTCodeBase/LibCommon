@@ -230,10 +230,6 @@ void GeometryObject<N, RealType>::parseParameters(const JParams& jParams)
             if(bool bPeriodic; JSONHelpers::readBool(jAnimation, bPeriodic, "Periodic")) {
                 animationObj.setPeriodic(bPeriodic);
             }
-            if(UInt startFrame, endFrame;
-               JSONHelpers::readValue(jAnimation, startFrame, "StartFrame") | JSONHelpers::readValue(jAnimation, endFrame, "EndFrame")) {
-                animationObj.setAnimationRange(startFrame, endFrame);
-            }
 
             __NT_REQUIRE(jAnimation.find("KeyFrames") != jAnimation.end());
             for(auto& jKeyFrame : jAnimation["KeyFrames"]) {

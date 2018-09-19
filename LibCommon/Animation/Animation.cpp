@@ -15,17 +15,7 @@
 #pragma once
 
 #include <LibCommon/Animation/Animation.h>
-
-//-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-template<Int N, class RealType>
-void RigidBodyAnimation<N, RealType>::setAnimationRange(UInt startFrame, UInt endFrame)
-{
-    m_StartFrame = startFrame;
-    if(endFrame > 0) {
-        m_EndFrame   = endFrame;
-        m_FrameRange = m_EndFrame - m_StartFrame;
-    }
-}
+#include <algorithm>
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 template<Int N, class RealType>
@@ -34,6 +24,9 @@ void RigidBodyAnimation<N, RealType>::makeReady(bool bCubicIntTranslation, bool 
     if(m_KeyFrames.size() == 0) {
         return;
     }
+    ////////////////////////////////////////////////////////////////////////////////
+    // sort key frames by frame order
+    std::sort(m_KeyFrames.begin(), m_KeyFrames.end(), [](const auto& k1, const auto& k2) { return k1.frame < k2.frame; });
     ////////////////////////////////////////////////////////////////////////////////
     // add more 1 point if there are only 2 key frames
     if(m_KeyFrames.size() == 2) {
@@ -47,7 +40,11 @@ void RigidBodyAnimation<N, RealType>::makeReady(bool bCubicIntTranslation, bool 
         keyFrame.invScale     = RealType(1) / keyFrame.uniformScale;
         std::swap(keyFrame, keyFrame1);
     }
-
+    ////////////////////////////////////////////////////////////////////////////////
+    m_StartFrame = m_KeyFrames.front().frame;
+    m_EndFrame   = m_KeyFrames.back().frame;
+    __NT_REQUIRE(m_EndFrame > m_StartFrame);
+    m_FrameRange = m_EndFrame - m_StartFrame;
     ////////////////////////////////////////////////////////////////////////////////
     StdVT<RealType> frames;
     StdVT<RealType> translations[N];
@@ -60,7 +57,7 @@ void RigidBodyAnimation<N, RealType>::makeReady(bool bCubicIntTranslation, bool 
     }
     rotations[N].reserve(nKeyFrames());
     ////////////////////////////////////////////////////////////////////////////////
-    UInt maxFrame = 0;
+    UInt m_EndFrame = 0;
     for(const auto& keyFrame : m_KeyFrames) {
         frames.push_back(static_cast<RealType>(keyFrame.frame));
         for(Int d = 0; d < N; ++d) {
@@ -68,14 +65,6 @@ void RigidBodyAnimation<N, RealType>::makeReady(bool bCubicIntTranslation, bool 
             rotations[d].push_back(keyFrame.rotation[d]);
         }
         rotations[N].push_back(keyFrame.rotation[N]);
-        ////////////////////////////////////////////////////////////////////////////////
-        if(maxFrame < keyFrame.frame) {
-            maxFrame = keyFrame.frame;
-        }
-    }
-    if(m_EndFrame == 0) {
-        // if end frame has not been set, set it to the latest key frame
-        m_EndFrame = maxFrame;
     }
     ////////////////////////////////////////////////////////////////////////////////
     for(Int d = 0; d < N; ++d) {
@@ -88,10 +77,7 @@ void RigidBodyAnimation<N, RealType>::makeReady(bool bCubicIntTranslation, bool 
     m_RotationInterpolator[N].setBoundary(CubicSpline<RealType>::BDType::FirstOrder, 0, CubicSpline<RealType>::BDType::FirstOrder, 0);
     m_RotationInterpolator[N].setPoints(frames, rotations[N], bCubicIntRotation);
     ////////////////////////////////////////////////////////////////////////////////
-    __NT_REQUIRE(m_EndFrame > m_StartFrame);
-    m_FrameRange = m_EndFrame - m_StartFrame;
-    m_bReady     = true;
-    ////////////////////////////////////////////////////////////////////////////////
+    m_bReady = true;
     m_StartFrameTransformationMatrix = getTransformationMatrix(m_StartFrame);
     m_EndFrameTransformationMatrix   = getTransformationMatrix(m_EndFrame);
 }

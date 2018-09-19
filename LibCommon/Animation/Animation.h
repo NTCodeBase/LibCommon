@@ -59,8 +59,6 @@ public:
     auto nKeyFrames() const { return static_cast<UInt>(m_KeyFrames.size()); }
     auto& keyFrames() { return m_KeyFrames; }
     void setPeriodic(bool bPeriodic) { m_bPeriodic = bPeriodic; }
-    void setAnimationRange(UInt startFrame, UInt endFrame = 0);
-
     ////////////////////////////////////////////////////////////////////////////////
     auto& addKeyFrame() { return m_KeyFrames.emplace_back(KeyFrame<N, RealType>()); }
     void addKeyFrame(const KeyFrame<N, RealType>& keyFrame) { m_KeyFrames.push_back(keyFrame); }
