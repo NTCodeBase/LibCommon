@@ -144,7 +144,7 @@ bool GeometryObject<N, RealType>::updateTransformation(UInt frame /*= 0*/, RealT
     }
     ////////////////////////////////////////////////////////////////////////////////
     m_AnimationTransformationMatrix = MatNp1xNp1(1.0);
-    bool bDone = true;
+    bool bDone = (m_Animations.size() > 0);
     for(auto& animation : m_Animations) {
         if(animation.isActive(frame)) {
             m_AnimationTransformationMatrix = animation.getTransformationMatrix(frame, frameFraction) * m_AnimationTransformationMatrix;
@@ -169,9 +169,9 @@ template<Int N, class RealType>
 void GeometryObject<N, RealType>::updateIntrinsicTransformation()
 {
     m_IntrinsicTransformationMatrix = MatNp1xNp1(1);
-    m_IntrinsicTransformationMatrix = glm::scale(m_IntrinsicTransformationMatrix, VecN(m_UniformScale));
-    m_IntrinsicTransformationMatrix = glm::rotate(m_IntrinsicTransformationMatrix, m_IntrinsicRotation[N], VecN(m_IntrinsicRotation));
     m_IntrinsicTransformationMatrix = glm::translate(m_IntrinsicTransformationMatrix, m_IntrinsicTranslation);
+    m_IntrinsicTransformationMatrix = glm::rotate(m_IntrinsicTransformationMatrix, m_IntrinsicRotation[N], VecN(m_IntrinsicRotation));
+    m_IntrinsicTransformationMatrix = glm::scale(m_IntrinsicTransformationMatrix, VecN(m_UniformScale));
 }
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
