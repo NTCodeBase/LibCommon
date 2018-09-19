@@ -139,22 +139,27 @@ void GeometryObject<N, RealType>::resetTransformation()
 template<Int N, class RealType>
 bool GeometryObject<N, RealType>::updateTransformation(UInt frame /*= 0*/, RealType frameFraction /*= RealType(0)*/)
 {
-    if(frame > 0 && m_Animations.size() == 0) {
+    if(m_bDoneTransformation || (frame > 0 && m_Animations.size() == 0)) {
         return false;
     }
     ////////////////////////////////////////////////////////////////////////////////
     m_AnimationTransformationMatrix = MatNp1xNp1(1.0);
+    bool bDone = true;
     for(auto& animation : m_Animations) {
         if(animation.isActive(frame)) {
             m_AnimationTransformationMatrix = animation.getTransformationMatrix(frame, frameFraction) * m_AnimationTransformationMatrix;
         } else {
             m_AnimationTransformationMatrix = animation.getInactiveTransformationMatrix(frame) * m_AnimationTransformationMatrix;
         }
+        if(!animation.doneAnimation(frame)) {
+            bDone = false;
+        }
     }
     m_PrevTransformationMatrix = m_TransformationMatrix;
     m_TransformationMatrix     = m_AnimationTransformationMatrix * m_IntrinsicTransformationMatrix;
     m_InvTransformationMatrix  = glm::inverse(m_TransformationMatrix);
-    m_bTransformed = true;
+    m_bTransformed        = true;
+    m_bDoneTransformation = bDone;
     ////////////////////////////////////////////////////////////////////////////////
     return true;
 }

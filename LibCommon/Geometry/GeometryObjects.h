@@ -57,6 +57,7 @@ public:
     const auto& getTransformationMatrix() const { return m_TransformationMatrix; }
     const auto& getPrevTransformationMatrix() const { return m_PrevTransformationMatrix; }
 
+    bool doneTransformation() const { return m_bDoneTransformation; }
     bool updateTransformation(UInt frame = 0, RealType frameFraction = RealType(0));
     VecN transformAnimation(const VecN& ppos) const;
     VecN transform(const VecN& ppos) const;
@@ -66,7 +67,8 @@ protected:
     virtual void parseParameters(const JParams& jParams);
     void         updateIntrinsicTransformation();
     ////////////////////////////////////////////////////////////////////////////////
-    bool m_bTransformed = false;
+    bool m_bTransformed        = false;
+    bool m_bDoneTransformation = false;
 
     // intrinsic object transformation
     VecN       m_IntrinsicTranslation          = VecN(0);
