@@ -56,7 +56,7 @@ public:
     RigidBodyAnimation() = default;
     ////////////////////////////////////////////////////////////////////////////////
     auto isActive(UInt frame) { return (m_KeyFrames.size() > 0) && (frame >= m_StartFrame) && (m_bPeriodic || frame <= m_EndFrame); }
-    auto doneAnimation(UInt frame) const { return (frame > m_EndFrame); }
+    auto doneAnimation(UInt frame) const { return (frame > m_EndFrame && !m_bPeriodic); }
     auto& periodic() { return m_bPeriodic; }
     auto& keyFrames() { return m_KeyFrames; }
     auto nKeyFrames() const { return static_cast<UInt>(m_KeyFrames.size()); }
