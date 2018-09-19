@@ -57,7 +57,6 @@ void RigidBodyAnimation<N, RealType>::makeReady(bool bCubicIntTranslation, bool 
     }
     rotations[N].reserve(nKeyFrames());
     ////////////////////////////////////////////////////////////////////////////////
-    UInt m_EndFrame = 0;
     for(const auto& keyFrame : m_KeyFrames) {
         frames.push_back(static_cast<RealType>(keyFrame.frame));
         for(Int d = 0; d < N; ++d) {
