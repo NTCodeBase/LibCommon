@@ -125,7 +125,7 @@ MatXxX<N + 1, RealType> RigidBodyAnimation<N, RealType>::getTransformationMatrix
     rotation[N] = m_RotationInterpolator[N](x);
 
     MatNp1xNp1 transMatrix(1);
-    if(rotation[N] > 0) {
+    if(rotation[N] != 0) {
         transMatrix = glm::rotate(transMatrix, rotation[N], VecN(rotation));
     }
     transMatrix = glm::translate(transMatrix, translation);
@@ -259,7 +259,7 @@ MatXxX<N + 1, RealType> Animation<N, RealType>::getTransformationMatrix(UInt fra
 
     MatNp1xNp1 transMatrix(1);
     transMatrix = glm::scale(transMatrix, VecN(scale));
-    if(rotation[N] > 0) {
+    if(rotation[N] != 0) {
         transMatrix = glm::rotate(transMatrix, rotation[N], VecN(rotation));
     }
     transMatrix = glm::translate(transMatrix, translation);
