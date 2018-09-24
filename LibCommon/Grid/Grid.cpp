@@ -18,10 +18,12 @@
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 template<Int N, class RealType>
-void Grid<N, RealType>::setGrid(const VecN& bMin, const VecN& bMax, RealType cellSize)
+void Grid<N, RealType>::setGrid(const VecN& bMin, const VecN& bMax, RealType cellSize, RealType clampEdge /*= 0*/)
 {
-    m_BMin = bMin;
-    m_BMax = bMax;
+    m_BMin        = bMin;
+    m_BMax        = bMax;
+    m_ClampedBMin = bMin + clampEdge + MEpsilon<RealType>();
+    m_ClampedBMax = bMax - (clampEdge + MEpsilon<RealType>());
     setCellSize(cellSize);
 }
 
@@ -59,34 +61,86 @@ void Grid<N, RealType>::getGridCoordinate(const StdVT_VecN& positions, StdVT_Vec
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 template<Int N, class RealType>
-bool Grid<N, RealType>::isInsideGrid(const VecN& ppos) const noexcept
+inline bool Grid<N, RealType>::isInsideGrid(const VecN& ppos) const noexcept
 {
     for(Int d = 0; d < N; ++d) {
         if(ppos[d] < m_BMin[d] || ppos[d] > m_BMax[d]) {
             return false;
         }
     }
-
     return true;
 }
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 template<Int N, class RealType>
-void Grid<N, RealType>::constrainToGrid(StdVT_VecN& positions)
+inline VecX<N, RealType> Grid<N, RealType>::constrainedBoundaryPosition(const VecN& position) const noexcept
+{
+    auto constrainedPos = position;
+    for(Int d = 0; d < N; ++d) {
+        if(constrainedPos[d] < m_BMin[d]) {
+            constrainedPos[d] = m_BMin[d];
+        } else if(constrainedPos[d] > m_BMax[d]) {
+            constrainedPos[d] = m_BMax[d];
+        }
+    }
+    return constrainedPos;
+}
+
+//-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+template<Int N, class RealType>
+inline VecX<N, RealType> Grid<N, RealType>::constrainedClampedBoundaryPosition(const VecN& position) const noexcept
+{
+    auto constrainedPos = position;
+    for(Int d = 0; d < N; ++d) {
+        if(constrainedPos[d] < m_ClampedBMin[d]) {
+            constrainedPos[d] = m_ClampedBMin[d];
+        } else if(constrainedPos[d] > m_ClampedBMax[d]) {
+            constrainedPos[d] = m_ClampedBMax[d];
+        }
+    }
+    return constrainedPos;
+}
+
+//-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+template<Int N, class RealType>
+void Grid<N, RealType>::constrainToGridBoundary(StdVT_VecN& positions)
 {
     Scheduler::parallel_for(positions.size(),
-                            [&](size_t p)
-                            {
-                                VecN pos   = positions[p];
-                                bool dirty = false;
-
+                            [&](size_t p) {
+                                auto pos   = positions[p];
+                                auto dirty = false;
                                 for(Int d = 0; d < N; ++d) {
-                                    if(pos[d] < m_BMin[d] || pos[d] > m_BMax[d]) {
+                                    if(pos[d] < m_BMin[d]) {
                                         dirty  = true;
-                                        pos[d] = MathHelpers::clamp(pos[d], m_BMin[d], m_BMax[d]);
+                                        pos[d] = m_BMin[d];
+                                    } else if(pos[d] > m_BMax[d]) {
+                                        dirty  = true;
+                                        pos[d] = m_BMax[d];
                                     }
                                 }
+                                if(dirty) {
+                                    positions[p] = pos;
+                                }
+                            });
+}
 
+//-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+template<Int N, class RealType>
+void Grid<N, RealType>::constrainToClampedBoundary(StdVT_VecN& positions)
+{
+    Scheduler::parallel_for(positions.size(),
+                            [&](size_t p) {
+                                auto pos   = positions[p];
+                                auto dirty = false;
+                                for(Int d = 0; d < N; ++d) {
+                                    if(pos[d] < m_ClampedBMin[d]) {
+                                        dirty  = true;
+                                        pos[d] = m_ClampedBMin[d];
+                                    } else if(pos[d] > m_ClampedBMax[d]) {
+                                        dirty  = true;
+                                        pos[d] = m_ClampedBMax[d];
+                                    }
+                                }
                                 if(dirty) {
                                     positions[p] = pos;
                                 }
@@ -108,8 +162,7 @@ void Grid<N, RealType>::collectIndexToCells(const StdVT_VecN& positions)
     }
 
     Scheduler::parallel_for(static_cast<UInt>(positions.size()),
-                            [&](UInt p)
-                            {
+                            [&](UInt p) {
                                 auto cellIdx = getCellIdx<Int>(positions[p]);
                                 m_Lock(cellIdx).lock();
                                 m_ParticleIdxInCell(cellIdx).push_back(p);
@@ -137,8 +190,7 @@ void Grid<N, RealType>::collectIndexToCells(const StdVT_VecN& positions, StdVT<V
     }
 
     Scheduler::parallel_for(static_cast<UInt>(positions.size()),
-                            [&](UInt p)
-                            {
+                            [&](UInt p) {
                                 auto cellIdx       = getCellIdx<Int>(positions[p]);
                                 particleCellIdx[p] = cellIdx;
 
@@ -168,8 +220,7 @@ void Grid<N, RealType>::collectIndexToCells(const StdVT_VecN& positions, StdVT_V
     }
 
     Scheduler::parallel_for(static_cast<UInt>(positions.size()),
-                            [&](UInt p)
-                            {
+                            [&](UInt p) {
                                 auto cellPos       = getCellIdx<RealType>(positions[p]);
                                 auto cellIdx       = VecX<N, Int>(cellPos);
                                 gridCoordinates[p] = cellPos;

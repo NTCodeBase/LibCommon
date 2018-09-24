@@ -33,7 +33,7 @@ public:
 
     ////////////////////////////////////////////////////////////////////////////////
     // Setters
-    void setGrid(const VecN& bMin, const VecN& bMax, RealType cellSize);
+    void setGrid(const VecN& bMin, const VecN& bMax, RealType cellSize, RealType clampEdge = 0);
     void setCellSize(RealType cellSize);
 
     ////////////////////////////////////////////////////////////////////////////////
@@ -210,12 +210,15 @@ public:
         return Vec3<RealType>(i, j, k) * m_CellSize + m_BMin;
     }
 
-    auto getGridCoordinate(const VecN& ppos) const { return (ppos - m_BMin) / m_CellSize; }
+    auto getGridCoordinate(const VecN& ppos) const { return (ppos - m_BMin) * m_InvCellSize; }
     void getGridCoordinate(const StdVT_VecN& positions, StdVT_VecN& gridCoordinates) const;
     ////////////////////////////////////////////////////////////////////////////////
-    bool isInsideGrid(const VecN& ppos) const noexcept;
+    inline bool isInsideGrid(const VecN& ppos) const noexcept;
+    inline VecN constrainedBoundaryPosition(const VecN& positions) const noexcept;
+    inline VecN constrainedClampedBoundaryPosition(const VecN& positions) const noexcept;
 
-    void constrainToGrid(StdVT_VecN& positions);
+    void constrainToGridBoundary(StdVT_VecN& positions);
+    void constrainToClampedBoundary(StdVT_VecN& positions);
     void collectIndexToCells(const StdVT_VecN& positions);
     void collectIndexToCells(const StdVT_VecN& positions, StdVT<VecX<N, Int>>& particleCellIdx);
     void collectIndexToCells(const StdVT_VecN& positions, StdVT_VecN& gridCoordinates);
@@ -232,6 +235,8 @@ public:
 protected:
     VecN          m_BMin         = VecN(-1.0);
     VecN          m_BMax         = VecN(1.0);
+    VecN          m_ClampedBMin  = VecN(-1.0);
+    VecN          m_ClampedBMax  = VecN(1.0);
     VecX<N, UInt> m_NCells       = VecX<N, UInt>(0);
     VecX<N, UInt> m_NNodes       = VecX<N, UInt>(0);
     UInt          m_NTotalCells  = 1u;
