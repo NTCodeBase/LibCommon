@@ -216,6 +216,8 @@ public:
     inline bool isInsideGrid(const VecN& ppos) const noexcept;
     inline VecN constrainedBoundaryPosition(const VecN& positions) const noexcept;
     inline VecN constrainedClampedBoundaryPosition(const VecN& positions) const noexcept;
+    inline void constrainedBoundaryInPlace(VecN& positions) const noexcept;
+    inline void constrainedClampedBoundaryInPlace(VecN& positions) const noexcept;
 
     void constrainToGridBoundary(StdVT_VecN& positions);
     void constrainToClampedBoundary(StdVT_VecN& positions);

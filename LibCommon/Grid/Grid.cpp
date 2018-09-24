@@ -103,6 +103,32 @@ inline VecX<N, RealType> Grid<N, RealType>::constrainedClampedBoundaryPosition(c
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 template<Int N, class RealType>
+inline void Grid<N, RealType>::constrainedBoundaryInPlace(VecN& position) const noexcept
+{
+    for(Int d = 0; d < N; ++d) {
+        if(position[d] < m_BMin[d]) {
+            position[d] = m_BMin[d];
+        } else if(position[d] > m_BMax[d]) {
+            position[d] = m_BMax[d];
+        }
+    }
+}
+
+//-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+template<Int N, class RealType>
+inline void Grid<N, RealType>::constrainedClampedBoundaryInPlace(VecN& position) const noexcept
+{
+    for(Int d = 0; d < N; ++d) {
+        if(position[d] < m_ClampedBMin[d]) {
+            position[d] = m_ClampedBMin[d];
+        } else if(position[d] > m_ClampedBMax[d]) {
+            position[d] = m_ClampedBMax[d];
+        }
+    }
+}
+
+//-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+template<Int N, class RealType>
 void Grid<N, RealType>::constrainToGridBoundary(StdVT_VecN& positions)
 {
     Scheduler::parallel_for(positions.size(),
