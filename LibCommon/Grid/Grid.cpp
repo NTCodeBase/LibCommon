@@ -73,6 +73,18 @@ inline bool Grid<N, RealType>::isInsideGrid(const VecN& ppos) const noexcept
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 template<Int N, class RealType>
+inline bool Grid<N, RealType>::isInsideClampedBoundary(const VecN& ppos) const noexcept
+{
+    for(Int d = 0; d < N; ++d) {
+        if(ppos[d] < m_ClampedBMin[d] || ppos[d] > m_ClampedBMax[d]) {
+            return false;
+        }
+    }
+    return true;
+}
+
+//-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+template<Int N, class RealType>
 inline VecX<N, RealType> Grid<N, RealType>::constrainedBoundaryPosition(const VecN& position) const noexcept
 {
     auto constrainedPos = position;

@@ -214,6 +214,7 @@ public:
     void getGridCoordinate(const StdVT_VecN& positions, StdVT_VecN& gridCoordinates) const;
     ////////////////////////////////////////////////////////////////////////////////
     inline bool isInsideGrid(const VecN& ppos) const noexcept;
+    inline bool isInsideClampedBoundary(const VecN& ppos) const noexcept;
     inline VecN constrainedBoundaryPosition(const VecN& positions) const noexcept;
     inline VecN constrainedClampedBoundaryPosition(const VecN& positions) const noexcept;
     inline void constrainedBoundaryInPlace(VecN& positions) const noexcept;
