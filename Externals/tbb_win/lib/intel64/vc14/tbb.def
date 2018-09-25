@@ -290,6 +290,9 @@ EXPORTS
 
 
 
+
+
+
     
     
 
@@ -313,6 +316,8 @@ EXPORTS
     
     
     
+
+
 
 
 
@@ -563,19 +568,6 @@ EXPORTS
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
     
 
 
@@ -786,10 +778,6 @@ EXPORTS
 
     
     
-
-
-
-
 
 
 
@@ -934,15 +922,13 @@ TBB_runtime_interface_version
 ?call_itt_notify_v5@internal@tbb@@YAXHPEAX@Z
 ?itt_load_pointer_v3@internal@tbb@@YAPEAXPEBX@Z
 ?itt_set_sync_name_v3@internal@tbb@@YAXPEAXPEB_W@Z
-
-
-
-
-
-
-
-
-
+?itt_make_task_group_v7@internal@tbb@@YAXW4itt_domain_enum@12@PEAX_K12W4string_index@12@@Z
+?itt_metadata_str_add_v7@internal@tbb@@YAXW4itt_domain_enum@12@PEAX_KW4string_index@12@PEBD@Z
+?itt_relation_add_v7@internal@tbb@@YAXW4itt_domain_enum@12@PEAX_KW4itt_relation@12@12@Z
+?itt_task_begin_v7@internal@tbb@@YAXW4itt_domain_enum@12@PEAX_K12W4string_index@12@@Z
+?itt_task_end_v7@internal@tbb@@YAXW4itt_domain_enum@12@@Z
+?itt_region_begin_v9@internal@tbb@@YAXW4itt_domain_enum@12@PEAX_K12W4string_index@12@@Z
+?itt_region_end_v9@internal@tbb@@YAXW4itt_domain_enum@12@PEAX_K@Z
 
 
 ??_7pipeline@tbb@@6B@
