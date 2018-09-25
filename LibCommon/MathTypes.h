@@ -65,9 +65,17 @@ using Vec2i = Vec2<Int>;
 using Vec3i = Vec3<Int>;
 using Vec4i = Vec4<Int>;
 
+using Vec2i64 = Vec2<Int64>;
+using Vec3i64 = Vec3<Int64>;
+using Vec4i64 = Vec4<Int64>;
+
 using Vec2ui = Vec2<UInt>;
 using Vec3ui = Vec3<UInt>;
 using Vec4ui = Vec4<UInt>;
+
+using Vec2ui64 = Vec2<UInt64>;
+using Vec3ui64 = Vec3<UInt64>;
+using Vec4ui64 = Vec4<UInt64>;
 
 using Vec2f = Vec2<float>;
 using Vec3f = Vec3<float>;
@@ -93,9 +101,17 @@ using StdVT_Vec2i = StdVT<Vec2i>;
 using StdVT_Vec3i = StdVT<Vec3i>;
 using StdVT_Vec4i = StdVT<Vec4i>;
 
+using StdVT_Vec2i64 = StdVT<Vec2i64>;
+using StdVT_Vec3i64 = StdVT<Vec3i64>;
+using StdVT_Vec4i64 = StdVT<Vec4i64>;
+
 using StdVT_Vec2ui = StdVT<Vec2ui>;
 using StdVT_Vec3ui = StdVT<Vec3ui>;
 using StdVT_Vec4ui = StdVT<Vec4ui>;
+
+using StdVT_Vec2ui64 = StdVT<Vec2ui64>;
+using StdVT_Vec3ui64 = StdVT<Vec3ui64>;
+using StdVT_Vec4ui64 = StdVT<Vec4ui64>;
 
 using StdVT_Vec2f = StdVT<Vec2f>;
 using StdVT_Vec3f = StdVT<Vec3f>;
