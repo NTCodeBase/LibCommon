@@ -20,10 +20,10 @@
 template<Int N, class RealType>
 void Grid<N, RealType>::setGrid(const VecN& bMin, const VecN& bMax, RealType cellSize, RealType clampEdge /*= 0*/)
 {
-    m_BMin        = bMin;
-    m_BMax        = bMax;
-    m_ClampedBMin = bMin + clampEdge + MEpsilon<RealType>();
-    m_ClampedBMax = bMax - (clampEdge + MEpsilon<RealType>());
+    m_BMin        = ToVecNa(bMin);
+    m_BMax        = ToVecNa(bMax);
+    m_ClampedBMin = ToVecNa(bMin) + clampEdge + MEpsilon<RealType>();
+    m_ClampedBMax = ToVecNa(bMax) - (clampEdge + MEpsilon<RealType>());
     setCellSize(cellSize);
 }
 
@@ -32,10 +32,11 @@ template<Int N, class RealType>
 void Grid<N, RealType>::setCellSize(RealType cellSize)
 {
     assert(cellSize > 0);
-    m_CellSize     = cellSize;
-    m_InvCellSize  = RealType(1.0) / m_CellSize;
-    m_HalfCellSize = RealType(0.5) * m_CellSize;
-    m_CellSizeSqr  = m_CellSize * m_CellSize;
+    m_CellSize       = cellSize;
+    m_InvCellSize    = RealType(1.0) / m_CellSize;
+    m_HalfCellSize   = RealType(0.5) * m_CellSize;
+    m_CellSizeSqr    = m_CellSize * m_CellSize;
+    m_InvCellSizeSqr = RealType(1.0) / m_CellSizeSqr;
 
     m_CellVolume  = MathHelpers::pow(m_CellSize, N);
     m_NTotalCells = 1;
@@ -53,7 +54,7 @@ void Grid<N, RealType>::setCellSize(RealType cellSize)
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 template<Int N, class RealType>
-void Grid<N, RealType>::getGridCoordinate(const StdVT_VecN& positions, StdVT_VecN& gridCoordinates) const
+void Grid<N, RealType>::getGridCoordinate(const StdVT_VecNa& positions, StdVT_VecNa& gridCoordinates) const
 {
     assert(positions.size() == gridCoordinates.size());
     Scheduler::parallel_for(positions.size(), [&](size_t p) { gridCoordinates[p] = getGridCoordinate(positions[p]); });
@@ -61,7 +62,7 @@ void Grid<N, RealType>::getGridCoordinate(const StdVT_VecN& positions, StdVT_Vec
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 template<Int N, class RealType>
-inline bool Grid<N, RealType>::isInsideGrid(const VecN& ppos) const noexcept
+inline bool Grid<N, RealType>::isInsideGrid(const VecNa& ppos) const noexcept
 {
     for(Int d = 0; d < N; ++d) {
         if(ppos[d] < m_BMin[d] || ppos[d] > m_BMax[d]) {
@@ -73,7 +74,7 @@ inline bool Grid<N, RealType>::isInsideGrid(const VecN& ppos) const noexcept
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 template<Int N, class RealType>
-inline bool Grid<N, RealType>::isInsideClampedBoundary(const VecN& ppos) const noexcept
+inline bool Grid<N, RealType>::isInsideClampedBoundary(const VecNa& ppos) const noexcept
 {
     for(Int d = 0; d < N; ++d) {
         if(ppos[d] < m_ClampedBMin[d] || ppos[d] > m_ClampedBMax[d]) {
@@ -85,7 +86,7 @@ inline bool Grid<N, RealType>::isInsideClampedBoundary(const VecN& ppos) const n
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 template<Int N, class RealType>
-inline VecX<N, RealType> Grid<N, RealType>::constrainedBoundaryPosition(const VecN& position) const noexcept
+inline VecX<N, RealType> Grid<N, RealType>::constrainedBoundaryPosition(const VecNa& position) const noexcept
 {
     auto constrainedPos = position;
     for(Int d = 0; d < N; ++d) {
@@ -100,7 +101,7 @@ inline VecX<N, RealType> Grid<N, RealType>::constrainedBoundaryPosition(const Ve
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 template<Int N, class RealType>
-inline VecX<N, RealType> Grid<N, RealType>::constrainedClampedBoundaryPosition(const VecN& position) const noexcept
+inline VecX<N, RealType> Grid<N, RealType>::constrainedClampedBoundaryPosition(const VecNa& position) const noexcept
 {
     auto constrainedPos = position;
     for(Int d = 0; d < N; ++d) {
@@ -115,7 +116,7 @@ inline VecX<N, RealType> Grid<N, RealType>::constrainedClampedBoundaryPosition(c
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 template<Int N, class RealType>
-inline void Grid<N, RealType>::constrainedBoundaryInPlace(VecN& position) const noexcept
+inline void Grid<N, RealType>::constrainedBoundaryInPlace(VecNa& position) const noexcept
 {
     for(Int d = 0; d < N; ++d) {
         if(position[d] < m_BMin[d]) {
@@ -128,7 +129,7 @@ inline void Grid<N, RealType>::constrainedBoundaryInPlace(VecN& position) const 
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 template<Int N, class RealType>
-inline void Grid<N, RealType>::constrainedClampedBoundaryInPlace(VecN& position) const noexcept
+inline void Grid<N, RealType>::constrainedClampedBoundaryInPlace(VecNa& position) const noexcept
 {
     for(Int d = 0; d < N; ++d) {
         if(position[d] < m_ClampedBMin[d]) {
@@ -141,7 +142,7 @@ inline void Grid<N, RealType>::constrainedClampedBoundaryInPlace(VecN& position)
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 template<Int N, class RealType>
-void Grid<N, RealType>::constrainToGridBoundary(StdVT_VecN& positions)
+void Grid<N, RealType>::constrainToGridBoundary(StdVT_VecNa& positions)
 {
     Scheduler::parallel_for(positions.size(),
                             [&](size_t p) {
@@ -164,7 +165,7 @@ void Grid<N, RealType>::constrainToGridBoundary(StdVT_VecN& positions)
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 template<Int N, class RealType>
-void Grid<N, RealType>::constrainToClampedBoundary(StdVT_VecN& positions)
+void Grid<N, RealType>::constrainToClampedBoundary(StdVT_VecNa& positions)
 {
     Scheduler::parallel_for(positions.size(),
                             [&](size_t p) {
@@ -187,7 +188,7 @@ void Grid<N, RealType>::constrainToClampedBoundary(StdVT_VecN& positions)
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 template<Int N, class RealType>
-void Grid<N, RealType>::collectIndexToCells(const StdVT_VecN& positions)
+void Grid<N, RealType>::collectIndexToCells(const StdVT_VecNa& positions)
 {
     if(m_bCellIdxNeedResize) {
         m_ParticleIdxInCell.resize(getNCells());
@@ -214,7 +215,7 @@ void Grid<N, RealType>::collectIndexToCells(const StdVT_VecN& positions)
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 template<Int N, class RealType>
-void Grid<N, RealType>::collectIndexToCells(const StdVT_VecN& positions, StdVT<VecX<N, Int>>& particleCellIdx)
+void Grid<N, RealType>::collectIndexToCells(const StdVT_VecNa& positions, StdVT<VecX<N, Int>>& particleCellIdx)
 {
     assert(positions.size() == particleCellIdx.size());
     if(m_bCellIdxNeedResize) {
@@ -244,7 +245,7 @@ void Grid<N, RealType>::collectIndexToCells(const StdVT_VecN& positions, StdVT<V
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 template<Int N, class RealType>
-void Grid<N, RealType>::collectIndexToCells(const StdVT_VecN& positions, StdVT_VecN& gridCoordinates)
+void Grid<N, RealType>::collectIndexToCells(const StdVT_VecNa& positions, StdVT_VecNa& gridCoordinates)
 {
     assert(positions.size() == gridCoordinates.size());
     if(m_bCellIdxNeedResize) {
@@ -259,7 +260,7 @@ void Grid<N, RealType>::collectIndexToCells(const StdVT_VecN& positions, StdVT_V
 
     Scheduler::parallel_for(static_cast<UInt>(positions.size()),
                             [&](UInt p) {
-                                auto cellPos       = getCellIdx<RealType>(positions[p]);
+                                auto cellPos       = getGridCoordinate(positions[p]);
                                 auto cellIdx       = VecX<N, Int>(cellPos);
                                 gridCoordinates[p] = cellPos;
 
@@ -275,14 +276,14 @@ void Grid<N, RealType>::collectIndexToCells(const StdVT_VecN& positions, StdVT_V
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 template<Int N, class RealType>
-void Grid<N, RealType>::getNeighborList(const StdVT_VecN& positions, StdVT<StdVT_UInt>& neighborList, Int cellSpan /*= 1*/)
+void Grid<N, RealType>::getNeighborList(const StdVT_VecNa& positions, StdVT<StdVT_UInt>& neighborList, Int cellSpan /*= 1*/)
 {
     Scheduler::parallel_for(positions.size(), [&](size_t p) { getNeighborList(positions[p], neighborList[p], cellSpan); });
 }
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 template<Int N, class RealType>
-void Grid<N, RealType>::getNeighborList(const VecN& ppos, StdVT_UInt& neighborList, Int cellSpan /*= 1*/)
+void Grid<N, RealType>::getNeighborList(const VecNa& ppos, StdVT_UInt& neighborList, Int cellSpan /*= 1*/)
 {
     neighborList.resize(0);
     if constexpr(N == 2) {
@@ -324,14 +325,14 @@ void Grid<N, RealType>::getNeighborList(const VecN& ppos, StdVT_UInt& neighborLi
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 template<Int N, class RealType>
-void Grid<N, RealType>::getNeighborList(const StdVT_VecN& positions, StdVT<StdVT_UInt>& neighborList, RealType d2, Int cellSpan /*= 1*/)
+void Grid<N, RealType>::getNeighborList(const StdVT_VecNa& positions, StdVT<StdVT_UInt>& neighborList, RealType d2, Int cellSpan /*= 1*/)
 {
     Scheduler::parallel_for(positions.size(), [&](size_t p) { getNeighborList(positions, positions[p], neighborList[p], d2, cellSpan); });
 }
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 template<Int N, class RealType>
-void Grid<N, RealType>::getNeighborList(const StdVT_VecN& positions, const VecN& ppos, StdVT_UInt& neighborList, RealType d2, Int cellSpan /*= 1*/)
+void Grid<N, RealType>::getNeighborList(const StdVT_VecNa& positions, const VecNa& ppos, StdVT_UInt& neighborList, RealType d2, Int cellSpan /*= 1*/)
 {
     neighborList.resize(0);
 
@@ -385,7 +386,7 @@ void Grid<N, RealType>::getNeighborList(const StdVT_VecN& positions, const VecN&
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 template<Int N, class RealType>
-void Grid<N, RealType>::sortData(StdVT_VecN& data)
+void Grid<N, RealType>::sortData(StdVT_VecNa& data)
 {
     const auto& sortedIdx = getParticleIdxSortedByCell();
     assert(sortedIdx.size() == data.size());
@@ -393,7 +394,7 @@ void Grid<N, RealType>::sortData(StdVT_VecN& data)
     StdVT_VecN tmp(data.begin(), data.end());
     std::transform(sortedIdx.cbegin(), sortedIdx.cend(),
 #ifdef _MSC_VER
-                   stdext::unchecked_array_iterator<VecN*>(data.data()),
+                   stdext::unchecked_array_iterator<VecNa*>(data.data()),
 #else
                    data.data(),
 #endif
