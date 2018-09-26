@@ -108,9 +108,9 @@ inline void throwIfFailed(HRESULT hr)
 #define __NT_TO_STRING(x) _STR(x)
 
 #ifdef __NT_WINDOWS_OS__
-#define __NT_INLINE __forceinline
+#define __NT_FORCE_INLINE __forceinline
 #else
-#define __NT_INLINE __attribute__((always_inline))
+#define __NT_FORCE_INLINE __attribute__((always_inline))
 #endif
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+

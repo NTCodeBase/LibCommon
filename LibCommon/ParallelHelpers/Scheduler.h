@@ -29,7 +29,7 @@
 namespace Scheduler
 {
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-inline void  warmUp()
+__NT_FORCE_INLINE void  warmUp()
 {
     tbb::parallel_for(tbb::blocked_range<Int>(0, 1048576),
                       [&](const tbb::blocked_range<Int>& r) {
@@ -42,7 +42,7 @@ inline void  warmUp()
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 template<class IndexType, class Function>
-inline void parallel_for(IndexType beginIdx, IndexType endIdx, Function&& function)
+__NT_FORCE_INLINE void parallel_for(IndexType beginIdx, IndexType endIdx, Function&& function)
 {
 #if defined(__NT_NO_PARALLEL) || defined(__NT_DISABLE_PARALLEL)
     for(IndexType i = beginIdx; i < endIdx; ++i) {
@@ -76,7 +76,7 @@ inline void parallel_for(IndexType beginIdx, IndexType endIdx, Function&& functi
 }
 
 template<class IndexType, class Function>
-inline void parallel_for(IndexType endIdx, Function&& function)
+__NT_FORCE_INLINE void parallel_for(IndexType endIdx, Function&& function)
 {
     Scheduler::parallel_for(IndexType(0), endIdx, std::forward<Function>(function));
 }
@@ -84,9 +84,9 @@ inline void parallel_for(IndexType endIdx, Function&& function)
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 // parallel for 2D
 template<class IndexType, class Function>
-inline void parallel_for_row_major(IndexType beginIdxX, IndexType endIdxX,
-                                   IndexType beginIdxY, IndexType endIdxY,
-                                   Function&& function)
+__NT_FORCE_INLINE void parallel_for_row_major(IndexType beginIdxX, IndexType endIdxX,
+                                              IndexType beginIdxY, IndexType endIdxY,
+                                              Function&& function)
 {
     Scheduler::parallel_for(beginIdxX, endIdxX,
                             [&](IndexType i) {
@@ -97,9 +97,9 @@ inline void parallel_for_row_major(IndexType beginIdxX, IndexType endIdxX,
 }
 
 template<class IndexType, class Function>
-inline void parallel_for(IndexType beginIdxX, IndexType endIdxX,
-                         IndexType beginIdxY, IndexType endIdxY,
-                         Function&& function)
+__NT_FORCE_INLINE void parallel_for(IndexType beginIdxX, IndexType endIdxX,
+                                    IndexType beginIdxY, IndexType endIdxY,
+                                    Function&& function)
 {
     Scheduler::parallel_for(beginIdxY, endIdxY,
                             [&](IndexType j) {
@@ -110,13 +110,13 @@ inline void parallel_for(IndexType beginIdxX, IndexType endIdxX,
 }
 
 template<class IndexType, class Function>
-inline void parallel_for_row_major(const Vec2<IndexType>& endIdx, Function&& function)
+__NT_FORCE_INLINE void parallel_for_row_major(const Vec2<IndexType>& endIdx, Function&& function)
 {
     Scheduler::parallel_for_row_major(IndexType(0), endIdx[0], IndexType(0), endIdx[1], std::forward<Function>(function));
 }
 
 template<class IndexType, class Function>
-inline void parallel_for(const Vec2<IndexType>& endIdx, Function&& function)
+__NT_FORCE_INLINE void parallel_for(const Vec2<IndexType>& endIdx, Function&& function)
 {
     Scheduler::parallel_for(IndexType(0), endIdx[0], IndexType(0), endIdx[1], std::forward<Function>(function));
 }
@@ -124,10 +124,10 @@ inline void parallel_for(const Vec2<IndexType>& endIdx, Function&& function)
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 // parallel for 3D
 template<class IndexType, class Function>
-inline void parallel_for_row_major(IndexType beginIdxX, IndexType endIdxX,
-                                   IndexType beginIdxY, IndexType endIdxY,
-                                   IndexType beginIdxZ, IndexType endIdxZ,
-                                   Function&& function)
+__NT_FORCE_INLINE void parallel_for_row_major(IndexType beginIdxX, IndexType endIdxX,
+                                              IndexType beginIdxY, IndexType endIdxY,
+                                              IndexType beginIdxZ, IndexType endIdxZ,
+                                              Function&& function)
 {
     Scheduler::parallel_for(beginIdxX, endIdxX,
                             [&](IndexType i) {
@@ -140,10 +140,10 @@ inline void parallel_for_row_major(IndexType beginIdxX, IndexType endIdxX,
 }
 
 template<class IndexType, class Function>
-inline void parallel_for(IndexType beginIdxX, IndexType endIdxX,
-                         IndexType beginIdxY, IndexType endIdxY,
-                         IndexType beginIdxZ, IndexType endIdxZ,
-                         Function&& function)
+__NT_FORCE_INLINE void parallel_for(IndexType beginIdxX, IndexType endIdxX,
+                                    IndexType beginIdxY, IndexType endIdxY,
+                                    IndexType beginIdxZ, IndexType endIdxZ,
+                                    Function&& function)
 {
     Scheduler::parallel_for(beginIdxZ, endIdxZ,
                             [&](IndexType k) {
@@ -156,13 +156,13 @@ inline void parallel_for(IndexType beginIdxX, IndexType endIdxX,
 }
 
 template<class IndexType, class Function>
-inline void parallel_for_row_major(const Vec3<IndexType>& endIdx, Function&& function)
+__NT_FORCE_INLINE void parallel_for_row_major(const Vec3<IndexType>& endIdx, Function&& function)
 {
     Scheduler::parallel_for_row_major(IndexType(0), endIdx[0], IndexType(0), endIdx[1], IndexType(0), endIdx[2], std::forward<Function>(function));
 }
 
 template<class IndexType, class Function>
-inline void parallel_for(const Vec3<IndexType>& endIdx, Function&& function)
+__NT_FORCE_INLINE void parallel_for(const Vec3<IndexType>& endIdx, Function&& function)
 {
     Scheduler::parallel_for(IndexType(0), endIdx[0], IndexType(0), endIdx[1], IndexType(0), endIdx[2], std::forward<Function>(function));
 }

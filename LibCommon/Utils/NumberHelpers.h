@@ -321,7 +321,7 @@ public:
 
     /// Compute a pseudo-random integer
     /// Output value in range [0, 32767]
-    __NT_INLINE Int rand()
+    Int rand()
     {
         s_Seed = (214013u * s_Seed + 2531011u);
         return static_cast<Int>((s_Seed >> 16) & 0x7FFF);
@@ -356,8 +356,7 @@ void jitter(VecX<N, RealType1>& ppos, RealType2 maxJitter)
 template<Int N, class RealType>
 void translate(StdVT_VecX<N, RealType>& points, const VecX<N, RealType>& translation)
 {
-    Scheduler::parallel_for(points.size(), [&](size_t i)
-                            {
+    Scheduler::parallel_for(points.size(), [&](size_t i) {
                                 points[i] = points[i] + translation;
                             });
 }
@@ -366,8 +365,7 @@ void translate(StdVT_VecX<N, RealType>& points, const VecX<N, RealType>& transla
 template<Int N, class RealType>
 void scale(StdVT_VecX<N, RealType>& points, const VecX<N, RealType>& scale)
 {
-    Scheduler::parallel_for(points.size(), [&](size_t i)
-                            {
+    Scheduler::parallel_for(points.size(), [&](size_t i) {
                                 points[i] = points[i] * scale;
                             });
 }
@@ -402,8 +400,7 @@ void rotate(StdVT_VecX<N, RealType>& points, const VecX<N, RealType>& rotation)
     R[2][1] = sinR * sinA - cosR * cosA * sinE;
     R[2][2] = cosA * cosE;
 
-    Scheduler::parallel_for(points.size(), [&](size_t i)
-                            {
+    Scheduler::parallel_for(points.size(), [&](size_t i) {
                                 const auto& pi = points[i];
                                 points[i]      = Vec3<RealType>(glm::dot(R[0], pi),
                                                                 glm::dot(R[1], pi),
@@ -415,8 +412,7 @@ void rotate(StdVT_VecX<N, RealType>& points, const VecX<N, RealType>& rotation)
 template<Int N, class RealType>
 void transform(StdVT_VecX<N, RealType>& points, const VecX<N, RealType>& translation, const VecX<N, RealType>& scale)
 {
-    Scheduler::parallel_for(points.size(), [&](size_t i)
-                            {
+    Scheduler::parallel_for(points.size(), [&](size_t i) {
                                 points[i] = points[i] * scale + translation;
                             });
 }
@@ -451,8 +447,7 @@ void transform(StdVT_Vec3<RealType>& points, const Vec3<RealType>& translation, 
     R[2][1] = sinR * sinA - cosR * cosA * sinE;
     R[2][2] = cosA * cosE;
 
-    Scheduler::parallel_for(points.size(), [&](size_t i)
-                            {
+    Scheduler::parallel_for(points.size(), [&](size_t i) {
                                 const auto& pi = points[i];
                                 Vec3<RealType> tmp(glm::dot(R[0], pi),
                                                    glm::dot(R[1], pi),
