@@ -27,8 +27,9 @@ public:
     inline FastVec3() { static_assert(sizeof(T) == sizeof(float) && alignof(FastVec3<T>) == 16, "Error: Size or alignment is not correct!"); }
     inline FastVec3(__m128 mval) : mmvalue(mval) {}
     inline FastVec3(T x) : mmvalue(_mm_set1_ps(x)) {}
-    inline FastVec3(T x, T y, T z) : mmvalue(_mm_set_ps(0, z, y, x)) {}
-    inline FastVec3(const Vec3<T>& v) : dummy(0), v3(v) {}
+    inline FastVec3(T x, T y, T z) : mmvalue(_mm_setr_ps(x, y, z, 0)) {}
+    inline FastVec3(const Vec3<T>& v) : mmvalue(_mm_setr_ps(v.x, v.y, v.z, 0)) {}
+    inline FastVec3(const FastVec3<T>& other) : mmvalue(other.mmvalue) {}
     ////////////////////////////////////////////////////////////////////////////////
     inline FastVec3<T>& operator=(const FastVec3<T>& other) { mmvalue = other.mmvalue; return *this; }
     inline FastVec3<T>& operator=(const Vec3<T>& other) { dummy = 0, v3 = other.v3; return *this; }
