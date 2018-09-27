@@ -23,6 +23,7 @@ class FastMat3
 public:
     inline FastMat3() { static_assert(sizeof(T) == sizeof(float) && alignof(FastMat3<T>) == 16, "Error: Size or alignment is not correct!"); }
     inline FastMat3(__m128 c0, __m128 c1, __m128 c2) : col{{ c0 }, { c1 }, { c2 }} {}
+    inline FastMat3(T x) : col{FastVec3<T>(x, 0, 0), FastVec3<T>(0, x, 0), FastVec3<T>(0, 0, x)} {}
     inline FastMat3(const Mat3x3<T>& m) : col{{ m[0] }, { m[1] }, { m[2] }} {}
     inline FastMat3(const FastMat3<T>& other) : col{{ other.col[0] }, { other.col[1] }, { other.col[2] }} {}
     inline FastMat3(const FastVec3<T>& c0, const FastVec3<T>& c1, const FastVec3<T>& c2) : col{{ c0 }, { c1 }, { c2 }} {}
@@ -36,22 +37,22 @@ public:
     inline FastMat3<T> operator+(const FastMat3<T>& B) const
     {
         return FastMat3<T>(_mm_add_ps(col[0].mmvalue, B.col[0].mmvalue),
-                           _mm_add_ps(col[1].mmvalue, B.col[2].mmvalue),
+                           _mm_add_ps(col[1].mmvalue, B.col[1].mmvalue),
                            _mm_add_ps(col[2].mmvalue, B.col[2].mmvalue));
     }
 
     inline FastMat3<T> operator-(const FastMat3<T>& B) const
     {
         return FastMat3<T>(_mm_sub_ps(col[0].mmvalue, B.col[0].mmvalue),
-                           _mm_sub_ps(col[1].mmvalue, B.col[2].mmvalue),
+                           _mm_sub_ps(col[1].mmvalue, B.col[1].mmvalue),
                            _mm_sub_ps(col[2].mmvalue, B.col[2].mmvalue));
     }
 
     inline FastVec3<T> operator*(const FastVec3<T>& v) const
     {
-        __m128 v0 = _mm_shuffle_ps(v, v, _MM_SHUFFLE(0, 0, 0, 0));
-        __m128 v1 = _mm_shuffle_ps(v, v, _MM_SHUFFLE(1, 1, 1, 1));
-        __m128 v2 = _mm_shuffle_ps(v, v, _MM_SHUFFLE(2, 2, 2, 2));
+        __m128 v0 = _mm_shuffle_ps(v.mmvalue, v.mmvalue, _MM_SHUFFLE(0, 0, 0, 0));
+        __m128 v1 = _mm_shuffle_ps(v.mmvalue, v.mmvalue, _MM_SHUFFLE(1, 1, 1, 1));
+        __m128 v2 = _mm_shuffle_ps(v.mmvalue, v.mmvalue, _MM_SHUFFLE(2, 2, 2, 2));
 
         __m128 m0 = _mm_mul_ps(col[0].mmvalue, v0);
         __m128 m1 = _mm_mul_ps(col[1].mmvalue, v1);
@@ -104,16 +105,16 @@ public:
     inline FastMat3<T>& operator+=(const FastMat3<T>& B)
     {
         col[0].mmvalue = _mm_add_ps(col[0].mmvalue, B.col[0].mmvalue);
-        col[0].mmvalue = _mm_add_ps(col[1].mmvalue, B.col[2].mmvalue);
-        col[0].mmvalue = _mm_add_ps(col[2].mmvalue, B.col[2].mmvalue);
+        col[1].mmvalue = _mm_add_ps(col[1].mmvalue, B.col[1].mmvalue);
+        col[2].mmvalue = _mm_add_ps(col[2].mmvalue, B.col[2].mmvalue);
         return *this;
     }
 
     inline FastMat3<T>& operator-=(const FastMat3<T>& B)
     {
         col[0].mmvalue = _mm_sub_ps(col[0].mmvalue, B.col[0].mmvalue);
-        col[0].mmvalue = _mm_sub_ps(col[1].mmvalue, B.col[2].mmvalue);
-        col[0].mmvalue = _mm_sub_ps(col[2].mmvalue, B.col[2].mmvalue);
+        col[1].mmvalue = _mm_sub_ps(col[1].mmvalue, B.col[1].mmvalue);
+        col[2].mmvalue = _mm_sub_ps(col[2].mmvalue, B.col[2].mmvalue);
         return *this;
     }
 
@@ -239,14 +240,9 @@ public:
     inline T norm2() const { return col[0].norm2() + col[1].norm2() + col[2].norm2(); }
     inline T norm() const { return std::sqrt(norm2()); }
     ////////////////////////////////////////////////////////////////////////////////
-    inline bool operator==(const FastMat3<T>& B) const { return col[0] == B.col[0] && col[1] == B.col[0] && col[2] == B.col[2]; }
+    inline bool operator==(const FastMat3<T>& B) const { return col[0] == B.col[0] && col[1] == B.col[1] && col[2] == B.col[2]; }
     inline bool operator!=(const FastMat3<T>& B) const { return !(*this == B); }
-    inline FastMat3<T> operator-() const
-    {
-        return FastMat3<T>(_mm_xor_ps(col[0].mmvalue, s_SignMask),
-                           _mm_xor_ps(col[1].mmvalue, s_SignMask),
-                           _mm_xor_ps(col[2].mmvalue, s_SignMask));
-    }
+    inline FastMat3<T> operator-() const { return FastMat3<T>(-col[0], -col[1], -col[2]); }
 
     ////////////////////////////////////////////////////////////////////////////////
     // accessor
