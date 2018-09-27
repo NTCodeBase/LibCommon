@@ -16,7 +16,7 @@
 
 #include <LibCommon/CommonSetup.h>
 #include <LibCommon/Array/Array.h>
-#include <LibCommon/Utils/MathHelpers.h>
+#include <LibCommon/Math/MathHelpers.h>
 #include <LibCommon/ParallelHelpers/ParallelObjects.h>
 #include <cassert>
 

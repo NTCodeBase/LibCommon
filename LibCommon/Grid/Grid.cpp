@@ -14,7 +14,6 @@
 
 #include <LibCommon/Grid/Grid.h>
 #include <LibCommon/ParallelHelpers/Scheduler.h>
-#include <LibCommon/Utils/MathHelpers.h>
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 template<Int N, class RealType>

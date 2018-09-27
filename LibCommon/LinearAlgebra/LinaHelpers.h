@@ -17,7 +17,7 @@
 #include <random>
 
 #include <LibCommon/CommonSetup.h>
-#include <LibCommon/Utils/MathHelpers.h>
+#include <LibCommon/Math/MathHelpers.h>
 #include <LibCommon/Utils/NumberHelpers.h>
 #include <LibCommon/LinearAlgebra/ImplicitQRSVD.h>
 
@@ -386,7 +386,7 @@ auto symmetryDecomposition(const MatXxX<N, RealType>& M)
 template<Int N, class RealType>
 auto extractFiberCotangentStress(const MatXxX<N, RealType>& VP, const MatXxX<N, RealType>& F)
 {
-    if constexpr (N == 2) {
+    if constexpr(N == 2) {
         return glm::outerProduct(VP[1], F[1]);
     } else {
         return MatMxN<3, 2, RealType>(VP[1], VP[2]) * glm::transpose(MatMxN<3, 2, RealType>(F[1], F[2]));
@@ -397,7 +397,7 @@ auto extractFiberCotangentStress(const MatXxX<N, RealType>& VP, const MatXxX<N, 
 template<Int N, class RealType>
 MatXxX<N, RealType> getOrthogonalSystem(const VecX<N, RealType>& d1)
 {
-    if constexpr (N == 2) {
+    if constexpr(N == 2) {
         MatXxX<N, RealType> M;
         M[0] = glm::normalize(d1);
         M[1] = glm::normalize(Vec2<RealType>(-d1.y, d1.x));

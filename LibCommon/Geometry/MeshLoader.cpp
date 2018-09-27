@@ -16,7 +16,7 @@
 #include <tiny_obj_loader.h>
 
 #include <LibCommon/Geometry/MeshLoader.h>
-#include <LibCommon/Utils/MathHelpers.h>
+#include <LibCommon/Math/MathHelpers.h>
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 bool MeshLoader::loadMesh(const String& meshFile)

@@ -24,7 +24,7 @@
 #include <LibCommon/CommonSetup.h>
 #include <LibCommon/ParallelHelpers/Scheduler.h>
 #include <LibCommon/ParallelHelpers/ParallelObjects.h>
-#include <LibCommon/Utils/MathHelpers.h>
+#include <LibCommon/Math/MathHelpers.h>
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 namespace NumberHelpers
