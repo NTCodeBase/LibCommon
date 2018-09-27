@@ -301,24 +301,17 @@ inline void throwIfFailed(HRESULT hr)
 #define __NT_TO_CSTRING_7(x)                         Formatters::toString7(x).c_str()
 
 #define __NT_TYPE_ALIASING                                                            \
-    using VecNi            = VecX<N, Int>;                                            \
-    using VecNui           = VecX<N, UInt>;                                           \
     using VecN             = VecX<N, RealType>;                                       \
-    using VecNa            = VecX<(N == 2) ? N : 4, RealType>;                        \
     using VecNp1           = VecX<N + 1, RealType>;                                   \
     using MatNxN           = MatXxX<N, RealType>;                                     \
-    using MatNxNa          = MatXxX<(N == 2) ? N : 4, RealType>;                      \
     using MatNp1xNp1       = MatXxX<N + 1, RealType>;                                 \
     using StdVT_VecN       = StdVT_VecX<N, RealType>;                                 \
-    using StdVT_VecNa      = StdVT_VecX<(N == 2) ? N : 4, RealType>;                  \
     using StdVT_VecNp1     = StdVT_VecX<N + 1, RealType>;                             \
     using StdVT_MatNxN     = StdVT_MatXxX<N, RealType>;                               \
-    using StdVT_MatNxNa    = StdVT_MatXxX<(N == 2) ? N : 4, RealType>;                \
     using StdVT_MatNp1xNp1 = StdVT_MatXxX<N + 1, RealType>;                           \
     using StdVT_RealType   = StdVT<RealType>;                                         \
     static constexpr auto TinyReal() { return std::numeric_limits<RealType>::min(); } \
-    static constexpr auto HugeReal() { return std::numeric_limits<RealType>::max(); } \
-    static constexpr auto ToVecNa(const VecN& x) { if constexpr (N == 2) { return x; } else { return VecNp1(x, 0); } }
+    static constexpr auto HugeReal() { return std::numeric_limits<RealType>::max(); }
 
 #ifdef __NT_SUPPORT_DOUBLE_NUMBER
 #  define __NT_INSTANTIATE_CLASS_COMMON_TYPES(ClassName) \
