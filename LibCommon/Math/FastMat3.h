@@ -250,8 +250,8 @@ public:
 
     ////////////////////////////////////////////////////////////////////////////////
     // accessor
-    template<class IndexType> inline const T& operator[](const IndexType i) const { assert(i < 4); return col[i]; }
-    template<class IndexType> inline T& operator[](const IndexType i) { assert(i < 4); return col[i]; }
+    template<class IndexType> inline const FastVec3<T>& operator[](const IndexType i) const { assert(i < 4); return col[i]; }
+    template<class IndexType> inline FastVec3<T>& operator[](const IndexType i) { assert(i < 4); return col[i]; }
     ////////////////////////////////////////////////////////////////////////////////
     // member variable
     FastVec3<T> col[3];
