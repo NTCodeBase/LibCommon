@@ -128,3 +128,7 @@ using StdVT_Mat4x4f = StdVT<Mat4x4f>;
 using StdVT_Mat2x2d = StdVT<Mat2x2d>;
 using StdVT_Mat3x3d = StdVT<Mat3x3d>;
 using StdVT_Mat4x4d = StdVT<Mat4x4d>;
+
+//-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+#include <LibCommon/Math/FastVec3.h>
+#include <LibCommon/Math/FastMat3.h>

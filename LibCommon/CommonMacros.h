@@ -113,6 +113,12 @@ inline void throwIfFailed(HRESULT hr)
 #define __NT_FORCE_INLINE __attribute__((always_inline))
 #endif
 
+#ifdef __NT_WINDOWS_OS__
+#define __NT_ALIGN16 _MM_ALIGN16
+#else
+#define __NT_ALIGN16 __attribute__((aligned(16)))
+#endif
+
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 #ifdef __NT_WINDOWS_OS__
 #ifdef QT_CORE_LIB
