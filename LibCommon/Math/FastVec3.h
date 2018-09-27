@@ -28,6 +28,7 @@ public:
     inline FastVec3(__m128 mval) : mmvalue(mval) {}
     inline FastVec3(T x) : mmvalue(_mm_set1_ps(x)) {}
     inline FastVec3(T x, T y, T z) : mmvalue(_mm_setr_ps(x, y, z, 1)) {}
+    inline FastVec3(const Vec2<T>& v) : mmvalue(_mm_setr_ps(v.x, v.y, 0, 1)) {}
     inline FastVec3(const Vec3<T>& v) : mmvalue(_mm_setr_ps(v.x, v.y, v.z, 1)) {}
     inline FastVec3(const FastVec3<T>& other) : mmvalue(other.mmvalue) {}
     ////////////////////////////////////////////////////////////////////////////////
