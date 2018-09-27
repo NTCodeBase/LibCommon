@@ -27,8 +27,8 @@ public:
     inline FastVec3() { static_assert(sizeof(T) == sizeof(float) && alignof(FastVec3<T>) == 16, "Error: Size or alignment is not correct!"); }
     inline FastVec3(__m128 mval) : mmvalue(mval) {}
     inline FastVec3(T x) : mmvalue(_mm_set1_ps(x)) {}
-    inline FastVec3(T x, T y, T z) : mmvalue(_mm_setr_ps(x, y, z, 0)) {}
-    inline FastVec3(const Vec3<T>& v) : mmvalue(_mm_setr_ps(v.x, v.y, v.z, 0)) {}
+    inline FastVec3(T x, T y, T z) : mmvalue(_mm_setr_ps(x, y, z, 1)) {}
+    inline FastVec3(const Vec3<T>& v) : mmvalue(_mm_setr_ps(v.x, v.y, v.z, 1)) {}
     inline FastVec3(const FastVec3<T>& other) : mmvalue(other.mmvalue) {}
     ////////////////////////////////////////////////////////////////////////////////
     inline FastVec3<T>& operator=(const FastVec3<T>& other) { mmvalue = other.mmvalue; return *this; }
@@ -38,12 +38,12 @@ public:
     inline FastVec3<T> operator+(const FastVec3<T>& b) const { return _mm_add_ps(mmvalue, b.mmvalue); }
     inline FastVec3<T> operator-(const FastVec3<T>& b) const { return _mm_sub_ps(mmvalue, b.mmvalue); }
     inline FastVec3<T> operator*(const FastVec3<T>& b) const { return _mm_mul_ps(mmvalue, b.mmvalue); }
-    inline FastVec3<T> operator/(const FastVec3<T>& b) const { assert(a != 0); return _mm_div_ps(mmvalue, b.mmvalue); }
+    inline FastVec3<T> operator/(const FastVec3<T>& b) const { return _mm_div_ps(mmvalue, b.mmvalue); }
 
     inline FastVec3<T>& operator+=(const FastVec3<T>& b) { mmvalue = _mm_add_ps(mmvalue, b.mmvalue); return *this; }
     inline FastVec3<T>& operator-=(const FastVec3<T>& b) { mmvalue = _mm_sub_ps(mmvalue, b.mmvalue); return *this; }
     inline FastVec3<T>& operator*=(const FastVec3<T>& b) { mmvalue = _mm_mul_ps(mmvalue, b.mmvalue); return *this; }
-    inline FastVec3<T>& operator/=(const FastVec3<T>& b) { assert(a != 0); mmvalue = _mm_div_ps(mmvalue, b.mmvalue); return *this; }
+    inline FastVec3<T>& operator/=(const FastVec3<T>& b) { mmvalue = _mm_div_ps(mmvalue, b.mmvalue); return *this; }
 
     inline FastVec3<T> operator+(T a) const { return _mm_add_ps(mmvalue, _mm_set1_ps(a)); }
     inline FastVec3<T> operator-(T a) const { return _mm_sub_ps(mmvalue, _mm_set1_ps(a)); }
@@ -66,7 +66,7 @@ public:
             );
     }
 
-    inline FastVec3<T> normalized() const { return _mm_div_ps(mmvalue, _mm_sqrt_ps(_mm_dp_ps(mmvalue, mmvalue, 0xFF))); }
+    inline FastVec3<T> normalized() const { return _mm_div_ps(mmvalue, _mm_sqrt_ps(_mm_dp_ps(mmvalue, mmvalue, 0x7F))); }
     inline T dot(const FastVec3<T>& b) const { return _mm_cvtss_f32(_mm_dp_ps(mmvalue, b.mmvalue, 0x71)); }
     inline T norm2() const { return _mm_cvtss_f32(_mm_dp_ps(mmvalue, mmvalue, 0x71)); }
     inline T norm() const { return std::sqrt(norm2()); }
