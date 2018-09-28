@@ -41,8 +41,8 @@ using Real = float;
 #endif
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-#define TEST_CORRECTNESS_INITIALIZATION
-#define TEST_PERFORMANCE_INITIALIZATION
+//#define TEST_CORRECTNESS_INITIALIZATION
+//#define TEST_PERFORMANCE_INITIALIZATION
 //#define TEST_FAST_VEC3_OPS
 //#define TEST_FAST_MAT3_OPS
 #define TEST_PERFORMANCE_FAST_VEC3_FAST_MAT3
@@ -592,6 +592,7 @@ TEST_CASE("Compare_FastVec3_Performance", "Compare_FastVec3_Performance")
                                                 }
                                             }
                                         }
+                                        positions[i] = ppos;
                                     });
         }
     }
@@ -617,6 +618,7 @@ TEST_CASE("Compare_FastVec3_Performance", "Compare_FastVec3_Performance")
                                                 }
                                             }
                                         }
+                                        positions[i] = ppos;
                                     });
         }
     }
@@ -629,6 +631,7 @@ TEST_CASE("Compare_FastVec3_Performance", "Compare_FastVec3_Performance")
                                         const auto w        = NumberHelpers::fRand<Real>::rnd();
                                         const auto& lcorner = kernelCornerNode[i];
                                         auto ppos           = FastVec3<Real>(0);
+                                        auto gvel           = FastVec3<Real>();
                                         for(Int z = 0; z < 4; ++z) {
                                             for(Int y = 0; y < 4; ++y) {
                                                 for(Int x = 0; x < 4; ++x) {
@@ -637,11 +640,38 @@ TEST_CASE("Compare_FastVec3_Performance", "Compare_FastVec3_Performance")
                                                     const auto grid_z = lcorner.z + z;
 
                                                     const auto xi = fastGrid.getWorldCoordinate(grid_x, grid_y, grid_z);
-                                                    const auto vi = FastVec3<Real>(gridData(grid_x, grid_y, grid_z));
+                                                    gvel.v3       = gridData(grid_x, grid_y, grid_z);
+                                                    ppos         += w * (xi + Real(1e-5) * gvel);
+                                                }
+                                            }
+                                        }
+                                        positions[i] = ppos.toVec3r();
+                                    });
+        }
+    }
+
+    {
+        ScopeTimer timer("Test position interpolation using FastVec3 + FastMat3 + FastGrid");
+        for(int i = 0; i < PERFORMANCE_TEST_NUM; ++i) {
+            Scheduler::parallel_for(DATA_SIZE,
+                                    [&](int i) {
+                                        const auto w        = NumberHelpers::fRand<Real>::rnd();
+                                        const auto& lcorner = kernelCornerNode[i];
+                                        auto ppos           = Vec3<Real>(0);
+                                        for(Int z = 0; z < 4; ++z) {
+                                            for(Int y = 0; y < 4; ++y) {
+                                                for(Int x = 0; x < 4; ++x) {
+                                                    const auto grid_x = lcorner.x + x;
+                                                    const auto grid_y = lcorner.y + y;
+                                                    const auto grid_z = lcorner.z + z;
+
+                                                    const auto xi = fastGrid.getWorldCoordinate(grid_x, grid_y, grid_z).v3;
+                                                    const auto vi = gridData(grid_x, grid_y, grid_z);
                                                     ppos         += w * (xi + Real(1e-5) * vi);
                                                 }
                                             }
                                         }
+                                        positions[i] = ppos;
                                     });
         }
     }
