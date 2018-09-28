@@ -35,6 +35,20 @@ public:
     inline FastVec3<T>& operator=(const FastVec3<T>& other) { mmvalue = other.mmvalue; return *this; }
     inline FastVec3<T>& operator=(const Vec3<T>& v) { mmvalue = _mm_setr_ps(v.x, v.y, v.z, 0); return *this; }
     inline operator Vec3<T>() const { return v3; }
+    inline Vec3i toInt3() const
+    {
+        struct
+        {
+            union
+            {
+                struct { Vec3i v3i; int dummy; };
+                __m128 mmvalue;
+            };
+        } ival;
+        ival.mmvalue = _mm_cvttps_epi32(mmvalue);
+        return ival.v3i;
+    }
+
     ////////////////////////////////////////////////////////////////////////////////
     inline FastVec3<T> operator+(const FastVec3<T>& b) const { return _mm_add_ps(mmvalue, b.mmvalue); }
     inline FastVec3<T> operator-(const FastVec3<T>& b) const { return _mm_sub_ps(mmvalue, b.mmvalue); }
