@@ -56,6 +56,8 @@ public:
     inline auto        getNTotalCells() const noexcept { return m_NTotalCells; }
     inline auto        getNTotalNodes() const noexcept { return m_NTotalNodes; }
     ////////////////////////////////////////////////////////////////////////////////
+    inline const auto& getBMin() const { return m_BMin; }
+    inline const auto& getBMax() const { return m_BMax; }
     inline auto getCellSize() const noexcept { return m_CellSize; }
     inline auto getInvCellSize() const noexcept { return m_InvCellSize; }
     inline auto getHalfCellSize() const noexcept { return m_HalfCellSize; }
