@@ -51,6 +51,7 @@ public:
     auto getInvCellSize() const noexcept { return m_InvCellSize; }
     auto getHalfCellSize() const noexcept { return m_HalfCellSize; }
     auto getCellSizeSquared() const noexcept { return m_CellSizeSqr; }
+    auto getInvCellSizeSquared() const noexcept { return m_InvCellSizeSqr; }
 
     ////////////////////////////////////////////////////////////////////////////////
     auto getCellVolume() const noexcept { return m_CellVolume; }
@@ -236,19 +237,20 @@ public:
     template<class IndexType>
     const auto& getParticleIdxInCell(const VecX<N, IndexType>& cellIdx) const { return m_ParticleIdxInCell(cellIdx); }
 protected:
-    VecN          m_BMin         = VecN(-1.0);
-    VecN          m_BMax         = VecN(1.0);
-    VecN          m_ClampedBMin  = VecN(-1.0);
-    VecN          m_ClampedBMax  = VecN(1.0);
-    VecX<N, UInt> m_NCells       = VecX<N, UInt>(0);
-    VecX<N, UInt> m_NNodes       = VecX<N, UInt>(0);
-    UInt          m_NTotalCells  = 1u;
-    UInt          m_NTotalNodes  = 1u;
-    RealType      m_CellSize     = RealType(1);
-    RealType      m_InvCellSize  = RealType(1);
-    RealType      m_HalfCellSize = RealType(0.5);
-    RealType      m_CellSizeSqr  = RealType(1);
-    RealType      m_CellVolume   = RealType(1);
+    VecN          m_BMin           = VecN(-1.0);
+    VecN          m_BMax           = VecN(1.0);
+    VecN          m_ClampedBMin    = VecN(-1.0);
+    VecN          m_ClampedBMax    = VecN(1.0);
+    VecX<N, UInt> m_NCells         = VecX<N, UInt>(0);
+    VecX<N, UInt> m_NNodes         = VecX<N, UInt>(0);
+    UInt          m_NTotalCells    = 1u;
+    UInt          m_NTotalNodes    = 1u;
+    RealType      m_CellSize       = RealType(1);
+    RealType      m_InvCellSize    = RealType(1);
+    RealType      m_HalfCellSize   = RealType(0.5);
+    RealType      m_CellSizeSqr    = RealType(1);
+    RealType      m_InvCellSizeSqr = RealType(1);
+    RealType      m_CellVolume     = RealType(1);
 
     StdVT_UInt m_ParticleIdxSortedByCell;
     bool       m_bCellIdxNeedResize = false; // to track and resize the m_CellParticleIdx array
