@@ -38,6 +38,7 @@ public:
     inline FastVec3<T>& operator=(const FastVec3<T>& other) { mmvalue = other.mmvalue; return *this; }
     inline FastVec3<T>& operator=(const Vec3<T>& v) { mmvalue = _mm_setr_ps(v.x, v.y, v.z, 0); return *this; }
     inline operator Vec3<T>() const { return v3; }
+    inline Vec3<T> toVec3r() const { return v3; }
     inline Vec3i toVec3i() const
     {
         struct iVec3
