@@ -80,11 +80,11 @@ public:
         return tmp;
     }
 
-    template<class StdVT>
-    StdVT vrnd()
+    template<class VT>
+    VT vrnd()
     {
-        static_assert(sizeof(typename StdVT::value_type) == sizeof(T));
-        UInt N = static_cast<UInt>(StdVT::length());
+        static_assert(sizeof(typename VT::value_type) == sizeof(T));
+        UInt N = static_cast<UInt>(VT::length());
         m_Lock.lock();
         if(m_CacheIdx + N >= s_CacheSize) {
             m_CacheIdx = 0;
@@ -92,8 +92,8 @@ public:
         auto oldIdx = m_CacheIdx;
         m_CacheIdx += N;
         m_Lock.unlock();
-        StdVT result;
-        std::memcpy(&result, &m_Cache[oldIdx], sizeof(StdVT));
+        VT result;
+        std::memcpy(&result, &m_Cache[oldIdx], sizeof(VT));
         return result;
     }
 
@@ -150,11 +150,11 @@ public:
         return tmp;
     }
 
-    template<class StdVT>
-    StdVT vrnd()
+    template<class VT>
+    VT vrnd()
     {
-        static_assert(sizeof(typename StdVT::value_type) == sizeof(T));
-        UInt N = static_cast<UInt>(StdVT::length());
+        static_assert(sizeof(typename VT::value_type) == sizeof(T));
+        UInt N = static_cast<UInt>(VT::length());
         m_Lock.lock();
         if(m_CacheIdx + N >= s_CacheSize) {
             m_CacheIdx = 0;
@@ -162,8 +162,8 @@ public:
         auto oldIdx = m_CacheIdx;
         m_CacheIdx += N;
         m_Lock.unlock();
-        StdVT result;
-        std::memcpy(&result, &m_Cache[oldIdx], sizeof(StdVT));
+        VT result;
+        std::memcpy(&result, &m_Cache[oldIdx], sizeof(VT));
         return result;
     }
 
@@ -206,7 +206,7 @@ class iRand
 {
 public:
     static auto rnd() { return s_Rand.rnd(); }
-    template<class StdVT> static auto vrnd() { return s_Rand.template vrnd<StdVT>(); }
+    template<class VT> static auto vrnd() { return s_Rand.template vrnd<VT>(); }
     template<class Matrix> static auto mrnd() { return s_Rand.template mrnd<Matrix>(); }
 private:
     static inline MT_iRandom<T> s_Rand = MT_iRandom<T>();
@@ -217,7 +217,7 @@ class fRand
 {
 public:
     static auto rnd() { return s_Rand.rnd(); }
-    template<class StdVT> static auto vrnd() { return s_Rand.template vrnd<StdVT>(); }
+    template<class VT> static auto vrnd() { return s_Rand.template vrnd<VT>(); }
     template<class Matrix> static auto mrnd() { return s_Rand.template mrnd<Matrix>(); }
 private:
     static inline MT_fRandom<T> s_Rand = MT_fRandom<T>();
@@ -228,7 +228,7 @@ class fRand01
 {
 public:
     static auto rnd() { return s_Rand.rnd(); }
-    template<class StdVT> static auto vrnd() { return s_Rand.template vrnd<StdVT>(); }
+    template<class VT> static auto vrnd() { return s_Rand.template vrnd<VT>(); }
     template<class Matrix> static auto mrnd() { return s_Rand.template mrnd<Matrix>(); }
 private:
     static inline MT_fRandom<T> s_Rand = MT_fRandom<T>(T(0), T(1));
@@ -239,7 +239,7 @@ class fRand11
 {
 public:
     static auto rnd() { return s_Rand.rnd(); }
-    template<class StdVT> static auto vrnd() { return s_Rand.template vrnd<StdVT>(); }
+    template<class VT> static auto vrnd() { return s_Rand.template vrnd<VT>(); }
     template<class Matrix> static auto mrnd() { return s_Rand.template mrnd<Matrix>(); }
 private:
     static inline MT_fRandom<T> s_Rand = MT_fRandom<T>(T(-1), T(1));
