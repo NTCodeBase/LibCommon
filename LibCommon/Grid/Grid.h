@@ -69,7 +69,7 @@ public:
     IndexType getNodeLinearizedIndex(IndexType i, IndexType j) const
     {
         static_assert(N == 2, "Array dimension != 2");
-        return j * static_cast<IndexType>(getNNodes()[0]()) + i;
+        return j * static_cast<IndexType>(getNNodes()[0]) + i;
     }
 
     template<class IndexType>
@@ -120,7 +120,7 @@ public:
     IndexType getNodeLinearizedIndex(IndexType i, IndexType j, IndexType k) const
     {
         static_assert(N == 3, "Array dimension != 3");
-        return (k * static_cast<IndexType>(getNNodes()[1]()) + j) * static_cast<IndexType>(getNNodes()[0]) + i;
+        return (k * static_cast<IndexType>(getNNodes()[1]) + j) * static_cast<IndexType>(getNNodes()[0]) + i;
     }
 
     template<class IndexType>
@@ -237,20 +237,20 @@ public:
     template<class IndexType>
     const auto& getParticleIdxInCell(const VecX<N, IndexType>& cellIdx) const { return m_ParticleIdxInCell(cellIdx); }
 protected:
-    VecN          m_BMin           = VecN(-1.0);
-    VecN          m_BMax           = VecN(1.0);
-    VecN          m_ClampedBMin    = VecN(-1.0);
-    VecN          m_ClampedBMax    = VecN(1.0);
-    VecX<N, UInt> m_NCells         = VecX<N, UInt>(0);
-    VecX<N, UInt> m_NNodes         = VecX<N, UInt>(0);
-    UInt          m_NTotalCells    = 1u;
-    UInt          m_NTotalNodes    = 1u;
-    RealType      m_CellSize       = RealType(1);
-    RealType      m_InvCellSize    = RealType(1);
-    RealType      m_HalfCellSize   = RealType(0.5);
-    RealType      m_CellSizeSqr    = RealType(1);
-    RealType      m_InvCellSizeSqr = RealType(1);
-    RealType      m_CellVolume     = RealType(1);
+    VecN     m_BMin           = VecN(-1.0);
+    VecN     m_BMax           = VecN(1.0);
+    VecN     m_ClampedBMin    = VecN(-1.0);
+    VecN     m_ClampedBMax    = VecN(1.0);
+    VecNui   m_NCells         = VecNui(0);
+    VecNui   m_NNodes         = VecNui(0);
+    UInt     m_NTotalCells    = 1u;
+    UInt     m_NTotalNodes    = 1u;
+    RealType m_CellSize       = RealType(1);
+    RealType m_InvCellSize    = RealType(1);
+    RealType m_HalfCellSize   = RealType(0.5);
+    RealType m_CellSizeSqr    = RealType(1);
+    RealType m_InvCellSizeSqr = RealType(1);
+    RealType m_CellVolume     = RealType(1);
 
     StdVT_UInt m_ParticleIdxSortedByCell;
     bool       m_bCellIdxNeedResize = false; // to track and resize the m_CellParticleIdx array
