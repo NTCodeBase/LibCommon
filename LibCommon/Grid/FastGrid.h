@@ -17,6 +17,7 @@
 #include <cassert>
 #include <LibCommon/CommonSetup.h>
 #include <LibCommon/Math/MathHelpers.h>
+#include <LibCommon/Math/FastVec3.h>
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 template<class Real_t>
