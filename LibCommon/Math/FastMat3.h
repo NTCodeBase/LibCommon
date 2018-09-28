@@ -23,7 +23,7 @@ class FastMat3
 public:
     inline FastMat3() { static_assert(sizeof(T) == sizeof(float) && alignof(FastMat3<T>) == 16, "Error: Size or alignment is not correct!"); }
     inline FastMat3(__m128 c0, __m128 c1, __m128 c2) : col{{ c0 }, { c1 }, { c2 }} {}
-    inline FastMat3(T x) : col{FastVec3<T>(x, 0, 0), FastVec3<T>(0, x, 0), FastVec3<T>(0, 0, x)} {}
+    inline FastMat3(T x) : col{FastVec3<T>(x, T(0), T(0)), FastVec3<T>(T(0), x, T(0)), FastVec3<T>(T(0), T(0), x)} {}
     inline FastMat3(const Mat3x3<T>& m) : col{{ m[0] }, { m[1] }, { m[2] }} {}
     inline FastMat3(const FastMat3<T>& other) : col{{ other.col[0] }, { other.col[1] }, { other.col[2] }} {}
     inline FastMat3(const FastVec3<T>& c0, const FastVec3<T>& c1, const FastVec3<T>& c2) : col{{ c0 }, { c1 }, { c2 }} {}

@@ -28,23 +28,28 @@ public:
     inline FastVec3(__m128 mval) : mmvalue(mval) {}
     inline FastVec3(T x) : mmvalue(_mm_set1_ps(x)) {}
     inline FastVec3(T x, T y, T z) : mmvalue(_mm_setr_ps(x, y, z, 1)) {}
+    inline FastVec3(int x, int y, int z) : mmvalue(_mm_cvtepi32_ps(_mm_setr_epi32(x, y, z, 1))) {}
+    inline FastVec3(unsigned int x, unsigned int y, unsigned int z) : mmvalue(_mm_cvtepi32_ps(_mm_setr_epi32(x, y, z, 1))) { __NT_DIE("Wrong"); }
     inline FastVec3(const Vec2<T>& v) : mmvalue(_mm_setr_ps(v.x, v.y, 0, 1)) {}
     inline FastVec3(const Vec3<T>& v) : mmvalue(_mm_setr_ps(v.x, v.y, v.z, 1)) {}
+    inline FastVec3(const Vec3i& vi) : mmvalue(_mm_cvtepi32_ps(_mm_setr_epi32(vi.x, vi.y, vi.z, 1))) {}
     inline FastVec3(const FastVec3<T>& other) : mmvalue(other.mmvalue) {}
     ////////////////////////////////////////////////////////////////////////////////
     inline FastVec3<T>& operator=(const FastVec3<T>& other) { mmvalue = other.mmvalue; return *this; }
     inline FastVec3<T>& operator=(const Vec3<T>& v) { mmvalue = _mm_setr_ps(v.x, v.y, v.z, 0); return *this; }
     inline operator Vec3<T>() const { return v3; }
-    inline Vec3i toInt3() const
+    inline Vec3i toVec3i() const
     {
-        struct
+        struct iVec3
         {
             union
             {
                 struct { Vec3i v3i; int dummy; };
-                __m128 mmvalue;
+                __m128i mmvalue;
             };
-        } ival;
+            iVec3() {}
+        };
+        iVec3 ival;
         ival.mmvalue = _mm_cvttps_epi32(mmvalue);
         return ival.v3i;
     }
