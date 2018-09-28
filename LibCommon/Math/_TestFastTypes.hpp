@@ -18,6 +18,7 @@
 
 #include <LibCommon/Array/Array.h>
 #include <LibCommon/Grid/Grid.h>
+#include <LibCommon/Grid/FastGrid.h>
 #include <LibCommon/ParallelHelpers/AtomicOperations.h>
 #include <LibCommon/ParallelHelpers/Scheduler.h>
 
@@ -42,8 +43,8 @@ using Real = float;
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 #define TEST_CORRECTNESS_INITIALIZATION
 #define TEST_PERFORMANCE_INITIALIZATION
-#define TEST_FAST_VEC3_OPS
-#define TEST_FAST_MAT3_OPS
+//#define TEST_FAST_VEC3_OPS
+//#define TEST_FAST_MAT3_OPS
 #define TEST_PERFORMANCE_FAST_VEC3_FAST_MAT3
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
@@ -169,7 +170,7 @@ TEST_CASE("Test_Correctness_Initialization", "Test_Correctness_Initialization")
             {
                 FastVec3<Real> fv3     = v3;
                 Vec3i          vi      = Vec3i(v3);
-                Vec3i          fvi     = fv3.toInt3();
+                Vec3i          fvi     = fv3.toVec3i();
                 bool           bResult = (vi.x == fvi.x && vi.y == fvi.y && vi.z == fvi.z);
                 REQUIRE(bResult);
             }
@@ -461,13 +462,15 @@ TEST_CASE("Compare_FastVec3_Performance", "Compare_FastVec3_Performance")
     StdVT<Real> mass(DATA_SIZE);
     StdVT<Vec3<Real>> positions(DATA_SIZE);
     StdVT<Vec3<Real>> velocities(DATA_SIZE);
-    StdVT<Vec3<Real>> kernelCornerNode(DATA_SIZE);
+    StdVT<Vec3<int>> kernelCornerNode(DATA_SIZE);
     StdVT<Mat3x3<Real>> C(DATA_SIZE);;
 
     Grid<3, Real> grid;
+    FastGrid3<Real> fastGrid;
     Array<3, Vec3<Real>> gridData;
     const auto cellSize = Real(2.0 / 128.0);
     grid.setGrid(Vec3<Real>(0 - 2.0 * cellSize), Vec3<Real>(1.0 + 2.0 * cellSize), cellSize, cellSize);
+    fastGrid.setGrid(Vec3<Real>(0 - 2.0 * cellSize), Vec3<Real>(1.0 + 2.0 * cellSize), cellSize, cellSize);
 
     {
         ScopeTimer timer("Init performance test data");
@@ -513,7 +516,7 @@ TEST_CASE("Compare_FastVec3_Performance", "Compare_FastVec3_Performance")
     }
 
     {
-        ScopeTimer timer("Test velocity transfer using FastVec3+FastMat3");
+        ScopeTimer timer("Test velocity transfer using FastVec3 + FastMat3");
         for(int i = 0; i < PERFORMANCE_TEST_NUM; ++i) {
             Scheduler::parallel_for(DATA_SIZE,
                                     [&](int i) {
@@ -531,6 +534,34 @@ TEST_CASE("Compare_FastVec3_Performance", "Compare_FastVec3_Performance")
                                                     const auto grid_z = lcorner.z + z;
 
                                                     const auto xixp = FastVec3<Real>(grid.getWorldCoordinate(grid_x, grid_y, grid_z)) - ppos;
+                                                    const auto vp   = (pvel + pC * xixp) * (w * mp);
+                                                    AtomicOperations::add(gridData(grid_x, grid_y, grid_z), vp.v3);
+                                                }
+                                            }
+                                        }
+                                    });
+        }
+    }
+
+    {
+        ScopeTimer timer("Test velocity transfer using FastVec3 + FastMat3 + FastGrid");
+        for(int i = 0; i < PERFORMANCE_TEST_NUM; ++i) {
+            Scheduler::parallel_for(DATA_SIZE,
+                                    [&](int i) {
+                                        const auto mp       = mass[i];
+                                        const auto w        = NumberHelpers::fRand<Real>::rnd();
+                                        const auto ppos     = FastVec3<Real>(positions[i]);
+                                        const auto pvel     = FastVec3<Real>(velocities[i]);
+                                        const auto pC       = FastMat3<Real>(C[i]);
+                                        const auto& lcorner = kernelCornerNode[i];
+                                        for(int z = 0; z < 4; ++z) {
+                                            for(int y = 0; y < 4; ++y) {
+                                                for(int x = 0; x < 4; ++x) {
+                                                    const auto grid_x = lcorner.x + x;
+                                                    const auto grid_y = lcorner.y + y;
+                                                    const auto grid_z = lcorner.z + z;
+
+                                                    const auto xixp = fastGrid.getWorldCoordinate(grid_x, grid_y, grid_z) - ppos;
                                                     const auto vp   = (pvel + pC * xixp) * (w * mp);
                                                     AtomicOperations::add(gridData(grid_x, grid_y, grid_z), vp.v3);
                                                 }
@@ -566,7 +597,7 @@ TEST_CASE("Compare_FastVec3_Performance", "Compare_FastVec3_Performance")
     }
 
     {
-        ScopeTimer timer("Test position interpolation using FastVec3+FastMat3");
+        ScopeTimer timer("Test position interpolation using FastVec3 + FastMat3");
         for(int i = 0; i < PERFORMANCE_TEST_NUM; ++i) {
             Scheduler::parallel_for(DATA_SIZE,
                                     [&](int i) {
@@ -581,6 +612,31 @@ TEST_CASE("Compare_FastVec3_Performance", "Compare_FastVec3_Performance")
                                                     const auto grid_z = lcorner.z + z;
 
                                                     const auto xi = FastVec3<Real>(grid.getWorldCoordinate(grid_x, grid_y, grid_z));
+                                                    const auto vi = FastVec3<Real>(gridData(grid_x, grid_y, grid_z));
+                                                    ppos         += w * (xi + Real(1e-5) * vi);
+                                                }
+                                            }
+                                        }
+                                    });
+        }
+    }
+
+    {
+        ScopeTimer timer("Test position interpolation using FastVec3 + FastMat3 + FastGrid");
+        for(int i = 0; i < PERFORMANCE_TEST_NUM; ++i) {
+            Scheduler::parallel_for(DATA_SIZE,
+                                    [&](int i) {
+                                        const auto w        = NumberHelpers::fRand<Real>::rnd();
+                                        const auto& lcorner = kernelCornerNode[i];
+                                        auto ppos           = FastVec3<Real>(0);
+                                        for(Int z = 0; z < 4; ++z) {
+                                            for(Int y = 0; y < 4; ++y) {
+                                                for(Int x = 0; x < 4; ++x) {
+                                                    const auto grid_x = lcorner.x + x;
+                                                    const auto grid_y = lcorner.y + y;
+                                                    const auto grid_z = lcorner.z + z;
+
+                                                    const auto xi = fastGrid.getWorldCoordinate(grid_x, grid_y, grid_z);
                                                     const auto vi = FastVec3<Real>(gridData(grid_x, grid_y, grid_z));
                                                     ppos         += w * (xi + Real(1e-5) * vi);
                                                 }
