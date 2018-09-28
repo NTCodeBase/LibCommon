@@ -307,12 +307,16 @@ inline void throwIfFailed(HRESULT hr)
 #define __NT_TO_CSTRING_7(x)                         Formatters::toString7(x).c_str()
 
 #define __NT_TYPE_ALIASING                                                            \
+    using Vec3r            = Vec3<RealType>;                                          \
+    using Vec4r            = Vec4<RealType>;                                          \
     using VecNi            = VecX<N, Int>;                                            \
     using VecNui           = VecX<N, UInt>;                                           \
     using VecN             = VecX<N, RealType>;                                       \
     using VecNp1           = VecX<N + 1, RealType>;                                   \
     using MatNxN           = MatXxX<N, RealType>;                                     \
     using MatNp1xNp1       = MatXxX<N + 1, RealType>;                                 \
+    using StdVT_Vec3r      = StdVT_Vec3<RealType>;                                    \
+    using StdVT_Vec4r      = StdVT_Vec4<RealType>;                                    \
     using StdVT_VecN       = StdVT_VecX<N, RealType>;                                 \
     using StdVT_VecNp1     = StdVT_VecX<N + 1, RealType>;                             \
     using StdVT_MatNxN     = StdVT_MatXxX<N, RealType>;                               \
