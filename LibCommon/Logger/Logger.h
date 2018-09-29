@@ -65,6 +65,7 @@ public:
     void printWarningIndent(const String& s, UInt indentLevel = 1) { printLogPaddingIndent(s, indentLevel, LogLevel::warn, LogLevel::warn); }
     void printError(const String& s) { printLogPadding(s, LogLevel::err, LogLevel::err); }
     void printErrorIndent(const String& s, UInt indentLevel = 1) { printLogPaddingIndent(s, indentLevel, LogLevel::err, LogLevel::err); }
+    void newLineDebug() { newLine(LogLevel::debug, LogLevel::debug); }
     ////////////////////////////////////////////////////////////////////////////////
     template<class Function, class... Args>
     void printRunTime(const char* caption, Function&& function, Args&& ... args)
