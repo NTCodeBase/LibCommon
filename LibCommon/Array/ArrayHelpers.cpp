@@ -19,11 +19,11 @@
 namespace ArrayHelpers
 {
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-template<class RealType>
-void getCoordinatesAndWeights(const Vec2<RealType>& point, const Vec2ui& size, std::array<Vec2i, 8>& indices, std::array<RealType, 8>& weights)
+template<class Real_t>
+void getCoordinatesAndWeights(const Vec2<Real_t>& point, const Vec2ui& size, std::array<Vec2i, 8>& indices, std::array<Real_t, 8>& weights)
 {
     Int      i, j;
-    RealType fi, fj;
+    Real_t fi, fj;
 
     MathHelpers::get_barycentric(point[0], i, fi, 0, static_cast<Int>(size[0]));
     MathHelpers::get_barycentric(point[1], j, fj, 0, static_cast<Int>(size[1]));
@@ -33,17 +33,17 @@ void getCoordinatesAndWeights(const Vec2<RealType>& point, const Vec2ui& size, s
     indices[2] = Vec2i(i, j + 1);
     indices[3] = Vec2i(i + 1, j + 1);
 
-    weights[0] = (RealType(1.0) - fi) * (RealType(1.0) - fj);
-    weights[1] = fi * (RealType(1.0) - fj);
-    weights[2] = (RealType(1.0) - fi) * fj;
+    weights[0] = (Real_t(1.0) - fi) * (Real_t(1.0) - fj);
+    weights[1] = fi * (Real_t(1.0) - fj);
+    weights[2] = (Real_t(1.0) - fi) * fj;
     weights[3] = fi * fj;
 }
 
-template<class RealType>
-void getCoordinatesAndWeights(const Vec3<RealType>& point, const Vec3ui& size, std::array<Vec3i, 8>& indices, std::array<RealType, 8>& weights)
+template<class Real_t>
+void getCoordinatesAndWeights(const Vec3<Real_t>& point, const Vec3ui& size, std::array<Vec3i, 8>& indices, std::array<Real_t, 8>& weights)
 {
     Int      i, j, k;
-    RealType fi, fj, fk;
+    Real_t fi, fj, fk;
 
     MathHelpers::get_barycentric(point[0], i, fi, 0, static_cast<Int>(size[0]));
     MathHelpers::get_barycentric(point[1], j, fj, 0, static_cast<Int>(size[1]));
@@ -58,33 +58,33 @@ void getCoordinatesAndWeights(const Vec3<RealType>& point, const Vec3ui& size, s
     indices[6] = Vec3i(i, j + 1, k + 1);
     indices[7] = Vec3i(i + 1, j + 1, k + 1);
 
-    weights[0] = (RealType(1.0) - fi) * (RealType(1.0) - fj) * (RealType(1.0) - fk);
-    weights[1] = fi * (RealType(1.0) - fj) * (RealType(1.0) - fk);
-    weights[2] = (RealType(1.0) - fi) * fj * (RealType(1.0) - fk);
-    weights[3] = fi * fj * (RealType(1.0) - fk);
-    weights[4] = (RealType(1.0) - fi) * (RealType(1.0) - fj) * fk;
-    weights[5] = fi * (RealType(1.0) - fj) * fk;
-    weights[6] = (RealType(1.0) - fi) * fj * fk;
+    weights[0] = (Real_t(1.0) - fi) * (Real_t(1.0) - fj) * (Real_t(1.0) - fk);
+    weights[1] = fi * (Real_t(1.0) - fj) * (Real_t(1.0) - fk);
+    weights[2] = (Real_t(1.0) - fi) * fj * (Real_t(1.0) - fk);
+    weights[3] = fi * fj * (Real_t(1.0) - fk);
+    weights[4] = (Real_t(1.0) - fi) * (Real_t(1.0) - fj) * fk;
+    weights[5] = fi * (Real_t(1.0) - fj) * fk;
+    weights[6] = (Real_t(1.0) - fi) * fj * fk;
     weights[7] = fi * fj * fk;
 }
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-template<class RealType>
-RealType interpolateValueLinear(const Vec2<RealType>& point, const Array2<RealType>& grid)
+template<class Real_t>
+Real_t interpolateValueLinear(const Vec2<Real_t>& point, const Array2<Real_t>& grid)
 {
     Int      i, j;
-    RealType fi, fj;
+    Real_t fi, fj;
     MathHelpers::get_barycentric(point[0], i, fi, 0, static_cast<Int>(grid.vsize()[0]));
     MathHelpers::get_barycentric(point[1], j, fj, 0, static_cast<Int>(grid.vsize()[1]));
     return MathHelpers::bilerp(grid(i, j), grid(i + 1, j), grid(i, j + 1), grid(i + 1, j + 1), fi, fj);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-template<class RealType>
-RealType interpolateValueLinear(const Vec3<RealType>& point, const Array3<RealType>& grid)
+template<class Real_t>
+Real_t interpolateValueLinear(const Vec3<Real_t>& point, const Array3<Real_t>& grid)
 {
     Int      i, j, k;
-    RealType fi, fj, fk;
+    Real_t fi, fj, fk;
     MathHelpers::get_barycentric(point[0], i, fi, 0, static_cast<Int>(grid.vsize()[0]));
     MathHelpers::get_barycentric(point[1], j, fj, 0, static_cast<Int>(grid.vsize()[1]));
     MathHelpers::get_barycentric(point[2], k, fk, 0, static_cast<Int>(grid.vsize()[2]));
@@ -95,20 +95,20 @@ RealType interpolateValueLinear(const Vec3<RealType>& point, const Array3<RealTy
 }
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-template<class RealType>
-Vec2<RealType> grad_bilerp(RealType v00, RealType v10, RealType v01, RealType v11, RealType fi, RealType fj)
+template<class Real_t>
+Vec2<Real_t> grad_bilerp(Real_t v00, Real_t v10, Real_t v01, Real_t v11, Real_t fi, Real_t fj)
 {
-    return Vec2<RealType>(fj - RealType(1.0), fi - RealType(1.0)) * v00 +
-           Vec2<RealType>(RealType(1.0) - fj, -fi) * v10 +
-           Vec2<RealType>(-fj,                RealType(1.0) - fi) * v01 +
-           Vec2<RealType>(fj,                 fi) * v11;
+    return Vec2<Real_t>(fj - Real_t(1.0), fi - Real_t(1.0)) * v00 +
+           Vec2<Real_t>(Real_t(1.0) - fj, -fi) * v10 +
+           Vec2<Real_t>(-fj,                Real_t(1.0) - fi) * v01 +
+           Vec2<Real_t>(fj,                 fi) * v11;
 }
 
-template<class RealType>
-Vec2<RealType> interpolateValueAffine(const Vec2<RealType>& point, const Array2<RealType>& grid)
+template<class Real_t>
+Vec2<Real_t> interpolateValueAffine(const Vec2<Real_t>& point, const Array2<Real_t>& grid)
 {
     Int      i, j;
-    RealType fi, fj;
+    Real_t fi, fj;
     MathHelpers::get_barycentric(point[0], i, fi, 0, static_cast<Int>(grid.vsize()[0]));
     MathHelpers::get_barycentric(point[1], j, fj, 0, static_cast<Int>(grid.vsize()[1]));
     return grad_bilerp(
@@ -118,21 +118,21 @@ Vec2<RealType> interpolateValueAffine(const Vec2<RealType>& point, const Array2<
 }
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-template<class RealType>
-RealType interpolateValueCubicBSpline(const Vec2<RealType>& point, const Array2<RealType>& grid)
+template<class Real_t>
+Real_t interpolateValueCubicBSpline(const Vec2<Real_t>& point, const Array2<Real_t>& grid)
 {
     Int      i, j;
-    RealType fi, fj;
+    Real_t fi, fj;
     MathHelpers::get_barycentric(point[0], i, fi, 0, static_cast<Int>(grid.vsize()[0]));
     MathHelpers::get_barycentric(point[1], j, fj, 0, static_cast<Int>(grid.vsize()[1]));
 
-    RealType sumW   = 0;
-    RealType sumVal = 0;
+    Real_t sumW   = 0;
+    Real_t sumVal = 0;
     for(Int lj = -1; lj <= 2; ++lj) {
         for(Int li = -1; li <= 2; ++li) {
             const Vec2i ind = Vec2i(i + li, j + lj);
             if(grid.isValidIndex(ind)) {
-                const RealType weight = MathHelpers::cubic_bspline_2d(fi - static_cast<RealType>(li), fj - static_cast<RealType>(lj));
+                const Real_t weight = MathHelpers::cubic_bspline_2d(fi - static_cast<Real_t>(li), fj - static_cast<Real_t>(lj));
                 sumW   += weight;
                 sumVal += weight * grid(ind);
             }
@@ -146,25 +146,25 @@ RealType interpolateValueCubicBSpline(const Vec2<RealType>& point, const Array2<
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-template<class RealType>
-RealType interpolateValueCubicBSpline(const Vec3<RealType>& point, const Array3<RealType>& grid)
+template<class Real_t>
+Real_t interpolateValueCubicBSpline(const Vec3<Real_t>& point, const Array3<Real_t>& grid)
 {
     Int      i, j, k;
-    RealType fi, fj, fk;
+    Real_t fi, fj, fk;
     MathHelpers::get_barycentric(point[0], i, fi, 0, static_cast<Int>(grid.vsize()[0]));
     MathHelpers::get_barycentric(point[1], j, fj, 0, static_cast<Int>(grid.vsize()[1]));
     MathHelpers::get_barycentric(point[2], k, fk, 0, static_cast<Int>(grid.vsize()[2]));
 
-    RealType sumW   = 0;
-    RealType sumVal = 0;
+    Real_t sumW   = 0;
+    Real_t sumVal = 0;
     for(Int lk = -1; lk <= 2; ++lk) {
         for(Int lj = -1; lj <= 2; ++lj) {
             for(Int li = -1; li <= 2; ++li) {
                 const Vec3i ind = Vec3i(i + li, j + lj, k + lk);
                 if(grid.isValidIndex(ind)) {
-                    const RealType weight = MathHelpers::cubic_bspline_3d(fi - static_cast<RealType>(li),
-                                                                          fj - static_cast<RealType>(lj),
-                                                                          fk - static_cast<RealType>(lk));
+                    const Real_t weight = MathHelpers::cubic_bspline_3d(fi - static_cast<Real_t>(li),
+                                                                          fj - static_cast<Real_t>(lj),
+                                                                          fk - static_cast<Real_t>(lk));
                     sumW   += weight;
                     sumVal += weight * grid(ind);
                 }
@@ -179,140 +179,140 @@ RealType interpolateValueCubicBSpline(const Vec3<RealType>& point, const Array3<
 }
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-template<class RealType>
-Vec2<RealType> interpolateGradient(const Vec2<RealType>& point, const Array2<RealType>& grid)
+template<class Real_t>
+Vec2<Real_t> interpolateGradient(const Vec2<Real_t>& point, const Array2<Real_t>& grid)
 {
     Int      i, j;
-    RealType fi, fj;
+    Real_t fi, fj;
     MathHelpers::get_barycentric(point[0], i, fi, 0, static_cast<Int>(grid.vsize()[0]));
     MathHelpers::get_barycentric(point[1], j, fj, 0, static_cast<Int>(grid.vsize()[1]));
 
-    RealType v00 = grid(i, j);
-    RealType v01 = grid(i, j + 1);
-    RealType v10 = grid(i + 1, j);
-    RealType v11 = grid(i + 1, j + 1);
+    Real_t v00 = grid(i, j);
+    Real_t v01 = grid(i, j + 1);
+    Real_t v10 = grid(i + 1, j);
+    Real_t v11 = grid(i + 1, j + 1);
 
-    RealType ddy0 = (v01 - v00);
-    RealType ddy1 = (v11 - v10);
+    Real_t ddy0 = (v01 - v00);
+    Real_t ddy1 = (v11 - v10);
 
-    RealType ddx0 = (v10 - v00);
-    RealType ddx1 = (v11 - v01);
+    Real_t ddx0 = (v10 - v00);
+    Real_t ddx1 = (v11 - v01);
 
-    return Vec2<RealType>(MathHelpers::lerp(ddx0, ddx1, fj),
+    return Vec2<Real_t>(MathHelpers::lerp(ddx0, ddx1, fj),
                           MathHelpers::lerp(ddy0, ddy1, fi));
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-template<class RealType>
-Vec3<RealType> interpolateGradient(const Vec3<RealType>& point, const Array3<RealType>& grid)
+template<class Real_t>
+Vec3<Real_t> interpolateGradient(const Vec3<Real_t>& point, const Array3<Real_t>& grid)
 {
     Int      i, j, k;
-    RealType fi, fj, fk;
+    Real_t fi, fj, fk;
 
     MathHelpers::get_barycentric(point[0], i, fi, 0, static_cast<Int>(grid.vsize()[0]));
     MathHelpers::get_barycentric(point[1], j, fj, 0, static_cast<Int>(grid.vsize()[1]));
     MathHelpers::get_barycentric(point[2], k, fk, 0, static_cast<Int>(grid.vsize()[2]));
 
-    RealType v000 = grid(i, j, k);
-    RealType v001 = grid(i, j, k + 1);
-    RealType v010 = grid(i, j + 1, k);
-    RealType v011 = grid(i, j + 1, k + 1);
-    RealType v100 = grid(i + 1, j, k);
-    RealType v101 = grid(i + 1, j, k + 1);
-    RealType v110 = grid(i + 1, j + 1, k);
-    RealType v111 = grid(i + 1, j + 1, k + 1);
+    Real_t v000 = grid(i, j, k);
+    Real_t v001 = grid(i, j, k + 1);
+    Real_t v010 = grid(i, j + 1, k);
+    Real_t v011 = grid(i, j + 1, k + 1);
+    Real_t v100 = grid(i + 1, j, k);
+    Real_t v101 = grid(i + 1, j, k + 1);
+    Real_t v110 = grid(i + 1, j + 1, k);
+    Real_t v111 = grid(i + 1, j + 1, k + 1);
 
-    RealType ddx00 = (v100 - v000);
-    RealType ddx10 = (v110 - v010);
-    RealType ddx01 = (v101 - v001);
-    RealType ddx11 = (v111 - v011);
-    RealType dv_dx = MathHelpers::bilerp(ddx00, ddx10, ddx01, ddx11, fj, fk);
+    Real_t ddx00 = (v100 - v000);
+    Real_t ddx10 = (v110 - v010);
+    Real_t ddx01 = (v101 - v001);
+    Real_t ddx11 = (v111 - v011);
+    Real_t dv_dx = MathHelpers::bilerp(ddx00, ddx10, ddx01, ddx11, fj, fk);
 
-    RealType ddy00 = (v010 - v000);
-    RealType ddy10 = (v110 - v100);
-    RealType ddy01 = (v011 - v001);
-    RealType ddy11 = (v111 - v101);
-    RealType dv_dy = MathHelpers::bilerp(ddy00, ddy10, ddy01, ddy11, fi, fk);
+    Real_t ddy00 = (v010 - v000);
+    Real_t ddy10 = (v110 - v100);
+    Real_t ddy01 = (v011 - v001);
+    Real_t ddy11 = (v111 - v101);
+    Real_t dv_dy = MathHelpers::bilerp(ddy00, ddy10, ddy01, ddy11, fi, fk);
 
-    RealType ddz00 = (v001 - v000);
-    RealType ddz10 = (v101 - v100);
-    RealType ddz01 = (v011 - v010);
-    RealType ddz11 = (v111 - v110);
-    RealType dv_dz = MathHelpers::bilerp(ddz00, ddz10, ddz01, ddz11, fi, fj);
+    Real_t ddz00 = (v001 - v000);
+    Real_t ddz10 = (v101 - v100);
+    Real_t ddz01 = (v011 - v010);
+    Real_t ddz11 = (v111 - v110);
+    Real_t dv_dz = MathHelpers::bilerp(ddz00, ddz10, ddz01, ddz11, fi, fj);
 
-    return Vec3<RealType>(dv_dx, dv_dy, dv_dz);
+    return Vec3<Real_t>(dv_dx, dv_dy, dv_dz);
 }
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-template<class RealType>
-Vec2<RealType> interpolateGradientValue(const Vec2<RealType>& point, const Array2<RealType>& grid, RealType cellSize)
+template<class Real_t>
+Vec2<Real_t> interpolateGradientValue(const Vec2<Real_t>& point, const Array2<Real_t>& grid, Real_t cellSize)
 {
     Int      i, j;
-    RealType fi, fj;
+    Real_t fi, fj;
     MathHelpers::get_barycentric(point[0], i, fi, 0, static_cast<Int>(grid.vsize()[0]));
     MathHelpers::get_barycentric(point[1], j, fj, 0, static_cast<Int>(grid.vsize()[1]));
 
-    RealType v00 = grid(i, j);
-    RealType v01 = grid(i, j + 1);
-    RealType v10 = grid(i + 1, j);
-    RealType v11 = grid(i + 1, j + 1);
+    Real_t v00 = grid(i, j);
+    Real_t v01 = grid(i, j + 1);
+    Real_t v10 = grid(i + 1, j);
+    Real_t v11 = grid(i + 1, j + 1);
 
-    Vec2<RealType> grad = v00 * Vec2<RealType>(fj - RealType(1.0), fi - RealType(1.0)) +
-                          v10 * Vec2<RealType>(RealType(1.0) - fj, -fi) +
-                          v01 * Vec2<RealType>(-fj, RealType(1.0) - fi) +
-                          v11 * Vec2<RealType>(fj, fi);
+    Vec2<Real_t> grad = v00 * Vec2<Real_t>(fj - Real_t(1.0), fi - Real_t(1.0)) +
+                          v10 * Vec2<Real_t>(Real_t(1.0) - fj, -fi) +
+                          v01 * Vec2<Real_t>(-fj, Real_t(1.0) - fi) +
+                          v11 * Vec2<Real_t>(fj, fi);
     return grad / cellSize;
 }
 
-template<class RealType>
-Vec3<RealType> interpolateGradientValue(const Vec3<RealType>& point, const Array3<RealType>& grid, RealType cellSize)
+template<class Real_t>
+Vec3<Real_t> interpolateGradientValue(const Vec3<Real_t>& point, const Array3<Real_t>& grid, Real_t cellSize)
 {
     Int      i, j, k;
-    RealType fi, fj, fk;
+    Real_t fi, fj, fk;
 
     MathHelpers::get_barycentric(point[0], i, fi, 0, static_cast<Int>(grid.vsize()[0]));
     MathHelpers::get_barycentric(point[1], j, fj, 0, static_cast<Int>(grid.vsize()[1]));
     MathHelpers::get_barycentric(point[2], k, fk, 0, static_cast<Int>(grid.vsize()[2]));
 
-    RealType v000 = grid(i, j, k);
-    RealType v001 = grid(i, j, k + 1);
-    RealType v010 = grid(i, j + 1, k);
-    RealType v011 = grid(i, j + 1, k + 1);
-    RealType v100 = grid(i + 1, j, k);
-    RealType v101 = grid(i + 1, j, k + 1);
-    RealType v110 = grid(i + 1, j + 1, k);
-    RealType v111 = grid(i + 1, j + 1, k + 1);
+    Real_t v000 = grid(i, j, k);
+    Real_t v001 = grid(i, j, k + 1);
+    Real_t v010 = grid(i, j + 1, k);
+    Real_t v011 = grid(i, j + 1, k + 1);
+    Real_t v100 = grid(i + 1, j, k);
+    Real_t v101 = grid(i + 1, j, k + 1);
+    Real_t v110 = grid(i + 1, j + 1, k);
+    Real_t v111 = grid(i + 1, j + 1, k + 1);
 
-    Vec3<RealType> grad = v000 * Vec3<RealType>(-(RealType(1.0) - fj) * (RealType(1.0) - fk), -(RealType(1.0) - fi) * (RealType(1.0) - fk), -(RealType(1.0) - fi) * (RealType(1.0) - fj)) +
-                          v001 * Vec3<RealType>(-(RealType(1.0) - fj) * fk, -(RealType(1.0) - fi) * fk, (RealType(1.0) - fi) * (RealType(1.0) - fj)) +
-                          v010 * Vec3<RealType>(-fj * (RealType(1.0) - fk), (RealType(1.0) - fi) * (RealType(1.0) - fk), -(RealType(1.0) - fi) * fj) +
-                          v011 * Vec3<RealType>(-fj * fk, (RealType(1.0) - fi) * fk, (RealType(1.0) - fi) * fj) +
-                          v100 * Vec3<RealType>((RealType(1.0) - fj) * (RealType(1.0) - fk), -fi * (RealType(1.0) - fk), -fi * (RealType(1.0) - fj)) +
-                          v101 * Vec3<RealType>((RealType(1.0) - fj) * fk, -fi * fk, fi * (RealType(1.0) - fj)) +
-                          v110 * Vec3<RealType>(fj * (RealType(1.0) - fk), fi * (RealType(1.0) - fk), -fi * fj) +
-                          v111 * Vec3<RealType>(fj * fk, fi * fk, fi * fj);
+    Vec3<Real_t> grad = v000 * Vec3<Real_t>(-(Real_t(1.0) - fj) * (Real_t(1.0) - fk), -(Real_t(1.0) - fi) * (Real_t(1.0) - fk), -(Real_t(1.0) - fi) * (Real_t(1.0) - fj)) +
+                          v001 * Vec3<Real_t>(-(Real_t(1.0) - fj) * fk, -(Real_t(1.0) - fi) * fk, (Real_t(1.0) - fi) * (Real_t(1.0) - fj)) +
+                          v010 * Vec3<Real_t>(-fj * (Real_t(1.0) - fk), (Real_t(1.0) - fi) * (Real_t(1.0) - fk), -(Real_t(1.0) - fi) * fj) +
+                          v011 * Vec3<Real_t>(-fj * fk, (Real_t(1.0) - fi) * fk, (Real_t(1.0) - fi) * fj) +
+                          v100 * Vec3<Real_t>((Real_t(1.0) - fj) * (Real_t(1.0) - fk), -fi * (Real_t(1.0) - fk), -fi * (Real_t(1.0) - fj)) +
+                          v101 * Vec3<Real_t>((Real_t(1.0) - fj) * fk, -fi * fk, fi * (Real_t(1.0) - fj)) +
+                          v110 * Vec3<Real_t>(fj * (Real_t(1.0) - fk), fi * (Real_t(1.0) - fk), -fi * fj) +
+                          v111 * Vec3<Real_t>(fj * fk, fi * fk, fi * fj);
     return grad / cellSize;
 }
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-template<class RealType>
-RealType interpolateValueAndGradient(Vec2<RealType>& gradient, const Vec2<RealType>& point, const Array2<RealType>& grid)
+template<class Real_t>
+Real_t interpolateValueAndGradient(Vec2<Real_t>& gradient, const Vec2<Real_t>& point, const Array2<Real_t>& grid)
 {
     Int      i, j;
-    RealType fi, fj;
+    Real_t fi, fj;
     MathHelpers::get_barycentric(point[0], i, fi, 0, static_cast<Int>(grid.vsize()[0]));
     MathHelpers::get_barycentric(point[1], j, fj, 0, static_cast<Int>(grid.vsize()[1]));
 
-    RealType v00 = grid(i, j);
-    RealType v01 = grid(i, j + 1);
-    RealType v10 = grid(i + 1, j);
-    RealType v11 = grid(i + 1, j + 1);
+    Real_t v00 = grid(i, j);
+    Real_t v01 = grid(i, j + 1);
+    Real_t v10 = grid(i + 1, j);
+    Real_t v11 = grid(i + 1, j + 1);
 
-    RealType ddy0 = (v01 - v00);
-    RealType ddy1 = (v11 - v10);
+    Real_t ddy0 = (v01 - v00);
+    Real_t ddy1 = (v11 - v10);
 
-    RealType ddx0 = (v10 - v00);
-    RealType ddx1 = (v11 - v01);
+    Real_t ddx0 = (v10 - v00);
+    Real_t ddx1 = (v11 - v01);
 
     gradient[0] = MathHelpers::lerp(ddx0, ddx1, fj);
     gradient[1] = MathHelpers::lerp(ddy0, ddy1, fi);
@@ -321,42 +321,42 @@ RealType interpolateValueAndGradient(Vec2<RealType>& gradient, const Vec2<RealTy
     return MathHelpers::bilerp(v00, v10, v01, v11, fi, fj);
 }
 
-template<class RealType>
-RealType interpolateValueAndGradient(Vec3<RealType>& gradient, const Vec3<RealType>& point, const Array3<RealType>& grid)
+template<class Real_t>
+Real_t interpolateValueAndGradient(Vec3<Real_t>& gradient, const Vec3<Real_t>& point, const Array3<Real_t>& grid)
 {
     Int      i, j, k;
-    RealType fi, fj, fk;
+    Real_t fi, fj, fk;
 
     MathHelpers::get_barycentric(point[0], i, fi, 0, static_cast<Int>(grid.vsize()[0]));
     MathHelpers::get_barycentric(point[1], j, fj, 0, static_cast<Int>(grid.vsize()[1]));
     MathHelpers::get_barycentric(point[2], k, fk, 0, static_cast<Int>(grid.vsize()[2]));
 
-    RealType v000 = grid(i, j, k);
-    RealType v001 = grid(i, j, k + 1);
-    RealType v010 = grid(i, j + 1, k);
-    RealType v011 = grid(i, j + 1, k + 1);
-    RealType v100 = grid(i + 1, j, k);
-    RealType v101 = grid(i + 1, j, k + 1);
-    RealType v110 = grid(i + 1, j + 1, k);
-    RealType v111 = grid(i + 1, j + 1, k + 1);
+    Real_t v000 = grid(i, j, k);
+    Real_t v001 = grid(i, j, k + 1);
+    Real_t v010 = grid(i, j + 1, k);
+    Real_t v011 = grid(i, j + 1, k + 1);
+    Real_t v100 = grid(i + 1, j, k);
+    Real_t v101 = grid(i + 1, j, k + 1);
+    Real_t v110 = grid(i + 1, j + 1, k);
+    Real_t v111 = grid(i + 1, j + 1, k + 1);
 
-    RealType ddx00 = (v100 - v000);
-    RealType ddx10 = (v110 - v010);
-    RealType ddx01 = (v101 - v001);
-    RealType ddx11 = (v111 - v011);
-    RealType dv_dx = MathHelpers::bilerp(ddx00, ddx10, ddx01, ddx11, fj, fk);
+    Real_t ddx00 = (v100 - v000);
+    Real_t ddx10 = (v110 - v010);
+    Real_t ddx01 = (v101 - v001);
+    Real_t ddx11 = (v111 - v011);
+    Real_t dv_dx = MathHelpers::bilerp(ddx00, ddx10, ddx01, ddx11, fj, fk);
 
-    RealType ddy00 = (v010 - v000);
-    RealType ddy10 = (v110 - v100);
-    RealType ddy01 = (v011 - v001);
-    RealType ddy11 = (v111 - v101);
-    RealType dv_dy = MathHelpers::bilerp(ddy00, ddy10, ddy01, ddy11, fi, fk);
+    Real_t ddy00 = (v010 - v000);
+    Real_t ddy10 = (v110 - v100);
+    Real_t ddy01 = (v011 - v001);
+    Real_t ddy11 = (v111 - v101);
+    Real_t dv_dy = MathHelpers::bilerp(ddy00, ddy10, ddy01, ddy11, fi, fk);
 
-    RealType ddz00 = (v001 - v000);
-    RealType ddz10 = (v101 - v100);
-    RealType ddz01 = (v011 - v010);
-    RealType ddz11 = (v111 - v110);
-    RealType dv_dz = MathHelpers::bilerp(ddz00, ddz10, ddz01, ddz11, fi, fj);
+    Real_t ddz00 = (v001 - v000);
+    Real_t ddz10 = (v101 - v100);
+    Real_t ddz01 = (v011 - v010);
+    Real_t ddz11 = (v111 - v110);
+    Real_t dv_dz = MathHelpers::bilerp(ddz00, ddz10, ddz01, ddz11, fi, fj);
 
     gradient[0] = dv_dx;
     gradient[1] = dv_dy;

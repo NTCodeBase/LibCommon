@@ -22,14 +22,14 @@
 namespace NeighborSearch
 {
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-template<Int N, class RealType>
+template<Int N, class Real_t>
 class NeighborSearch;
 
 /**
  * @class PointSet.
  * Represents a set of points in three-dimensional space.
  */
-template<Int N, class RealType>
+template<Int N, class Real_t>
 class PointSet
 {
 public:
@@ -122,14 +122,14 @@ public:
     }
 
 private:
-    friend NeighborSearch<N, RealType>;
-    PointSet(const RealType* x, UInt n, bool dynamic)
+    friend NeighborSearch<N, Real_t>;
+    PointSet(const Real_t* x, UInt n, bool dynamic)
         : m_x(x), m_n(n), m_dynamic(dynamic), m_neighbors(n)
     {
         resize_keys(n);
     }
 
-    void resize(const RealType* x, UInt n)
+    void resize(const Real_t* x, UInt n)
     {
         m_x = x;
         m_n = n;
@@ -162,7 +162,7 @@ private:
         }
     }
 
-    const RealType* point(UInt i) const
+    const Real_t* point(UInt i) const
     {
         if constexpr (N == 2) {
             return &m_x[2 * i];
@@ -173,7 +173,7 @@ private:
 
 private:
 
-    const RealType* m_x;
+    const Real_t* m_x;
     UInt            m_n;
     bool            m_dynamic;
 

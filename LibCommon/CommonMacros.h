@@ -307,23 +307,23 @@ inline void throwIfFailed(HRESULT hr)
 #define __NT_TO_CSTRING_7(x)                         Formatters::toString7(x).c_str()
 
 #define __NT_TYPE_ALIASING                                                            \
-    using Vec3r            = Vec3<RealType>;                                          \
-    using Vec4r            = Vec4<RealType>;                                          \
+    using Vec3r            = Vec3<Real_t>;                                          \
+    using Vec4r            = Vec4<Real_t>;                                          \
     using VecNi            = VecX<N, Int>;                                            \
     using VecNui           = VecX<N, UInt>;                                           \
-    using VecN             = VecX<N, RealType>;                                       \
-    using VecNp1           = VecX<N + 1, RealType>;                                   \
-    using MatNxN           = MatXxX<N, RealType>;                                     \
-    using MatNp1xNp1       = MatXxX<N + 1, RealType>;                                 \
-    using StdVT_Vec3r      = StdVT_Vec3<RealType>;                                    \
-    using StdVT_Vec4r      = StdVT_Vec4<RealType>;                                    \
-    using StdVT_VecN       = StdVT_VecX<N, RealType>;                                 \
-    using StdVT_VecNp1     = StdVT_VecX<N + 1, RealType>;                             \
-    using StdVT_MatNxN     = StdVT_MatXxX<N, RealType>;                               \
-    using StdVT_MatNp1xNp1 = StdVT_MatXxX<N + 1, RealType>;                           \
-    using StdVT_RealType   = StdVT<RealType>;                                         \
-    static constexpr auto TinyReal() { return std::numeric_limits<RealType>::min(); } \
-    static constexpr auto HugeReal() { return std::numeric_limits<RealType>::max(); }
+    using VecN             = VecX<N, Real_t>;                                       \
+    using VecNp1           = VecX<N + 1, Real_t>;                                   \
+    using MatNxN           = MatXxX<N, Real_t>;                                     \
+    using MatNp1xNp1       = MatXxX<N + 1, Real_t>;                                 \
+    using StdVT_Vec3r      = StdVT_Vec3<Real_t>;                                    \
+    using StdVT_Vec4r      = StdVT_Vec4<Real_t>;                                    \
+    using StdVT_VecN       = StdVT_VecX<N, Real_t>;                                 \
+    using StdVT_VecNp1     = StdVT_VecX<N + 1, Real_t>;                             \
+    using StdVT_MatNxN     = StdVT_MatXxX<N, Real_t>;                               \
+    using StdVT_MatNp1xNp1 = StdVT_MatXxX<N + 1, Real_t>;                           \
+    using StdVT_RealType   = StdVT<Real_t>;                                         \
+    static constexpr auto TinyReal() { return std::numeric_limits<Real_t>::min(); } \
+    static constexpr auto HugeReal() { return std::numeric_limits<Real_t>::max(); }
 
 #ifdef __NT_SUPPORT_DOUBLE_NUMBER
 #  define __NT_INSTANTIATE_CLASS_COMMON_TYPES(ClassName) \

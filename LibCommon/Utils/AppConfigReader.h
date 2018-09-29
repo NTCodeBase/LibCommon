@@ -33,7 +33,7 @@ public:
     double      getDoubleValue(const std::string& paramName) { return hasParam(paramName) ? std::stod(m_AppConfigs[paramName]) : 0; }
     std::string getStringValue(const std::string& paramName) { return hasParam(paramName) ? m_AppConfigs[paramName] : std::string(""); }
 
-    template<class RealType> RealType getRealValue(const std::string& paramName) { return static_cast<RealType>(getDoubleValue(paramName)); }
+    template<class Real_t> Real_t getRealValue(const std::string& paramName) { return static_cast<Real_t>(getDoubleValue(paramName)); }
 
 private:
     void loadConfig(const std::string& fileName, bool bPrintErr)

@@ -18,8 +18,8 @@
 #include <algorithm>
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-template<Int N, class RealType>
-void RigidBodyAnimation<N, RealType>::makeReady(bool bCubicIntTranslation, bool bCubicIntRotation)
+template<Int N, class Real_t>
+void RigidBodyAnimation<N, Real_t>::makeReady(bool bCubicIntTranslation, bool bCubicIntRotation)
 {
     if(m_KeyFrames.size() == 0) {
         return;
@@ -30,14 +30,14 @@ void RigidBodyAnimation<N, RealType>::makeReady(bool bCubicIntTranslation, bool 
     ////////////////////////////////////////////////////////////////////////////////
     // add more 1 point if there are only 2 key frames
     if(m_KeyFrames.size() == 2) {
-        auto& keyFrame  = m_KeyFrames.emplace_back(KeyFrame<N, RealType>());
+        auto& keyFrame  = m_KeyFrames.emplace_back(KeyFrame<N, Real_t>());
         auto& keyFrame0 = m_KeyFrames[0];
         auto& keyFrame1 = m_KeyFrames[1];
         keyFrame.frame        = (keyFrame0.frame + keyFrame1.frame) / 2;
-        keyFrame.translation  = (keyFrame0.translation + keyFrame1.translation) * RealType(0.5);
-        keyFrame.rotation     = (keyFrame0.rotation + keyFrame1.rotation) * RealType(0.5);
-        keyFrame.uniformScale = (keyFrame0.uniformScale + keyFrame1.uniformScale) * RealType(0.5);
-        keyFrame.invScale     = RealType(1) / keyFrame.uniformScale;
+        keyFrame.translation  = (keyFrame0.translation + keyFrame1.translation) * Real_t(0.5);
+        keyFrame.rotation     = (keyFrame0.rotation + keyFrame1.rotation) * Real_t(0.5);
+        keyFrame.uniformScale = (keyFrame0.uniformScale + keyFrame1.uniformScale) * Real_t(0.5);
+        keyFrame.invScale     = Real_t(1) / keyFrame.uniformScale;
         std::swap(keyFrame, keyFrame1);
     }
     ////////////////////////////////////////////////////////////////////////////////
@@ -46,9 +46,9 @@ void RigidBodyAnimation<N, RealType>::makeReady(bool bCubicIntTranslation, bool 
     __NT_REQUIRE(m_EndFrame > m_StartFrame);
     m_FrameRange = m_EndFrame - m_StartFrame;
     ////////////////////////////////////////////////////////////////////////////////
-    StdVT<RealType> frames;
-    StdVT<RealType> translations[N];
-    StdVT<RealType> rotations[N + 1];
+    StdVT<Real_t> frames;
+    StdVT<Real_t> translations[N];
+    StdVT<Real_t> rotations[N + 1];
 
     frames.reserve(nKeyFrames());
     for(Int d = 0; d < N; ++d) {
@@ -58,7 +58,7 @@ void RigidBodyAnimation<N, RealType>::makeReady(bool bCubicIntTranslation, bool 
     rotations[N].reserve(nKeyFrames());
     ////////////////////////////////////////////////////////////////////////////////
     for(const auto& keyFrame : m_KeyFrames) {
-        frames.push_back(static_cast<RealType>(keyFrame.frame));
+        frames.push_back(static_cast<Real_t>(keyFrame.frame));
         for(Int d = 0; d < N; ++d) {
             translations[d].push_back(keyFrame.translation[d]);
             rotations[d].push_back(keyFrame.rotation[d]);
@@ -67,13 +67,13 @@ void RigidBodyAnimation<N, RealType>::makeReady(bool bCubicIntTranslation, bool 
     }
     ////////////////////////////////////////////////////////////////////////////////
     for(Int d = 0; d < N; ++d) {
-        m_TranslationInterpolator[d].setBoundary(CubicSpline<RealType>::BDType::FirstOrder, 0, CubicSpline<RealType>::BDType::FirstOrder, 0);
+        m_TranslationInterpolator[d].setBoundary(CubicSpline<Real_t>::BDType::FirstOrder, 0, CubicSpline<Real_t>::BDType::FirstOrder, 0);
         m_TranslationInterpolator[d].setPoints(frames, translations[d], bCubicIntTranslation);
 
-        m_RotationInterpolator[d].setBoundary(CubicSpline<RealType>::BDType::FirstOrder, 0, CubicSpline<RealType>::BDType::FirstOrder, 0);
+        m_RotationInterpolator[d].setBoundary(CubicSpline<Real_t>::BDType::FirstOrder, 0, CubicSpline<Real_t>::BDType::FirstOrder, 0);
         m_RotationInterpolator[d].setPoints(frames, rotations[d], bCubicIntRotation);
     }
-    m_RotationInterpolator[N].setBoundary(CubicSpline<RealType>::BDType::FirstOrder, 0, CubicSpline<RealType>::BDType::FirstOrder, 0);
+    m_RotationInterpolator[N].setBoundary(CubicSpline<Real_t>::BDType::FirstOrder, 0, CubicSpline<Real_t>::BDType::FirstOrder, 0);
     m_RotationInterpolator[N].setPoints(frames, rotations[N], bCubicIntRotation);
     ////////////////////////////////////////////////////////////////////////////////
     m_bReady = true;
@@ -82,8 +82,8 @@ void RigidBodyAnimation<N, RealType>::makeReady(bool bCubicIntTranslation, bool 
 }
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-template<Int N, class RealType>
-MatXxX<N + 1, RealType> RigidBodyAnimation<N, RealType>::getInactiveTransformationMatrix(UInt frame)
+template<Int N, class Real_t>
+MatXxX<N + 1, Real_t> RigidBodyAnimation<N, Real_t>::getInactiveTransformationMatrix(UInt frame)
 {
     if(frame < m_StartFrame) {
         return m_StartFrameTransformationMatrix;
@@ -95,8 +95,8 @@ MatXxX<N + 1, RealType> RigidBodyAnimation<N, RealType>::getInactiveTransformati
 }
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-template<Int N, class RealType>
-MatXxX<N + 1, RealType> RigidBodyAnimation<N, RealType>::getTransformationMatrix(UInt frame, RealType frameFraction /*= RealType(0)*/)
+template<Int N, class Real_t>
+MatXxX<N + 1, Real_t> RigidBodyAnimation<N, Real_t>::getTransformationMatrix(UInt frame, Real_t frameFraction /*= Real_t(0)*/)
 {
     if(nKeyFrames() == 0) {
         return MatNp1xNp1(1);
@@ -113,11 +113,11 @@ MatXxX<N + 1, RealType> RigidBodyAnimation<N, RealType>::getTransformationMatrix
             frame = ((frame - m_StartFrame) % m_FrameRange) + m_StartFrame;
         } else {
             frame         = m_EndFrame;
-            frameFraction = RealType(0);
+            frameFraction = Real_t(0);
         }
     }
 
-    RealType x = static_cast<RealType>(frame) + frameFraction;
+    Real_t x = static_cast<Real_t>(frame) + frameFraction;
     for(Int d = 0; d < N; ++d) {
         translation[d] = m_TranslationInterpolator[d](x);
         rotation[d]    = m_RotationInterpolator[d](x);
@@ -133,8 +133,8 @@ MatXxX<N + 1, RealType> RigidBodyAnimation<N, RealType>::getTransformationMatrix
 }
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-template<Int N, class RealType>
-MatXxX<N + 1, RealType> RigidBodyAnimation<N, RealType>::getInvTransformation(UInt frame, RealType frameFraction /*= RealType(0)*/)
+template<Int N, class Real_t>
+MatXxX<N + 1, Real_t> RigidBodyAnimation<N, Real_t>::getInvTransformation(UInt frame, Real_t frameFraction /*= Real_t(0)*/)
 {
     if(nKeyFrames() == 0) {
         return MatNp1xNp1(1);
@@ -147,17 +147,17 @@ MatXxX<N + 1, RealType> RigidBodyAnimation<N, RealType>::getInvTransformation(UI
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-template<Int N, class RealType>
-void Animation<N, RealType>::makeReady(bool bCubicIntTranslation, bool bCubicIntRotation, bool bCubicIntScale)
+template<Int N, class Real_t>
+void Animation<N, Real_t>::makeReady(bool bCubicIntTranslation, bool bCubicIntRotation, bool bCubicIntScale)
 {
     if(m_KeyFrames.size() == 0) {
         return;
     }
     ////////////////////////////////////////////////////////////////////////////////
-    StdVT<RealType> frames;
-    StdVT<RealType> translations[N];
-    StdVT<RealType> rotations[N + 1];
-    StdVT<RealType> scales;
+    StdVT<Real_t> frames;
+    StdVT<Real_t> translations[N];
+    StdVT<Real_t> rotations[N + 1];
+    StdVT<Real_t> scales;
 
     frames.reserve(nKeyFrames());
     for(Int d = 0; d < N; ++d) {
@@ -169,7 +169,7 @@ void Animation<N, RealType>::makeReady(bool bCubicIntTranslation, bool bCubicInt
     ////////////////////////////////////////////////////////////////////////////////
     UInt maxFrame = 0;
     for(const auto& keyFrame : m_KeyFrames) {
-        frames.push_back(static_cast<RealType>(keyFrame.frame));
+        frames.push_back(static_cast<Real_t>(keyFrame.frame));
         for(Int d = 0; d < N; ++d) {
             translations[d].push_back(keyFrame.translation[d]);
             rotations[d].push_back(keyFrame.rotation[d]);
@@ -187,15 +187,15 @@ void Animation<N, RealType>::makeReady(bool bCubicIntTranslation, bool bCubicInt
     }
     ////////////////////////////////////////////////////////////////////////////////
     for(Int d = 0; d < N; ++d) {
-        m_TranslationInterpolator[d].setBoundary(CubicSpline<RealType>::BDType::FirstOrder, 0, CubicSpline<RealType>::BDType::FirstOrder, 0);
+        m_TranslationInterpolator[d].setBoundary(CubicSpline<Real_t>::BDType::FirstOrder, 0, CubicSpline<Real_t>::BDType::FirstOrder, 0);
         m_TranslationInterpolator[d].setPoints(frames, translations[d], bCubicIntTranslation);
 
-        m_RotationInterpolator[d].setBoundary(CubicSpline<RealType>::BDType::FirstOrder, 0, CubicSpline<RealType>::BDType::FirstOrder, 0);
+        m_RotationInterpolator[d].setBoundary(CubicSpline<Real_t>::BDType::FirstOrder, 0, CubicSpline<Real_t>::BDType::FirstOrder, 0);
         m_RotationInterpolator[d].setPoints(frames, rotations[d], bCubicIntRotation);
     }
-    m_RotationInterpolator[N].setBoundary(CubicSpline<RealType>::BDType::FirstOrder, 0, CubicSpline<RealType>::BDType::FirstOrder, 0);
+    m_RotationInterpolator[N].setBoundary(CubicSpline<Real_t>::BDType::FirstOrder, 0, CubicSpline<Real_t>::BDType::FirstOrder, 0);
     m_RotationInterpolator[N].setPoints(frames, rotations[N], bCubicIntRotation);
-    m_ScaleInterpolator.setBoundary(CubicSpline<RealType>::BDType::FirstOrder, 0, CubicSpline<RealType>::BDType::FirstOrder, 0);
+    m_ScaleInterpolator.setBoundary(CubicSpline<Real_t>::BDType::FirstOrder, 0, CubicSpline<Real_t>::BDType::FirstOrder, 0);
     m_ScaleInterpolator.setPoints(frames, scales, bCubicIntScale);
     ////////////////////////////////////////////////////////////////////////////////
     __NT_REQUIRE(m_EndFrame > m_StartFrame);
@@ -204,11 +204,11 @@ void Animation<N, RealType>::makeReady(bool bCubicIntTranslation, bool bCubicInt
 }
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-template<Int N, class RealType>
-RealType Animation<N, RealType>::getUniformScale(UInt frame, RealType frameFraction /*= RealType(0)*/)
+template<Int N, class Real_t>
+Real_t Animation<N, Real_t>::getUniformScale(UInt frame, Real_t frameFraction /*= Real_t(0)*/)
 {
     if(nKeyFrames() == 0) {
-        return RealType(1);
+        return Real_t(1);
     }
     ////////////////////////////////////////////////////////////////////////////////
     if(frame < m_StartFrame) {
@@ -218,16 +218,16 @@ RealType Animation<N, RealType>::getUniformScale(UInt frame, RealType frameFract
             frame = ((frame - m_StartFrame) % m_FrameRange) + m_StartFrame;
         } else {
             frame         = m_EndFrame;
-            frameFraction = RealType(0);
+            frameFraction = Real_t(0);
         }
     }
-    RealType x = static_cast<RealType>(frame) + frameFraction;
+    Real_t x = static_cast<Real_t>(frame) + frameFraction;
     return m_ScaleInterpolator(x);
 }
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-template<Int N, class RealType>
-MatXxX<N + 1, RealType> Animation<N, RealType>::getTransformationMatrix(UInt frame, RealType frameFraction /*= RealType(0)*/)
+template<Int N, class Real_t>
+MatXxX<N + 1, Real_t> Animation<N, Real_t>::getTransformationMatrix(UInt frame, Real_t frameFraction /*= Real_t(0)*/)
 {
     if(nKeyFrames() == 0) {
         return MatNp1xNp1(1);
@@ -236,7 +236,7 @@ MatXxX<N + 1, RealType> Animation<N, RealType>::getTransformationMatrix(UInt fra
     __NT_REQUIRE(m_bReady)
     VecN translation;
     VecNp1   rotation;
-    RealType scale;
+    Real_t scale;
 
     if(frame < m_StartFrame) {
         frame = m_StartFrame;
@@ -245,11 +245,11 @@ MatXxX<N + 1, RealType> Animation<N, RealType>::getTransformationMatrix(UInt fra
             frame = ((frame - m_StartFrame) % m_FrameRange) + m_StartFrame;
         } else {
             frame         = m_EndFrame;
-            frameFraction = RealType(0);
+            frameFraction = Real_t(0);
         }
     }
 
-    RealType x = static_cast<RealType>(frame) + frameFraction;
+    Real_t x = static_cast<Real_t>(frame) + frameFraction;
     for(Int d = 0; d < N; ++d) {
         translation[d] = m_TranslationInterpolator[d](x);
         rotation[d]    = m_RotationInterpolator[d](x);

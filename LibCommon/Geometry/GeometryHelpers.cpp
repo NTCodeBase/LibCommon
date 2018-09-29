@@ -18,8 +18,8 @@
 namespace GeometryHelpers
 {
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-template<Int N, class RealType>
-RealType point_line_distance(const VecX<N, RealType>& p, const VecX<N, RealType>& x0, const VecX<N, RealType>& x1)
+template<Int N, class Real_t>
+Real_t point_line_distance(const VecX<N, Real_t>& p, const VecX<N, Real_t>& x0, const VecX<N, Real_t>& x1)
 {
     auto x01 = x1 - x0;
     auto x0p = p - x0;
@@ -35,14 +35,14 @@ template double point_line_distance<3, double>(const VecX<3, double>& p, const V
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 // find distance x0 is from segment x1-x2
-template<class RealType>
-RealType point_segment_distance(const Vec3<RealType>& x0, const Vec3<RealType>& x1, const Vec3<RealType>& x2)
+template<class Real_t>
+Real_t point_segment_distance(const Vec3<Real_t>& x0, const Vec3<Real_t>& x1, const Vec3<Real_t>& x2)
 {
-    Vec3<RealType> dx(x2 - x1);
+    Vec3<Real_t> dx(x2 - x1);
 
-    RealType m2 = glm::length2(dx);
+    Real_t m2 = glm::length2(dx);
     // find parameter value of closest point on segment
-    RealType s12 = glm::dot(dx, x2 - x0) / m2;
+    Real_t s12 = glm::dot(dx, x2 - x0) / m2;
 
     if(s12 < 0) {
         s12 = 0;
@@ -58,20 +58,20 @@ template double point_segment_distance<double>(const Vec3<double>& x0, const Vec
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 // find distance x0 is from triangle x1-x2-x3
-template<class RealType>
-RealType point_triangle_distance(const Vec3<RealType>& x0, const Vec3<RealType>& x1, const Vec3<RealType>& x2, const Vec3<RealType>& x3)
+template<class Real_t>
+Real_t point_triangle_distance(const Vec3<Real_t>& x0, const Vec3<Real_t>& x1, const Vec3<Real_t>& x2, const Vec3<Real_t>& x3)
 {
     // first find barycentric coordinates of closest point on infinite plane
-    Vec3<RealType> x13(x1 - x3), x23(x2 - x3), x03(x0 - x3);
-    RealType       m13 = glm::length2(x13), m23 = glm::length2(x23), d = glm::dot(x13, x23);
+    Vec3<Real_t> x13(x1 - x3), x23(x2 - x3), x03(x0 - x3);
+    Real_t       m13 = glm::length2(x13), m23 = glm::length2(x23), d = glm::dot(x13, x23);
 
-    RealType invdet = 1.f / fmax(m13 * m23 - d * d, 1e-30f);
-    RealType a = glm::dot(x13, x03), b = glm::dot(x23, x03);
+    Real_t invdet = 1.f / fmax(m13 * m23 - d * d, 1e-30f);
+    Real_t a = glm::dot(x13, x03), b = glm::dot(x23, x03);
 
     // the barycentric coordinates themselves
-    RealType w23 = invdet * (m23 * a - d * b);
-    RealType w31 = invdet * (m13 * b - d * a);
-    RealType w12 = 1 - w23 - w31;
+    Real_t w23 = invdet * (m23 * a - d * b);
+    Real_t w31 = invdet * (m13 * b - d * a);
+    Real_t w12 = 1 - w23 - w31;
 
     if(w23 >= 0 && w31 >= 0 && w12 >= 0) {     // if we're inside the triangle
         return glm::length(x0 - w23 * x1 + w31 * x2 + w12 * x3);
@@ -90,9 +90,9 @@ template float  point_triangle_distance<float>(const Vec3<float>& x0, const Vec3
 template double point_triangle_distance<double>(const Vec3<double>& x0, const Vec3<double>& x1, const Vec3<double>& x2, const Vec3<double>& x3);
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-template<class RealType>
-void check_neighbour(const StdVT<Vec3ui>& tri, const StdVT_Vec3<RealType>& x, Array<3, RealType>& phi, Array3ui& closest_tri,
-                     const Vec3<RealType>& gx,
+template<class Real_t>
+void check_neighbour(const StdVT<Vec3ui>& tri, const StdVT_Vec3<Real_t>& x, Array<3, Real_t>& phi, Array3ui& closest_tri,
+                     const Vec3<Real_t>& gx,
                      Int i0, Int j0, Int k0,
                      Int i1, Int j1, Int k1)
 {
@@ -101,10 +101,10 @@ void check_neighbour(const StdVT<Vec3ui>& tri, const StdVT_Vec3<RealType>& x, Ar
         UInt q = tri[closest_tri(i1, j1, k1)][1];
         UInt r = tri[closest_tri(i1, j1, k1)][2];
 
-        RealType d = point_triangle_distance(gx, x[p], x[q], x[r]);
+        Real_t d = point_triangle_distance(gx, x[p], x[q], x[r]);
 
         if(d < phi(i0, j0, k0)) {
-            phi(i0, j0, k0)         = RealType(d);
+            phi(i0, j0, k0)         = Real_t(d);
             closest_tri(i0, j0, k0) = closest_tri(i1, j1, k1);
         }
     }
@@ -121,9 +121,9 @@ template void check_neighbour<double>(const StdVT<Vec3ui>& tri, const StdVT_Vec3
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 
-template<class RealType>
-void sweep(const StdVT<Vec3ui>& tri, const StdVT_Vec3<RealType>& x,
-           Array<3, RealType>& phi, Array3ui& closest_tri, const Vec3<RealType>& origin, RealType dx,
+template<class Real_t>
+void sweep(const StdVT<Vec3ui>& tri, const StdVT_Vec3<Real_t>& x,
+           Array<3, Real_t>& phi, Array3ui& closest_tri, const Vec3<Real_t>& origin, Real_t dx,
            Int di, Int dj, Int dk)
 {
     Int i0, i1;
@@ -160,7 +160,7 @@ void sweep(const StdVT<Vec3ui>& tri, const StdVT_Vec3<RealType>& x,
     for(Int k = k0; k != k1; k += dk) {
         for(Int j = j0; j != j1; j += dj) {
             for(Int i = i0; i != i1; i += di) {
-                Vec3<RealType> gx = Vec3<RealType>(i, j, k) * dx + origin;
+                Vec3<Real_t> gx = Vec3<Real_t>(i, j, k) * dx + origin;
 
                 check_neighbour(tri, x, phi, closest_tri, gx, i, j, k, i - di, j,      k);
                 check_neighbour(tri, x, phi, closest_tri, gx, i, j, k, i,      j - dj, k);
@@ -187,8 +187,8 @@ template void sweep<double>(const StdVT<Vec3ui>& tri,
 
 // calculate twice signed area of triangle (0,0)-(x1,y1)-(x2,y2)
 // return an SOS-determined sign (-1, +1, or 0 only if it's a truly degenerate triangle)
-template<class RealType>
-Int orientation(RealType x1, RealType y1, RealType x2, RealType y2, RealType& twice_signed_area)
+template<class Real_t>
+Int orientation(Real_t x1, Real_t y1, Real_t x2, Real_t y2, Real_t& twice_signed_area)
 {
     twice_signed_area = y1 * x2 - x1 * y2;
 
@@ -215,10 +215,10 @@ template Int orientation<double>(double x1, double y1, double x2, double y2, dou
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 // robust test of (x0,y0) in the triangle (x1,y1)-(x2,y2)-(x3,y3)
 // if true is returned, the barycentric coordinates are set in a,b,c.
-template<class RealType>
-bool point_in_triangle_2d(RealType x0, RealType y0,
-                          RealType x1, RealType y1, RealType x2, RealType y2, RealType x3, RealType y3,
-                          RealType& a, RealType& b, RealType& c)
+template<class Real_t>
+bool point_in_triangle_2d(Real_t x0, Real_t y0,
+                          Real_t x1, Real_t y1, Real_t x2, Real_t y2, Real_t x3, Real_t y3,
+                          Real_t& a, Real_t& b, Real_t& c)
 {
     x1 -= x0;
     x2 -= x0;
@@ -244,7 +244,7 @@ bool point_in_triangle_2d(RealType x0, RealType y0,
         return false;
     }
 
-    RealType sum = a + b + c;
+    Real_t sum = a + b + c;
     __NT_REQUIRE(sum != 0);                                 // if the SOS signs match and are nonkero, there's no way all of a, b, and c are zero.
     a /= sum;
     b /= sum;
@@ -252,8 +252,8 @@ bool point_in_triangle_2d(RealType x0, RealType y0,
     return true;
 }
 
-template<class RealType>
-bool point_in_triangle_2d(RealType x0, RealType y0, RealType x1, RealType y1, RealType x2, RealType y2, RealType x3, RealType y3)
+template<class Real_t>
+bool point_in_triangle_2d(Real_t x0, Real_t y0, Real_t x1, Real_t y1, Real_t x2, Real_t y2, Real_t x3, Real_t y3)
 {
     x1 -= x0;
     x2 -= x0;
@@ -262,19 +262,19 @@ bool point_in_triangle_2d(RealType x0, RealType y0, RealType x1, RealType y1, Re
     y2 -= y0;
     y3 -= y0;
 
-    RealType a;
+    Real_t a;
     Int      signa = orientation(x2, y2, x3, y3, a);
     if(signa == 0) {
         return false;
     }
 
-    RealType b;
+    Real_t b;
     Int      signb = orientation(x3, y3, x1, y1, b);
     if(signb != signa) {
         return false;
     }
 
-    RealType c;
+    Real_t c;
     Int      signc = orientation(x1, y1, x2, y2, c);
     if(signc != signa) {
         return false;

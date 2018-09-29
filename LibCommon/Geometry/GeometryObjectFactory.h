@@ -22,10 +22,10 @@
 namespace GeometryObjectFactory
 {
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-template<Int N, class RealType>
-SharedPtr<GeometryObjects::GeometryObject<N, RealType>> createGeometry(const String& geometryType, const JParams& jParams);
+template<Int N, class Real_t>
+SharedPtr<GeometryObjects::GeometryObject<N, Real_t>> createGeometry(const String& geometryType, const JParams& jParams);
 
-template<Int N, class RealType>
-SharedPtr<GeometryObjects::GeometryObject<N, RealType>> combineGeometryObjects(const StdVT<SharedPtr<GeometryObjects::GeometryObject<N, RealType>>>& geometryObjs);
+template<Int N, class Real_t>
+SharedPtr<GeometryObjects::GeometryObject<N, Real_t>> combineGeometryObjects(const StdVT<SharedPtr<GeometryObjects::GeometryObject<N, Real_t>>>& geometryObjs);
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 }   // end namespace GeometryObjectFactory

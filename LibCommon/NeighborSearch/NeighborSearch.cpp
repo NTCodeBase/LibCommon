@@ -21,9 +21,9 @@
 namespace NeighborSearch
 {
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-template<Int N, class RealType>
-NeighborSearch<N, RealType>::NeighborSearch(RealType r, bool erase_empty_cells) :
-    m_r2(r * r), m_inv_cell_size(static_cast<RealType>(1.0 / r)), m_erase_empty_cells(erase_empty_cells), m_initialized(false)
+template<Int N, class Real_t>
+NeighborSearch<N, Real_t>::NeighborSearch(Real_t r, bool erase_empty_cells) :
+    m_r2(r * r), m_inv_cell_size(static_cast<Real_t>(1.0 / r)), m_erase_empty_cells(erase_empty_cells), m_initialized(false)
 {
     if(r <= 0.0) {
         std::cerr << "WARNING: Neighborhood search may not be initialized with a zero or negative search radius."
@@ -33,12 +33,12 @@ NeighborSearch<N, RealType>::NeighborSearch(RealType r, bool erase_empty_cells) 
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 // Computes index to a world space position x.
-template<Int N, class RealType>
-HashKey<N> NeighborSearch<N, RealType>::cell_index(const RealType* x) const
+template<Int N, class Real_t>
+HashKey<N> NeighborSearch<N, Real_t>::cell_index(const Real_t* x) const
 {
     HashKey<N> ret;
     for(Int d = 0; d < N; ++d) {
-        RealType tmp = x[d] - RealType(SHIFT_POSITION);
+        Real_t tmp = x[d] - Real_t(SHIFT_POSITION);
         ret.k[d] = tmp >= 0 ? static_cast<int>(m_inv_cell_size * tmp) : static_cast<int>(m_inv_cell_size * tmp) - 1;
     }
     return ret;
@@ -46,8 +46,8 @@ HashKey<N> NeighborSearch<N, RealType>::cell_index(const RealType* x) const
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 // Determines Morten value according to z-curve.
-template<Int N, class RealType>
-uint_fast64_t NeighborSearch<N, RealType>::z_value(const HashKey<N>& key)
+template<Int N, class Real_t>
+uint_fast64_t NeighborSearch<N, Real_t>::z_value(const HashKey<N>& key)
 {
     if constexpr(N == 2) {
         return morton2D_64_encode(static_cast<uint_fast32_t>(static_cast<int64_t>(key.k[0]) - (std::numeric_limits<int>::lowest() + 1)),
@@ -61,10 +61,10 @@ uint_fast64_t NeighborSearch<N, RealType>::z_value(const HashKey<N>& key)
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 // Determines permutation table for point array.
-template<Int N, class RealType>
-void NeighborSearch<N, RealType>::z_sort()
+template<Int N, class Real_t>
+void NeighborSearch<N, Real_t>::z_sort()
 {
-    for(PointSet<N, RealType>& d : m_point_sets) {
+    for(PointSet<N, Real_t>& d : m_point_sets) {
         d.m_sort_table.resize(d.n_points());
         std::iota(d.m_sort_table.begin(), d.m_sort_table.end(), 0);
 
@@ -80,8 +80,8 @@ void NeighborSearch<N, RealType>::z_sort()
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 // Build hash table and entry array from scratch.
-template<Int N, class RealType>
-void NeighborSearch<N, RealType>::init()
+template<Int N, class Real_t>
+void NeighborSearch<N, Real_t>::init()
 {
     m_entries.clear();
     m_map.clear();
@@ -89,7 +89,7 @@ void NeighborSearch<N, RealType>::init()
     // Determine existing entries.
     StdVT<HashKey<N>> temp_keys;
     for(UInt j = 0, jend = static_cast<UInt>(m_point_sets.size()); j < jend; ++j) {
-        PointSet<N, RealType>& d = m_point_sets[j];
+        PointSet<N, Real_t>& d = m_point_sets[j];
         d.m_locks.resize(m_point_sets.size());
         for(auto& l : d.m_locks) {
             l.resize(d.n_points());
@@ -125,10 +125,10 @@ void NeighborSearch<N, RealType>::init()
 }
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-template<Int N, class RealType>
-void NeighborSearch<N, RealType>::resize_point_set(UInt index, const RealType* x, UInt size)
+template<Int N, class Real_t>
+void NeighborSearch<N, Real_t>::resize_point_set(UInt index, const Real_t* x, UInt size)
 {
-    PointSet<N, RealType>& point_set = m_point_sets[index];
+    PointSet<N, Real_t>& point_set = m_point_sets[index];
     UInt                   old_size  = point_set.n_points();
 
     if(!m_initialized) {
@@ -190,8 +190,8 @@ void NeighborSearch<N, RealType>::resize_point_set(UInt index, const RealType* x
 }
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-template<Int N, class RealType>
-void NeighborSearch<N, RealType>::update_activation_table()
+template<Int N, class Real_t>
+void NeighborSearch<N, Real_t>::update_activation_table()
 {
     if(m_activation_table != m_old_activation_table) {
         for(auto& entry : m_entries) {
@@ -208,8 +208,8 @@ void NeighborSearch<N, RealType>::update_activation_table()
 }
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-template<Int N, class RealType>
-void NeighborSearch<N, RealType>::find_neighbors(bool points_changed_)
+template<Int N, class Real_t>
+void NeighborSearch<N, Real_t>::find_neighbors(bool points_changed_)
 {
     if(points_changed_) {
         update_point_sets();
@@ -219,8 +219,8 @@ void NeighborSearch<N, RealType>::find_neighbors(bool points_changed_)
 }
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-template<Int N, class RealType>
-void NeighborSearch<N, RealType>::update_point_sets()
+template<Int N, class Real_t>
+void NeighborSearch<N, Real_t>::update_point_sets()
 {
     if(!m_initialized) {
         init();
@@ -228,7 +228,7 @@ void NeighborSearch<N, RealType>::update_point_sets()
     }
 
     // Pre-compute cell indices.
-    for(PointSet<N, RealType>& d : m_point_sets) {
+    for(PointSet<N, Real_t>& d : m_point_sets) {
         if(!d.is_dynamic()) {
             continue;
         }
@@ -252,15 +252,15 @@ void NeighborSearch<N, RealType>::update_point_sets()
 }
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-template<Int N, class RealType>
-void NeighborSearch<N, RealType>::find_neighbors(UInt point_set_id, UInt point_index, StdVT<StdVT_UInt>& neighbors)
+template<Int N, class Real_t>
+void NeighborSearch<N, Real_t>::find_neighbors(UInt point_set_id, UInt point_index, StdVT<StdVT_UInt>& neighbors)
 {
     query(point_set_id, point_index, neighbors);
 }
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-template<Int N, class RealType>
-void NeighborSearch<N, RealType>::erase_empty_entries(const StdVT_UInt& to_delete)
+template<Int N, class Real_t>
+void NeighborSearch<N, Real_t>::erase_empty_entries(const StdVT_UInt& to_delete)
 {
     if(to_delete.empty()) {
         return;
@@ -302,12 +302,12 @@ void NeighborSearch<N, RealType>::erase_empty_entries(const StdVT_UInt& to_delet
 }
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-template<Int N, class RealType>
-void NeighborSearch<N, RealType>::update_hash_table(StdVT_UInt& to_delete)
+template<Int N, class Real_t>
+void NeighborSearch<N, Real_t>::update_hash_table(StdVT_UInt& to_delete)
 {
     // Indicate points changing inheriting cell.
     for(UInt j = 0; j < m_point_sets.size(); ++j) {
-        PointSet<N, RealType>& d = m_point_sets[j];
+        PointSet<N, Real_t>& d = m_point_sets[j];
         for(UInt i = 0; i < d.n_points(); ++i) {
             if(d.m_keys[i] == d.m_old_keys[i]) {
                 continue;
@@ -347,8 +347,8 @@ void NeighborSearch<N, RealType>::update_hash_table(StdVT_UInt& to_delete)
 }
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-template<Int N, class RealType>
-void NeighborSearch<N, RealType>::query()
+template<Int N, class Real_t>
+void NeighborSearch<N, Real_t>::query()
 {
     if constexpr(N == 2) {
         query2D();
@@ -358,12 +358,12 @@ void NeighborSearch<N, RealType>::query()
 }
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-template<Int N, class RealType>
-void NeighborSearch<N, RealType>::query2D()
+template<Int N, class Real_t>
+void NeighborSearch<N, Real_t>::query2D()
 {
     if constexpr(N == 2) {
         for(UInt i = 0, iend = static_cast<UInt>(m_point_sets.size()); i < iend; ++i) {
-            PointSet<N, RealType>& d = m_point_sets[i];
+            PointSet<N, Real_t>& d = m_point_sets[i];
             d.m_neighbors.resize(m_point_sets.size());
             for(UInt j = 0, jend = static_cast<UInt>(d.m_neighbors.size()); j < jend; ++j) {
                 auto& n = d.m_neighbors[j];
@@ -395,18 +395,18 @@ void NeighborSearch<N, RealType>::query2D()
 
                                     for(UInt a = 0; a < entry.n_indices(); ++a) {
                                         const PointID& va         = entry.indices[a];
-                                        PointSet<N, RealType>& da = m_point_sets[va.point_set_id];
+                                        PointSet<N, Real_t>& da = m_point_sets[va.point_set_id];
                                         for(UInt b = a + 1; b < entry.n_indices(); ++b) {
                                             const PointID& vb         = entry.indices[b];
-                                            PointSet<N, RealType>& db = m_point_sets[vb.point_set_id];
+                                            PointSet<N, Real_t>& db = m_point_sets[vb.point_set_id];
 
                                             if(!m_activation_table.is_active(va.point_set_id, vb.point_set_id) &&
                                                !m_activation_table.is_active(vb.point_set_id, va.point_set_id)) {
                                                 continue;
                                             }
 
-                                            const RealType* xa = da.point(va.point_id);
-                                            const RealType* xb = db.point(vb.point_id);
+                                            const Real_t* xa = da.point(va.point_id);
+                                            const Real_t* xb = db.point(vb.point_id);
 
                                             auto tmp0 = xa[0] - xb[0];
                                             auto tmp1 = xa[1] - xb[1];
@@ -482,17 +482,17 @@ void NeighborSearch<N, RealType>::query2D()
                                                 UInt n_ind              = entry_.n_indices();
                                                 for(UInt j = 0; j < n_ind; ++j) {
                                                     const PointID& vb         = entry_.indices[j];
-                                                    PointSet<N, RealType>& db = m_point_sets[vb.point_set_id];
+                                                    PointSet<N, Real_t>& db = m_point_sets[vb.point_set_id];
 
-                                                    PointSet<N, RealType>& da = m_point_sets[va.point_set_id];
+                                                    PointSet<N, Real_t>& da = m_point_sets[va.point_set_id];
 
                                                     if(!m_activation_table.is_active(va.point_set_id, vb.point_set_id) &&
                                                        !m_activation_table.is_active(vb.point_set_id, va.point_set_id)) {
                                                         continue;
                                                     }
 
-                                                    const RealType* xa = da.point(va.point_id);
-                                                    const RealType* xb = db.point(vb.point_id);
+                                                    const Real_t* xa = da.point(va.point_id);
+                                                    const Real_t* xb = db.point(vb.point_id);
 
                                                     auto tmp0 = xa[0] - xb[0];
                                                     auto tmp1 = xa[1] - xb[1];
@@ -519,12 +519,12 @@ void NeighborSearch<N, RealType>::query2D()
 }
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-template<Int N, class RealType>
-void NeighborSearch<N, RealType>::query3D()
+template<Int N, class Real_t>
+void NeighborSearch<N, Real_t>::query3D()
 {
     if constexpr(N == 3) {
         for(UInt i = 0, iend = static_cast<UInt>(m_point_sets.size()); i < iend; ++i) {
-            PointSet<N, RealType>& d = m_point_sets[i];
+            PointSet<N, Real_t>& d = m_point_sets[i];
             d.m_neighbors.resize(m_point_sets.size());
 
             for(UInt j = 0, jend = static_cast<UInt>(d.m_neighbors.size()); j < jend; ++j) {
@@ -557,18 +557,18 @@ void NeighborSearch<N, RealType>::query3D()
 
                                     for(UInt a = 0; a < entry.n_indices(); ++a) {
                                         const PointID& va         = entry.indices[a];
-                                        PointSet<N, RealType>& da = m_point_sets[va.point_set_id];
+                                        PointSet<N, Real_t>& da = m_point_sets[va.point_set_id];
                                         for(UInt b = a + 1; b < entry.n_indices(); ++b) {
                                             const PointID& vb         = entry.indices[b];
-                                            PointSet<N, RealType>& db = m_point_sets[vb.point_set_id];
+                                            PointSet<N, Real_t>& db = m_point_sets[vb.point_set_id];
 
                                             if(!m_activation_table.is_active(va.point_set_id, vb.point_set_id) &&
                                                !m_activation_table.is_active(vb.point_set_id, va.point_set_id)) {
                                                 continue;
                                             }
 
-                                            const RealType* xa = da.point(va.point_id);
-                                            const RealType* xb = db.point(vb.point_id);
+                                            const Real_t* xa = da.point(va.point_id);
+                                            const Real_t* xb = db.point(vb.point_id);
 
                                             auto tmp0 = xa[0] - xb[0];
                                             auto tmp1 = xa[1] - xb[1];
@@ -646,17 +646,17 @@ void NeighborSearch<N, RealType>::query3D()
                                                     UInt n_ind              = entry_.n_indices();
                                                     for(UInt j = 0; j < n_ind; ++j) {
                                                         const PointID& vb         = entry_.indices[j];
-                                                        PointSet<N, RealType>& db = m_point_sets[vb.point_set_id];
+                                                        PointSet<N, Real_t>& db = m_point_sets[vb.point_set_id];
 
-                                                        PointSet<N, RealType>& da = m_point_sets[va.point_set_id];
+                                                        PointSet<N, Real_t>& da = m_point_sets[va.point_set_id];
 
                                                         if(!m_activation_table.is_active(va.point_set_id, vb.point_set_id) &&
                                                            !m_activation_table.is_active(vb.point_set_id, va.point_set_id)) {
                                                             continue;
                                                         }
 
-                                                        const RealType* xa = da.point(va.point_id);
-                                                        const RealType* xb = db.point(vb.point_id);
+                                                        const Real_t* xa = da.point(va.point_id);
+                                                        const Real_t* xb = db.point(vb.point_id);
 
                                                         auto tmp0 = xa[0] - xb[0];
                                                         auto tmp1 = xa[1] - xb[1];
@@ -685,8 +685,8 @@ void NeighborSearch<N, RealType>::query3D()
 }
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-template<Int N, class RealType>
-void NeighborSearch<N, RealType>::query(UInt point_set_id, UInt point_index, StdVT<StdVT_UInt>& neighbors)
+template<Int N, class Real_t>
+void NeighborSearch<N, Real_t>::query(UInt point_set_id, UInt point_index, StdVT<StdVT_UInt>& neighbors)
 {
     if constexpr(N == 2) {
         query2D(point_set_id, point_index, neighbors);
@@ -696,8 +696,8 @@ void NeighborSearch<N, RealType>::query(UInt point_set_id, UInt point_index, Std
 }
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-template<Int N, class RealType>
-void NeighborSearch<N, RealType>::query2D(UInt point_set_id, UInt point_index, StdVT<StdVT_UInt>& neighbors)
+template<Int N, class Real_t>
+void NeighborSearch<N, Real_t>::query2D(UInt point_set_id, UInt point_index, StdVT<StdVT_UInt>& neighbors)
 {
     if constexpr(N == 3) {
         __NT_UNUSED(point_set_id);
@@ -707,7 +707,7 @@ void NeighborSearch<N, RealType>::query2D(UInt point_set_id, UInt point_index, S
 
     if constexpr(N == 2) {
         neighbors.resize(m_point_sets.size());
-        PointSet<N, RealType>& d = m_point_sets[point_set_id];
+        PointSet<N, Real_t>& d = m_point_sets[point_set_id];
         for(UInt j = 0; j < m_point_sets.size(); j++) {
             auto& n = neighbors[j];
             n.clear();
@@ -716,7 +716,7 @@ void NeighborSearch<N, RealType>::query2D(UInt point_set_id, UInt point_index, S
             }
         }
 
-        const RealType* xa       = d.point(point_index);
+        const Real_t* xa       = d.point(point_index);
         HashKey<N>      hash_key = cell_index(xa);
 
         auto                               it    = m_map.find(hash_key);
@@ -731,8 +731,8 @@ void NeighborSearch<N, RealType>::query2D(UInt point_set_id, UInt point_index, S
                     continue;
                 }
 
-                PointSet<N, RealType>& db = m_point_sets[vb.point_set_id];
-                const RealType*        xb = db.point(vb.point_id);
+                PointSet<N, Real_t>& db = m_point_sets[vb.point_set_id];
+                const Real_t*        xb = db.point(vb.point_id);
 
                 auto tmp0 = xa[0] - xb[0];
                 auto tmp1 = xa[1] - xb[1];
@@ -768,9 +768,9 @@ void NeighborSearch<N, RealType>::query2D(UInt point_set_id, UInt point_index, S
                     if(!m_activation_table.is_active(point_set_id, vb.point_set_id)) {
                         continue;
                     }
-                    PointSet<N, RealType>& db = m_point_sets[vb.point_set_id];
+                    PointSet<N, Real_t>& db = m_point_sets[vb.point_set_id];
 
-                    const RealType* xb = db.point(vb.point_id);
+                    const Real_t* xb = db.point(vb.point_id);
 
                     auto tmp0 = xa[0] - xb[0];
                     auto tmp1 = xa[1] - xb[1];
@@ -786,8 +786,8 @@ void NeighborSearch<N, RealType>::query2D(UInt point_set_id, UInt point_index, S
 }
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-template<Int N, class RealType>
-void NeighborSearch<N, RealType>::query3D(UInt point_set_id, UInt point_index, StdVT<StdVT_UInt>& neighbors)
+template<Int N, class Real_t>
+void NeighborSearch<N, Real_t>::query3D(UInt point_set_id, UInt point_index, StdVT<StdVT_UInt>& neighbors)
 {
     if constexpr(N == 2) {
         __NT_UNUSED(point_set_id);
@@ -797,7 +797,7 @@ void NeighborSearch<N, RealType>::query3D(UInt point_set_id, UInt point_index, S
 
     if constexpr(N == 3) {
         neighbors.resize(m_point_sets.size());
-        PointSet<N, RealType>& d = m_point_sets[point_set_id];
+        PointSet<N, Real_t>& d = m_point_sets[point_set_id];
         for(UInt j = 0; j < m_point_sets.size(); j++) {
             auto& n = neighbors[j];
             n.clear();
@@ -806,7 +806,7 @@ void NeighborSearch<N, RealType>::query3D(UInt point_set_id, UInt point_index, S
             }
         }
 
-        const RealType* xa       = d.point(point_index);
+        const Real_t* xa       = d.point(point_index);
         HashKey<N>      hash_key = cell_index(xa);
 
         auto                               it    = m_map.find(hash_key);
@@ -821,8 +821,8 @@ void NeighborSearch<N, RealType>::query3D(UInt point_set_id, UInt point_index, S
                     continue;
                 }
 
-                PointSet<N, RealType>& db = m_point_sets[vb.point_set_id];
-                const RealType*        xb = db.point(vb.point_id);
+                PointSet<N, Real_t>& db = m_point_sets[vb.point_set_id];
+                const Real_t*        xb = db.point(vb.point_id);
 
                 auto tmp0 = xa[0] - xb[0];
                 auto tmp1 = xa[1] - xb[1];
@@ -860,9 +860,9 @@ void NeighborSearch<N, RealType>::query3D(UInt point_set_id, UInt point_index, S
                         if(!m_activation_table.is_active(point_set_id, vb.point_set_id)) {
                             continue;
                         }
-                        PointSet<N, RealType>& db = m_point_sets[vb.point_set_id];
+                        PointSet<N, Real_t>& db = m_point_sets[vb.point_set_id];
 
-                        const RealType* xb = db.point(vb.point_id);
+                        const Real_t* xb = db.point(vb.point_id);
 
                         auto tmp0 = xa[0] - xb[0];
                         auto tmp1 = xa[1] - xb[1];

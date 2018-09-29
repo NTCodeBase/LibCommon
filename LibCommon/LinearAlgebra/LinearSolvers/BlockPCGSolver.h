@@ -19,7 +19,7 @@
 #include <LibCommon/ParallelHelpers/ParallelSTL.h>
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-template<Int N, class RealType>
+template<Int N, class Real_t>
 class BlockPCGSolver
 {
     ////////////////////////////////////////////////////////////////////////////////
@@ -28,11 +28,11 @@ class BlockPCGSolver
 public:
     BlockPCGSolver() = default;
 
-    RealType residual() const noexcept { return m_OutResidual; }
+    Real_t residual() const noexcept { return m_OutResidual; }
     UInt     iterations() const noexcept { return m_OutIterations; }
 
     ////////////////////////////////////////////////////////////////////////////////
-    void setSolverParameters(RealType toleranceFactor, UInt maxIterations) { m_ToleranceFactor = toleranceFactor; m_MaxIterations = maxIterations; }
+    void setSolverParameters(Real_t toleranceFactor, UInt maxIterations) { m_ToleranceFactor = toleranceFactor; m_MaxIterations = maxIterations; }
     void setZeroInitial(bool bZeroInitial) { m_bZeroInitial = bZeroInitial; }
     void enableZeroInitial() { m_bZeroInitial = true; }
     void disableZeroInitial() { m_bZeroInitial = false; }
@@ -49,12 +49,12 @@ private:
     StdVT_MatNxN                   m_JacobiPreconditioner;
     FixedBlockSparseMatrix<MatNxN> m_FixedSparseMatrix;
 
-    RealType m_ToleranceFactor = RealType(1e-20);
+    Real_t m_ToleranceFactor = Real_t(1e-20);
     UInt     m_MaxIterations   = 10000u;
     bool     m_bZeroInitial    = true;
 
     ////////////////////////////////////////////////////////////////////////////////
     // output
-    RealType m_OutResidual   = 0;
+    Real_t m_OutResidual   = 0;
     UInt     m_OutIterations = 0;
 };

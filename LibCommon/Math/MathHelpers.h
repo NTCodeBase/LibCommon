@@ -983,21 +983,21 @@ T fraction_inside(T phi_bl, T phi_br, T phi_tl, T phi_tr)
 }
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-template<class RealType>
-Vec3<RealType> EulerToAxisAngle(Vec2<RealType> EulerAngles, bool bRadiansIn = true, bool bRadiansOut = true)
+template<class Real_t>
+Vec3<Real_t> EulerToAxisAngle(Vec2<Real_t> EulerAngles, bool bRadiansIn = true, bool bRadiansOut = true)
 {
     __NT_UNUSED(EulerAngles);
     __NT_UNUSED(bRadiansIn);
     __NT_UNUSED(bRadiansOut);
     // This function is a fake function for 2D rotation, so the result is not correct
-    return Vec3<RealType>(Vec2<RealType>(1), 0);
+    return Vec3<Real_t>(Vec2<Real_t>(1), 0);
 }
 
-template<class RealType>
-Vec4<RealType> EulerToAxisAngle(Vec3<RealType> EulerAngles, bool bRadiansIn = true, bool bRadiansOut = true)
+template<class Real_t>
+Vec4<Real_t> EulerToAxisAngle(Vec3<Real_t> EulerAngles, bool bRadiansIn = true, bool bRadiansOut = true)
 {
-    if(glm::length2(EulerAngles) < Tiny<RealType>()) {
-        return Vec4<RealType>(Vec3<RealType>(1.0), 0);
+    if(glm::length2(EulerAngles) < Tiny<Real_t>()) {
+        return Vec4<Real_t>(Vec3<Real_t>(1.0), 0);
     }
 
     if(!bRadiansIn) {
@@ -1006,25 +1006,25 @@ Vec4<RealType> EulerToAxisAngle(Vec3<RealType> EulerAngles, bool bRadiansIn = tr
         EulerAngles.z = glm::radians(EulerAngles.z);
     }
 
-    RealType c1 = cos(EulerAngles[1] * RealType(0.5));
-    RealType s1 = sin(EulerAngles[1] * RealType(0.5));
-    RealType c2 = cos(EulerAngles[2] * RealType(0.5));
-    RealType s2 = sin(EulerAngles[2] * RealType(0.5));
-    RealType c3 = cos(EulerAngles[0] * RealType(0.5));
-    RealType s3 = sin(EulerAngles[0] * RealType(0.5));
+    Real_t c1 = cos(EulerAngles[1] * Real_t(0.5));
+    Real_t s1 = sin(EulerAngles[1] * Real_t(0.5));
+    Real_t c2 = cos(EulerAngles[2] * Real_t(0.5));
+    Real_t s2 = sin(EulerAngles[2] * Real_t(0.5));
+    Real_t c3 = cos(EulerAngles[0] * Real_t(0.5));
+    Real_t s3 = sin(EulerAngles[0] * Real_t(0.5));
 
-    RealType c1c2  = c1 * c2;
-    RealType s1s2  = s1 * s2;
-    RealType w     = c1c2 * c3 - s1s2 * s3;
-    RealType x     = c1c2 * s3 + s1s2 * c3;
-    RealType y     = s1 * c2 * c3 + c1 * s2 * s3;
-    RealType z     = c1 * s2 * c3 - s1 * c2 * s3;
-    RealType angle = RealType(2.0) * acos(w);
+    Real_t c1c2  = c1 * c2;
+    Real_t s1s2  = s1 * s2;
+    Real_t w     = c1c2 * c3 - s1s2 * s3;
+    Real_t x     = c1c2 * s3 + s1s2 * c3;
+    Real_t y     = s1 * c2 * c3 + c1 * s2 * s3;
+    Real_t z     = c1 * s2 * c3 - s1 * c2 * s3;
+    Real_t angle = Real_t(2.0) * acos(w);
     if(!bRadiansIn && !bRadiansOut) {
         angle = glm::degrees(angle);
     }
 
-    return Vec4<RealType>(glm::normalize(Vec3<RealType>(x, y, z)), angle);
+    return Vec4<Real_t>(glm::normalize(Vec3<Real_t>(x, y, z)), angle);
 }
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+

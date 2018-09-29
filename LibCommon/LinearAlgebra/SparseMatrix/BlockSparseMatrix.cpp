@@ -120,7 +120,7 @@ void BlockSparseMatrix<MatrixType>::printDebug() const noexcept
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 template<class MatrixType>
-void BlockSparseMatrix<MatrixType>::checkSymmetry(RealType threshold /* = RealType(1e-8) */) const noexcept
+void BlockSparseMatrix<MatrixType>::checkSymmetry(Real_t threshold /* = Real_t(1e-8) */) const noexcept
 {
     bool check = true;
     std::cout << "============================== Checking Matrix Symmetry... ==============================" << std::endl;
@@ -131,7 +131,7 @@ void BlockSparseMatrix<MatrixType>::checkSymmetry(RealType threshold /* = RealTy
                                 for(UInt j = i + 1; j < m_Size; ++j) {
                                     if(STLHelpers::Sorted::contain(m_ColIndex[i], j)) {
                                         auto errM    = (*this)(i, j) - (*this)(j, i);
-                                        RealType err = 0;
+                                        Real_t err = 0;
                                         for(Int l = 0; l < MatrixType::length(); ++l) {
                                             err += glm::length2(errM[l]);
                                         }
@@ -299,17 +299,17 @@ bool BlockSparseMatrix<MatrixType>::loadFromBinaryFile(const char* fileName)
         } else {
             for(UInt j = 0; j < rowSize; ++j) {
                 fread(buffer, elementSize, 1, fptr);
-                RealType* dst = glm::value_ptr(m_ColValue[i][j]);
+                Real_t* dst = glm::value_ptr(m_ColValue[i][j]);
                 Int       N   = MatrixType::length();
                 if(elementSize > sizeof(MatrixType)) {
                     double* src = reinterpret_cast<double*>(buffer);
                     for(Int k = 0, k_end = N * N; k < k_end; ++k) {
-                        dst[k] = static_cast<RealType>(src[k]);
+                        dst[k] = static_cast<Real_t>(src[k]);
                     }
                 } else {
                     float* src = reinterpret_cast<float*>(buffer);
                     for(Int k = 0, k_end = N * N; k < k_end; ++k) {
-                        dst[k] = static_cast<RealType>(src[k]);
+                        dst[k] = static_cast<Real_t>(src[k]);
                     }
                 }
             }

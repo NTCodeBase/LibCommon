@@ -37,10 +37,10 @@ bool isValidNumber(T x)
 }
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-template<class IndexType, Int N, class RealType>
-VecX<N, IndexType> createGrid(const VecX<N, RealType>& bmin, const VecX<N, RealType>& bmax, const VecX<N, RealType>& spacing)
+template<class IndexType, Int N, class Real_t>
+VecX<N, IndexType> createGrid(const VecX<N, Real_t>& bmin, const VecX<N, Real_t>& bmax, const VecX<N, Real_t>& spacing)
 {
-    VecX<N, RealType>  fgrid = (bmax - bmin) / spacing;
+    VecX<N, Real_t>  fgrid = (bmax - bmin) / spacing;
     VecX<N, IndexType> result;
     for(Int d = 0; d < N; ++d) {
         result[d] = static_cast<IndexType>(ceil(fgrid[d]));
@@ -49,10 +49,10 @@ VecX<N, IndexType> createGrid(const VecX<N, RealType>& bmin, const VecX<N, RealT
 }
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-template<class IndexType, Int N, class RealType>
-VecX<N, IndexType> createGrid(const VecX<N, RealType>& bmin, const VecX<N, RealType>& bmax, RealType spacing)
+template<class IndexType, Int N, class Real_t>
+VecX<N, IndexType> createGrid(const VecX<N, Real_t>& bmin, const VecX<N, Real_t>& bmax, Real_t spacing)
 {
-    VecX<N, RealType>  fgrid = (bmax - bmin) / spacing;
+    VecX<N, Real_t>  fgrid = (bmax - bmin) / spacing;
     VecX<N, IndexType> result;
     for(Int d = 0; d < N; ++d) {
         result[d] = static_cast<IndexType>(ceil(fgrid[d]));
@@ -256,12 +256,12 @@ StdVT<IntType> generateRandomIntVector(SizeType size, IntType start = 0, IntType
     return v;
 }
 
-template<class RealType, class SizeType>
-StdVT<RealType> generateRandomRealVector(SizeType size, RealType start = RealType(0), RealType end = std::numeric_limits<RealType>::max())
+template<class Real_t, class SizeType>
+StdVT<Real_t> generateRandomRealVector(SizeType size, Real_t start = Real_t(0), Real_t end = std::numeric_limits<Real_t>::max())
 {
-    StdVT<RealType> v(size);
+    StdVT<Real_t> v(size);
     for(SizeType i = 0; i < size; ++i) {
-        v[i] = MT_fRandom<RealType>::rnd();
+        v[i] = MT_fRandom<Real_t>::rnd();
     }
     return v;
 }
@@ -332,8 +332,8 @@ private:
 };
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-template<Int N, class RealType>
-bool isInside(const VecX<N, RealType>& ppos, const VecX<N, RealType>& bMin, const VecX<N, RealType>& bMax)
+template<Int N, class Real_t>
+bool isInside(const VecX<N, Real_t>& ppos, const VecX<N, Real_t>& bMin, const VecX<N, Real_t>& bMax)
 {
     for(Int d = 0; d < N; ++d) {
         if(ppos[d] < bMin[d] || ppos[d] > bMax[d]) {
@@ -353,8 +353,8 @@ void jitter(VecX<N, RealType1>& ppos, RealType2 maxJitter)
 }
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-template<Int N, class RealType>
-void translate(StdVT_VecX<N, RealType>& points, const VecX<N, RealType>& translation)
+template<Int N, class Real_t>
+void translate(StdVT_VecX<N, Real_t>& points, const VecX<N, Real_t>& translation)
 {
     Scheduler::parallel_for(points.size(), [&](size_t i) {
                                 points[i] = points[i] + translation;
@@ -362,8 +362,8 @@ void translate(StdVT_VecX<N, RealType>& points, const VecX<N, RealType>& transla
 }
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-template<Int N, class RealType>
-void scale(StdVT_VecX<N, RealType>& points, const VecX<N, RealType>& scale)
+template<Int N, class Real_t>
+void scale(StdVT_VecX<N, Real_t>& points, const VecX<N, Real_t>& scale)
 {
     Scheduler::parallel_for(points.size(), [&](size_t i) {
                                 points[i] = points[i] * scale;
@@ -371,22 +371,22 @@ void scale(StdVT_VecX<N, RealType>& points, const VecX<N, RealType>& scale)
 }
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-template<Int N, class RealType>
-void rotate(StdVT_VecX<N, RealType>& points, const VecX<N, RealType>& rotation)
+template<Int N, class Real_t>
+void rotate(StdVT_VecX<N, Real_t>& points, const VecX<N, Real_t>& rotation)
 {
-    RealType azimuth = rotation[1];
-    RealType elevation = rotation[0];
-    RealType roll = rotation[2];
-    RealType sinA, cosA, sinE, cosE, sinR, cosR;
+    Real_t azimuth = rotation[1];
+    Real_t elevation = rotation[0];
+    Real_t roll = rotation[2];
+    Real_t sinA, cosA, sinE, cosE, sinR, cosR;
 
-    Vec3<RealType> R[3];
+    Vec3<Real_t> R[3];
 
-    sinA = static_cast<RealType>(sin(azimuth));
-    cosA = static_cast<RealType>(cos(azimuth));
-    sinE = static_cast<RealType>(sin(elevation));
-    cosE = static_cast<RealType>(cos(elevation));
-    sinR = static_cast<RealType>(sin(roll));
-    cosR = static_cast<RealType>(cos(roll));
+    sinA = static_cast<Real_t>(sin(azimuth));
+    cosA = static_cast<Real_t>(cos(azimuth));
+    sinE = static_cast<Real_t>(sin(elevation));
+    cosE = static_cast<Real_t>(cos(elevation));
+    sinR = static_cast<Real_t>(sin(roll));
+    cosR = static_cast<Real_t>(cos(roll));
 
     R[0][0] = cosR * cosA - sinR * sinA * sinE;
     R[0][1] = sinR * cosA + cosR * sinA * sinE;
@@ -402,15 +402,15 @@ void rotate(StdVT_VecX<N, RealType>& points, const VecX<N, RealType>& rotation)
 
     Scheduler::parallel_for(points.size(), [&](size_t i) {
                                 const auto& pi = points[i];
-                                points[i]      = Vec3<RealType>(glm::dot(R[0], pi),
+                                points[i]      = Vec3<Real_t>(glm::dot(R[0], pi),
                                                                 glm::dot(R[1], pi),
                                                                 glm::dot(R[2], pi));
                             });
 }
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-template<Int N, class RealType>
-void transform(StdVT_VecX<N, RealType>& points, const VecX<N, RealType>& translation, const VecX<N, RealType>& scale)
+template<Int N, class Real_t>
+void transform(StdVT_VecX<N, Real_t>& points, const VecX<N, Real_t>& translation, const VecX<N, Real_t>& scale)
 {
     Scheduler::parallel_for(points.size(), [&](size_t i) {
                                 points[i] = points[i] * scale + translation;
@@ -418,22 +418,22 @@ void transform(StdVT_VecX<N, RealType>& points, const VecX<N, RealType>& transla
 }
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-template<class RealType>
-void transform(StdVT_Vec3<RealType>& points, const Vec3<RealType>& translation, const Vec3<RealType>& scale, const Vec3<RealType>& rotation)
+template<class Real_t>
+void transform(StdVT_Vec3<Real_t>& points, const Vec3<Real_t>& translation, const Vec3<Real_t>& scale, const Vec3<Real_t>& rotation)
 {
-    RealType azimuth = rotation[0];
-    RealType elevation = rotation[1];
-    RealType roll = rotation[2];
-    RealType sinA, cosA, sinE, cosE, sinR, cosR;
+    Real_t azimuth = rotation[0];
+    Real_t elevation = rotation[1];
+    Real_t roll = rotation[2];
+    Real_t sinA, cosA, sinE, cosE, sinR, cosR;
 
-    Vec3<RealType> R[3];
+    Vec3<Real_t> R[3];
 
-    sinA = static_cast<RealType>(sin(azimuth));
-    cosA = static_cast<RealType>(cos(azimuth));
-    sinE = static_cast<RealType>(sin(elevation));
-    cosE = static_cast<RealType>(cos(elevation));
-    sinR = static_cast<RealType>(sin(roll));
-    cosR = static_cast<RealType>(cos(roll));
+    sinA = static_cast<Real_t>(sin(azimuth));
+    cosA = static_cast<Real_t>(cos(azimuth));
+    sinE = static_cast<Real_t>(sin(elevation));
+    cosE = static_cast<Real_t>(cos(elevation));
+    sinR = static_cast<Real_t>(sin(roll));
+    cosR = static_cast<Real_t>(cos(roll));
 
     R[0][0] = cosR * cosA - sinR * sinA * sinE;
     R[0][1] = sinR * cosA + cosR * sinA * sinE;
@@ -449,7 +449,7 @@ void transform(StdVT_Vec3<RealType>& points, const Vec3<RealType>& translation, 
 
     Scheduler::parallel_for(points.size(), [&](size_t i) {
                                 const auto& pi = points[i];
-                                Vec3<RealType> tmp(glm::dot(R[0], pi),
+                                Vec3<Real_t> tmp(glm::dot(R[0], pi),
                                                    glm::dot(R[1], pi),
                                                    glm::dot(R[2], pi));
                                 points[i] = tmp * scale + translation;

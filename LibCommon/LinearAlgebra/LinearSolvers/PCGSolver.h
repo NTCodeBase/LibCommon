@@ -22,15 +22,15 @@
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 // A simple compressed sparse column data structure (with separate diagonal)
 // for lower triangular matrices
-template<class RealType>
+template<class Real_t>
 struct SparseColumnLowerFactor
 {
     UInt            nRows;
-    StdVT<RealType> invDiag;  // reciprocals of diagonal elements
+    StdVT<Real_t> invDiag;  // reciprocals of diagonal elements
     StdVT_UInt      colIndex; // a list of all row indices, for each column in turn
-    StdVT<RealType> colValue; // values below the diagonal, listed column by column
+    StdVT<Real_t> colValue; // values below the diagonal, listed column by column
     StdVT_UInt      colStart; // where each column begins in row index (plus an extra entry at the end, of #nonzeros)
-    StdVT<RealType> aDiag;    // just used in factorization: minimum "safe" diagonal entry allowed
+    StdVT<Real_t> aDiag;    // just used in factorization: minimum "safe" diagonal entry allowed
 
     explicit SparseColumnLowerFactor(UInt size = 0) : nRows(size), invDiag(size), colStart(size + 1), aDiag(size) {}
 
@@ -40,7 +40,7 @@ struct SparseColumnLowerFactor
 };
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-template<class RealType>
+template<class Real_t>
 class PCGSolver
 {
 public:
@@ -53,7 +53,7 @@ public:
 
     PCGSolver() = default;
     void reserve(UInt size);
-    RealType residual() const noexcept { return m_OutResidual; }
+    Real_t residual() const noexcept { return m_OutResidual; }
     UInt     iterations() const noexcept { return m_OutIterations; }
 
     ////////////////////////////////////////////////////////////////////////////////
@@ -61,42 +61,42 @@ public:
     void setZeroInitial(bool bZeroInitial) { m_bZeroInitial = bZeroInitial; }
     void enableZeroInitial() { m_bZeroInitial = true; }
     void disableZeroInitial() { m_bZeroInitial = false; }
-    void setSolverParameters(RealType toleranceFactor, int maxIterations, RealType MICCL0Param = RealType(0.97), RealType minDiagonalRatio = RealType(0.25));
-    bool solve(const SparseMatrix<RealType>& matrix, const StdVT<RealType>& rhs, StdVT<RealType>& result);
-    bool solve_precond(const SparseMatrix<RealType>& matrix, const StdVT<RealType>& rhs, StdVT<RealType>& result);
+    void setSolverParameters(Real_t toleranceFactor, int maxIterations, Real_t MICCL0Param = Real_t(0.97), Real_t minDiagonalRatio = Real_t(0.25));
+    bool solve(const SparseMatrix<Real_t>& matrix, const StdVT<Real_t>& rhs, StdVT<Real_t>& result);
+    bool solve_precond(const SparseMatrix<Real_t>& matrix, const StdVT<Real_t>& rhs, StdVT<Real_t>& result);
 
 private:
     void resize(UInt size);
-    void formPreconditioner(const SparseMatrix<RealType>& matrix);
-    void applyPreconditioner(const StdVT<RealType>& x, StdVT<RealType>& result);
-    void applyJacobiPreconditioner(const StdVT<RealType>& x, StdVT<RealType>& result);
+    void formPreconditioner(const SparseMatrix<Real_t>& matrix);
+    void applyPreconditioner(const StdVT<Real_t>& x, StdVT<Real_t>& result);
+    void applyJacobiPreconditioner(const StdVT<Real_t>& x, StdVT<Real_t>& result);
 
-    void solveLower(const StdVT<RealType>& rhs, StdVT<RealType>& result);
-    void solveLower_TransposeInPlace(StdVT<RealType>& x);
+    void solveLower(const StdVT<Real_t>& rhs, StdVT<Real_t>& result);
+    void solveLower_TransposeInPlace(StdVT<Real_t>& x);
 
-    void formPreconditioner_Jacobi(const SparseMatrix<RealType>& matrix);
-    void formPreconditioner_MICC0L0(const SparseMatrix<RealType>& matrix, RealType MICCL0Param = RealType(0.97), RealType minDiagonalRatio = RealType(0.25));
-    void formPreconditioner_Symmetric_MICC0L0(const SparseMatrix<RealType>& matrix, RealType minDiagonalRatio = RealType(0.25));
+    void formPreconditioner_Jacobi(const SparseMatrix<Real_t>& matrix);
+    void formPreconditioner_MICC0L0(const SparseMatrix<Real_t>& matrix, Real_t MICCL0Param = Real_t(0.97), Real_t minDiagonalRatio = Real_t(0.25));
+    void formPreconditioner_Symmetric_MICC0L0(const SparseMatrix<Real_t>& matrix, Real_t minDiagonalRatio = Real_t(0.25));
 
     ////////////////////////////////////////////////////////////////////////////////
     // solver variables
-    StdVT<RealType>             z, s, r;
-    FixedSparseMatrix<RealType> m_FixedSparseMatrix;
+    StdVT<Real_t>             z, s, r;
+    FixedSparseMatrix<Real_t> m_FixedSparseMatrix;
 
-    SparseColumnLowerFactor<RealType> m_ICCPrecond;
-    StdVT<RealType>                   m_JacobiPrecond;
+    SparseColumnLowerFactor<Real_t> m_ICCPrecond;
+    StdVT<Real_t>                   m_JacobiPrecond;
 
     ////////////////////////////////////////////////////////////////////////////////
     // solver parameters
     Preconditioner m_PreconditionerType = Preconditioner::MICCL0;
-    RealType       m_ToleranceFactor    = RealType(1e-20);
+    Real_t       m_ToleranceFactor    = Real_t(1e-20);
     UInt           m_MaxIterations      = 10000;
-    RealType       m_MICCL0Param        = RealType(0.97);
-    RealType       m_MinDiagonalRatio   = RealType(0.25);
+    Real_t       m_MICCL0Param        = Real_t(0.97);
+    Real_t       m_MinDiagonalRatio   = Real_t(0.25);
     bool           m_bZeroInitial       = true;
 
     ////////////////////////////////////////////////////////////////////////////////
     // output
-    RealType m_OutResidual   = 0;
+    Real_t m_OutResidual   = 0;
     UInt     m_OutIterations = 0;
 };

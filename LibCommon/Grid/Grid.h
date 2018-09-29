@@ -21,7 +21,7 @@
 #include <cassert>
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-template<Int N, class RealType>
+template<Int N, class Real_t>
 class Grid
 {
     ////////////////////////////////////////////////////////////////////////////////
@@ -29,12 +29,12 @@ class Grid
     ////////////////////////////////////////////////////////////////////////////////
 public:
     Grid() = default;
-    Grid(const VecN& bMin, const VecN& bMax, RealType cellSize) : m_BMin(bMin), m_BMax(bMax) { setCellSize(cellSize); }
+    Grid(const VecN& bMin, const VecN& bMax, Real_t cellSize) : m_BMin(bMin), m_BMax(bMax) { setCellSize(cellSize); }
 
     ////////////////////////////////////////////////////////////////////////////////
     // Setters
-    void setGrid(const VecN& bMin, const VecN& bMax, RealType cellSize, RealType clampEdge = 0);
-    void setCellSize(RealType cellSize);
+    void setGrid(const VecN& bMin, const VecN& bMax, Real_t cellSize, Real_t clampEdge = 0);
+    void setCellSize(Real_t cellSize);
 
     ////////////////////////////////////////////////////////////////////////////////
     // Getters
@@ -201,14 +201,14 @@ public:
     auto getWorldCoordinate(IndexType i, IndexType j) const
     {
         static_assert(N == 2, "Array dimension != 2");
-        return Vec2<RealType>(i, j) * m_CellSize + m_BMin;
+        return Vec2<Real_t>(i, j) * m_CellSize + m_BMin;
     }
 
     template<class IndexType>
     auto getWorldCoordinate(IndexType i, IndexType j, IndexType k) const
     {
         static_assert(N == 3, "Array dimension != 3");
-        return Vec3<RealType>(i, j, k) * m_CellSize + m_BMin;
+        return Vec3<Real_t>(i, j, k) * m_CellSize + m_BMin;
     }
 
     auto getGridCoordinate(const VecN& ppos) const { return (ppos - m_BMin) * m_InvCellSize; }
@@ -228,8 +228,8 @@ public:
     void collectIndexToCells(const StdVT_VecN& positions, StdVT_VecN& gridCoordinates);
     void getNeighborList(const StdVT_VecN& positions, StdVT<StdVT_UInt>& neighborList, Int cellSpan = 1);
     void getNeighborList(const VecN& ppos, StdVT_UInt& neighborList, Int cellSpan = 1);
-    void getNeighborList(const StdVT_VecN& positions, StdVT<StdVT_UInt>& neighborList, RealType d2, Int cellSpan = 1);
-    void getNeighborList(const StdVT_VecN& positions, const VecN& ppos, StdVT_UInt& neighborList, RealType d2, Int cellSpan = 1);
+    void getNeighborList(const StdVT_VecN& positions, StdVT<StdVT_UInt>& neighborList, Real_t d2, Int cellSpan = 1);
+    void getNeighborList(const StdVT_VecN& positions, const VecN& ppos, StdVT_UInt& neighborList, Real_t d2, Int cellSpan = 1);
     void sortData(StdVT_VecN& data);
 
     const StdVT_UInt& getParticleIdxSortedByCell();
@@ -245,12 +245,12 @@ protected:
     VecNui   m_NNodes         = VecNui(0);
     UInt     m_NTotalCells    = 1u;
     UInt     m_NTotalNodes    = 1u;
-    RealType m_CellSize       = RealType(1);
-    RealType m_InvCellSize    = RealType(1);
-    RealType m_HalfCellSize   = RealType(0.5);
-    RealType m_CellSizeSqr    = RealType(1);
-    RealType m_InvCellSizeSqr = RealType(1);
-    RealType m_CellVolume     = RealType(1);
+    Real_t m_CellSize       = Real_t(1);
+    Real_t m_InvCellSize    = Real_t(1);
+    Real_t m_HalfCellSize   = Real_t(0.5);
+    Real_t m_CellSizeSqr    = Real_t(1);
+    Real_t m_InvCellSizeSqr = Real_t(1);
+    Real_t m_CellVolume     = Real_t(1);
 
     StdVT_UInt m_ParticleIdxSortedByCell;
     bool       m_bCellIdxNeedResize = false; // to track and resize the m_CellParticleIdx array

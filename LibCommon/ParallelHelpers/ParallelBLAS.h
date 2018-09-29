@@ -27,40 +27,40 @@ namespace ParallelBLAS
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 // dot products
 //
-template<class RealType>
-inline RealType dotProduct(const StdVT<RealType>& x, const StdVT<RealType>& y)
+template<class Real_t>
+inline Real_t dotProduct(const StdVT<Real_t>& x, const StdVT<Real_t>& y)
 {
     __NT_REQUIRE(x.size() == y.size());
-    ParallelObjects::DotProduct<1, RealType> pObj(x, y);
+    ParallelObjects::DotProduct<1, Real_t> pObj(x, y);
     tbb::parallel_reduce(tbb::blocked_range<size_t>(0, x.size()), pObj);
 
     return pObj.getResult();
 }
 
-template<Int N, class RealType>
-inline RealType dotProduct(const StdVT<VecX<N, RealType>>& x, const StdVT<VecX<N, RealType>>& y)
+template<Int N, class Real_t>
+inline Real_t dotProduct(const StdVT<VecX<N, Real_t>>& x, const StdVT<VecX<N, Real_t>>& y)
 {
     __NT_REQUIRE(x.size() == y.size());
-    ParallelObjects::DotProduct<N, RealType> pObj(x, y);
+    ParallelObjects::DotProduct<N, Real_t> pObj(x, y);
     tbb::parallel_reduce(tbb::blocked_range<size_t>(0, x.size()), pObj);
 
     return pObj.getResult();
 }
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-template<class RealType>
-inline RealType norm2(const StdVT<RealType>& x)
+template<class Real_t>
+inline Real_t norm2(const StdVT<Real_t>& x)
 {
-    ParallelObjects::VectorSumSqr<1, RealType> pObj(x);
+    ParallelObjects::VectorSumSqr<1, Real_t> pObj(x);
     tbb::parallel_reduce(tbb::blocked_range<size_t>(0, x.size()), pObj);
 
     return pObj.getResult();
 }
 
-template<Int N, class RealType>
-inline RealType norm2(const StdVT<VecX<N, RealType>>& x)
+template<Int N, class Real_t>
+inline Real_t norm2(const StdVT<VecX<N, Real_t>>& x)
 {
-    ParallelObjects::VectorSumSqr<N, RealType> pObj(x);
+    ParallelObjects::VectorSumSqr<N, Real_t> pObj(x);
     tbb::parallel_reduce(tbb::blocked_range<size_t>(0, x.size()), pObj);
 
     return pObj.getResult();
@@ -88,8 +88,8 @@ inline StdVT<VectorType> minus(const StdVT<VectorType>& x, const StdVT<VectorTyp
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 // saxpy (y=alpha*x+y)
 //
-template<class RealType, class VectorType>
-inline void addScaled(RealType alpha, const StdVT<VectorType>& x, StdVT<VectorType>& y)
+template<class Real_t, class VectorType>
+inline void addScaled(Real_t alpha, const StdVT<VectorType>& x, StdVT<VectorType>& y)
 {
     Scheduler::parallel_for(x.size(), [&, alpha](size_t i) { y[i] += alpha * x[i]; });
 }
@@ -97,8 +97,8 @@ inline void addScaled(RealType alpha, const StdVT<VectorType>& x, StdVT<VectorTy
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 // y=x+beta*y
 //
-template<class RealType, class VectorType>
-inline void scaledAdd(RealType beta, const StdVT<VectorType>& x, StdVT<VectorType>& y)
+template<class Real_t, class VectorType>
+inline void scaledAdd(Real_t beta, const StdVT<VectorType>& x, StdVT<VectorType>& y)
 {
     Scheduler::parallel_for(x.size(), [&, beta](size_t i) { y[i] = beta * y[i] + x[i]; });
 }
@@ -106,16 +106,16 @@ inline void scaledAdd(RealType beta, const StdVT<VectorType>& x, StdVT<VectorTyp
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 // x *= alpha
 //
-template<class RealType, class VectorType>
-inline void scale(RealType alpha, StdVT<VectorType>& x)
+template<class Real_t, class VectorType>
+inline void scale(Real_t alpha, StdVT<VectorType>& x)
 {
     Scheduler::parallel_for(x.size(), [&, alpha](size_t i) { x[i] *= alpha; });
 }
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 // y = x * alpha
-template<class RealType, class VectorType>
-inline StdVT<VectorType> multiply(RealType alpha, const StdVT<VectorType>& x)
+template<class Real_t, class VectorType>
+inline StdVT<VectorType> multiply(Real_t alpha, const StdVT<VectorType>& x)
 {
     StdVT<VectorType> y(x.size());
     Scheduler::parallel_for(x.size(), [&, alpha](size_t i) { y[i] = x[i] * alpha; });

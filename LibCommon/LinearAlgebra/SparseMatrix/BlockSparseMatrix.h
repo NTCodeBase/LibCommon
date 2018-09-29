@@ -30,7 +30,7 @@ template<class MatrixType>
 class BlockSparseMatrix
 {
 private:
-    using RealType   = typename MatrixType::value_type;
+    using Real_t   = typename MatrixType::value_type;
     using VectorType = typename MatrixType::col_type;
 
     UInt m_Size;
@@ -60,7 +60,7 @@ public:
     template<class IndexType> void        eraseElement(IndexType i, IndexType j);
 
     void printDebug() const noexcept;
-    void checkSymmetry(RealType threshold = RealType(1e-8)) const noexcept;
+    void checkSymmetry(Real_t threshold = Real_t(1e-8)) const noexcept;
 
     void writeMatlabFile(const char* fileName, int showPercentage = -1) const;
     void writeBinaryFile(const char* fileName) const;
@@ -75,7 +75,7 @@ template<class MatrixType>
 class FixedBlockSparseMatrix
 {
 private:
-    using RealType   = typename MatrixType::value_type;
+    using Real_t   = typename MatrixType::value_type;
     using VectorType = typename MatrixType::col_type;
 
     UInt m_Size;

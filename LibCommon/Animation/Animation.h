@@ -25,7 +25,7 @@ template<class T> Mat3x3<T> rotate(const Mat3x3<T>& m, T angle, const Vec2<T>&) 
 }
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-template<Int N, class RealType>
+template<Int N, class Real_t>
 struct KeyFrame
 {
     ////////////////////////////////////////////////////////////////////////////////
@@ -34,19 +34,19 @@ struct KeyFrame
     KeyFrame() = default;
     KeyFrame(UInt frame_, const VecN& translation_) : frame(frame_), translation(translation_) {}
     KeyFrame(UInt frame_, const VecNp1& rotation_) : frame(frame_), rotation(rotation_) {}
-    KeyFrame(UInt frame_, RealType scale_) : frame(frame_), uniformScale(scale_), invScale(RealType(1.0) / scale_) {}
-    KeyFrame(UInt frame_, const VecN& translation_, const VecNp1& rotation_, RealType scale_ = RealType(1.0))
-        : frame(frame_), translation(translation_), rotation(rotation_), uniformScale(scale_), invScale(RealType(1.0) / scale_) {}
+    KeyFrame(UInt frame_, Real_t scale_) : frame(frame_), uniformScale(scale_), invScale(Real_t(1.0) / scale_) {}
+    KeyFrame(UInt frame_, const VecN& translation_, const VecNp1& rotation_, Real_t scale_ = Real_t(1.0))
+        : frame(frame_), translation(translation_), rotation(rotation_), uniformScale(scale_), invScale(Real_t(1.0) / scale_) {}
     ////////////////////////////////////////////////////////////////////////////////
     UInt     frame        = 0;
     VecN     translation  = VecN(0);
     VecNp1   rotation     = VecNp1(VecN(1), 0);
-    RealType uniformScale = RealType(1.0);
-    RealType invScale     = RealType(1.0);
+    Real_t uniformScale = Real_t(1.0);
+    Real_t invScale     = Real_t(1.0);
 };
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-template<Int N, class RealType>
+template<Int N, class Real_t>
 class RigidBodyAnimation
 {
     ////////////////////////////////////////////////////////////////////////////////
@@ -61,22 +61,22 @@ public:
     auto& keyFrames() { return m_KeyFrames; }
     auto nKeyFrames() const { return static_cast<UInt>(m_KeyFrames.size()); }
     ////////////////////////////////////////////////////////////////////////////////
-    auto& addKeyFrame() { return m_KeyFrames.emplace_back(KeyFrame<N, RealType>()); }
-    void addKeyFrame(const KeyFrame<N, RealType>& keyFrame) { m_KeyFrames.push_back(keyFrame); }
-    void addKeyFrame(UInt frame, const VecN& translation) { m_KeyFrames.emplace_back(KeyFrame<N, RealType>(frame, translation)); }
-    void addKeyFrame(UInt frame, const VecNp1& rotation) { m_KeyFrames.emplace_back(KeyFrame<N, RealType>(frame, rotation)); }
-    void addKeyFrame(UInt frame, const VecN& translation, const VecNp1& rotation) { m_KeyFrames.emplace_back(KeyFrame<N, RealType>(frame, translation, rotation)); }
+    auto& addKeyFrame() { return m_KeyFrames.emplace_back(KeyFrame<N, Real_t>()); }
+    void addKeyFrame(const KeyFrame<N, Real_t>& keyFrame) { m_KeyFrames.push_back(keyFrame); }
+    void addKeyFrame(UInt frame, const VecN& translation) { m_KeyFrames.emplace_back(KeyFrame<N, Real_t>(frame, translation)); }
+    void addKeyFrame(UInt frame, const VecNp1& rotation) { m_KeyFrames.emplace_back(KeyFrame<N, Real_t>(frame, rotation)); }
+    void addKeyFrame(UInt frame, const VecN& translation, const VecNp1& rotation) { m_KeyFrames.emplace_back(KeyFrame<N, Real_t>(frame, translation, rotation)); }
     ////////////////////////////////////////////////////////////////////////////////
     void       makeReady(bool bCubicIntTranslation = true, bool bCubicIntRotation = true);
-    MatNp1xNp1 getInvTransformation(UInt frame, RealType frameFraction = RealType(0));
+    MatNp1xNp1 getInvTransformation(UInt frame, Real_t frameFraction = Real_t(0));
     MatNp1xNp1 getInactiveTransformationMatrix(UInt frame);
     ////////////////////////////////////////////////////////////////////////////////
-    virtual MatNp1xNp1 getTransformationMatrix(UInt frame, RealType frameFraction = RealType(0));
+    virtual MatNp1xNp1 getTransformationMatrix(UInt frame, Real_t frameFraction = Real_t(0));
 
 protected:
-    StdVT<KeyFrame<N, RealType>> m_KeyFrames;
-    CubicSpline<RealType>        m_TranslationInterpolator[N];
-    CubicSpline<RealType>        m_RotationInterpolator[N + 1];
+    StdVT<KeyFrame<N, Real_t>> m_KeyFrames;
+    CubicSpline<Real_t>        m_TranslationInterpolator[N];
+    CubicSpline<Real_t>        m_RotationInterpolator[N + 1];
 
     MatNp1xNp1 m_StartFrameTransformationMatrix = MatNp1xNp1(1);
     MatNp1xNp1 m_EndFrameTransformationMatrix   = MatNp1xNp1(1);
@@ -89,8 +89,8 @@ protected:
 };
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-template<Int N, class RealType>
-class Animation : public RigidBodyAnimation<N, RealType>
+template<Int N, class Real_t>
+class Animation : public RigidBodyAnimation<N, Real_t>
 {
     ////////////////////////////////////////////////////////////////////////////////
     __NT_TYPE_ALIASING
@@ -98,18 +98,18 @@ class Animation : public RigidBodyAnimation<N, RealType>
 public:
     Animation() = default;
     ////////////////////////////////////////////////////////////////////////////////
-    void addKeyFrame(UInt frame, RealType scale) { m_KeyFrames.emplace_back(KeyFrame<N, RealType>(frame, scale)); }
-    void addKeyFrame(UInt frame, const VecN& translation, const VecNp1& rotation, RealType scale)
+    void addKeyFrame(UInt frame, Real_t scale) { m_KeyFrames.emplace_back(KeyFrame<N, Real_t>(frame, scale)); }
+    void addKeyFrame(UInt frame, const VecN& translation, const VecNp1& rotation, Real_t scale)
     {
-        m_KeyFrames.emplace_back(KeyFrame<N, RealType>(frame, translation, rotation, scale));
+        m_KeyFrames.emplace_back(KeyFrame<N, Real_t>(frame, translation, rotation, scale));
     }
 
     ////////////////////////////////////////////////////////////////////////////////
     void     makeReady(bool bCubicIntTranslation = true, bool bCubicIntRotation = true, bool bCubicIntScale = true);
-    RealType getUniformScale(UInt frame, RealType frameFraction = RealType(0));
+    Real_t getUniformScale(UInt frame, Real_t frameFraction = Real_t(0));
     ////////////////////////////////////////////////////////////////////////////////
-    virtual MatNp1xNp1 getTransformationMatrix(UInt frame, RealType frameFraction = RealType(0)) override;
+    virtual MatNp1xNp1 getTransformationMatrix(UInt frame, Real_t frameFraction = Real_t(0)) override;
 
 protected:
-    CubicSpline<RealType> m_ScaleInterpolator;
+    CubicSpline<Real_t> m_ScaleInterpolator;
 };

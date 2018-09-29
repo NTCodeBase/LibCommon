@@ -15,8 +15,8 @@
 #include <LibCommon/LinearAlgebra/LinearSolvers/PCGSolver.h>
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-template<class RealType>
-void SparseColumnLowerFactor<RealType>::clear(void)
+template<class Real_t>
+void SparseColumnLowerFactor<Real_t>::clear(void)
 {
     nRows = 0;
     invDiag.clear();
@@ -27,16 +27,16 @@ void SparseColumnLowerFactor<RealType>::clear(void)
 }
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-template<class RealType>
-void SparseColumnLowerFactor<RealType>::reserve(UInt size)
+template<class Real_t>
+void SparseColumnLowerFactor<Real_t>::reserve(UInt size)
 {
     invDiag.reserve(size);
     aDiag.reserve(size);
     colStart.reserve(size + 1);
 }
 
-template<class RealType>
-void SparseColumnLowerFactor<RealType>::resize(UInt newSize)
+template<class Real_t>
+void SparseColumnLowerFactor<Real_t>::resize(UInt newSize)
 {
     nRows = newSize;
     invDiag.resize(nRows);
@@ -49,18 +49,18 @@ void SparseColumnLowerFactor<RealType>::resize(UInt newSize)
 // PCGSolver
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-template<class RealType>
-void PCGSolver<RealType>::setSolverParameters(RealType tolerancem_ICCPrecond, int maxIterations, RealType MICCL0Param /*= 0.97*/, RealType minDiagonalRatio /*= 0.25*/)
+template<class Real_t>
+void PCGSolver<Real_t>::setSolverParameters(Real_t tolerancem_ICCPrecond, int maxIterations, Real_t MICCL0Param /*= 0.97*/, Real_t minDiagonalRatio /*= 0.25*/)
 {
-    m_ToleranceFactor  = fmax(tolerancem_ICCPrecond, RealType(1e-30));
+    m_ToleranceFactor  = fmax(tolerancem_ICCPrecond, Real_t(1e-30));
     m_MaxIterations    = maxIterations;
     m_MICCL0Param      = MICCL0Param;
     m_MinDiagonalRatio = minDiagonalRatio;
 }
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-template<class RealType>
-void PCGSolver<RealType>::reserve(UInt size)
+template<class Real_t>
+void PCGSolver<Real_t>::reserve(UInt size)
 {
     s.reserve(size);
     z.reserve(size);
@@ -70,8 +70,8 @@ void PCGSolver<RealType>::reserve(UInt size)
     m_ICCPrecond.reserve(size);
 }
 
-template<class RealType>
-void PCGSolver<RealType>::resize(UInt size)
+template<class Real_t>
+void PCGSolver<Real_t>::resize(UInt size)
 {
     s.resize(size);
     z.resize(size);
@@ -79,8 +79,8 @@ void PCGSolver<RealType>::resize(UInt size)
 }
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-template<class RealType>
-bool PCGSolver<RealType>::solve(const SparseMatrix<RealType>& matrix, const StdVT<RealType>& rhs, StdVT<RealType>& result)
+template<class Real_t>
+bool PCGSolver<Real_t>::solve(const SparseMatrix<Real_t>& matrix, const StdVT<Real_t>& rhs, StdVT<Real_t>& result)
 {
     resize(matrix.nRows);
 
@@ -92,17 +92,17 @@ bool PCGSolver<RealType>::solve(const SparseMatrix<RealType>& matrix, const StdV
     m_FixedSparseMatrix.constructFromSparseMatrix(matrix);
     r = rhs;
 
-    m_OutResidual = ParallelSTL::maxAbs<RealType>(r);
+    m_OutResidual = ParallelSTL::maxAbs<Real_t>(r);
 
-    if(m_OutResidual < std::numeric_limits<RealType>::min()) {
+    if(m_OutResidual < std::numeric_limits<Real_t>::min()) {
         m_OutIterations = 0;
         return true;
     }
 
-    RealType tol = m_ToleranceFactor * m_OutResidual;
-    RealType rho = ParallelBLAS::dotProduct<RealType>(r, r);
+    Real_t tol = m_ToleranceFactor * m_OutResidual;
+    Real_t rho = ParallelBLAS::dotProduct<Real_t>(r, r);
 
-    if(rho < std::numeric_limits<RealType>::min() || std::isnan(rho)) {
+    if(rho < std::numeric_limits<Real_t>::min() || std::isnan(rho)) {
         m_OutIterations = 0;
         return false;
     }
@@ -110,25 +110,25 @@ bool PCGSolver<RealType>::solve(const SparseMatrix<RealType>& matrix, const StdV
     ////////////////////////////////////////////////////////////////////////////////
     z = r;
     for(UInt iteration = 0; iteration < m_MaxIterations; ++iteration) {
-        FixedSparseMatrix<RealType>::multiply(m_FixedSparseMatrix, z, s);
-        RealType tmp = ParallelBLAS::dotProduct<RealType>(s, z);
-        if(tmp < std::numeric_limits<RealType>::min()) {
+        FixedSparseMatrix<Real_t>::multiply(m_FixedSparseMatrix, z, s);
+        Real_t tmp = ParallelBLAS::dotProduct<Real_t>(s, z);
+        if(tmp < std::numeric_limits<Real_t>::min()) {
             m_OutIterations = iteration + 1;
             return true;
         }
-        RealType alpha = rho / tmp;
-        ParallelBLAS::addScaled<RealType>(alpha,  z, result);
-        ParallelBLAS::addScaled<RealType>(-alpha, s, r);
+        Real_t alpha = rho / tmp;
+        ParallelBLAS::addScaled<Real_t>(alpha,  z, result);
+        ParallelBLAS::addScaled<Real_t>(-alpha, s, r);
 
-        m_OutResidual = ParallelSTL::maxAbs<RealType>(r);
+        m_OutResidual = ParallelSTL::maxAbs<Real_t>(r);
         if(m_OutResidual < tol) {
             m_OutIterations = iteration + 1;
             return true;
         }
 
-        RealType rho_new = ParallelBLAS::dotProduct<RealType>(r, r);
-        RealType beta    = rho_new / rho;
-        ParallelBLAS::scaledAdd<RealType, RealType>(beta, r, z);
+        Real_t rho_new = ParallelBLAS::dotProduct<Real_t>(r, r);
+        Real_t beta    = rho_new / rho;
+        ParallelBLAS::scaledAdd<Real_t, Real_t>(beta, r, z);
         rho = rho_new;
     }
 
@@ -137,8 +137,8 @@ bool PCGSolver<RealType>::solve(const SparseMatrix<RealType>& matrix, const StdV
 }
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-template<class RealType>
-bool PCGSolver<RealType>::solve_precond(const SparseMatrix<RealType>& matrix, const StdVT<RealType>& rhs, StdVT<RealType>& result)
+template<class Real_t>
+bool PCGSolver<Real_t>::solve_precond(const SparseMatrix<Real_t>& matrix, const StdVT<Real_t>& rhs, StdVT<Real_t>& result)
 {
     resize(matrix.nRows);
 
@@ -150,18 +150,18 @@ bool PCGSolver<RealType>::solve_precond(const SparseMatrix<RealType>& matrix, co
     m_FixedSparseMatrix.constructFromSparseMatrix(matrix);
     r = rhs;
 
-    m_OutResidual = ParallelSTL::maxAbs<RealType>(r);
-    if(m_OutResidual < std::numeric_limits<RealType>::min()) {
+    m_OutResidual = ParallelSTL::maxAbs<Real_t>(r);
+    if(m_OutResidual < std::numeric_limits<Real_t>::min()) {
         m_OutIterations = 0;
         return true;
     }
 
-    RealType tol = m_ToleranceFactor * m_OutResidual;
+    Real_t tol = m_ToleranceFactor * m_OutResidual;
     formPreconditioner(matrix);
     applyPreconditioner(r, z);
 
-    RealType rho = ParallelBLAS::dotProduct<RealType>(z, r);
-    if(rho < std::numeric_limits<RealType>::min() || std::isnan(rho)) {
+    Real_t rho = ParallelBLAS::dotProduct<Real_t>(z, r);
+    if(rho < std::numeric_limits<Real_t>::min() || std::isnan(rho)) {
         m_OutIterations = 0;
         return false;
     }
@@ -169,26 +169,26 @@ bool PCGSolver<RealType>::solve_precond(const SparseMatrix<RealType>& matrix, co
     ////////////////////////////////////////////////////////////////////////////////
     s = z;
     for(UInt iteration = 0; iteration < m_MaxIterations; ++iteration) {
-        FixedSparseMatrix<RealType>::multiply(m_FixedSparseMatrix, s, z);
-        RealType tmp = ParallelBLAS::dotProduct<RealType>(s, z);
-        if(tmp < std::numeric_limits<RealType>::min()) {
+        FixedSparseMatrix<Real_t>::multiply(m_FixedSparseMatrix, s, z);
+        Real_t tmp = ParallelBLAS::dotProduct<Real_t>(s, z);
+        if(tmp < std::numeric_limits<Real_t>::min()) {
             m_OutIterations = iteration + 1;
             return true;
         }
-        RealType alpha = rho / tmp;
-        ParallelBLAS::addScaled<RealType>(alpha,  s, result);
-        ParallelBLAS::addScaled<RealType>(-alpha, z, r);
+        Real_t alpha = rho / tmp;
+        ParallelBLAS::addScaled<Real_t>(alpha,  s, result);
+        ParallelBLAS::addScaled<Real_t>(-alpha, z, r);
 
-        m_OutResidual = ParallelSTL::maxAbs<RealType>(r);
+        m_OutResidual = ParallelSTL::maxAbs<Real_t>(r);
         if(m_OutResidual < tol) {
             m_OutIterations = iteration + 1;
             return true;
         }
 
         applyPreconditioner(r, z);
-        RealType rho_new = ParallelBLAS::dotProduct<RealType>(z, r);
-        RealType beta    = rho_new / rho;
-        ParallelBLAS::addScaled<RealType, RealType>(beta, s, z);
+        Real_t rho_new = ParallelBLAS::dotProduct<Real_t>(z, r);
+        Real_t beta    = rho_new / rho;
+        ParallelBLAS::addScaled<Real_t, Real_t>(beta, s, z);
         s.swap(z);                         // s=beta*s+z
         rho = rho_new;
     }
@@ -198,8 +198,8 @@ bool PCGSolver<RealType>::solve_precond(const SparseMatrix<RealType>& matrix, co
 }
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-template<class RealType>
-void PCGSolver<RealType>::formPreconditioner(const SparseMatrix<RealType>& matrix)
+template<class Real_t>
+void PCGSolver<Real_t>::formPreconditioner(const SparseMatrix<Real_t>& matrix)
 {
     switch(m_PreconditionerType) {
         case Preconditioner::JACOBI:
@@ -217,8 +217,8 @@ void PCGSolver<RealType>::formPreconditioner(const SparseMatrix<RealType>& matri
 }
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-template<class RealType>
-void PCGSolver<RealType>::applyPreconditioner(const StdVT<RealType>& x, StdVT<RealType>& result)
+template<class Real_t>
+void PCGSolver<Real_t>::applyPreconditioner(const StdVT<Real_t>& x, StdVT<Real_t>& result)
 {
     if(m_PreconditionerType != Preconditioner::JACOBI) {
         solveLower(x, result);
@@ -229,8 +229,8 @@ void PCGSolver<RealType>::applyPreconditioner(const StdVT<RealType>& x, StdVT<Re
 }
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-template<class RealType>
-void PCGSolver<RealType>::applyJacobiPreconditioner(const StdVT<RealType>& x, StdVT<RealType>& result)
+template<class Real_t>
+void PCGSolver<Real_t>::applyJacobiPreconditioner(const StdVT<Real_t>& x, StdVT<Real_t>& result)
 {
     Scheduler::parallel_for<size_t>(0, x.size(),
                                     [&](size_t i)
@@ -242,8 +242,8 @@ void PCGSolver<RealType>::applyJacobiPreconditioner(const StdVT<RealType>& x, St
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 // Solution routines with lower triangular matrix.
 // solve L*result=rhs
-template<class RealType>
-void PCGSolver<RealType>::solveLower(const StdVT<RealType>& rhs, StdVT<RealType>& result)
+template<class Real_t>
+void PCGSolver<Real_t>::solveLower(const StdVT<Real_t>& rhs, StdVT<Real_t>& result)
 {
     result = rhs;
 
@@ -258,8 +258,8 @@ void PCGSolver<RealType>::solveLower(const StdVT<RealType>& rhs, StdVT<RealType>
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 // solve L^T*result=rhs
-template<class RealType>
-void PCGSolver<RealType>::solveLower_TransposeInPlace(StdVT<RealType>& x)
+template<class Real_t>
+void PCGSolver<Real_t>::solveLower_TransposeInPlace(StdVT<Real_t>& x)
 {
     UInt i = m_ICCPrecond.nRows;
 
@@ -274,8 +274,8 @@ void PCGSolver<RealType>::solveLower_TransposeInPlace(StdVT<RealType>& x)
 }
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-template<class RealType>
-void PCGSolver<RealType>::formPreconditioner_Jacobi(const SparseMatrix<RealType>& matrix)
+template<class Real_t>
+void PCGSolver<Real_t>::formPreconditioner_Jacobi(const SparseMatrix<Real_t>& matrix)
 {
     m_JacobiPrecond.resize(matrix.nRows);
     Scheduler::parallel_for<UInt>(0, matrix.nRows,
@@ -283,7 +283,7 @@ void PCGSolver<RealType>::formPreconditioner_Jacobi(const SparseMatrix<RealType>
                                   {
                                       UInt k = 0;
                                       if(STLHelpers::Sorted::contain(matrix.colIndex[i], i, k)) {
-                                          m_JacobiPrecond[i] = RealType(1.0) / matrix.colValue[i][k];
+                                          m_JacobiPrecond[i] = Real_t(1.0) / matrix.colValue[i][k];
                                       } else {
                                           m_JacobiPrecond[i] = 0;
                                       }
@@ -297,8 +297,8 @@ void PCGSolver<RealType>::formPreconditioner_Jacobi(const SparseMatrix<RealType>
 // results. The minDiagonalRatio parameter is used to detect and correct
 // problems in m_ICCPrecondization: if a pivot is this much less than the diagonal
 // entry from the original matrix, the original matrix entry is used instead.
-template<class RealType>
-void PCGSolver<RealType>::formPreconditioner_MICC0L0(const SparseMatrix<RealType>& matrix, RealType MICCL0Param /*= 0.97*/, RealType minDiagonalRatio /*= 0.25*/)
+template<class Real_t>
+void PCGSolver<Real_t>::formPreconditioner_MICC0L0(const SparseMatrix<Real_t>& matrix, Real_t MICCL0Param /*= 0.97*/, Real_t minDiagonalRatio /*= 0.25*/)
 {
     // first copy lower triangle of matrix into m_ICCPrecond (Note: assuming A is symmetric of course!)
     m_ICCPrecond.resize(matrix.nRows);
@@ -326,15 +326,15 @@ void PCGSolver<RealType>::formPreconditioner_MICC0L0(const SparseMatrix<RealType
     m_ICCPrecond.colStart[matrix.nRows] = static_cast<UInt>(m_ICCPrecond.colIndex.size());
 
     for(UInt k = 0, kEnd = matrix.nRows; k < kEnd; ++k) {
-        if(m_ICCPrecond.aDiag[k] < std::numeric_limits<RealType>::min()) {
+        if(m_ICCPrecond.aDiag[k] < std::numeric_limits<Real_t>::min()) {
             continue;                                        // null row/column
         }
 
         // figure out the final L(k,k) entry
         if(m_ICCPrecond.invDiag[k] < minDiagonalRatio * m_ICCPrecond.aDiag[k]) {
-            m_ICCPrecond.invDiag[k] = RealType(1.0) / sqrt(m_ICCPrecond.aDiag[k]);                                     // drop to Gauss-Seidel here if the pivot looks dangerously small
+            m_ICCPrecond.invDiag[k] = Real_t(1.0) / sqrt(m_ICCPrecond.aDiag[k]);                                     // drop to Gauss-Seidel here if the pivot looks dangerously small
         } else {
-            m_ICCPrecond.invDiag[k] = RealType(1.0) / sqrt(m_ICCPrecond.invDiag[k]);
+            m_ICCPrecond.invDiag[k] = Real_t(1.0) / sqrt(m_ICCPrecond.invDiag[k]);
         }
 
         // finalize the k'th column L(:,k)
@@ -345,8 +345,8 @@ void PCGSolver<RealType>::formPreconditioner_MICC0L0(const SparseMatrix<RealType
         // incompletely eliminate L(:,k) from future columns, modifying diagonals
         for(UInt p = m_ICCPrecond.colStart[k], pEnd = m_ICCPrecond.colStart[k + 1]; p < pEnd; ++p) {
             UInt     j          = m_ICCPrecond.colIndex[p];       // work on column j
-            RealType multiplier = m_ICCPrecond.colValue[p];
-            RealType missing    = 0;
+            Real_t multiplier = m_ICCPrecond.colValue[p];
+            Real_t missing    = 0;
             UInt     a          = m_ICCPrecond.colStart[k];
             // first look for contributions to missing from dropped entries above the diagonal in column j
             UInt b = 0;
@@ -402,8 +402,8 @@ void PCGSolver<RealType>::formPreconditioner_MICC0L0(const SparseMatrix<RealType
 }
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-template<class RealType>
-void PCGSolver<RealType>::formPreconditioner_Symmetric_MICC0L0(const SparseMatrix<RealType>& matrix, RealType minDiagonalRatio /*= 0.25*/)
+template<class Real_t>
+void PCGSolver<Real_t>::formPreconditioner_Symmetric_MICC0L0(const SparseMatrix<Real_t>& matrix, Real_t minDiagonalRatio /*= 0.25*/)
 {
     // first copy lower triangle of matrix into m_ICCPrecond (Note: assuming A is symmetric of course!)
     m_ICCPrecond.resize(matrix.nRows);
@@ -432,15 +432,15 @@ void PCGSolver<RealType>::formPreconditioner_Symmetric_MICC0L0(const SparseMatri
     // now do the incomplete m_ICCPrecondization (figure out numerical values)
 
     for(UInt k = 0, kEnd = matrix.nRows; k < kEnd; ++k) {
-        if(m_ICCPrecond.aDiag[k] < std::numeric_limits<RealType>::min()) {
+        if(m_ICCPrecond.aDiag[k] < std::numeric_limits<Real_t>::min()) {
             continue;                                        // null row/column
         }
 
         // figure out the final L(k,k) entry
         if(m_ICCPrecond.invDiag[k] < minDiagonalRatio * m_ICCPrecond.aDiag[k]) {
-            m_ICCPrecond.invDiag[k] = RealType(1.0) / sqrt(m_ICCPrecond.aDiag[k]);                                        // drop to Gauss-Seidel here if the pivot looks dangerously small
+            m_ICCPrecond.invDiag[k] = Real_t(1.0) / sqrt(m_ICCPrecond.aDiag[k]);                                        // drop to Gauss-Seidel here if the pivot looks dangerously small
         } else {
-            m_ICCPrecond.invDiag[k] = RealType(1.0) / sqrt(m_ICCPrecond.invDiag[k]);
+            m_ICCPrecond.invDiag[k] = Real_t(1.0) / sqrt(m_ICCPrecond.invDiag[k]);
         }
 
         // finalize the k'th column L(:,k)
@@ -450,7 +450,7 @@ void PCGSolver<RealType>::formPreconditioner_Symmetric_MICC0L0(const SparseMatri
 
         for(UInt p = m_ICCPrecond.colStart[k], pEnd = m_ICCPrecond.colStart[k + 1]; p < pEnd; ++p) {
             UInt     j          = m_ICCPrecond.colIndex[p];       // work on column j
-            RealType multiplier = m_ICCPrecond.colValue[p];
+            Real_t multiplier = m_ICCPrecond.colValue[p];
 
             m_ICCPrecond.invDiag[j] -= multiplier * m_ICCPrecond.colValue[p];
 

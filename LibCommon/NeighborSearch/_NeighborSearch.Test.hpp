@@ -31,7 +31,7 @@
 #include <algorithm>
 #include <random>
 
-using RealType = float;
+using Real_t = float;
 using Clock    = std::chrono::high_resolution_clock;
 using namespace Banana;
 
@@ -40,19 +40,19 @@ using namespace Banana;
 #define TEST_GRID
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-StdVT<VecX<DIM, RealType>> positions;
-Grid<DIM, RealType>        grid = Grid<DIM, RealType>(VecX<DIM, RealType>(-2), VecX<DIM, RealType>(2), RealType(1.0 / 128.0));
+StdVT<VecX<DIM, Real_t>> positions;
+Grid<DIM, Real_t>        grid = Grid<DIM, Real_t>(VecX<DIM, Real_t>(-2), VecX<DIM, Real_t>(2), Real_t(1.0 / 128.0));
 
 const size_t N               = 50;
 const size_t N_enright_steps = 5;
 
-const RealType r_omega  = 0.75_f;
-const RealType r_omega2 = r_omega * r_omega;
-const RealType radius   = 2.001_f * (2.0_f * r_omega / static_cast<RealType>(N - 1));
-const RealType radius2  = radius * radius;
+const Real_t r_omega  = 0.75_f;
+const Real_t r_omega2 = r_omega * r_omega;
+const Real_t radius   = 2.001_f * (2.0_f * r_omega / static_cast<Real_t>(N - 1));
+const Real_t radius2  = radius * radius;
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-RealType compute_average_number_of_neighbors(const NeighborSearch::NeighborSearch<DIM, RealType>& nsearch)
+Real_t compute_average_number_of_neighbors(const NeighborSearch::NeighborSearch<DIM, Real_t>& nsearch)
 {
     UInt64      res = 0;
     const auto& d   = nsearch.point_set(0);
@@ -61,11 +61,11 @@ RealType compute_average_number_of_neighbors(const NeighborSearch::NeighborSearc
         res += static_cast<UInt64>(d.n_neighbors(0, i));
     }
 
-    return static_cast<RealType>(res) / static_cast<RealType>(d.n_points());
+    return static_cast<Real_t>(res) / static_cast<Real_t>(d.n_points());
 }
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-RealType compute_average_distance(const NeighborSearch::NeighborSearch<DIM, RealType>& nsearch)
+Real_t compute_average_distance(const NeighborSearch::NeighborSearch<DIM, Real_t>& nsearch)
 {
     UInt64      res   = 0;
     UInt64      count = 0;
@@ -80,7 +80,7 @@ RealType compute_average_distance(const NeighborSearch::NeighborSearch<DIM, Real
             count++;
         }
     }
-    return static_cast<RealType>(res) / static_cast<RealType>(count);
+    return static_cast<Real_t>(res) / static_cast<Real_t>(count);
 }
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
@@ -91,15 +91,15 @@ StdVT<StdVT<UInt>> brute_force_search(size_t n_positions)
                             [&](size_t i)
                             {
                                 StdVT<UInt>& neighbors        = brute_force_neighbors[i];
-                                const VecX<DIM, RealType>& xa = positions[i];
+                                const VecX<DIM, Real_t>& xa = positions[i];
 
                                 for(UInt j = 0, jend = UInt(n_positions); j < jend; ++j) {
                                     if(i == size_t(j)) {
                                         continue;
                                     }
 
-                                    const VecX<DIM, RealType>& xb = positions[j];
-                                    RealType l2                   = glm::length2(xa - xb);
+                                    const VecX<DIM, Real_t>& xb = positions[j];
+                                    Real_t l2                   = glm::length2(xa - xb);
                                     if(l2 < radius * radius) {
                                         neighbors.push_back(j);
                                     }
@@ -109,7 +109,7 @@ StdVT<StdVT<UInt>> brute_force_search(size_t n_positions)
 }
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-bool compare_with_bruteforce_search(const NeighborSearch::NeighborSearch<DIM, RealType>& nsearch)
+bool compare_with_bruteforce_search(const NeighborSearch::NeighborSearch<DIM, Real_t>& nsearch)
 {
     const auto& d0                    = nsearch.point_set(0);
     auto        brute_force_neighbors = brute_force_search(d0.n_points());
@@ -150,7 +150,7 @@ bool compare_with_bruteforce_search(const NeighborSearch::NeighborSearch<DIM, Re
 }
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-bool compare_with_grid_search(const NeighborSearch::NeighborSearch<DIM, RealType>& nsearch, StdVT<StdVT<UInt>>& gridSearchResult)
+bool compare_with_grid_search(const NeighborSearch::NeighborSearch<DIM, Real_t>& nsearch, StdVT<StdVT<UInt>>& gridSearchResult)
 {
     const auto& d0      = nsearch.point_set(0);
     bool        success = true;
@@ -175,7 +175,7 @@ bool compare_with_grid_search(const NeighborSearch::NeighborSearch<DIM, RealType
 }
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-bool compare_single_query_with_bruteforce_search(NeighborSearch::NeighborSearch<DIM, RealType>& nsearch)
+bool compare_single_query_with_bruteforce_search(NeighborSearch::NeighborSearch<DIM, Real_t>& nsearch)
 {
     StdVT<StdVT<UInt>> neighbors;
     const auto&        d0                    = nsearch.point_set(0);
@@ -205,27 +205,27 @@ bool compare_single_query_with_bruteforce_search(NeighborSearch::NeighborSearch<
 }
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-VecX<DIM, RealType> enright_velocity_field(VecX<DIM, RealType> const& x)
+VecX<DIM, Real_t> enright_velocity_field(VecX<DIM, Real_t> const& x)
 {
-    RealType sin_pi_x_2 = RealType(std::sin(RealType(M_PI) * x[0]));
-    RealType sin_pi_y_2 = RealType(std::sin(RealType(M_PI) * x[1]));
+    Real_t sin_pi_x_2 = Real_t(std::sin(Real_t(M_PI) * x[0]));
+    Real_t sin_pi_y_2 = Real_t(std::sin(Real_t(M_PI) * x[1]));
     sin_pi_x_2 *= sin_pi_x_2;
     sin_pi_y_2 *= sin_pi_y_2;
 
-    RealType sin_2_pi_x = RealType(std::sin(2.0_f * M_PI * x[0]));
-    RealType sin_2_pi_y = RealType(std::sin(2.0_f * M_PI * x[1]));
+    Real_t sin_2_pi_x = Real_t(std::sin(2.0_f * M_PI * x[0]));
+    Real_t sin_2_pi_y = Real_t(std::sin(2.0_f * M_PI * x[1]));
 
     if constexpr(DIM == 2) {
-        VecX<DIM, RealType> tmp;
+        VecX<DIM, Real_t> tmp;
         tmp[0] = 2.0_f * sin_pi_x_2 * sin_2_pi_y;
         tmp[1] = -sin_2_pi_x * sin_pi_y_2;
         return tmp;
     } else {
-        RealType sin_pi_z_2 = RealType(std::sin(RealType(M_PI) * x[2]));
+        Real_t sin_pi_z_2 = Real_t(std::sin(Real_t(M_PI) * x[2]));
         sin_pi_z_2 *= sin_pi_z_2;
-        RealType sin_2_pi_z = RealType(std::sin(2.0_f * M_PI * x[2]));
+        Real_t sin_2_pi_z = Real_t(std::sin(2.0_f * M_PI * x[2]));
 
-        VecX<DIM, RealType> tmp;
+        VecX<DIM, Real_t> tmp;
         tmp[0] = 2.0_f * sin_pi_x_2 * sin_2_pi_y * sin_2_pi_z;
         tmp[1] = -sin_2_pi_x * sin_pi_y_2 * sin_2_pi_z;
         tmp[2] = -sin_2_pi_x * sin_2_pi_y * sin_pi_z_2;
@@ -236,7 +236,7 @@ VecX<DIM, RealType> enright_velocity_field(VecX<DIM, RealType> const& x)
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 void advect()
 {
-    const RealType timestep = 0.01_f;
+    const Real_t timestep = 0.01_f;
     Scheduler::parallel_for<size_t>(0, positions.size(), [&](size_t i)
                                     {
                                         auto& x       = positions[i];
@@ -252,20 +252,20 @@ void advect()
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 TEST_CASE("Test CompactNSearch", "[CompactNSearch]")
 {
-    RealType min_x = std::numeric_limits<RealType>::max();
-    RealType max_x = std::numeric_limits<RealType>::min();
+    Real_t min_x = std::numeric_limits<Real_t>::max();
+    Real_t max_x = std::numeric_limits<Real_t>::min();
     positions.reserve(N * N * N);
 
     if constexpr(DIM == 2) {
         for(UInt i = 0; i < N; ++i) {
             for(UInt j = 0; j < N; ++j) {
-                VecX<DIM, RealType> x;
-                x[0] = r_omega * (2.0_f * (static_cast<RealType>(i) + MathHelpers::frand11<RealType>()) / static_cast<RealType>(N - 1) - 1.0_f);
-                x[1] = r_omega * (2.0_f * (static_cast<RealType>(j) + MathHelpers::frand11<RealType>()) / static_cast<RealType>(N - 1) - 1.0_f);
-                RealType l2 = glm::length2(x);
+                VecX<DIM, Real_t> x;
+                x[0] = r_omega * (2.0_f * (static_cast<Real_t>(i) + MathHelpers::frand11<Real_t>()) / static_cast<Real_t>(N - 1) - 1.0_f);
+                x[1] = r_omega * (2.0_f * (static_cast<Real_t>(j) + MathHelpers::frand11<Real_t>()) / static_cast<Real_t>(N - 1) - 1.0_f);
+                Real_t l2 = glm::length2(x);
 
                 if(l2 < r_omega2) {
-                    x += VecX<DIM, RealType>(0.35_f);
+                    x += VecX<DIM, Real_t>(0.35_f);
                     positions.push_back(x);
 
                     if(min_x > x[0]) {
@@ -281,13 +281,13 @@ TEST_CASE("Test CompactNSearch", "[CompactNSearch]")
         for(UInt i = 0; i < N; ++i) {
             for(UInt j = 0; j < N; ++j) {
                 for(UInt k = 0; k < N; ++k) {
-                    VecX<DIM, RealType> x;
-                    x[0] = r_omega * (2.0_f * (static_cast<RealType>(i) + MathHelpers::frand11<RealType>()) / static_cast<RealType>(N - 1) - 1.0_f);
-                    x[1] = r_omega * (2.0_f * (static_cast<RealType>(j) + MathHelpers::frand11<RealType>()) / static_cast<RealType>(N - 1) - 1.0_f);
-                    x[2] = r_omega * (2.0_f * (static_cast<RealType>(k) + MathHelpers::frand11<RealType>()) / static_cast<RealType>(N - 1) - 1.0_f);
-                    RealType l2 = glm::length2(x);
+                    VecX<DIM, Real_t> x;
+                    x[0] = r_omega * (2.0_f * (static_cast<Real_t>(i) + MathHelpers::frand11<Real_t>()) / static_cast<Real_t>(N - 1) - 1.0_f);
+                    x[1] = r_omega * (2.0_f * (static_cast<Real_t>(j) + MathHelpers::frand11<Real_t>()) / static_cast<Real_t>(N - 1) - 1.0_f);
+                    x[2] = r_omega * (2.0_f * (static_cast<Real_t>(k) + MathHelpers::frand11<Real_t>()) / static_cast<Real_t>(N - 1) - 1.0_f);
+                    Real_t l2 = glm::length2(x);
                     if(l2 < r_omega2) {
-                        x += VecX<DIM, RealType>(0.35_f);
+                        x += VecX<DIM, Real_t>(0.35_f);
                         positions.push_back(x);
 
                         if(min_x > x[0]) {
@@ -308,8 +308,8 @@ TEST_CASE("Test CompactNSearch", "[CompactNSearch]")
         std::shuffle(positions.begin(), positions.end(), rng);
     }
 
-    NeighborSearch::NeighborSearch<DIM, RealType> nsearch(radius, true);
-    //NeighborSearch::NeighborSearch<DIM, RealType> nsearch(radius, false);
+    NeighborSearch::NeighborSearch<DIM, Real_t> nsearch(radius, true);
+    //NeighborSearch::NeighborSearch<DIM, Real_t> nsearch(radius, false);
     nsearch.add_point_set(glm::value_ptr(positions.front()), UInt(positions.size()), true, true);
     //nsearch.add_point_set(glm::value_ptr(positions.front()), positions.size(), true, true);
 
