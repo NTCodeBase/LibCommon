@@ -25,4 +25,4 @@ template<int N, class T> class Grid;
 namespace GeometryObjects
 {
 template<int N, class T> class GeometryObject;
-};
+}
