@@ -501,13 +501,13 @@ TEST_CASE("Compare_FastVec3_Performance", "Compare_FastVec3_Performance")
                                         for(Int z = 0; z < 3; ++z) {
                                             for(Int y = 0; y < 3; ++y) {
                                                 for(Int x = 0; x < 3; ++x) {
-                                                    const auto grid_x = lcorner.x + x;
-                                                    const auto grid_y = lcorner.y + y;
-                                                    const auto grid_z = lcorner.z + z;
+                                                    const auto node_x = lcorner.x + x;
+                                                    const auto node_y = lcorner.y + y;
+                                                    const auto node_z = lcorner.z + z;
 
-                                                    const auto xixp = grid.getWorldCoordinate(grid_x, grid_y, grid_z) - ppos;
+                                                    const auto xixp = grid.getWorldCoordinate(node_x, node_y, node_z) - ppos;
                                                     const auto vp   = (pvel + pC * xixp) * (w * mp);
-                                                    AtomicOperations::add(gridData(grid_x, grid_y, grid_z), vp);
+                                                    AtomicOperations::add(gridData(node_x, node_y, node_z), vp);
                                                 }
                                             }
                                         }
@@ -529,13 +529,13 @@ TEST_CASE("Compare_FastVec3_Performance", "Compare_FastVec3_Performance")
                                         for(Int z = 0; z < 3; ++z) {
                                             for(Int y = 0; y < 3; ++y) {
                                                 for(Int x = 0; x < 3; ++x) {
-                                                    const auto grid_x = lcorner.x + x;
-                                                    const auto grid_y = lcorner.y + y;
-                                                    const auto grid_z = lcorner.z + z;
+                                                    const auto node_x = lcorner.x + x;
+                                                    const auto node_y = lcorner.y + y;
+                                                    const auto node_z = lcorner.z + z;
 
-                                                    const auto xixp = FastVec3<Real>(grid.getWorldCoordinate(grid_x, grid_y, grid_z)) - ppos;
+                                                    const auto xixp = FastVec3<Real>(grid.getWorldCoordinate(node_x, node_y, node_z)) - ppos;
                                                     const auto vp   = (pvel + pC * xixp) * (w * mp);
-                                                    AtomicOperations::add(gridData(grid_x, grid_y, grid_z), vp.v3);
+                                                    AtomicOperations::add(gridData(node_x, node_y, node_z), vp.v3);
                                                 }
                                             }
                                         }
@@ -557,13 +557,13 @@ TEST_CASE("Compare_FastVec3_Performance", "Compare_FastVec3_Performance")
                                         for(int z = 0; z < 4; ++z) {
                                             for(int y = 0; y < 4; ++y) {
                                                 for(int x = 0; x < 4; ++x) {
-                                                    const auto grid_x = lcorner.x + x;
-                                                    const auto grid_y = lcorner.y + y;
-                                                    const auto grid_z = lcorner.z + z;
+                                                    const auto node_x = lcorner.x + x;
+                                                    const auto node_y = lcorner.y + y;
+                                                    const auto node_z = lcorner.z + z;
 
-                                                    const auto xixp = fastGrid.getWorldCoordinate(grid_x, grid_y, grid_z) - ppos;
+                                                    const auto xixp = fastGrid.getWorldCoordinate(node_x, node_y, node_z) - ppos;
                                                     const auto vp   = (pvel + pC * xixp) * (w * mp);
-                                                    AtomicOperations::add(gridData(grid_x, grid_y, grid_z), vp.v3);
+                                                    AtomicOperations::add(gridData(node_x, node_y, node_z), vp.v3);
                                                 }
                                             }
                                         }
@@ -582,12 +582,12 @@ TEST_CASE("Compare_FastVec3_Performance", "Compare_FastVec3_Performance")
                                         for(Int z = 0; z < 3; ++z) {
                                             for(Int y = 0; y < 3; ++y) {
                                                 for(Int x = 0; x < 3; ++x) {
-                                                    const auto grid_x = lcorner.x + x;
-                                                    const auto grid_y = lcorner.y + y;
-                                                    const auto grid_z = lcorner.z + z;
+                                                    const auto node_x = lcorner.x + x;
+                                                    const auto node_y = lcorner.y + y;
+                                                    const auto node_z = lcorner.z + z;
 
-                                                    const auto xi = grid.getWorldCoordinate(grid_x, grid_y, grid_z);
-                                                    const auto vi = gridData(grid_x, grid_y, grid_z);
+                                                    const auto xi = grid.getWorldCoordinate(node_x, node_y, node_z);
+                                                    const auto vi = gridData(node_x, node_y, node_z);
                                                     ppos         += w * (xi + Real(1e-5) * vi);
                                                 }
                                             }
@@ -608,12 +608,12 @@ TEST_CASE("Compare_FastVec3_Performance", "Compare_FastVec3_Performance")
                                         for(Int z = 0; z < 3; ++z) {
                                             for(Int y = 0; y < 3; ++y) {
                                                 for(Int x = 0; x < 3; ++x) {
-                                                    const auto grid_x = lcorner.x + x;
-                                                    const auto grid_y = lcorner.y + y;
-                                                    const auto grid_z = lcorner.z + z;
+                                                    const auto node_x = lcorner.x + x;
+                                                    const auto node_y = lcorner.y + y;
+                                                    const auto node_z = lcorner.z + z;
 
-                                                    const auto xi = FastVec3<Real>(grid.getWorldCoordinate(grid_x, grid_y, grid_z));
-                                                    const auto vi = FastVec3<Real>(gridData(grid_x, grid_y, grid_z));
+                                                    const auto xi = FastVec3<Real>(grid.getWorldCoordinate(node_x, node_y, node_z));
+                                                    const auto vi = FastVec3<Real>(gridData(node_x, node_y, node_z));
                                                     ppos         += w * (xi + Real(1e-5) * vi);
                                                 }
                                             }
@@ -635,12 +635,12 @@ TEST_CASE("Compare_FastVec3_Performance", "Compare_FastVec3_Performance")
                                         for(Int z = 0; z < 3; ++z) {
                                             for(Int y = 0; y < 3; ++y) {
                                                 for(Int x = 0; x < 3; ++x) {
-                                                    const auto grid_x = lcorner.x + x;
-                                                    const auto grid_y = lcorner.y + y;
-                                                    const auto grid_z = lcorner.z + z;
+                                                    const auto node_x = lcorner.x + x;
+                                                    const auto node_y = lcorner.y + y;
+                                                    const auto node_z = lcorner.z + z;
 
-                                                    const auto xi = fastGrid.getWorldCoordinate(grid_x, grid_y, grid_z);
-                                                    gvel.v3       = gridData(grid_x, grid_y, grid_z);
+                                                    const auto xi = fastGrid.getWorldCoordinate(node_x, node_y, node_z);
+                                                    gvel.v3       = gridData(node_x, node_y, node_z);
                                                     ppos         += w * (xi + Real(1e-5) * gvel);
                                                 }
                                             }
@@ -661,12 +661,12 @@ TEST_CASE("Compare_FastVec3_Performance", "Compare_FastVec3_Performance")
                                         for(Int z = 0; z < 3; ++z) {
                                             for(Int y = 0; y < 3; ++y) {
                                                 for(Int x = 0; x < 3; ++x) {
-                                                    const auto grid_x = lcorner.x + x;
-                                                    const auto grid_y = lcorner.y + y;
-                                                    const auto grid_z = lcorner.z + z;
+                                                    const auto node_x = lcorner.x + x;
+                                                    const auto node_y = lcorner.y + y;
+                                                    const auto node_z = lcorner.z + z;
 
-                                                    const auto xi = fastGrid.getWorldCoordinate(grid_x, grid_y, grid_z).v3;
-                                                    const auto vi = gridData(grid_x, grid_y, grid_z);
+                                                    const auto xi = fastGrid.getWorldCoordinate(node_x, node_y, node_z).v3;
+                                                    const auto vi = gridData(node_x, node_y, node_z);
                                                     ppos         += w * (xi + Real(1e-5) * vi);
                                                 }
                                             }
