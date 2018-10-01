@@ -26,7 +26,7 @@
 #include <LibCommon/Math/FastMat3.h>
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-using Real = float;
+using Real_t = float;
 
 //#define FAST_TEST
 #define PARALLEL_TEST
@@ -52,7 +52,7 @@ auto init_glmVec3 = [] (auto& v3_data) {
                         v3_data.resize(0);
                         v3_data.reserve(DATA_SIZE);
                         for(int i = 0; i < DATA_SIZE; ++i) {
-                            v3_data.push_back(NumberHelpers::fRand<Real>::vrnd<Vec3<Real>>());
+                            v3_data.push_back(NumberHelpers::fRand<Real_t>::vrnd<Vec3<Real_t>>());
                         }
                     };
 
@@ -60,7 +60,7 @@ auto init_FastVec3 = [](auto& fv3_data) {
                          fv3_data.resize(0);
                          fv3_data.reserve(DATA_SIZE);
                          for(int i = 0; i < DATA_SIZE; ++i) {
-                             fv3_data.push_back(NumberHelpers::fRand<Real>::vrnd<Vec3<Real>>());
+                             fv3_data.push_back(NumberHelpers::fRand<Real_t>::vrnd<Vec3<Real_t>>());
                          }
                      };
 
@@ -68,7 +68,7 @@ auto init_glmMat3 = [] (auto& m3_data) {
                         m3_data.resize(0);
                         m3_data.reserve(DATA_SIZE);
                         for(int i = 0; i < DATA_SIZE; ++i) {
-                            m3_data.push_back(NumberHelpers::fRand<Real>::vrnd<Mat3x3<Real>>());
+                            m3_data.push_back(NumberHelpers::fRand<Real_t>::vrnd<Mat3x3<Real_t>>());
                         }
                     };
 
@@ -76,7 +76,7 @@ auto init_FastMat3 = [](auto& fm3_data) {
                          fm3_data.resize(0);
                          fm3_data.reserve(DATA_SIZE);
                          for(int i = 0; i < DATA_SIZE; ++i) {
-                             fm3_data.push_back(NumberHelpers::fRand<Real>::vrnd<Mat3x3<Real>>());
+                             fm3_data.push_back(NumberHelpers::fRand<Real_t>::vrnd<Mat3x3<Real_t>>());
                          }
                      };
 
@@ -147,31 +147,31 @@ auto check_mat3 = [](const auto& m3, const auto& fm3) {
 #ifdef TEST_CORRECTNESS_INITIALIZATION
 TEST_CASE("Test_Correctness_Initialization", "Test_Correctness_Initialization")
 {
-    ScopeTimer          timer("Test_Correctness_Initialization");
-    StdVT<Vec3<Real>>   v3_data;
-    StdVT<Mat3x3<Real>> m3_data;
+    ScopeTimer            timer("Test_Correctness_Initialization");
+    StdVT<Vec3<Real_t>>   v3_data;
+    StdVT<Mat3x3<Real_t>> m3_data;
     ////////////////////////////////////////////////////////////////////////////////
     {
         init_glmVec3(v3_data);
         for(UInt i = 0; i < DATA_SIZE; ++i) {
             auto& v3 = v3_data[i];
             {
-                FastVec3<Real> fv3 = v3;
+                FastVec3<Real_t> fv3 = v3;
                 REQUIRE(check_vec3(v3, fv3));
 
-                Vec3<Real> v3_copy = fv3;
+                Vec3<Real_t> v3_copy = fv3;
                 REQUIRE(check_vec3(v3_copy, fv3));
                 REQUIRE(       glm::length2(v3 - v3_copy) < PRECISION);
             }
             {
-                FastVec3<Real> fv3(v3.x, v3.y, v3.z);
+                FastVec3<Real_t> fv3(v3.x, v3.y, v3.z);
                 REQUIRE(check_vec3(v3, fv3));
             }
             {
-                FastVec3<Real> fv3     = v3;
-                Vec3i          vi      = Vec3i(v3);
-                Vec3i          fvi     = fv3.toVec3i();
-                bool           bResult = (vi.x == fvi.x && vi.y == fvi.y && vi.z == fvi.z);
+                FastVec3<Real_t> fv3     = v3;
+                Vec3i            vi      = Vec3i(v3);
+                Vec3i            fvi     = fv3.toVec3i();
+                bool             bResult = (vi.x == fvi.x && vi.y == fvi.y && vi.z == fvi.z);
                 REQUIRE(bResult);
             }
         }
@@ -182,20 +182,20 @@ TEST_CASE("Test_Correctness_Initialization", "Test_Correctness_Initialization")
         for(UInt i = 0; i < DATA_SIZE; ++i) {
             auto& m3 = m3_data[i];
             {
-                FastMat3<Real> fm3 = m3;
+                FastMat3<Real_t> fm3 = m3;
                 REQUIRE(check_mat3(m3, fm3));
 
-                Mat3x3<Real> m3_copy1 = fm3;
+                Mat3x3<Real_t> m3_copy1 = fm3;
                 REQUIRE(check_mat3(m3_copy1, fm3));
                 REQUIRE(       glm::length2(m3[0] - m3_copy1[0]) + glm::length2(m3[1] - m3_copy1[1]) + glm::length2(m3[2] - m3_copy1[2]) < PRECISION);
 
-                Mat3x3<Real> m3_copy2;
+                Mat3x3<Real_t> m3_copy2;
                 fm3.copyToMat3x3r(m3_copy2);
                 REQUIRE(check_mat3(m3_copy2, fm3));
                 REQUIRE(       glm::length2(m3[0] - m3_copy2[0]) + glm::length2(m3[1] - m3_copy2[1]) + glm::length2(m3[2] - m3_copy2[2]) < PRECISION);
             }
             {
-                FastMat3<Real> fm3(m3[0], m3[1], m3[2]);
+                FastMat3<Real_t> fm3(m3[0], m3[1], m3[2]);
                 REQUIRE(check_mat3(m3, fm3));
             }
         }
@@ -207,12 +207,12 @@ TEST_CASE("Test_Correctness_Initialization", "Test_Correctness_Initialization")
 #ifdef TEST_PERFORMANCE_INITIALIZATION
 TEST_CASE("Test_Performance_Initialization", "Test_Performance_Initialization")
 {
-    ScopeTimer            timer("Test_Performance_Initialization");
-    StdVT<Vec3<Real>>     v3_data;
-    StdVT<FastVec3<Real>> fv3_data;
+    ScopeTimer              timer("Test_Performance_Initialization");
+    StdVT<Vec3<Real_t>>     v3_data;
+    StdVT<FastVec3<Real_t>> fv3_data;
 
-    StdVT<Mat3x3<Real>>   m3_data;
-    StdVT<FastMat3<Real>> fm3_data;
+    StdVT<Mat3x3<Real_t>>   m3_data;
+    StdVT<FastMat3<Real_t>> fm3_data;
     ////////////////////////////////////////////////////////////////////////////////
     {
         ScopeTimer timer("GLM vec3 initialization");
@@ -268,10 +268,10 @@ TEST_CASE("Test_FastVec3_Ops", "Test_FastVec3_Ops")
         for(int i = 0; i < DATA_SIZE; ++i) {
 #endif
                                     __NT_UNUSED(i);
-                                    Vec3<Real> v0      = NumberHelpers::fRand11<Real>::vrnd<Vec3<Real>>();
-                                    Vec3<Real> v1      = NumberHelpers::fRand11<Real>::vrnd<Vec3<Real>>();
-                                    FastVec3<Real> fv0 = v0;
-                                    FastVec3<Real> fv1 = v1;
+                                    Vec3<Real_t> v0      = NumberHelpers::fRand11<Real_t>::vrnd<Vec3<Real_t>>();
+                                    Vec3<Real_t> v1      = NumberHelpers::fRand11<Real_t>::vrnd<Vec3<Real_t>>();
+                                    FastVec3<Real_t> fv0 = v0;
+                                    FastVec3<Real_t> fv1 = v1;
                                     {
                                         auto v2_add = v0 + v1;
                                         auto v2_sub = v0 - v1;
@@ -303,7 +303,7 @@ TEST_CASE("Test_FastVec3_Ops", "Test_FastVec3_Ops")
                                         REQUIRE(check_vec3(v2_mul, fv2_mul));
                                         REQUIRE(check_vec3(v2_div, fv2_div));
                                         ////////////////////////////////////////////////////////////////////////////////
-                                        auto r  = NumberHelpers::fRand11<Real>::rnd();
+                                        auto r  = NumberHelpers::fRand11<Real_t>::rnd();
                                         v2_add += r;
                                         v2_sub -= r;
                                         v2_mul *= r;
@@ -348,9 +348,9 @@ TEST_CASE("Test_FastVec3_Ops", "Test_FastVec3_Ops")
                                         REQUIRE(check_vec3(fv2, fv0));
                                     }
                                     {
-                                        FastVec3<Real> fv2(0);
-                                        FastVec3<Real> fv3 = -fv0;
-                                        FastVec3<Real> fv4 = fv0 + fv3;
+                                        FastVec3<Real_t> fv2(0);
+                                        FastVec3<Real_t> fv3 = -fv0;
+                                        FastVec3<Real_t> fv4 = fv0 + fv3;
                                         REQUIRE(check_vec3(fv2, fv4));
                                     }
 #ifdef PARALLEL_TEST
@@ -376,12 +376,12 @@ TEST_CASE("Test_FastMat3_Ops", "Test_FastMat3_Ops")
         for(int i = 0; i < DATA_SIZE; ++i) {
 #endif
                                     __NT_UNUSED(i);
-                                    Vec3<Real> v0      = NumberHelpers::fRand11<Real>::vrnd<Vec3<Real>>();
-                                    Mat3x3<Real> m0    = NumberHelpers::fRand11<Real>::vrnd<Mat3x3<Real>>();
-                                    Mat3x3<Real> m1    = NumberHelpers::fRand11<Real>::vrnd<Mat3x3<Real>>();
-                                    FastVec3<Real> fv0 = v0;
-                                    FastMat3<Real> fm0 = m0;
-                                    FastMat3<Real> fm1 = m1;
+                                    Vec3<Real_t> v0      = NumberHelpers::fRand11<Real_t>::vrnd<Vec3<Real_t>>();
+                                    Mat3x3<Real_t> m0    = NumberHelpers::fRand11<Real_t>::vrnd<Mat3x3<Real_t>>();
+                                    Mat3x3<Real_t> m1    = NumberHelpers::fRand11<Real_t>::vrnd<Mat3x3<Real_t>>();
+                                    FastVec3<Real_t> fv0 = v0;
+                                    FastMat3<Real_t> fm0 = m0;
+                                    FastMat3<Real_t> fm1 = m1;
                                     {
                                         auto m2_add = m0 + m1;
                                         auto m2_sub = m0 - m1;
@@ -412,7 +412,7 @@ TEST_CASE("Test_FastMat3_Ops", "Test_FastMat3_Ops")
                                         REQUIRE(check_mat3(m2_sub, fm2_sub));
                                         REQUIRE(check_mat3(m2_mul, fm2_mul));
                                         ////////////////////////////////////////////////////////////////////////////////
-                                        auto r  = NumberHelpers::fRand11<Real>::rnd();
+                                        auto r  = NumberHelpers::fRand11<Real_t>::rnd();
                                         m2_add += r;
                                         m2_sub -= r;
                                         m2_mul *= r;
@@ -439,9 +439,9 @@ TEST_CASE("Test_FastMat3_Ops", "Test_FastMat3_Ops")
                                         REQUIRE(check_mat3(fm2, fm0));
                                     }
                                     {
-                                        FastMat3<Real> fm2(0);
-                                        FastMat3<Real> fv3 = -fm0;
-                                        FastMat3<Real> fv4 = fm0 + fv3;
+                                        FastMat3<Real_t> fm2(0);
+                                        FastMat3<Real_t> fv3 = -fm0;
+                                        FastMat3<Real_t> fv4 = fm0 + fv3;
                                         REQUIRE(check_mat3(fm2, fv4));
                                     }
 #ifdef PARALLEL_TEST
@@ -459,28 +459,33 @@ TEST_CASE("Test_FastMat3_Ops", "Test_FastMat3_Ops")
 TEST_CASE("Compare_FastVec3_Performance", "Compare_FastVec3_Performance")
 {
     ScopeTimer timer("Compare_FastVec3_Performance");
-    StdVT<Real> mass(DATA_SIZE);
-    StdVT<Vec3<Real>> positions(DATA_SIZE);
-    StdVT<Vec3<Real>> velocities(DATA_SIZE);
+    StdVT<Real_t> mass(DATA_SIZE);
+    StdVT<Vec3<Vec3<Real_t>>> w_cache(DATA_SIZE);
+    StdVT<Vec3<Real_t>> positions(DATA_SIZE);
+    StdVT<Vec3<Real_t>> velocities(DATA_SIZE);
     StdVT<Vec3<int>> kernelCornerNode(DATA_SIZE);
-    StdVT<Mat3x3<Real>> C(DATA_SIZE);;
+    StdVT<Mat3x3<Real_t>> C(DATA_SIZE);;
 
-    Grid<3, Real> grid;
-    FastGrid3<Real> fastGrid;
-    Array<3, Vec3<Real>> gridData;
-    const auto cellSize = Real(2.0 / 128.0);
-    grid.setGrid(Vec3<Real>(0 - 2.0 * cellSize), Vec3<Real>(1.0 + 2.0 * cellSize), cellSize, cellSize);
-    fastGrid.setGrid(Vec3<Real>(0 - 2.0 * cellSize), Vec3<Real>(1.0 + 2.0 * cellSize), cellSize, cellSize);
+    Grid<3, Real_t> grid;
+    FastGrid3<Real_t> fastGrid;
+    Array<3, Vec3<Real_t>> gridData;
+    const auto cellSize = Real_t(2.0 / 128.0);
+    grid.setGrid(Vec3<Real_t>(0 - 2.0 * cellSize), Vec3<Real_t>(1.0 + 2.0 * cellSize), cellSize, cellSize);
+    fastGrid.setGrid(Vec3<Real_t>(0 - 2.0 * cellSize), Vec3<Real_t>(1.0 + 2.0 * cellSize), cellSize, cellSize);
 
     {
         ScopeTimer timer("Init performance test data");
         gridData.resize(grid.getNNodes());
         Scheduler::parallel_for(DATA_SIZE,
                                 [&](int i) {
-                                    mass[i]       = NumberHelpers::fRand<Real>::rnd();
-                                    positions[i]  = NumberHelpers::fRand01<Real>::vrnd<Vec3<Real>>();
-                                    velocities[i] = NumberHelpers::fRand<Real>::vrnd<Vec3<Real>>();
-                                    C[i]          = NumberHelpers::fRand<Real>::mrnd<Mat3x3<Real>>();
+                                    w_cache[i][0] = NumberHelpers::fRand<Real_t>::vrnd<Vec3<Real_t>>();
+                                    w_cache[i][1] = NumberHelpers::fRand<Real_t>::vrnd<Vec3<Real_t>>();
+                                    w_cache[i][2] = NumberHelpers::fRand<Real_t>::vrnd<Vec3<Real_t>>();
+
+                                    mass[i]       = NumberHelpers::fRand<Real_t>::rnd();
+                                    positions[i]  = NumberHelpers::fRand01<Real_t>::vrnd<Vec3<Real_t>>();
+                                    velocities[i] = NumberHelpers::fRand<Real_t>::vrnd<Vec3<Real_t>>();
+                                    C[i]          = NumberHelpers::fRand<Real_t>::mrnd<Mat3x3<Real_t>>();
 
                                     const auto pg       = grid.getGridCoordinate(positions[i]);
                                     kernelCornerNode[i] = Vec3i(pg) - Vec3i(1);
@@ -492,22 +497,33 @@ TEST_CASE("Compare_FastVec3_Performance", "Compare_FastVec3_Performance")
         for(int i = 0; i < PERFORMANCE_TEST_NUM; ++i) {
             Scheduler::parallel_for(DATA_SIZE,
                                     [&](int i) {
-                                        const auto mp       = mass[i];
-                                        const auto w        = NumberHelpers::fRand<Real>::rnd();
-                                        const auto& ppos    = positions[i];
-                                        const auto& pvel    = velocities[i];
-                                        const auto& pC      = C[i];
-                                        const auto& lcorner = kernelCornerNode[i];
+                                        const auto mp           = mass[i];
+                                        const auto& weights     = w_cache[i];
+                                        const auto& pvel        = velocities[i];
+                                        const auto& pC          = C[i];
+                                        const auto& cornerNode  = kernelCornerNode[i];
+                                        const auto cellSize     = grid.getCellSize();
+                                        const auto xi_corner_xp = grid.getWorldCoordinate(cornerNode.x, cornerNode.y, cornerNode.z) - positions[i];
+                                        Vec3<Real_t> xixp;
+                                        ////////////////////////////////////////////////////////////////////////////////
                                         for(Int z = 0; z < 3; ++z) {
-                                            for(Int y = 0; y < 3; ++y) {
-                                                for(Int x = 0; x < 3; ++x) {
-                                                    const auto node_x = lcorner.x + x;
-                                                    const auto node_y = lcorner.y + y;
-                                                    const auto node_z = lcorner.z + z;
+                                            const auto node_z = cornerNode.z + z;
+                                            xixp.z = xi_corner_xp.z + static_cast<Real_t>(z) * cellSize;
 
-                                                    const auto xixp = grid.getWorldCoordinate(node_x, node_y, node_z) - ppos;
-                                                    const auto vp   = (pvel + pC * xixp) * (w * mp);
-                                                    AtomicOperations::add(gridData(node_x, node_y, node_z), vp);
+                                            for(Int y = 0; y < 3; ++y) {
+                                                const auto node_y = cornerNode.y + y;
+                                                const auto w_yz   = weights[1][y] * weights[2][z];
+                                                xixp.y = xi_corner_xp.y + static_cast<Real_t>(y) * cellSize;
+
+                                                for(Int x = 0; x < 3; ++x) {
+                                                    const auto w = weights[0][x] * w_yz;
+                                                    if(w > 0) {
+                                                        const auto node_x = cornerNode.x + x;
+                                                        xixp.x = xi_corner_xp.x + static_cast<Real_t>(x) * cellSize;
+
+                                                        const auto vp_mp = (pvel + pC * xixp) * (w * mp);
+                                                        AtomicOperations::add(gridData(node_x, node_y, node_z), vp_mp);
+                                                    }
                                                 }
                                             }
                                         }
@@ -520,22 +536,33 @@ TEST_CASE("Compare_FastVec3_Performance", "Compare_FastVec3_Performance")
         for(int i = 0; i < PERFORMANCE_TEST_NUM; ++i) {
             Scheduler::parallel_for(DATA_SIZE,
                                     [&](int i) {
-                                        const auto mp       = mass[i];
-                                        const auto w        = NumberHelpers::fRand<Real>::rnd();
-                                        const auto ppos     = FastVec3<Real>(positions[i]);
-                                        const auto pvel     = FastVec3<Real>(velocities[i]);
-                                        const auto pC       = FastMat3<Real>(C[i]);
-                                        const auto& lcorner = kernelCornerNode[i];
+                                        const auto mp           = mass[i];
+                                        const auto& weights     = w_cache[i];
+                                        const auto pvel         = FastVec3<Real_t>(velocities[i]);
+                                        const auto pC           = FastMat3<Real_t>(C[i]);
+                                        const auto& cornerNode  = kernelCornerNode[i];
+                                        const auto cellSize     = grid.getCellSize();
+                                        const auto xi_corner_xp = grid.getWorldCoordinate(cornerNode.x, cornerNode.y, cornerNode.z) - positions[i];
+                                        FastVec3<Real_t> xixp;
+                                        ////////////////////////////////////////////////////////////////////////////////
                                         for(Int z = 0; z < 3; ++z) {
-                                            for(Int y = 0; y < 3; ++y) {
-                                                for(Int x = 0; x < 3; ++x) {
-                                                    const auto node_x = lcorner.x + x;
-                                                    const auto node_y = lcorner.y + y;
-                                                    const auto node_z = lcorner.z + z;
+                                            const auto node_z = cornerNode.z + z;
+                                            xixp.z = xi_corner_xp.z + static_cast<Real_t>(z) * cellSize;
 
-                                                    const auto xixp = FastVec3<Real>(grid.getWorldCoordinate(node_x, node_y, node_z)) - ppos;
-                                                    const auto vp   = (pvel + pC * xixp) * (w * mp);
-                                                    AtomicOperations::add(gridData(node_x, node_y, node_z), vp.v3);
+                                            for(Int y = 0; y < 3; ++y) {
+                                                const auto node_y = cornerNode.y + y;
+                                                const auto w_yz   = weights[1][y] * weights[2][z];
+                                                xixp.y = xi_corner_xp.y + static_cast<Real_t>(y) * cellSize;
+
+                                                for(Int x = 0; x < 3; ++x) {
+                                                    const auto w = weights[0][x] * w_yz;
+                                                    if(w > 0) {
+                                                        const auto node_x = cornerNode.x + x;
+                                                        xixp.x = xi_corner_xp.x + static_cast<Real_t>(x) * cellSize;
+
+                                                        const auto vp_mp = (pvel + pC * xixp) * (w * mp);
+                                                        AtomicOperations::add(gridData(node_x, node_y, node_z), vp_mp.v3);
+                                                    }
                                                 }
                                             }
                                         }
@@ -548,22 +575,34 @@ TEST_CASE("Compare_FastVec3_Performance", "Compare_FastVec3_Performance")
         for(int i = 0; i < PERFORMANCE_TEST_NUM; ++i) {
             Scheduler::parallel_for(DATA_SIZE,
                                     [&](int i) {
-                                        const auto mp       = mass[i];
-                                        const auto w        = NumberHelpers::fRand<Real>::rnd();
-                                        const auto ppos     = FastVec3<Real>(positions[i]);
-                                        const auto pvel     = FastVec3<Real>(velocities[i]);
-                                        const auto pC       = FastMat3<Real>(C[i]);
-                                        const auto& lcorner = kernelCornerNode[i];
-                                        for(int z = 0; z < 4; ++z) {
-                                            for(int y = 0; y < 4; ++y) {
-                                                for(int x = 0; x < 4; ++x) {
-                                                    const auto node_x = lcorner.x + x;
-                                                    const auto node_y = lcorner.y + y;
-                                                    const auto node_z = lcorner.z + z;
+                                        const auto mp           = mass[i];
+                                        const auto& weights     = w_cache[i];
+                                        const auto ppos         = FastVec3<Real_t>(positions[i]);
+                                        const auto pvel         = FastVec3<Real_t>(velocities[i]);
+                                        const auto pC           = FastMat3<Real_t>(C[i]);
+                                        const auto& cornerNode  = kernelCornerNode[i];
+                                        const auto cellSize     = grid.getCellSize();
+                                        const auto xi_corner_xp = fastGrid.getWorldCoordinate(cornerNode.x, cornerNode.y, cornerNode.z) - ppos;
+                                        Vec3<Real_t> xixp;
+                                        ////////////////////////////////////////////////////////////////////////////////
+                                        for(Int z = 0; z < 3; ++z) {
+                                            const auto node_z = cornerNode.z + z;
+                                            xixp.z = xi_corner_xp.z + static_cast<Real_t>(z) * cellSize;
 
-                                                    const auto xixp = fastGrid.getWorldCoordinate(node_x, node_y, node_z) - ppos;
-                                                    const auto vp   = (pvel + pC * xixp) * (w * mp);
-                                                    AtomicOperations::add(gridData(node_x, node_y, node_z), vp.v3);
+                                            for(Int y = 0; y < 3; ++y) {
+                                                const auto node_y = cornerNode.y + y;
+                                                const auto w_yz   = weights[1][y] * weights[2][z];
+                                                xixp.y = xi_corner_xp.y + static_cast<Real_t>(y) * cellSize;
+
+                                                for(Int x = 0; x < 3; ++x) {
+                                                    const auto w = weights[0][x] * w_yz;
+                                                    if(w > 0) {
+                                                        const auto node_x = cornerNode.x + x;
+                                                        xixp.x = xi_corner_xp.x + static_cast<Real_t>(x) * cellSize;
+
+                                                        const auto vp_mp = (pvel + pC * xixp) * (w * mp);
+                                                        AtomicOperations::add(gridData(node_x, node_y, node_z), vp_mp.v3);
+                                                    }
                                                 }
                                             }
                                         }
@@ -576,19 +615,31 @@ TEST_CASE("Compare_FastVec3_Performance", "Compare_FastVec3_Performance")
         for(int i = 0; i < PERFORMANCE_TEST_NUM; ++i) {
             Scheduler::parallel_for(DATA_SIZE,
                                     [&](int i) {
-                                        const auto w        = NumberHelpers::fRand<Real>::rnd();
-                                        const auto& lcorner = kernelCornerNode[i];
-                                        auto ppos           = Vec3<Real>(0);
+                                        const auto& weights    = w_cache[i];
+                                        const auto& cornerNode = kernelCornerNode[i];
+                                        const auto cellSize    = grid.getCellSize();
+                                        const auto xi_corner   = grid.getWorldCoordinate(cornerNode.x, cornerNode.y, cornerNode.z);
+                                        auto ppos = Vec3<Real_t>(0);
+                                        Vec3<Real_t> xi;
+                                        ////////////////////////////////////////////////////////////////////////////////
                                         for(Int z = 0; z < 3; ++z) {
-                                            for(Int y = 0; y < 3; ++y) {
-                                                for(Int x = 0; x < 3; ++x) {
-                                                    const auto node_x = lcorner.x + x;
-                                                    const auto node_y = lcorner.y + y;
-                                                    const auto node_z = lcorner.z + z;
+                                            const auto node_z = cornerNode.z + z;
+                                            xi.z = xi_corner.z + static_cast<Real_t>(z) * cellSize;
 
-                                                    const auto xi = grid.getWorldCoordinate(node_x, node_y, node_z);
-                                                    const auto vi = gridData(node_x, node_y, node_z);
-                                                    ppos         += w * (xi + Real(1e-5) * vi);
+                                            for(Int y = 0; y < 3; ++y) {
+                                                const auto node_y = cornerNode.y + y;
+                                                const auto w_yz   = weights[1][y] * weights[2][z];
+                                                xi.y = xi_corner.y + static_cast<Real_t>(y) * cellSize;
+
+                                                for(Int x = 0; x < 3; ++x) {
+                                                    const auto w = weights[0][x] * w_yz;
+                                                    if(w > 0) {
+                                                        const auto node_x = cornerNode.x + x;
+                                                        xi.x = xi_corner.x + static_cast<Real_t>(x) * cellSize;
+
+                                                        const auto vi = gridData(node_x, node_y, node_z);
+                                                        ppos         += w * (xi + Real_t(1e-5) * vi);
+                                                    }
                                                 }
                                             }
                                         }
@@ -598,80 +649,77 @@ TEST_CASE("Compare_FastVec3_Performance", "Compare_FastVec3_Performance")
     }
 
     {
-        ScopeTimer timer("Test position interpolation using FastVec3 + FastMat3");
+        ScopeTimer timer("Test position interpolation using FastVec3");
         for(int i = 0; i < PERFORMANCE_TEST_NUM; ++i) {
             Scheduler::parallel_for(DATA_SIZE,
                                     [&](int i) {
-                                        const auto w        = NumberHelpers::fRand<Real>::rnd();
-                                        const auto& lcorner = kernelCornerNode[i];
-                                        auto ppos           = FastVec3<Real>(0);
+                                        const auto& weights    = w_cache[i];
+                                        const auto& cornerNode = kernelCornerNode[i];
+                                        const auto cellSize    = grid.getCellSize();
+                                        const auto xi_corner   = grid.getWorldCoordinate(cornerNode.x, cornerNode.y, cornerNode.z);
+                                        auto ppos = FastVec3<Real_t>(0);
+                                        FastVec3<Real_t> xi;
+                                        ////////////////////////////////////////////////////////////////////////////////
                                         for(Int z = 0; z < 3; ++z) {
-                                            for(Int y = 0; y < 3; ++y) {
-                                                for(Int x = 0; x < 3; ++x) {
-                                                    const auto node_x = lcorner.x + x;
-                                                    const auto node_y = lcorner.y + y;
-                                                    const auto node_z = lcorner.z + z;
+                                            const auto node_z = cornerNode.z + z;
+                                            xi.z = xi_corner.z + static_cast<Real_t>(z) * cellSize;
 
-                                                    const auto xi = FastVec3<Real>(grid.getWorldCoordinate(node_x, node_y, node_z));
-                                                    const auto vi = FastVec3<Real>(gridData(node_x, node_y, node_z));
-                                                    ppos         += w * (xi + Real(1e-5) * vi);
+                                            for(Int y = 0; y < 3; ++y) {
+                                                const auto node_y = cornerNode.y + y;
+                                                const auto w_yz   = weights[1][y] * weights[2][z];
+                                                xi.y = xi_corner.y + static_cast<Real_t>(y) * cellSize;
+
+                                                for(Int x = 0; x < 3; ++x) {
+                                                    const auto w = weights[0][x] * w_yz;
+                                                    if(w > 0) {
+                                                        const auto node_x = cornerNode.x + x;
+                                                        xi.x = xi_corner.x + static_cast<Real_t>(x) * cellSize;
+
+                                                        const auto vi = FastVec3<Real_t>(gridData(node_x, node_y, node_z));
+                                                        ppos         += w * (xi + Real_t(1e-5) * vi);
+                                                    }
                                                 }
                                             }
                                         }
-                                        positions[i] = ppos;
+                                        positions[i] = ppos.v3;
                                     });
         }
     }
 
     {
-        ScopeTimer timer("Test position interpolation using FastVec3 + FastMat3 + FastGrid");
+        ScopeTimer timer("Test position interpolation using FastVec3 + FastGrid");
         for(int i = 0; i < PERFORMANCE_TEST_NUM; ++i) {
             Scheduler::parallel_for(DATA_SIZE,
                                     [&](int i) {
-                                        const auto w        = NumberHelpers::fRand<Real>::rnd();
-                                        const auto& lcorner = kernelCornerNode[i];
-                                        auto ppos           = FastVec3<Real>(0);
-                                        auto gvel           = FastVec3<Real>();
+                                        const auto& weights    = w_cache[i];
+                                        const auto& cornerNode = kernelCornerNode[i];
+                                        const auto cellSize    = grid.getCellSize();
+                                        const auto xi_corner   = fastGrid.getWorldCoordinate(cornerNode.x, cornerNode.y, cornerNode.z);
+                                        auto ppos = FastVec3<Real_t>(0);
+                                        FastVec3<Real_t> xi;
+                                        ////////////////////////////////////////////////////////////////////////////////
                                         for(Int z = 0; z < 3; ++z) {
-                                            for(Int y = 0; y < 3; ++y) {
-                                                for(Int x = 0; x < 3; ++x) {
-                                                    const auto node_x = lcorner.x + x;
-                                                    const auto node_y = lcorner.y + y;
-                                                    const auto node_z = lcorner.z + z;
+                                            const auto node_z = cornerNode.z + z;
+                                            xi.z = xi_corner.z + static_cast<Real_t>(z) * cellSize;
 
-                                                    const auto xi = fastGrid.getWorldCoordinate(node_x, node_y, node_z);
-                                                    gvel.v3       = gridData(node_x, node_y, node_z);
-                                                    ppos         += w * (xi + Real(1e-5) * gvel);
+                                            for(Int y = 0; y < 3; ++y) {
+                                                const auto node_y = cornerNode.y + y;
+                                                const auto w_yz   = weights[1][y] * weights[2][z];
+                                                xi.y = xi_corner.y + static_cast<Real_t>(y) * cellSize;
+
+                                                for(Int x = 0; x < 3; ++x) {
+                                                    const auto w = weights[0][x] * w_yz;
+                                                    if(w > 0) {
+                                                        const auto node_x = cornerNode.x + x;
+                                                        xi.x = xi_corner.x + static_cast<Real_t>(x) * cellSize;
+
+                                                        const auto vi = FastVec3<Real_t>(gridData(node_x, node_y, node_z));
+                                                        ppos         += w * (xi + Real_t(1e-5) * vi);
+                                                    }
                                                 }
                                             }
                                         }
                                         positions[i] = ppos.toVec3r();
-                                    });
-        }
-    }
-
-    {
-        ScopeTimer timer("Test position interpolation using FastVec3 + FastMat3 + FastGrid");
-        for(int i = 0; i < PERFORMANCE_TEST_NUM; ++i) {
-            Scheduler::parallel_for(DATA_SIZE,
-                                    [&](int i) {
-                                        const auto w        = NumberHelpers::fRand<Real>::rnd();
-                                        const auto& lcorner = kernelCornerNode[i];
-                                        auto ppos           = Vec3<Real>(0);
-                                        for(Int z = 0; z < 3; ++z) {
-                                            for(Int y = 0; y < 3; ++y) {
-                                                for(Int x = 0; x < 3; ++x) {
-                                                    const auto node_x = lcorner.x + x;
-                                                    const auto node_y = lcorner.y + y;
-                                                    const auto node_z = lcorner.z + z;
-
-                                                    const auto xi = fastGrid.getWorldCoordinate(node_x, node_y, node_z).v3;
-                                                    const auto vi = gridData(node_x, node_y, node_z);
-                                                    ppos         += w * (xi + Real(1e-5) * vi);
-                                                }
-                                            }
-                                        }
-                                        positions[i] = ppos;
                                     });
         }
     }
