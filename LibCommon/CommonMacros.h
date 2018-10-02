@@ -302,15 +302,16 @@ inline void throwIfFailed(HRESULT hr)
 // data macros
 #define __NT_REQUIRE_EQUAL(a, b)                     __NT_REQUIRE_MSG(a == b, "Numbers are not equal.");
 #define __NT_REQUIRE_APPROX_NUMBERS(a, b, threshold) __NT_REQUIRE_MSG(threshold > fabs(a - b), "Numbers are not equal.");
-#define __NT_TO_CSTRING(x)                           Formatters::toString(x).c_str()
+#define __NT_TO_CSTRING(x)                           Formatters::toString7(x).c_str()
+#define __NT_TO_CSTRING_2(x)                         Formatters::toString2(x).c_str()
 #define __NT_TO_CSTRING_5(x)                         Formatters::toString5(x).c_str()
 #define __NT_TO_CSTRING_7(x)                         Formatters::toString7(x).c_str()
 
-#define __NT_TYPE_ALIASING                                                            \
+#define __NT_TYPE_ALIASING                                                          \
     using Vec3r            = Vec3<Real_t>;                                          \
     using Vec4r            = Vec4<Real_t>;                                          \
-    using VecNi            = VecX<N, Int>;                                            \
-    using VecNui           = VecX<N, UInt>;                                           \
+    using VecNi            = VecX<N, Int>;                                          \
+    using VecNui           = VecX<N, UInt>;                                         \
     using VecN             = VecX<N, Real_t>;                                       \
     using VecNp1           = VecX<N + 1, Real_t>;                                   \
     using MatNxN           = MatXxX<N, Real_t>;                                     \
