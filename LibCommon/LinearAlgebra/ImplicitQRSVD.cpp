@@ -381,11 +381,9 @@ std::pair<Mat2x2<T>, Mat2x2<T>> polarDecomposition(const Mat2x2<T>& A)
    \param[out] V Robustly a rotation matrix in Givens form
  */
 template<class T>
-void svd(const Mat2x2<T>& A, GivensRotation<T>& U, const Vec2<T>& Sigma, GivensRotation<T>& V, T tol = T(64.0)* std::numeric_limits<T>::epsilon())
+void svd(const Mat2x2<T>& A, GivensRotation<T>& U, Vec2<T>& sigma, GivensRotation<T>& V, T tol = T(64.0)* std::numeric_limits<T>::epsilon())
 {
     (void)tol;
-    Vec2<T>& sigma = const_cast<Vec2<T>&>(Sigma);
-
     Mat2x2<T> S_Sym;
     polarDecomposition(A, U, S_Sym);
     T cosine, sine;
@@ -446,7 +444,7 @@ void svd(const Mat2x2<T>& A, GivensRotation<T>& U, const Vec2<T>& Sigma, GivensR
    \param[out] V Robustly a rotation matrix.
  */
 template<class T>
-void svd(const Mat2x2<T>& A, const Mat2x2<T>& U, const Vec2<T>& Sigma, const Mat2x2<T>& V, T tol = T(64.0)* std::numeric_limits<T>::epsilon())
+void svd(const Mat2x2<T>& A, const Mat2x2<T>& U, Vec2<T>& Sigma, const Mat2x2<T>& V, T tol = T(64.0)* std::numeric_limits<T>::epsilon())
 {
     (void)tol;
     GivensRotation<T> gv(0, 1);
