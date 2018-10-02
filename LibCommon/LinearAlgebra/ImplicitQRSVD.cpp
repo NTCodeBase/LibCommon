@@ -799,12 +799,12 @@ std::tuple<Mat3x3<T>, Vec3<T>, Mat3x3<T>> svd(const Mat3x3<T>& A)
 template<class T>
 void polarDecomposition(const Mat3x3<T>& A, Mat3x3<T>& R, Mat3x3<T>& S_Sym)
 {
-    auto [U, sigma, V] = svd(A);
-    auto Vt = glm::transpose(V);
+    const auto [U, sigma, V] = svd(A);
+    const auto Vt = glm::transpose(V);
     R     = U * Vt;
     S_Sym = V * Mat3x3<T>(sigma[0], 0, 0,
                           0, sigma[1], 0,
-                          0, 0, sigma[2]) * glm::transpose(V);
+                          0, 0, sigma[2]) * Vt;
 }
 
 template<class T>
