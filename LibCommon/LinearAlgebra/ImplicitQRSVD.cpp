@@ -390,7 +390,7 @@ void svd(const Mat2x2<T>& A, GivensRotation<T>& U, Vec2<T>& sigma, GivensRotatio
     T x = S_Sym[0][0];
     T y = S_Sym[1][0];
     T z = S_Sym[1][1];
-    if(y < T(1e-20)) {
+    if(std::abs(y) < T(1e-20)) {
         // S is already diagonal
         cosine   = T(1.0);
         sine     = T(0);
