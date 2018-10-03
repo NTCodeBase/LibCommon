@@ -40,7 +40,7 @@ public:
 
     template<class T> static String        format(T x);
     template<Int N, class T> static String format(const VecX<N, T>& vec);
-    template<Int N, class T> static String format(const MatXxX<N, T>& mat, bool breakLine = false);
+    template<Int N, class T> static String format(const MatXxX<N, T>& mat, bool breakLine = true);
 
 private:
     static void init();
