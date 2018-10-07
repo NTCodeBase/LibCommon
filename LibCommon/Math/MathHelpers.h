@@ -125,103 +125,6 @@ inline constexpr T approx_sqrt(T x)
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 template<class T>
-inline constexpr T norm2(T x1, T x2)
-{
-    return std::sqrt(sqr(x1) + sqr(x2));
-}
-
-template<class T>
-inline constexpr T norm2(T x1, T x2, T x3)
-{
-    return std::sqrt(sqr(x1) + sqr(x2) + sqr(x3));
-}
-
-template<class T>
-inline constexpr T norm3(T x1, T x2)
-{
-    return std::pow(pow3(x1) + pow3(x2), T(1.0 / 3.0));
-}
-
-template<class T>
-inline constexpr T norm3(T x1, T x2, T x3)
-{
-    return std::pow(pow3(x1) + pow3(x2) + pow3(x3), T(1.0 / 3.0));
-}
-
-template<class T>
-inline constexpr T norm4(T x1, T x2)
-{
-    return std::pow(pow4(x1) + pow4(x2), T(1.0 / 4.0));
-}
-
-template<class T>
-inline constexpr T norm4(T x1, T x2, T x3)
-{
-    return std::pow(pow4(x1) + pow4(x2) + pow4(x3), T(1.0 / 4.0));
-}
-
-template<class T>
-inline constexpr T norm5(T x1, T x2)
-{
-    return std::pow(pow5(x1) + pow5(x2), T(1.0 / 5.0));
-}
-
-template<class T>
-inline constexpr T norm5(T x1, T x2, T x3)
-{
-    return std::pow(pow5(x1) + pow5(x2) + pow5(x3), T(1.0 / 5.0));
-}
-
-template<class T>
-inline constexpr T norm6(T x1, T x2)
-{
-    return std::pow(pow6(x1) + pow6(x2), T(1.0 / 6.0));
-}
-
-template<class T>
-inline constexpr T norm6(T x1, T x2, T x3)
-{
-    return std::pow(pow6(x1) + pow6(x2) + pow6(x3), T(1.0 / 6.0));
-}
-
-template<class T>
-inline constexpr T norm7(T x1, T x2)
-{
-    return std::pow(pow7(x1) + pow7(x2), T(1.0 / 7.0));
-}
-
-template<class T>
-inline constexpr T norm7(T x1, T x2, T x3)
-{
-    return std::pow(pow7(x1) + pow7(x2) + pow7(x3), T(1.0 / 7.0));
-}
-
-template<class T>
-inline constexpr T norm8(T x1, T x2)
-{
-    return std::pow(pow8(x1) + pow8(x2), T(1.0 / 8.0));
-}
-
-template<class T>
-inline constexpr T norm8(T x1, T x2, T x3)
-{
-    return std::pow(pow8(x1) + pow8(x2) + pow8(x3), T(1.0 / 8.0));
-}
-
-template<class T>
-inline constexpr T norm_inf(T x1, T x2)
-{
-    return std::max(std::abs(x1), std::abs(x2));
-}
-
-template<class T>
-inline constexpr T norm_inf(T x1, T x2, T x3)
-{
-    return max(std::abs(x1), std::abs(x2), std::abs(x3));
-}
-
-//-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-template<class T>
 inline constexpr T min(T a1, T a2)
 {
     return std::min(a1, a2);
@@ -357,6 +260,103 @@ inline void update_minmax(T a1, T& amin, T& amax)
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 template<class T>
+inline constexpr T norm2(T x1, T x2)
+{
+    return std::sqrt(sqr(x1) + sqr(x2));
+}
+
+template<class T>
+inline constexpr T norm2(T x1, T x2, T x3)
+{
+    return std::sqrt(sqr(x1) + sqr(x2) + sqr(x3));
+}
+
+template<class T>
+inline constexpr T norm3(T x1, T x2)
+{
+    return std::pow(pow3(x1) + pow3(x2), T(1.0 / 3.0));
+}
+
+template<class T>
+inline constexpr T norm3(T x1, T x2, T x3)
+{
+    return std::pow(pow3(x1) + pow3(x2) + pow3(x3), T(1.0 / 3.0));
+}
+
+template<class T>
+inline constexpr T norm4(T x1, T x2)
+{
+    return std::pow(pow4(x1) + pow4(x2), T(1.0 / 4.0));
+}
+
+template<class T>
+inline constexpr T norm4(T x1, T x2, T x3)
+{
+    return std::pow(pow4(x1) + pow4(x2) + pow4(x3), T(1.0 / 4.0));
+}
+
+template<class T>
+inline constexpr T norm5(T x1, T x2)
+{
+    return std::pow(pow5(x1) + pow5(x2), T(1.0 / 5.0));
+}
+
+template<class T>
+inline constexpr T norm5(T x1, T x2, T x3)
+{
+    return std::pow(pow5(x1) + pow5(x2) + pow5(x3), T(1.0 / 5.0));
+}
+
+template<class T>
+inline constexpr T norm6(T x1, T x2)
+{
+    return std::pow(pow6(x1) + pow6(x2), T(1.0 / 6.0));
+}
+
+template<class T>
+inline constexpr T norm6(T x1, T x2, T x3)
+{
+    return std::pow(pow6(x1) + pow6(x2) + pow6(x3), T(1.0 / 6.0));
+}
+
+template<class T>
+inline constexpr T norm7(T x1, T x2)
+{
+    return std::pow(pow7(x1) + pow7(x2), T(1.0 / 7.0));
+}
+
+template<class T>
+inline constexpr T norm7(T x1, T x2, T x3)
+{
+    return std::pow(pow7(x1) + pow7(x2) + pow7(x3), T(1.0 / 7.0));
+}
+
+template<class T>
+inline constexpr T norm8(T x1, T x2)
+{
+    return std::pow(pow8(x1) + pow8(x2), T(1.0 / 8.0));
+}
+
+template<class T>
+inline constexpr T norm8(T x1, T x2, T x3)
+{
+    return std::pow(pow8(x1) + pow8(x2) + pow8(x3), T(1.0 / 8.0));
+}
+
+template<class T>
+inline constexpr T norm_inf(T x1, T x2)
+{
+    return max(std::abs(x1), std::abs(x2));
+}
+
+template<class T>
+inline constexpr T norm_inf(T x1, T x2, T x3)
+{
+    return max(std::abs(x1), std::abs(x2), std::abs(x3));
+}
+
+//-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+template<class T>
 inline void sort(T& a, T& b, T& c)
 {
     T temp;
@@ -468,6 +468,7 @@ inline void clampInPlace(VecX<N, T>& x, const VecX<N, T>& a, const VecX<N, T>& b
 }
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+
 // only makes sense with T=float or double
 template<class T>
 inline constexpr T smooth_step(T r)
@@ -849,8 +850,8 @@ inline constexpr T cubic_bspline_grad(T x)
 template<class T>
 inline constexpr T smin_exp(T a, T b, T k = T(32.0))
 {
-    T res = std::exp(-k * a) + std::exp(-k * b);
-    return -std::log(res) / k;
+    T res = exp(-k * a) + exp(-k * b);
+    return -log(res) / k;
 }
 
 // polynomial smooth min (k = 0.1);
