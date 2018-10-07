@@ -211,7 +211,7 @@ inline constexpr T norm8(T x1, T x2, T x3)
 template<class T>
 inline constexpr T norm_inf(T x1, T x2)
 {
-    return max(std::abs(x1), std::abs(x2));
+    return std::max(std::abs(x1), std::abs(x2));
 }
 
 template<class T>
@@ -249,31 +249,6 @@ template<class T>
 inline constexpr T min(T a1, T a2, T a3, T a4, T a5, T a6)
 {
     return min(std::min(a1, a2), std::min(a3, a4), std::min(a5, a6));
-}
-
-//-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-// exponential smooth min (k = 32);
-template<class T>
-inline constexpr T smin_exp(T a, T b, T k = T(32.0))
-{
-    T res = exp(-k * a) + exp(-k * b);
-    return -log(res) / k;
-}
-
-// polynomial smooth min (k = 0.1);
-template<class T>
-inline constexpr T smin_poly(T a, T b, T k = T(0.1))
-{
-    T h = clamp(T(0.5) + T(0.5) * (b - a) / k, T(0), T(1.0));
-    return lerp(b, a, h) - k * h * (T(1.0) - h);
-}
-
-// power smooth min (k = 8);
-template<class T>
-inline constexpr T smin_pow(T a, T b, T k = T(8.0))
-{
-    a = pow(a, k); b = pow(b, k);
-    return pow((a * b) / (a + b), T(1.0) / k);
 }
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
@@ -493,7 +468,6 @@ inline void clampInPlace(VecX<N, T>& x, const VecX<N, T>& a, const VecX<N, T>& b
 }
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-
 // only makes sense with T=float or double
 template<class T>
 inline constexpr T smooth_step(T r)
@@ -868,6 +842,31 @@ inline constexpr T cubic_bspline_grad(T x)
 
     // else, x < 1.0
     return T(1.5) * x * abs_x - T(2.0) * x;
+}
+
+//-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+// exponential smooth min (k = 32);
+template<class T>
+inline constexpr T smin_exp(T a, T b, T k = T(32.0))
+{
+    T res = std::exp(-k * a) + std::exp(-k * b);
+    return -std::log(res) / k;
+}
+
+// polynomial smooth min (k = 0.1);
+template<class T>
+inline constexpr T smin_poly(T a, T b, T k = T(0.1))
+{
+    T h = clamp(T(0.5) + T(0.5) * (b - a) / k, T(0), T(1.0));
+    return lerp(b, a, h) - k * h * (T(1.0) - h);
+}
+
+// power smooth min (k = 8);
+template<class T>
+inline constexpr T smin_pow(T a, T b, T k = T(8.0))
+{
+    a = pow(a, k); b = pow(b, k);
+    return pow((a * b) / (a + b), T(1.0) / k);
 }
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+

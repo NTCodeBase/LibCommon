@@ -128,6 +128,9 @@ std::size_t constexpr operator"" _sz(unsigned long long int x)
 }
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+#include <limits>
+#undef min
+#undef max
 template<class T> constexpr auto MEpsilon() { return std::numeric_limits<T>::epsilon(); }
 template<class T> constexpr auto Tiny() { return std::numeric_limits<T>::min(); }
 template<class T> constexpr auto Huge() { return std::numeric_limits<T>::max(); }

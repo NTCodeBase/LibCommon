@@ -39,10 +39,10 @@ public:
     GeometryObject() = default;
     static constexpr UInt objDimension() noexcept { return static_cast<UInt>(N); }
 
-    virtual String   name() = 0;
+    virtual String name() = 0;
     virtual Real_t signedDistance(const VecN& ppos0, bool bNegativeInside = true) const = 0;
-    virtual VecN     getAABBMin() const;
-    virtual VecN     getAABBMax() const;
+    virtual VecN   getAABBMin() const;
+    virtual VecN   getAABBMax() const;
 
     VecN gradSignedDistance(const VecN& ppos, bool bNegativeInside = true, Real_t dx = Real_t(1e-4)) const;
     bool           isInside(const VecN& ppos, bool bNegativeInside = true) const { return signedDistance(ppos, bNegativeInside) < 0; }
@@ -73,7 +73,7 @@ protected:
     // intrinsic object transformation
     VecN       m_IntrinsicTranslation          = VecN(0);
     VecNp1     m_IntrinsicRotation             = VecNp1(VecN(1), 0);
-    Real_t   m_UniformScale                  = Real_t(1.0);
+    Real_t     m_UniformScale                  = Real_t(1.0);
     MatNp1xNp1 m_IntrinsicTransformationMatrix = MatNp1xNp1(1.0);
 
     // current transformation = animationTransformation(t) * intrinsicTransformation
@@ -81,7 +81,7 @@ protected:
     MatNp1xNp1 m_InvTransformationMatrix  = MatNp1xNp1(1.0);
     MatNp1xNp1 m_PrevTransformationMatrix = MatNp1xNp1(1.0);
 
-    MatNp1xNp1                             m_AnimationTransformationMatrix = MatNp1xNp1(1.0);
+    MatNp1xNp1                           m_AnimationTransformationMatrix = MatNp1xNp1(1.0);
     StdVT<RigidBodyAnimation<N, Real_t>> m_Animations;
 };
 
@@ -126,7 +126,7 @@ class SphereObject : public GeometryObject<N, Real_t>
     ////////////////////////////////////////////////////////////////////////////////
 public:
     SphereObject() = delete;
-    SphereObject(const JParams& jParams) { parseParameters(jParams); }
+    SphereObject(const JParams& jParams) { this->parseParameters(jParams); }
     virtual String   name() override { if(N == 2) { return String("CircleObject"); } else { return String("SphereObject"); } }
     virtual Real_t signedDistance(const VecN& ppos0, bool bNegativeInside = true) const override;
 };
@@ -159,7 +159,7 @@ class Torus28Object : public TorusObject<N, Real_t>
     ////////////////////////////////////////////////////////////////////////////////
 public:
     Torus28Object() = delete;
-    Torus28Object(const JParams& jParams) : TorusObject<N, Real_t>(jParams) { parseParameters(jParams); }
+    Torus28Object(const JParams& jParams) : TorusObject<N, Real_t>(jParams) { this->parseParameters(jParams); }
     virtual Real_t signedDistance(const VecN& ppos0, bool bNegativeInside = true) const override;
 };
 
@@ -172,7 +172,7 @@ class Torus2InfObject : public TorusObject<N, Real_t>
     ////////////////////////////////////////////////////////////////////////////////
 public:
     Torus2InfObject() = delete;
-    Torus2InfObject(const JParams& jParams) : TorusObject<N, Real_t>(jParams) { parseParameters(jParams); }
+    Torus2InfObject(const JParams& jParams) : TorusObject<N, Real_t>(jParams) { this->parseParameters(jParams); }
     virtual Real_t signedDistance(const VecN& ppos0, bool bNegativeInside = true) const override;
 };
 
@@ -185,7 +185,7 @@ class Torus88Object : public TorusObject<N, Real_t>
     ////////////////////////////////////////////////////////////////////////////////
 public:
     Torus88Object() = delete;
-    Torus88Object(const JParams& jParams) : TorusObject<N, Real_t>(jParams) { parseParameters(jParams); }
+    Torus88Object(const JParams& jParams) : TorusObject<N, Real_t>(jParams) { this->parseParameters(jParams); }
     virtual Real_t signedDistance(const VecN& ppos0, bool bNegativeInside = true) const override;
 };
 
@@ -198,7 +198,7 @@ class TorusInfInfObject : public TorusObject<N, Real_t>
     ////////////////////////////////////////////////////////////////////////////////
 public:
     TorusInfInfObject() = delete;
-    TorusInfInfObject(const JParams& jParams) : TorusObject<N, Real_t>(jParams) { parseParameters(jParams); }
+    TorusInfInfObject(const JParams& jParams) : TorusObject<N, Real_t>(jParams) { this->parseParameters(jParams); }
     virtual Real_t signedDistance(const VecN& ppos0, bool bNegativeInside = true) const override;
 };
 
@@ -255,7 +255,7 @@ public:
     void setOffset(Real_t offset) { m_Offset = offset; }
 protected:
     virtual void parseParameters(const JParams& jParams) override;
-    VecN     m_Normal = VecN(0);
+    VecN   m_Normal = VecN(0);
     Real_t m_Offset = Real_t(0);
 };
 
@@ -286,7 +286,7 @@ class HexagonObject : public GeometryObject<N, Real_t>
     ////////////////////////////////////////////////////////////////////////////////
 public:
     HexagonObject() = delete;
-    HexagonObject(const JParams& jParams) { parseParameters(jParams); }
+    HexagonObject(const JParams& jParams) { this->parseParameters(jParams); }
     virtual String   name() override { return String("HexagonObject"); }
     virtual Real_t signedDistance(const VecN& ppos0, bool bNegativeInside = true) const override;
 };
@@ -343,8 +343,8 @@ public:
 protected:
     virtual void parseParameters(const JParams& jParams) override;
     Real_t m_Radius = Real_t(0.5);
-    VecN     m_Start  = VecN(0);
-    VecN     m_End    = VecN(0);
+    VecN   m_Start  = VecN(0);
+    VecN   m_End    = VecN(0);
 };
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
@@ -383,8 +383,8 @@ public:
     void computeSDF();
 protected:
     virtual void parseParameters(const JParams& jParams) override;
-    bool               m_bSDFGenerated = false;
-    String             m_TriMeshFile   = String("");
+    bool             m_bSDFGenerated = false;
+    String           m_TriMeshFile   = String("");
     Real_t           m_Step          = Real_t(1.0 / 256.0);
     Array<N, Real_t> m_SDFData;
     Grid<N, Real_t>  m_Grid3D;
@@ -418,10 +418,10 @@ public:
     struct CSGData
     {
         SharedPtr<GeometryObject<N, Real_t>> obj = nullptr;
-        CSGOperations                          op  = Union;
+        CSGOperations                        op  = Union;
     };
     CSGObject() = delete;
-    CSGObject(const JParams& jParams) { parseParameters(jParams); }
+    CSGObject(const JParams& jParams) { this->parseParameters(jParams); }
     virtual String   name() override { return String("CSGObject"); }
     virtual Real_t signedDistance(const VecN& ppos0, bool bNegativeInside = true) const override;
 

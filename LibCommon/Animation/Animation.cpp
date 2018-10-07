@@ -150,7 +150,7 @@ MatXxX<N + 1, Real_t> RigidBodyAnimation<N, Real_t>::getInvTransformation(UInt f
 template<Int N, class Real_t>
 void Animation<N, Real_t>::makeReady(bool bCubicIntTranslation, bool bCubicIntRotation, bool bCubicIntScale)
 {
-    if(m_KeyFrames.size() == 0) {
+    if(this->m_KeyFrames.size() == 0) {
         return;
     }
     ////////////////////////////////////////////////////////////////////////////////
@@ -159,16 +159,16 @@ void Animation<N, Real_t>::makeReady(bool bCubicIntTranslation, bool bCubicIntRo
     StdVT<Real_t> rotations[N + 1];
     StdVT<Real_t> scales;
 
-    frames.reserve(nKeyFrames());
+    frames.reserve(this->nKeyFrames());
     for(Int d = 0; d < N; ++d) {
-        translations[d].reserve(nKeyFrames());
-        rotations[d].reserve(nKeyFrames());
+        translations[d].reserve(this->nKeyFrames());
+        rotations[d].reserve(this->nKeyFrames());
     }
-    rotations[N].reserve(nKeyFrames());
-    scales.reserve(nKeyFrames());
+    rotations[N].reserve(this->nKeyFrames());
+    scales.reserve(this->nKeyFrames());
     ////////////////////////////////////////////////////////////////////////////////
     UInt maxFrame = 0;
-    for(const auto& keyFrame : m_KeyFrames) {
+    for(const auto& keyFrame : this->m_KeyFrames) {
         frames.push_back(static_cast<Real_t>(keyFrame.frame));
         for(Int d = 0; d < N; ++d) {
             translations[d].push_back(keyFrame.translation[d]);
@@ -181,43 +181,43 @@ void Animation<N, Real_t>::makeReady(bool bCubicIntTranslation, bool bCubicIntRo
             maxFrame = keyFrame.frame;
         }
     }
-    if(m_EndFrame == 0) {
+    if(this->m_EndFrame == 0) {
         // if end frame has not been set, set it to the latest key frame
-        m_EndFrame = maxFrame;
+        this->m_EndFrame = maxFrame;
     }
     ////////////////////////////////////////////////////////////////////////////////
     for(Int d = 0; d < N; ++d) {
-        m_TranslationInterpolator[d].setBoundary(CubicSpline<Real_t>::BDType::FirstOrder, 0, CubicSpline<Real_t>::BDType::FirstOrder, 0);
-        m_TranslationInterpolator[d].setPoints(frames, translations[d], bCubicIntTranslation);
+        this->m_TranslationInterpolator[d].setBoundary(CubicSpline<Real_t>::BDType::FirstOrder, 0, CubicSpline<Real_t>::BDType::FirstOrder, 0);
+        this->m_TranslationInterpolator[d].setPoints(frames, translations[d], bCubicIntTranslation);
 
-        m_RotationInterpolator[d].setBoundary(CubicSpline<Real_t>::BDType::FirstOrder, 0, CubicSpline<Real_t>::BDType::FirstOrder, 0);
-        m_RotationInterpolator[d].setPoints(frames, rotations[d], bCubicIntRotation);
+        this->m_RotationInterpolator[d].setBoundary(CubicSpline<Real_t>::BDType::FirstOrder, 0, CubicSpline<Real_t>::BDType::FirstOrder, 0);
+        this->m_RotationInterpolator[d].setPoints(frames, rotations[d], bCubicIntRotation);
     }
-    m_RotationInterpolator[N].setBoundary(CubicSpline<Real_t>::BDType::FirstOrder, 0, CubicSpline<Real_t>::BDType::FirstOrder, 0);
-    m_RotationInterpolator[N].setPoints(frames, rotations[N], bCubicIntRotation);
-    m_ScaleInterpolator.setBoundary(CubicSpline<Real_t>::BDType::FirstOrder, 0, CubicSpline<Real_t>::BDType::FirstOrder, 0);
-    m_ScaleInterpolator.setPoints(frames, scales, bCubicIntScale);
+    this->m_RotationInterpolator[N].setBoundary(CubicSpline<Real_t>::BDType::FirstOrder, 0, CubicSpline<Real_t>::BDType::FirstOrder, 0);
+    this->m_RotationInterpolator[N].setPoints(frames, rotations[N], bCubicIntRotation);
+    this->m_ScaleInterpolator.setBoundary(CubicSpline<Real_t>::BDType::FirstOrder, 0, CubicSpline<Real_t>::BDType::FirstOrder, 0);
+    this->m_ScaleInterpolator.setPoints(frames, scales, bCubicIntScale);
     ////////////////////////////////////////////////////////////////////////////////
-    __NT_REQUIRE(m_EndFrame > m_StartFrame);
-    m_FrameRange = m_EndFrame - m_StartFrame;
-    m_bReady     = true;
+    __NT_REQUIRE(this->m_EndFrame > this->m_StartFrame);
+    this->m_FrameRange = this->m_EndFrame - this->m_StartFrame;
+    this->m_bReady     = true;
 }
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 template<Int N, class Real_t>
 Real_t Animation<N, Real_t>::getUniformScale(UInt frame, Real_t frameFraction /*= Real_t(0)*/)
 {
-    if(nKeyFrames() == 0) {
+    if(this->nKeyFrames() == 0) {
         return Real_t(1);
     }
     ////////////////////////////////////////////////////////////////////////////////
-    if(frame < m_StartFrame) {
-        frame = m_StartFrame;
-    } else if(frame >= m_EndFrame) {
-        if(m_bPeriodic) {
-            frame = ((frame - m_StartFrame) % m_FrameRange) + m_StartFrame;
+    if(frame < this->m_StartFrame) {
+        frame = this->m_StartFrame;
+    } else if(frame >= this->m_EndFrame) {
+        if(this->m_bPeriodic) {
+            frame = ((frame - this->m_StartFrame) % this->m_FrameRange) + this->m_StartFrame;
         } else {
-            frame         = m_EndFrame;
+            frame         = this->m_EndFrame;
             frameFraction = Real_t(0);
         }
     }
@@ -229,33 +229,33 @@ Real_t Animation<N, Real_t>::getUniformScale(UInt frame, Real_t frameFraction /*
 template<Int N, class Real_t>
 MatXxX<N + 1, Real_t> Animation<N, Real_t>::getTransformationMatrix(UInt frame, Real_t frameFraction /*= Real_t(0)*/)
 {
-    if(nKeyFrames() == 0) {
+    if(this->nKeyFrames() == 0) {
         return MatNp1xNp1(1);
     }
     ////////////////////////////////////////////////////////////////////////////////
-    __NT_REQUIRE(m_bReady)
+    __NT_REQUIRE(this->m_bReady)
     VecN translation;
-    VecNp1   rotation;
+    VecNp1 rotation;
     Real_t scale;
 
-    if(frame < m_StartFrame) {
-        frame = m_StartFrame;
-    } else if(frame >= m_EndFrame) {
-        if(m_bPeriodic) {
-            frame = ((frame - m_StartFrame) % m_FrameRange) + m_StartFrame;
+    if(frame < this->m_StartFrame) {
+        frame = this->m_StartFrame;
+    } else if(frame >= this->m_EndFrame) {
+        if(this->m_bPeriodic) {
+            frame = ((frame - this->m_StartFrame) % this->m_FrameRange) + this->m_StartFrame;
         } else {
-            frame         = m_EndFrame;
+            frame         = this->m_EndFrame;
             frameFraction = Real_t(0);
         }
     }
 
     Real_t x = static_cast<Real_t>(frame) + frameFraction;
     for(Int d = 0; d < N; ++d) {
-        translation[d] = m_TranslationInterpolator[d](x);
-        rotation[d]    = m_RotationInterpolator[d](x);
+        translation[d] = this->m_TranslationInterpolator[d](x);
+        rotation[d]    = this->m_RotationInterpolator[d](x);
     }
-    rotation[N] = m_RotationInterpolator[N](x);
-    scale       = m_ScaleInterpolator(x);
+    rotation[N] = this->m_RotationInterpolator[N](x);
+    scale       = this->m_ScaleInterpolator(x);
 
     MatNp1xNp1 transMatrix(1);
     transMatrix = glm::scale(transMatrix, VecN(scale));

@@ -38,9 +38,9 @@ struct KeyFrame
     KeyFrame(UInt frame_, const VecN& translation_, const VecNp1& rotation_, Real_t scale_ = Real_t(1.0))
         : frame(frame_), translation(translation_), rotation(rotation_), uniformScale(scale_), invScale(Real_t(1.0) / scale_) {}
     ////////////////////////////////////////////////////////////////////////////////
-    UInt     frame        = 0;
-    VecN     translation  = VecN(0);
-    VecNp1   rotation     = VecNp1(VecN(1), 0);
+    UInt   frame        = 0;
+    VecN   translation  = VecN(0);
+    VecNp1 rotation     = VecNp1(VecN(1), 0);
     Real_t uniformScale = Real_t(1.0);
     Real_t invScale     = Real_t(1.0);
 };
@@ -98,14 +98,14 @@ class Animation : public RigidBodyAnimation<N, Real_t>
 public:
     Animation() = default;
     ////////////////////////////////////////////////////////////////////////////////
-    void addKeyFrame(UInt frame, Real_t scale) { m_KeyFrames.emplace_back(KeyFrame<N, Real_t>(frame, scale)); }
+    void addKeyFrame(UInt frame, Real_t scale) { this->m_KeyFrames.emplace_back(KeyFrame<N, Real_t>(frame, scale)); }
     void addKeyFrame(UInt frame, const VecN& translation, const VecNp1& rotation, Real_t scale)
     {
-        m_KeyFrames.emplace_back(KeyFrame<N, Real_t>(frame, translation, rotation, scale));
+        this->m_KeyFrames.emplace_back(KeyFrame<N, Real_t>(frame, translation, rotation, scale));
     }
 
     ////////////////////////////////////////////////////////////////////////////////
-    void     makeReady(bool bCubicIntTranslation = true, bool bCubicIntRotation = true, bool bCubicIntScale = true);
+    void   makeReady(bool bCubicIntTranslation = true, bool bCubicIntRotation = true, bool bCubicIntScale = true);
     Real_t getUniformScale(UInt frame, Real_t frameFraction = Real_t(0));
     ////////////////////////////////////////////////////////////////////////////////
     virtual MatNp1xNp1 getTransformationMatrix(UInt frame, Real_t frameFraction = Real_t(0)) override;

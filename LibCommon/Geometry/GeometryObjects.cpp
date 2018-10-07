@@ -272,7 +272,7 @@ void GeometryObject<N, Real_t>::parseParameters(const JParams& jParams)
 template<Int N, class Real_t>
 Real_t BoxObject<N, Real_t>::signedDistance(const VecN& ppos0, bool bNegativeInside /*= true*/) const
 {
-    auto     ppos = this->invTransform(ppos0);
+    auto   ppos = this->invTransform(ppos0);
     Real_t mind = HugeReal();
 
     if(NumberHelpers::isInside(ppos, m_BoxMin, m_BoxMax)) {
@@ -323,7 +323,7 @@ void BoxObject<N, Real_t>::parseParameters(const JParams& jParams)
 template<Int N, class Real_t>
 Real_t SphereObject<N, Real_t>::signedDistance(const VecN& ppos0, bool bNegativeInside /*= true*/) const
 {
-    auto     ppos = invTransform(ppos0);
+    auto   ppos = this->invTransform(ppos0);
     Real_t d    = this->m_UniformScale * (glm::length(ppos) - Real_t(1.0));
     return bNegativeInside ? d : -d;
 }
@@ -332,7 +332,7 @@ Real_t SphereObject<N, Real_t>::signedDistance(const VecN& ppos0, bool bNegative
 template<Int N, class Real_t>
 Real_t TorusObject<N, Real_t>::signedDistance(const VecN& ppos0, bool bNegativeInside /*= true*/) const
 {
-    auto ppos = invTransform(ppos0);
+    auto ppos = this->invTransform(ppos0);
     if constexpr(N == 2) {
         Real_t q = std::abs(MathHelpers::norm2(ppos[0], ppos[1]) - m_OuterRadius);
         Real_t d = this->m_UniformScale * (q - m_RingRadius);
@@ -361,7 +361,7 @@ template<Int N, class Real_t>
 Real_t Torus28Object<N, Real_t>::signedDistance(const VecN& ppos0, bool bNegativeInside /*= true*/) const
 {
     __NT_REQUIRE_MSG(N == 3, "Object dimension != 3");
-    auto           ppos = invTransform(ppos0);
+    auto         ppos = this->invTransform(ppos0);
     Vec2<Real_t> q    = Vec2<Real_t>(MathHelpers::norm2(ppos[0], ppos[2]) - this->m_OuterRadius, ppos[1]);
     Real_t       d    = this->m_UniformScale * (MathHelpers::norm8(q[0], q[1]) - this->m_RingRadius);
     return bNegativeInside ? d : -d;
@@ -372,7 +372,7 @@ template<Int N, class Real_t>
 Real_t Torus2InfObject<N, Real_t>::signedDistance(const VecN& ppos0, bool bNegativeInside /*= true*/) const
 {
     __NT_REQUIRE_MSG(N == 3, "Object dimension != 3");
-    auto ppos = invTransform(ppos0);
+    auto ppos = this->invTransform(ppos0);
 
     Vec2<Real_t> q = Vec2<Real_t>(MathHelpers::norm2(ppos[0], ppos[2]) - this->m_OuterRadius, ppos[1]);
     Real_t       d = this->m_UniformScale * (MathHelpers::norm_inf(q[0], q[1]) - this->m_RingRadius);
@@ -383,7 +383,7 @@ Real_t Torus2InfObject<N, Real_t>::signedDistance(const VecN& ppos0, bool bNegat
 template<Int N, class Real_t>
 Real_t Torus88Object<N, Real_t>::signedDistance(const VecN& ppos0, bool bNegativeInside /*= true*/) const
 {
-    auto ppos = invTransform(ppos0);
+    auto ppos = this->invTransform(ppos0);
     if constexpr(N == 2) {
         Real_t d = this->m_UniformScale * (std::abs(MathHelpers::norm8(ppos[0], ppos[1]) - this->m_OuterRadius) - this->m_RingRadius);
         return bNegativeInside ? d : -d;
@@ -398,10 +398,10 @@ Real_t Torus88Object<N, Real_t>::signedDistance(const VecN& ppos0, bool bNegativ
 template<Int N, class Real_t>
 Real_t TorusInfInfObject<N, Real_t>::signedDistance(const VecN& ppos0, bool bNegativeInside /*= true*/) const
 {
-    auto ppos = invTransform(ppos0);
+    auto ppos = this->invTransform(ppos0);
     if constexpr(N == 2) {
         Real_t d = this->m_UniformScale *
-                     (std::abs(MathHelpers::norm_inf(ppos[0], ppos[1]) - this->m_OuterRadius) - this->m_RingRadius);
+                   (std::abs(MathHelpers::norm_inf(ppos[0], ppos[1]) - this->m_OuterRadius) - this->m_RingRadius);
         return bNegativeInside ? d : -d;
     } else {
         Vec2<Real_t> q = Vec2<Real_t>(MathHelpers::norm_inf(ppos[0], ppos[2]) - this->m_OuterRadius, ppos[1]);
@@ -415,7 +415,7 @@ template<Int N, class Real_t>
 Real_t CylinderObject<N, Real_t>::signedDistance(const VecN& ppos0, bool bNegativeInside /*= true*/) const
 {
     __NT_REQUIRE_MSG(N == 3, "Object dimension != 3");
-    auto     ppos = invTransform(ppos0);
+    auto   ppos = this->invTransform(ppos0);
     Real_t d    = this->m_UniformScale * MathHelpers::max(MathHelpers::norm2(ppos[0], ppos[2]) - m_Radius, std::abs(ppos[1]) - Real_t(1.0));
     return bNegativeInside ? d : -d;
 }
@@ -437,10 +437,10 @@ template<Int N, class Real_t>
 Real_t ConeObject<N, Real_t>::signedDistance(const VecN& ppos0, bool bNegativeInside /*= true*/) const
 {
     __NT_REQUIRE_MSG(N == 3, "Object dimension != 3");
-    auto     ppos  = invTransform(ppos0);
+    auto   ppos  = this->invTransform(ppos0);
     Real_t theta = std::atan(m_Radius);     // radius / h, where h = 1
     Real_t d1    = MathHelpers::norm2(ppos[0], ppos[2]) * cos(theta) - std::abs(Real_t(1) - ppos[1]) * sin(theta);
-    auto     d     = this->m_UniformScale * MathHelpers::max(d1, ppos[1] - Real_t(1), -ppos[1]);
+    auto   d     = this->m_UniformScale * MathHelpers::max(d1, ppos[1] - Real_t(1), -ppos[1]);
     return bNegativeInside ? d : -d;
 }
 
@@ -460,7 +460,7 @@ void ConeObject<N, Real_t>::parseParameters(const JParams& jParams)
 template<Int N, class Real_t>
 Real_t PlaneObject<N, Real_t>::signedDistance(const VecN& ppos0, bool bNegativeInside /*= true*/) const
 {
-    auto     ppos = invTransform(ppos0);
+    auto   ppos = this->invTransform(ppos0);
     Real_t d    = glm::dot(ppos, m_Normal) - m_Offset;
     return bNegativeInside ? d : -d;
 }
@@ -471,7 +471,7 @@ void PlaneObject<N, Real_t>::parseParameters(const JParams& jParams)
 {
     GeometryObject<N, Real_t>::parseParameters(jParams);
     ////////////////////////////////////////////////////////////////////////////////
-    VecN     normal;
+    VecN   normal;
     Real_t offset;
     if(JSONHelpers::readVector(jParams, normal, "Normal")) {
         setNormal(normal);
@@ -486,7 +486,7 @@ template<Int N, class Real_t>
 Real_t TriangleObject<N, Real_t>::signedDistance(const VecN& ppos0, bool bNegativeInside /*= true*/) const
 {
     __NT_REQUIRE_MSG(N == 2, "Object dimension != 2");
-    auto ppos = invTransform(ppos0);
+    auto ppos = this->invTransform(ppos0);
     if constexpr(N == 2) {
         auto p = VecX<N + 1, Real_t>(ppos, 0);
         auto a = VecX<N + 1, Real_t>(m_Vertices[0], 0);
@@ -496,10 +496,9 @@ Real_t TriangleObject<N, Real_t>::signedDistance(const VecN& ppos0, bool bNegati
         VecX<N + 1, Real_t> ba = b - a; VecX<N + 1, Real_t> pa = p - a;
         VecX<N + 1, Real_t> cb = c - b; VecX<N + 1, Real_t> pb = p - b;
         VecX<N + 1, Real_t> ac = a - c; VecX<N + 1, Real_t> pc = p - c;
-        auto                  nor = glm::cross(ba, ac);
+        auto                nor = glm::cross(ba, ac);
 
-        auto sgn = [](auto val) -> int
-                   {
+        auto sgn = [](auto val) -> int {
                        return (val > 0) - (val < 0);
                    };
 
@@ -542,7 +541,7 @@ template<Int N, class Real_t>
 Real_t HexagonObject<N, Real_t>::signedDistance(const VecN& ppos0, bool bNegativeInside /*= true*/) const
 {
     __NT_REQUIRE_MSG(N == 2, "Object dimension != 2");
-    auto     ppos = invTransform(ppos0);
+    auto   ppos = this->invTransform(ppos0);
     Real_t dx   = fabs(ppos[0]);
     Real_t dy   = fabs(ppos[1]);
     Real_t d    = this->m_UniformScale * (MathHelpers::max((dx * Real_t(0.866025) + dy * Real_t(0.5)), dy) - Real_t(1.0));
@@ -554,14 +553,14 @@ template<Int N, class Real_t>
 Real_t TriangularPrismObject<N, Real_t>::signedDistance(const VecN& ppos0, bool bNegativeInside /*= true*/) const
 {
     __NT_REQUIRE_MSG(N == 3, "Object dimension != 3");
-    auto ppos = invTransform(ppos0);
+    auto ppos = this->invTransform(ppos0);
     VecN q;
     for(Int d = 0; d < N; ++d) {
         q[d] = std::abs(ppos[d]);
     }
     Real_t d = this->m_UniformScale * MathHelpers::max(q[0] - m_Width,
-                                                         MathHelpers::max(q[2] * Real_t(0.866025) + ppos[1] * Real_t(0.5),
-                                                                          -ppos[1]) - Real_t(0.5));
+                                                       MathHelpers::max(q[2] * Real_t(0.866025) + ppos[1] * Real_t(0.5),
+                                                                        -ppos[1]) - Real_t(0.5));
     return bNegativeInside ? d : -d;
 }
 
@@ -582,13 +581,13 @@ template<Int N, class Real_t>
 Real_t HexagonalPrismObject<N, Real_t>::signedDistance(const VecN& ppos0, bool bNegativeInside /*= true*/) const
 {
     __NT_REQUIRE_MSG(N == 3, "Object dimension != 3");
-    auto ppos = invTransform(ppos0);
+    auto ppos = this->invTransform(ppos0);
     VecN q;
     for(Int d = 0; d < N; ++d) {
         q[d] = std::abs(ppos[d]);
     }
     Real_t d = this->m_UniformScale * MathHelpers::max(q[0] - m_Width,
-                                                         MathHelpers::max(q[2] * Real_t(0.866025) + q[1] * Real_t(0.5), q[1]) - Real_t(1.0));
+                                                       MathHelpers::max(q[2] * Real_t(0.866025) + q[1] * Real_t(0.5), q[1]) - Real_t(1.0));
     return bNegativeInside ? d : -d;
 }
 
@@ -608,7 +607,7 @@ void HexagonalPrismObject<N, Real_t>::parseParameters(const JParams& jParams)
 template<Int N, class Real_t>
 Real_t CapsuleObject<N, Real_t>::signedDistance(const VecN& ppos0, bool bNegativeInside /*= true*/) const
 {
-    auto ppos = invTransform(ppos0);
+    auto ppos = this->invTransform(ppos0);
     VecN pa   = ppos - m_Start;
     VecN ba   = m_End - m_Start;
 
@@ -639,7 +638,7 @@ void CapsuleObject<N, Real_t>::parseParameters(const JParams& jParams)
 template<Int N, class Real_t>
 Real_t EllipsoidObject<N, Real_t>::signedDistance(const VecN& ppos0, bool bNegativeInside /*= true*/) const
 {
-    auto ppos = invTransform(ppos0);
+    auto ppos = this->invTransform(ppos0);
     for(Int d = 0; d < N; ++d) {
         ppos[d] /= m_RadiusRatio[d];
     }
@@ -694,8 +693,7 @@ void computeSDFMesh(const StdVT<Vec3ui>& faces, const StdVT_Vec3<Real_t>& vertic
         Int k1 = MathHelpers::clamp(static_cast<Int>(MathHelpers::max(fp[2], fq[2], fr[2])) + exactBand + 1, 0, static_cast<Int>(nk - 1));
 
         Scheduler::parallel_for<Int>(i0, i1 + 1, j0, j1 + 1, k0, k1 + 1,
-                                     [&](Int i, Int j, Int k)
-                                     {
+                                     [&](Int i, Int j, Int k) {
                                          Vec3<Real_t> gx = Vec3<Real_t>(i, j, k) * cellSize + origin;
                                          Real_t d        = GeometryHelpers::point_triangle_distance(gx, vertices[p], vertices[q], vertices[r]);
 
@@ -746,8 +744,7 @@ void computeSDFMesh(const StdVT<Vec3ui>& faces, const StdVT_Vec3<Real_t>& vertic
 
     // then figure out signs (inside/outside) from intersection counts
     Scheduler::parallel_for<UInt>(0, nk,
-                                  [&](UInt k)
-                                  {
+                                  [&](UInt k) {
                                       for(UInt j = 0; j < nj; ++j) {
                                           UInt total_count = 0;
 
@@ -772,8 +769,8 @@ Real_t TriMeshObject<N, Real_t>::signedDistance(const VecN& ppos0, bool bNegativ
         return 0;
     } else {
         __NT_REQUIRE(m_bSDFGenerated);
-        auto     ppos    = invTransform(ppos0);
-        auto     gridPos = m_Grid3D.getGridCoordinate(ppos);
+        auto   ppos    = this->invTransform(ppos0);
+        auto   gridPos = m_Grid3D.getGridCoordinate(ppos);
         Real_t d       = this->m_UniformScale * ArrayHelpers::interpolateValueLinear(gridPos, m_SDFData);
         return bNegativeInside ? d : -d;
     }
@@ -797,7 +794,7 @@ void TriMeshObject<N, Real_t>::computeSDF()
                          m_Step);
 
         StdVT_Vec3<Real_t> vertexList(meshLoader.getNVertices());
-        StdVT<Vec3ui>        faceList(meshLoader.getNFaces());
+        StdVT<Vec3ui>      faceList(meshLoader.getNFaces());
 
         std::memcpy(vertexList.data(), meshLoader.getVertices().data(), meshLoader.getVertices().size() * sizeof(Real_t));
         std::memcpy(faceList.data(),   meshLoader.getFaces().data(),    meshLoader.getFaces().size() * sizeof(UInt));
@@ -829,7 +826,7 @@ Real_t CSGObject<N, Real_t>::signedDistance(const VecN& ppos0, bool bNegativeIns
         return HugeReal();
     }
 
-    auto     ppos = domainDeform(transform(ppos0));
+    auto   ppos = domainDeform(this->transform(ppos0));
     Real_t sd   = m_Objects[0].obj->signedDistance(ppos, bNegativeInside);
 
     for(size_t i = 1; i < m_Objects.size(); ++i) {
