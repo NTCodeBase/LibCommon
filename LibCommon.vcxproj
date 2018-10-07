@@ -1,0 +1,189 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="StaticRelease|x64">
+      <Configuration>StaticRelease</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <VCProjectVersion>15.0</VCProjectVersion>
+    <ProjectGuid>{E22A696B-0F75-4E87-8672-75F0857F342A}</ProjectGuid>
+    <RootNamespace>LibCommon</RootNamespace>
+    <WindowsTargetPlatformVersion>10.0.17134.0</WindowsTargetPlatformVersion>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v141</PlatformToolset>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v141</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='StaticRelease|x64'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v141</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="Shared">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="..\NTCodeBase\MSVCProps\General.props" />
+    <Import Project="..\NTCodeBase\MSVCProps\Debug.props" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="..\NTCodeBase\MSVCProps\General.props" />
+    <Import Project="..\NTCodeBase\MSVCProps\Release.props" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='StaticRelease|x64'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="..\NTCodeBase\MSVCProps\General.props" />
+    <Import Project="..\NTCodeBase\MSVCProps\Release.props" />
+    <Import Project="..\NTCodeBase\MSVCProps\StaticRelease.props" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup />
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>Disabled</Optimization>
+      <SDLCheck>true</SDLCheck>
+      <ConformanceMode>true</ConformanceMode>
+    </ClCompile>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>MaxSpeed</Optimization>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <SDLCheck>true</SDLCheck>
+      <ConformanceMode>true</ConformanceMode>
+    </ClCompile>
+    <Link>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='StaticRelease|x64'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>MaxSpeed</Optimization>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <SDLCheck>true</SDLCheck>
+      <ConformanceMode>true</ConformanceMode>
+    </ClCompile>
+    <Link>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClCompile Include="Externals\tinyobjloader\tiny_obj_loader.cc" />
+    <ClCompile Include="LibCommon\Animation\Animation.cpp" />
+    <ClCompile Include="LibCommon\Array\ArrayHelpers.cpp" />
+    <ClCompile Include="LibCommon\Geometry\GeometryHelpers.cpp" />
+    <ClCompile Include="LibCommon\Geometry\GeometryObjectFactory.cpp" />
+    <ClCompile Include="LibCommon\Geometry\GeometryObjects.cpp" />
+    <ClCompile Include="LibCommon\Geometry\KdTree.cpp" />
+    <ClCompile Include="LibCommon\Geometry\MeshLoader.cpp" />
+    <ClCompile Include="LibCommon\Grid\Grid.cpp" />
+    <ClCompile Include="LibCommon\LinearAlgebra\ImplicitQRSVD.cpp" />
+    <ClCompile Include="LibCommon\LinearAlgebra\LinearSolvers\BlockPCGSolver.cpp" />
+    <ClCompile Include="LibCommon\LinearAlgebra\LinearSolvers\PCGSolver.cpp" />
+    <ClCompile Include="LibCommon\LinearAlgebra\SparseMatrix\BlockSparseMatrix.cpp" />
+    <ClCompile Include="LibCommon\LinearAlgebra\SparseMatrix\SparseMatrix.cpp" />
+    <ClCompile Include="LibCommon\Logger\Logger.cpp" />
+    <ClCompile Include="LibCommon\NeighborSearch\NeighborSearch.cpp" />
+    <ClCompile Include="LibCommon\Utils\Formatters.cpp" />
+    <ClCompile Include="LibCommon\Utils\NumberHelpers.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="LibCommon\Animation\Animation.h" />
+    <ClInclude Include="LibCommon\Animation\CubicSpline.h" />
+    <ClInclude Include="LibCommon\Array\Array.h" />
+    <ClInclude Include="LibCommon\Array\ArrayHelpers.h" />
+    <ClInclude Include="LibCommon\BasicTypes.h" />
+    <ClInclude Include="LibCommon\CommonForward.h" />
+    <ClInclude Include="LibCommon\CommonMacros.h" />
+    <ClInclude Include="LibCommon\CommonSetup.h" />
+    <ClInclude Include="LibCommon\Data\DataBuffer.h" />
+    <ClInclude Include="LibCommon\Data\DataIO.h" />
+    <ClInclude Include="LibCommon\Data\DataPrinter.h" />
+    <ClInclude Include="LibCommon\Data\ParameterManager.h" />
+    <ClInclude Include="LibCommon\Geometry\GeometryHelpers.h" />
+    <ClInclude Include="LibCommon\Geometry\GeometryObjectFactory.h" />
+    <ClInclude Include="LibCommon\Geometry\GeometryObjects.h" />
+    <ClInclude Include="LibCommon\Geometry\KDTree.h" />
+    <ClInclude Include="LibCommon\Geometry\MeshLoader.h" />
+    <ClInclude Include="LibCommon\Grid\FastGrid.h" />
+    <ClInclude Include="LibCommon\Grid\Grid.h" />
+    <ClInclude Include="LibCommon\LinearAlgebra\ImplicitQRSVD.h" />
+    <ClInclude Include="LibCommon\LinearAlgebra\ImplicitQRSVD.Test.hpp" />
+    <ClInclude Include="LibCommon\LinearAlgebra\LinaHelpers.h" />
+    <ClInclude Include="LibCommon\LinearAlgebra\LinearSolvers\BlockPCGSolver.h" />
+    <ClInclude Include="LibCommon\LinearAlgebra\LinearSolvers\PCGSolver.h" />
+    <ClInclude Include="LibCommon\LinearAlgebra\SparseMatrix\BlockSparseMatrix.h" />
+    <ClInclude Include="LibCommon\LinearAlgebra\SparseMatrix\SparseMatrix.h" />
+    <ClInclude Include="LibCommon\LinearAlgebra\_LinearAlgebra.Test.hpp" />
+    <ClInclude Include="LibCommon\Logger\Logger.h" />
+    <ClInclude Include="LibCommon\MathTypes.h" />
+    <ClInclude Include="LibCommon\Math\FastMat3.h" />
+    <ClInclude Include="LibCommon\Math\FastVec3.h" />
+    <ClInclude Include="LibCommon\Math\MathHelpers.h" />
+    <ClInclude Include="LibCommon\Math\_TestFastTypes.hpp" />
+    <ClInclude Include="LibCommon\NeighborSearch\DataStructures.h" />
+    <ClInclude Include="LibCommon\NeighborSearch\Morton\Morton.h" />
+    <ClInclude Include="LibCommon\NeighborSearch\Morton\Morton2D.h" />
+    <ClInclude Include="LibCommon\NeighborSearch\Morton\Morton2D_LUTs.h" />
+    <ClInclude Include="LibCommon\NeighborSearch\Morton\Morton3D.h" />
+    <ClInclude Include="LibCommon\NeighborSearch\Morton\Morton3D_LUTs.h" />
+    <ClInclude Include="LibCommon\NeighborSearch\Morton\Morton_BMI.h" />
+    <ClInclude Include="LibCommon\NeighborSearch\Morton\Morton_Common.h" />
+    <ClInclude Include="LibCommon\NeighborSearch\Morton\Morton_LUT_generators.h" />
+    <ClInclude Include="LibCommon\NeighborSearch\NeighborSearch.h" />
+    <ClInclude Include="LibCommon\NeighborSearch\PointSet.h" />
+    <ClInclude Include="LibCommon\NeighborSearch\_NeighborSearch.Test.hpp" />
+    <ClInclude Include="LibCommon\ParallelHelpers\AtomicOperations.h" />
+    <ClInclude Include="LibCommon\ParallelHelpers\ParallelBLAS.h" />
+    <ClInclude Include="LibCommon\ParallelHelpers\ParallelObjects.h" />
+    <ClInclude Include="LibCommon\ParallelHelpers\ParallelSTL.h" />
+    <ClInclude Include="LibCommon\ParallelHelpers\Scheduler.h" />
+    <ClInclude Include="LibCommon\ParallelHelpers\_ParallelHelpers.Test.hpp" />
+    <ClInclude Include="LibCommon\Timer\ScopeTimer.h" />
+    <ClInclude Include="LibCommon\Timer\Timer.h" />
+    <ClInclude Include="LibCommon\Utils\AppConfigReader.h" />
+    <ClInclude Include="LibCommon\Utils\FileHelpers.h" />
+    <ClInclude Include="LibCommon\Utils\Formatters.h" />
+    <ClInclude Include="LibCommon\Utils\JSONHelpers.h" />
+    <ClInclude Include="LibCommon\Utils\MemoryUsage.h" />
+    <ClInclude Include="LibCommon\Utils\NumberHelpers.h" />
+    <ClInclude Include="LibCommon\Utils\ObjectPool.h" />
+    <ClInclude Include="LibCommon\Utils\STLHelpers.h" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>
