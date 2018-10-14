@@ -20,8 +20,7 @@
 #include <LibCommon/Animation/Animation.h>
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-namespace GeometryObjects
-{
+namespace GeometryObjects {
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
@@ -29,8 +28,7 @@ namespace GeometryObjects
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 template<Int N, class Real_t>
-class GeometryObject
-{
+class GeometryObject {
 protected:
     ////////////////////////////////////////////////////////////////////////////////
     __NT_TYPE_ALIASING
@@ -48,18 +46,22 @@ public:
     bool           isInside(const VecN& ppos, bool bNegativeInside = true) const { return signedDistance(ppos, bNegativeInside) < 0; }
 
     void setTranslation(const VecN& translation);
-    void setRotation(const VecX<N + 1, Real_t>& rotation);
+    void setRotation(const VecNp1& rotation);
     void setUniformScale(const Real_t scaleVal);
     void resetTransformation();
 
     auto& getAnimation() { return m_Animations; }
     auto transformed() const { return m_bTransformed; }
+    auto animationTransformed() const { return m_bTransformed && m_Animations.size() > 0; }
     const auto& getTransformationMatrix() const { return m_TransformationMatrix; }
     const auto& getPrevTransformationMatrix() const { return m_PrevTransformationMatrix; }
+    const auto& getAnimationTransformationMatrix() const { return m_AnimationTransformationMatrix; }
+    const auto& getPrevAnimationTransformationMatrix() const { return m_PrevAnimationTransformationMatrix; }
 
     bool doneTransformation() const { return m_bDoneTransformation; }
     bool updateTransformation(UInt frame = 0, Real_t frameFraction = Real_t(0));
     VecN transformAnimation(const VecN& ppos) const;
+    VecN invTransformAnimation(const VecN& ppos) const;
     VecN transform(const VecN& ppos) const;
     VecN invTransform(const VecN& ppos) const;
 
@@ -81,7 +83,9 @@ protected:
     MatNp1xNp1 m_InvTransformationMatrix  = MatNp1xNp1(1.0);
     MatNp1xNp1 m_PrevTransformationMatrix = MatNp1xNp1(1.0);
 
-    MatNp1xNp1                           m_AnimationTransformationMatrix = MatNp1xNp1(1.0);
+    MatNp1xNp1                           m_AnimationTransformationMatrix     = MatNp1xNp1(1.0);
+    MatNp1xNp1                           m_InvAnimationTransformationMatrix  = MatNp1xNp1(1.0);
+    MatNp1xNp1                           m_PrevAnimationTransformationMatrix = MatNp1xNp1(1.0);
     StdVT<RigidBodyAnimation<N, Real_t>> m_Animations;
 };
 
@@ -91,8 +95,7 @@ protected:
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 template<Int N, class Real_t>
-class BoxObject : public GeometryObject<N, Real_t>
-{
+class BoxObject : public GeometryObject<N, Real_t> {
     ////////////////////////////////////////////////////////////////////////////////
     __NT_TYPE_ALIASING
     ////////////////////////////////////////////////////////////////////////////////
@@ -119,8 +122,7 @@ protected:
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 template<Int N, class Real_t>
-class SphereObject : public GeometryObject<N, Real_t>
-{
+class SphereObject : public GeometryObject<N, Real_t> {
     ////////////////////////////////////////////////////////////////////////////////
     __NT_TYPE_ALIASING
     ////////////////////////////////////////////////////////////////////////////////
@@ -133,8 +135,7 @@ public:
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 template<Int N, class Real_t>
-class TorusObject : public GeometryObject<N, Real_t>
-{
+class TorusObject : public GeometryObject<N, Real_t> {
     ////////////////////////////////////////////////////////////////////////////////
     __NT_TYPE_ALIASING
     ////////////////////////////////////////////////////////////////////////////////
@@ -152,8 +153,7 @@ protected:
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 template<Int N, class Real_t>
-class Torus28Object : public TorusObject<N, Real_t>
-{
+class Torus28Object : public TorusObject<N, Real_t> {
     ////////////////////////////////////////////////////////////////////////////////
     __NT_TYPE_ALIASING
     ////////////////////////////////////////////////////////////////////////////////
@@ -165,8 +165,7 @@ public:
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 template<Int N, class Real_t>
-class Torus2InfObject : public TorusObject<N, Real_t>
-{
+class Torus2InfObject : public TorusObject<N, Real_t> {
     ////////////////////////////////////////////////////////////////////////////////
     __NT_TYPE_ALIASING
     ////////////////////////////////////////////////////////////////////////////////
@@ -178,8 +177,7 @@ public:
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 template<Int N, class Real_t>
-class Torus88Object : public TorusObject<N, Real_t>
-{
+class Torus88Object : public TorusObject<N, Real_t> {
     ////////////////////////////////////////////////////////////////////////////////
     __NT_TYPE_ALIASING
     ////////////////////////////////////////////////////////////////////////////////
@@ -191,8 +189,7 @@ public:
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 template<Int N, class Real_t>
-class TorusInfInfObject : public TorusObject<N, Real_t>
-{
+class TorusInfInfObject : public TorusObject<N, Real_t> {
     ////////////////////////////////////////////////////////////////////////////////
     __NT_TYPE_ALIASING
     ////////////////////////////////////////////////////////////////////////////////
@@ -204,8 +201,7 @@ public:
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 template<Int N, class Real_t>
-class CylinderObject : public GeometryObject<N, Real_t>
-{
+class CylinderObject : public GeometryObject<N, Real_t> {
     ////////////////////////////////////////////////////////////////////////////////
     __NT_TYPE_ALIASING
     ////////////////////////////////////////////////////////////////////////////////
@@ -222,8 +218,7 @@ protected:
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 template<Int N, class Real_t>
-class ConeObject : public GeometryObject<N, Real_t>
-{
+class ConeObject : public GeometryObject<N, Real_t> {
     ////////////////////////////////////////////////////////////////////////////////
     __NT_TYPE_ALIASING
     ////////////////////////////////////////////////////////////////////////////////
@@ -240,8 +235,7 @@ protected:
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 template<Int N, class Real_t>
-class PlaneObject : public GeometryObject<N, Real_t>
-{
+class PlaneObject : public GeometryObject<N, Real_t> {
     ////////////////////////////////////////////////////////////////////////////////
     __NT_TYPE_ALIASING
     ////////////////////////////////////////////////////////////////////////////////
@@ -261,8 +255,7 @@ protected:
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 template<Int N, class Real_t>
-class TriangleObject : public GeometryObject<N, Real_t>
-{
+class TriangleObject : public GeometryObject<N, Real_t> {
     ////////////////////////////////////////////////////////////////////////////////
     __NT_TYPE_ALIASING
     ////////////////////////////////////////////////////////////////////////////////
@@ -279,8 +272,7 @@ protected:
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 template<Int N, class Real_t>
-class HexagonObject : public GeometryObject<N, Real_t>
-{
+class HexagonObject : public GeometryObject<N, Real_t> {
     ////////////////////////////////////////////////////////////////////////////////
     __NT_TYPE_ALIASING
     ////////////////////////////////////////////////////////////////////////////////
@@ -293,8 +285,7 @@ public:
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 template<Int N, class Real_t>
-class TriangularPrismObject : public GeometryObject<N, Real_t>
-{
+class TriangularPrismObject : public GeometryObject<N, Real_t> {
     ////////////////////////////////////////////////////////////////////////////////
     __NT_TYPE_ALIASING
     ////////////////////////////////////////////////////////////////////////////////
@@ -311,8 +302,7 @@ protected:
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 template<Int N, class Real_t>
-class HexagonalPrismObject : public GeometryObject<N, Real_t>
-{
+class HexagonalPrismObject : public GeometryObject<N, Real_t> {
     ////////////////////////////////////////////////////////////////////////////////
     __NT_TYPE_ALIASING
     ////////////////////////////////////////////////////////////////////////////////
@@ -329,8 +319,7 @@ protected:
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 template<Int N, class Real_t>
-class CapsuleObject : public GeometryObject<N, Real_t>
-{
+class CapsuleObject : public GeometryObject<N, Real_t> {
     ////////////////////////////////////////////////////////////////////////////////
     __NT_TYPE_ALIASING
     ////////////////////////////////////////////////////////////////////////////////
@@ -349,8 +338,7 @@ protected:
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 template<Int N, class Real_t>
-class EllipsoidObject : public GeometryObject<N, Real_t>
-{
+class EllipsoidObject : public GeometryObject<N, Real_t> {
     ////////////////////////////////////////////////////////////////////////////////
     __NT_TYPE_ALIASING
     ////////////////////////////////////////////////////////////////////////////////
@@ -367,8 +355,7 @@ protected:
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 template<Int N, class Real_t>
-class TriMeshObject : public GeometryObject<N, Real_t>
-{
+class TriMeshObject : public GeometryObject<N, Real_t> {
     ////////////////////////////////////////////////////////////////////////////////
     __NT_TYPE_ALIASING
     ////////////////////////////////////////////////////////////////////////////////
@@ -409,8 +396,7 @@ enum DomainDeformation
 };
 
 template<Int N, class Real_t>
-class CSGObject : public GeometryObject<N, Real_t>
-{
+class CSGObject : public GeometryObject<N, Real_t> {
     ////////////////////////////////////////////////////////////////////////////////
     __NT_TYPE_ALIASING
     ////////////////////////////////////////////////////////////////////////////////
@@ -440,4 +426,4 @@ protected:
 };
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-}   // end namespace GeometryObjects
+} // end namespace GeometryObjects
