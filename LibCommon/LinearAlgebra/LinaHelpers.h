@@ -427,9 +427,7 @@ auto quaternionMatrixTransposed3x4(const Quaternion& q) {
 }
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-template<class T> Quat<T> vecXToQuat(const Vec2<T>& q) { return Quat<T>(q.y, 0, 0, q.x); }
-template<class T> Quat<T> vecXToQuat(const Vec4<T>& q) { return Quat<T>(q.w, q.x, q.y, q.z); }
-template<Int N, class T> VecX<N, T> quatToVecX(const Quat<T>& q) { if constexpr (N == 2) { return Vec2<T>(q.z, q.w); } else { return Vec4<T>(q.x, q.y, q.z, q.w); } }
-
+template<class T> Vec4<T> quatToVec4(const Quat<T>& q) { return Vec4<T>(q.x, q.y, q.z, q.w); }
+template<class T> Quat<T> vec4ToQuat(const Vec4<T>& q) { return Quat<T>(q.w, q.x, q.y, q.z); }
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 } // end namespace LinaHelpers
