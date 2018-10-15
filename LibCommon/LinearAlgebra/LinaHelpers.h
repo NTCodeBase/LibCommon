@@ -22,12 +22,10 @@
 #include <LibCommon/LinearAlgebra/ImplicitQRSVD.h>
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-namespace LinaHelpers
-{
+namespace LinaHelpers {
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 template<Int N, class Real_t>
-bool hasValidElements(const VecX<N, Real_t>& vec)
-{
+bool hasValidElements(const VecX<N, Real_t>& vec) {
     for(Int i = 0; i < N; ++i) {
         if(!NumberHelpers::isValidNumber(vec[i])) {
             return false;
@@ -37,8 +35,7 @@ bool hasValidElements(const VecX<N, Real_t>& vec)
 }
 
 template<Int N, class Real_t>
-bool hasValidElements(const MatXxX<N, Real_t>& mat)
-{
+bool hasValidElements(const MatXxX<N, Real_t>& mat) {
     for(Int i = 0; i < N; ++i) {
         for(Int j = 0; j < N; ++j) {
             if(!NumberHelpers::isValidNumber(mat[i][j])) {
@@ -51,8 +48,7 @@ bool hasValidElements(const MatXxX<N, Real_t>& mat)
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 template<Int N, class Real_t>
-Real_t maxAbs(const MatXxX<N, Real_t>& mat)
-{
+Real_t maxAbs(const MatXxX<N, Real_t>& mat) {
     Real_t result = Real_t(0);
     for(Int i = 0; i < N; ++i) {
         for(Int j = 0; j < N; ++j) {
@@ -64,8 +60,7 @@ Real_t maxAbs(const MatXxX<N, Real_t>& mat)
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 template<Int N, class Real_t>
-Real_t norm2(const MatXxX<N, Real_t>& mat)
-{
+Real_t norm2(const MatXxX<N, Real_t>& mat) {
     Real_t prod = Real_t(0);
     for(Int i = 0; i < N; ++i) {
         for(Int j = 0; j < N; ++j) {
@@ -77,8 +72,7 @@ Real_t norm2(const MatXxX<N, Real_t>& mat)
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 template<Int N, class T, class S>
-void fill(MatXxX<N, T>& mat, S x)
-{
+void fill(MatXxX<N, T>& mat, S x) {
     for(Int i = 0; i < N; ++i) {
         for(Int j = 0; j < N; ++j) {
             mat[i][j] = T(x);
@@ -88,8 +82,7 @@ void fill(MatXxX<N, T>& mat, S x)
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 template<Int N, class Real_t>
-Real_t trace(const MatXxX<N, Real_t>& mat)
-{
+Real_t trace(const MatXxX<N, Real_t>& mat) {
     Real_t prod = Real_t(0);
     for(Int i = 0; i < N; ++i) {
         prod += mat[i][i];
@@ -99,31 +92,27 @@ Real_t trace(const MatXxX<N, Real_t>& mat)
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 template<Int N, class Real_t>
-MatXxX<N, Real_t> dev(const MatXxX<N, Real_t>& mat)
-{
+MatXxX<N, Real_t> dev(const MatXxX<N, Real_t>& mat) {
     return mat - MatXxX<N, Real_t>(LinaHelpers::trace<Real_t>(mat) / Real_t(N));
 }
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 template<Int N, class Real_t>
-void sumToDiag(MatXxX<N, Real_t>& mat, Real_t c)
-{
+void sumToDiag(MatXxX<N, Real_t>& mat, Real_t c) {
     for(Int i = 0; i < N; ++i) {
         mat[i][i] += c;
     }
 }
 
 template<Int N, class Real_t>
-void sum1ToDiag(MatXxX<N, Real_t>& mat)
-{
+void sum1ToDiag(MatXxX<N, Real_t>& mat) {
     for(Int i = 0; i < N; ++i) {
         mat[i][i] += Real_t(1.0);
     }
 }
 
 template<Int N, class Real_t>
-MatXxX<N, Real_t> getDiagSum(const MatXxX<N, Real_t>& mat, Real_t c)
-{
+MatXxX<N, Real_t> getDiagSum(const MatXxX<N, Real_t>& mat, Real_t c) {
     auto result = mat;
     for(Int i = 0; i < N; ++i) {
         result[i][i] += c;
@@ -132,8 +121,7 @@ MatXxX<N, Real_t> getDiagSum(const MatXxX<N, Real_t>& mat, Real_t c)
 }
 
 template<Int N, class Real_t>
-MatXxX<N, Real_t> getDiagSum(const MatXxX<N, Real_t>& mat, const VecX<N, Real_t>& c)
-{
+MatXxX<N, Real_t> getDiagSum(const MatXxX<N, Real_t>& mat, const VecX<N, Real_t>& c) {
     auto result = mat;
     for(Int i = 0; i < N; ++i) {
         result[i][i] += c[i];
@@ -143,8 +131,7 @@ MatXxX<N, Real_t> getDiagSum(const MatXxX<N, Real_t>& mat, const VecX<N, Real_t>
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 template<Int N, class Real_t>
-VecX<N, Real_t> extractDiag(const MatXxX<N, Real_t>& mat)
-{
+VecX<N, Real_t> extractDiag(const MatXxX<N, Real_t>& mat) {
     VecX<N, Real_t> diag;
     for(Int i = 0; i < N; ++i) {
         diag[i] = mat[i][i];
@@ -154,8 +141,7 @@ VecX<N, Real_t> extractDiag(const MatXxX<N, Real_t>& mat)
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 template<Int N, class Real_t>
-MatXxX<N, Real_t> diagMatrix(const VecX<N, Real_t>& diag)
-{
+MatXxX<N, Real_t> diagMatrix(const VecX<N, Real_t>& diag) {
     MatXxX<N, Real_t> mat(0);
     for(Int i = 0; i < N; ++i) {
         mat[i][i] = diag[i];
@@ -165,8 +151,7 @@ MatXxX<N, Real_t> diagMatrix(const VecX<N, Real_t>& diag)
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 template<Int N, class Real_t>
-void diagProduct(MatXxX<N, Real_t>& mat, const VecX<N, Real_t>& vec)
-{
+void diagProduct(MatXxX<N, Real_t>& mat, const VecX<N, Real_t>& vec) {
     for(Int i = 0; i < N; ++i) {
         for(Int j = 0; j < N; ++j) {
             mat[i][j] *= vec[i];
@@ -177,8 +162,7 @@ void diagProduct(MatXxX<N, Real_t>& mat, const VecX<N, Real_t>& vec)
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 //Matrix * Matrix^-1
 template<Int N, class Real_t>
-void diagProductInv(MatXxX<N, Real_t>& mat, const VecX<N, Real_t>& vec)
-{
+void diagProductInv(MatXxX<N, Real_t>& mat, const VecX<N, Real_t>& vec) {
     for(Int i = 0; i < N; ++i) {
         for(Int j = 0; j < N; ++j) {
             mat[i][j] /= vec[i];
@@ -188,8 +172,7 @@ void diagProductInv(MatXxX<N, Real_t>& mat, const VecX<N, Real_t>& vec)
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 template<Int N, class Real_t>
-Real_t frobeniusInnerProduct(const MatXxX<N, Real_t>& m1, const MatXxX<N, Real_t>& m2)
-{
+Real_t frobeniusInnerProduct(const MatXxX<N, Real_t>& m1, const MatXxX<N, Real_t>& m2) {
     Real_t prod = Real_t(0);
     for(Int i = 0; i < N; ++i) {
         for(Int j = 0; j < N; ++j) {
@@ -201,8 +184,7 @@ Real_t frobeniusInnerProduct(const MatXxX<N, Real_t>& m1, const MatXxX<N, Real_t
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 template<Int N, class Real_t>
-VecX<N, Real_t> innerProduct(const VecX<N, Real_t>& vec, const MatXxX<N, Real_t>& mat)
-{
+VecX<N, Real_t> innerProduct(const VecX<N, Real_t>& vec, const MatXxX<N, Real_t>& mat) {
     VecX<N, Real_t> prod(0);
     for(Int i = 0; i < N; ++i) {
         for(Int j = 0; j < N; ++j) {
@@ -214,8 +196,7 @@ VecX<N, Real_t> innerProduct(const VecX<N, Real_t>& vec, const MatXxX<N, Real_t>
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 template<Int N, class Real_t>
-MatXxX<N, Real_t> innerProduct(const MatXxX<N, Real_t>& m1, const MatXxX<N, Real_t>& m2)
-{
+MatXxX<N, Real_t> innerProduct(const MatXxX<N, Real_t>& m1, const MatXxX<N, Real_t>& m2) {
     MatXxX<N, Real_t> prod(0);
     for(Int i = 0; i < N; ++i) {
         for(Int j = 0; j < N; ++j) {
@@ -230,17 +211,15 @@ MatXxX<N, Real_t> innerProduct(const MatXxX<N, Real_t>& m1, const MatXxX<N, Real
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 // TODO: check row-col major
 template<class Real_t>
-Mat2x2<Real_t> cofactor(const Mat2x2<Real_t>& mat)
-{
+Mat2x2<Real_t> cofactor(const Mat2x2<Real_t>& mat) {
     return Mat2x2<Real_t>(mat[1][1], -mat[0][1],
-                            -mat[1][0], mat[0][0]);
+                          -mat[1][0], mat[0][0]);
 }
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 // TODO: test value row-col major
 template<class Real_t>
-Real_t elementCofactor(const Mat3x3<Real_t>& mat, Int x, Int y)
-{
+Real_t elementCofactor(const Mat3x3<Real_t>& mat, Int x, Int y) {
     Real_t         cofactor_v;
     Real_t         minor;
     Mat2x2<Real_t> minor_mat;
@@ -260,8 +239,7 @@ Real_t elementCofactor(const Mat3x3<Real_t>& mat, Int x, Int y)
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 template<class Real_t>
-Mat3x3<Real_t> cofactor(const Mat3x3<Real_t>& mat)
-{
+Mat3x3<Real_t> cofactor(const Mat3x3<Real_t>& mat) {
     Mat2x2<Real_t> result;
     for(Int i = 0; i < 2; ++i) {
         for(Int j = 0; j < 2; ++j) {
@@ -273,21 +251,19 @@ Mat3x3<Real_t> cofactor(const Mat3x3<Real_t>& mat)
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 template<class Real_t>
-Real_t vonMisesPlaneStress(const Mat3x3<Real_t>& mat)
-{
+Real_t vonMisesPlaneStress(const Mat3x3<Real_t>& mat) {
     const Real_t vm = mat[0][0] * mat[0][0] + mat[1][1] * mat[1][1] + mat[2][2] * mat[2][2] -
-                        mat[0][0] * mat[1][1] - mat[1][1] * mat[2][2] - mat[2][2] * mat[0][0] +
-                        (mat[0][1] * mat[1][0] + mat[1][2] * mat[2][1] + mat[2][0] * mat[0][2]) * Real_t(3.0);
+                      mat[0][0] * mat[1][1] - mat[1][1] * mat[2][2] - mat[2][2] * mat[0][0] +
+                      (mat[0][1] * mat[1][0] + mat[1][2] * mat[2][1] + mat[2][0] * mat[0][2]) * Real_t(3.0);
 
     return vm > 0 ? std::sqrt(vm) : 0;
 }
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 template<Int N, class Real_t>
-MatXxX<N, Real_t> randMatrix(Real_t minVal = Real_t(0), Real_t maxVal = Real_t(1.0))
-{
-    std::random_device                       rd;
-    std::mt19937                             gen(rd());
+MatXxX<N, Real_t> randMatrix(Real_t minVal = Real_t(0), Real_t maxVal = Real_t(1.0)) {
+    std::random_device                     rd;
+    std::mt19937                           gen(rd());
     std::uniform_real_distribution<Real_t> dis(minVal, maxVal);
 
     MatXxX<N, Real_t> result;
@@ -301,10 +277,9 @@ MatXxX<N, Real_t> randMatrix(Real_t minVal = Real_t(0), Real_t maxVal = Real_t(1
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 template<Int N, class SizeType, class Real_t>
-StdVT<MatXxX<N, Real_t>> randVecMatrices(SizeType size, Real_t minVal = Real_t(0), Real_t maxVal = Real_t(1.0))
-{
-    std::random_device                       rd;
-    std::mt19937                             gen(rd());
+StdVT<MatXxX<N, Real_t>> randVecMatrices(SizeType size, Real_t minVal = Real_t(0), Real_t maxVal = Real_t(1.0)) {
+    std::random_device                     rd;
+    std::mt19937                           gen(rd());
     std::uniform_real_distribution<Real_t> dis(minVal, maxVal);
 
     StdVT<MatXxX<N, Real_t>> results;
@@ -321,8 +296,7 @@ StdVT<MatXxX<N, Real_t>> randVecMatrices(SizeType size, Real_t minVal = Real_t(0
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 template<Int N, class Real_t>
-auto orientedSVD(const MatXxX<N, Real_t>& M)
-{
+auto orientedSVD(const MatXxX<N, Real_t>& M) {
     MatXxX<N, Real_t> U, Vt;
     VecX<N, Real_t>   S;
 
@@ -343,12 +317,11 @@ auto orientedSVD(const MatXxX<N, Real_t>& M)
     }
 
     return std::make_tuple(U, S, Vt);
-}       // end oriented svd
+} // end oriented svd
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 template<class Real_t>
-void QRDifferential(const Mat2x2<Real_t>& Q, const Mat2x2<Real_t>& R, const Mat2x2<Real_t>& dF, Mat2x2<Real_t>& dQ, Mat2x2<Real_t>& dR)
-{
+void QRDifferential(const Mat2x2<Real_t>& Q, const Mat2x2<Real_t>& R, const Mat2x2<Real_t>& dF, Mat2x2<Real_t>& dQ, Mat2x2<Real_t>& dR) {
     __NT_REQUIRE(R[0][0] != 0);
     Mat2x2<Real_t> QtdF = glm::transpose(Q) * dF;
     Real_t         a    = -QtdF[0][1] / R[0][0];
@@ -358,8 +331,7 @@ void QRDifferential(const Mat2x2<Real_t>& Q, const Mat2x2<Real_t>& R, const Mat2
 }
 
 template<class Real_t>
-void QRDifferential(const Mat3x3<Real_t>& Q, const Mat3x3<Real_t>& R, const Mat3x3<Real_t>& dF, Mat3x3<Real_t>& dQ, Mat3x3<Real_t>& dR)
-{
+void QRDifferential(const Mat3x3<Real_t>& Q, const Mat3x3<Real_t>& R, const Mat3x3<Real_t>& dF, Mat3x3<Real_t>& dQ, Mat3x3<Real_t>& dR) {
     __NT_REQUIRE(R[0][0] != 0 && R[1][1] != 0);
     Mat3x3<Real_t> QtdF = glm::transpose(Q) * dF;
     Real_t         w3   = QtdF[0][1] / R[0][0];
@@ -372,10 +344,9 @@ void QRDifferential(const Mat3x3<Real_t>& Q, const Mat3x3<Real_t>& R, const Mat3
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 template<Int N, class Real_t>
-auto symmetryDecomposition(const MatXxX<N, Real_t>& M)
-{
+auto symmetryDecomposition(const MatXxX<N, Real_t>& M) {
     MatXxX<N, Real_t> symComp, skewSymComp;
-    auto                Mt = glm::transpose(M);
+    auto              Mt = glm::transpose(M);
 
     symComp     = Real_t(0.5) * (M + Mt);
     skewSymComp = Real_t(0.5) * (M - Mt);
@@ -384,9 +355,8 @@ auto symmetryDecomposition(const MatXxX<N, Real_t>& M)
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 template<Int N, class Real_t>
-auto extractFiberCotangentStress(const MatXxX<N, Real_t>& VP, const MatXxX<N, Real_t>& F)
-{
-    if constexpr(N == 2) {
+auto extractFiberCotangentStress(const MatXxX<N, Real_t>& VP, const MatXxX<N, Real_t>& F) {
+    if constexpr (N == 2) {
         return glm::outerProduct(VP[1], F[1]);
     } else {
         return MatMxN<3, 2, Real_t>(VP[1], VP[2]) * glm::transpose(MatMxN<3, 2, Real_t>(F[1], F[2]));
@@ -395,9 +365,8 @@ auto extractFiberCotangentStress(const MatXxX<N, Real_t>& VP, const MatXxX<N, Re
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 template<Int N, class Real_t>
-MatXxX<N, Real_t> getOrthogonalSystem(const VecX<N, Real_t>& d1)
-{
-    if constexpr(N == 2) {
+MatXxX<N, Real_t> getOrthogonalSystem(const VecX<N, Real_t>& d1) {
+    if constexpr (N == 2) {
         MatXxX<N, Real_t> M;
         M[0] = glm::normalize(d1);
         M[1] = glm::normalize(Vec2<Real_t>(-d1.y, d1.x));
@@ -426,8 +395,7 @@ MatXxX<N, Real_t> getOrthogonalSystem(const VecX<N, Real_t>& d1)
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 // Compute the rotation quaternion to rotate from position p1 to p2
 template<class T>
-auto angleAxisFromPositions(const Vec3<T>& p1, const Vec3<T>& p2)
-{
+auto angleAxisFromPositions(const Vec3<T>& p1, const Vec3<T>& p2) {
     auto tmp = glm::dot(glm::normalize(p1), glm::normalize(p2));
     if(tmp > T(1)) { tmp = T(1); }
     auto angle = std::acos(tmp);
@@ -436,16 +404,14 @@ auto angleAxisFromPositions(const Vec3<T>& p1, const Vec3<T>& p2)
 }
 
 template<class T>
-Quat<T> quaternionFromPositions(const Vec3<T>& p1, const Vec3<T>& p2)
-{
+Quat<T> quaternionFromPositions(const Vec3<T>& p1, const Vec3<T>& p2) {
     auto [angle, axis] = angleAxisFromPositions(p1, p2);
     return glm::angleAxis(angle, axis);
 }
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 template<class Quaternion>
-auto quaternionMatrix(const Quaternion& q)
-{
+auto quaternionMatrix(const Quaternion& q) {
     return Mat4x4<Quaternion::value_type>(q.w, q.z, -q.y, -q.x, // col 0
                                           -q.z, q.w, q.x, -q.y, // col 1
                                           q.y, -q.x, q.w, -q.z, // col 2
@@ -453,8 +419,7 @@ auto quaternionMatrix(const Quaternion& q)
 }
 
 template<class Quaternion>
-auto quaternionMatrixTransposed3x4(const Quaternion& q)
-{
+auto quaternionMatrixTransposed3x4(const Quaternion& q) {
     return MatMxN<3, 4, Quaternion::value_type>(q.w, -q.z, q.y,    // col 0
                                                 q.z, q.w, -q.x,    // col 1
                                                 -q.y, q.x, q.w,    // col 2
@@ -462,8 +427,9 @@ auto quaternionMatrixTransposed3x4(const Quaternion& q)
 }
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-template<class T> Vec4<T> quatToVec4(const Quat<T>& q) { return Vec4<T>(q.x, q.y, q.z, q.w); }
-template<class T> Quat<T> vec4ToQuat(const Vec4<T>& q) { return Quat<T>(q.w, q.x, q.y, q.z); }
+template<class T> Quat<T> vecXToQuat(const Vec2<T>& q) { return Quat<T>(q.y, 0, 0, q.x); }
+template<class T> Quat<T> vecXToQuat(const Vec4<T>& q) { return Quat<T>(q.w, q.x, q.y, q.z); }
+template<Int N, class T> VecX<N, T> quatToVecX(const Quat<T>& q) { if constexpr (N == 2) { return Vec2<T>(q.z, q.w); } else { return Vec4<T>(q.x, q.y, q.z, q.w); } }
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-}   // end namespace LinaHelpers
+} // end namespace LinaHelpers

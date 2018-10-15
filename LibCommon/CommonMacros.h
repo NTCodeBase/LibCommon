@@ -46,14 +46,13 @@
 #   include <exception>
 #   include <string>
 
-inline void throwIfFailed(HRESULT hr)
-{
+inline void throwIfFailed(HRESULT hr) {
     if(FAILED(hr)) {
         throw std::exception(std::to_string(hr).c_str());
     }
 }
 
-#endif  // __NT_WINDOWS_OS__
+#endif // __NT_WINDOWS_OS__
 
 #ifdef __NT_WINDOWS_OS__
 #   define __NT_SPRINT sprintf_s
@@ -308,6 +307,8 @@ inline void throwIfFailed(HRESULT hr)
 #define __NT_TO_CSTRING_7(x)                         Formatters::toString7(x).c_str()
 
 #define __NT_TYPE_ALIASING                                                          \
+    using Vec1r            = Vec1<Real_t>;                                          \
+    using Vec2r            = Vec2<Real_t>;                                          \
     using Vec3r            = Vec3<Real_t>;                                          \
     using Vec4r            = Vec4<Real_t>;                                          \
     using VecNi            = VecX<N, Int>;                                          \

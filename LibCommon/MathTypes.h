@@ -32,6 +32,7 @@
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 template<class Type> using Quat   = glm::qua<Type>;
+template<class Type> using Vec1   = glm::vec<1, Type>;
 template<class Type> using Vec2   = glm::vec<2, Type>;
 template<class Type> using Vec3   = glm::vec<3, Type>;
 template<class Type> using Vec4   = glm::vec<4, Type>;

@@ -18,12 +18,10 @@
 #include <LibCommon/CommonSetup.h>
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-namespace AtomicOperations
-{
+namespace AtomicOperations {
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 template<class T, class Function>
-__NT_FORCE_INLINE void atomicOp(T& target, T operand, Function&& f)
-{
+__NT_FORCE_INLINE void atomicOp(T& target, T operand, Function&& f) {
     std::atomic<T>& tgt = *((std::atomic<T>*)&target);
 
     T cur_val = target;
@@ -35,90 +33,78 @@ __NT_FORCE_INLINE void atomicOp(T& target, T operand, Function&& f)
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 template<class T>
-__NT_FORCE_INLINE void add(T& target, T operand)
-{
+__NT_FORCE_INLINE void add(T& target, T operand) {
     atomicOp(target, operand, [](T a, T b) { return a + b; });
 }
 
-template<Int N, class T>
-__NT_FORCE_INLINE void add(VecX<N, T>& target, const VecX<N, T>& operand)
-{
-    static_assert(N == 2 || N == 3);
-    auto func = [](T a, T b) { return a + b; };
-    if constexpr (N == 2) {
-        atomicOp(target[0], operand[0], func);
-        atomicOp(target[1], operand[1], func);
-    } else {
-        atomicOp(target[0], operand[0], func);
-        atomicOp(target[1], operand[1], func);
-        atomicOp(target[2], operand[2], func);
-    }
+template<class T>
+__NT_FORCE_INLINE void add(Vec2<T>& target, const Vec2<T>& operand) {
+    atomicOp(target[0], operand[0], [](T a, T b) { return a + b; });
+    atomicOp(target[1], operand[1], [](T a, T b) { return a + b; });
+}
+
+template<class T>
+__NT_FORCE_INLINE void add(Vec3<T>& target, const Vec3<T>& operand) {
+    atomicOp(target[0], operand[0], [](T a, T b) { return a + b; });
+    atomicOp(target[1], operand[1], [](T a, T b) { return a + b; });
+    atomicOp(target[2], operand[2], [](T a, T b) { return a + b; });
 }
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 template<class T>
-__NT_FORCE_INLINE void subtract(T& target, T operand)
-{
+__NT_FORCE_INLINE void subtract(T& target, T operand) {
     atomicOp(target, operand, [](T a, T b) { return a - b; });
 }
 
-template<Int N, class T>
-__NT_FORCE_INLINE void subtract(VecX<N, T>& target, const VecX<N, T>& operand)
-{
-    static_assert(N == 2 || N == 3);
-    auto func = [](T a, T b) { return a - b; };
-    if constexpr (N == 2) {
-        atomicOp(target[0], operand[0], func);
-        atomicOp(target[1], operand[1], func);
-    } else {
-        atomicOp(target[0], operand[0], func);
-        atomicOp(target[1], operand[1], func);
-        atomicOp(target[2], operand[2], func);
-    }
+template<class T>
+__NT_FORCE_INLINE void subtract(Vec2<T>& target, const Vec2<T>& operand) {
+    atomicOp(target[0], operand[0], [](T a, T b) { return a - b; });
+    atomicOp(target[1], operand[1], [](T a, T b) { return a - b; });
+}
+
+template<class T>
+__NT_FORCE_INLINE void subtract(Vec3<T>& target, const Vec3<T>& operand) {
+    atomicOp(target[0], operand[0], [](T a, T b) { return a - b; });
+    atomicOp(target[1], operand[1], [](T a, T b) { return a - b; });
+    atomicOp(target[2], operand[2], [](T a, T b) { return a - b; });
 }
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 template<class T>
-__NT_FORCE_INLINE void multiply(T& target, T operand)
-{
+__NT_FORCE_INLINE void multiply(T& target, T operand) {
     atomicOp(target, operand, [](T a, T b) { return a * b; });
 }
 
-template<Int N, class T>
-__NT_FORCE_INLINE void multiply(VecX<N, T>& target, const VecX<N, T>& operand)
-{
-    static_assert(N == 2 || N == 3);
-    auto func = [](T a, T b) { return a * b; };
-    if constexpr (N == 2) {
-        atomicOp(target[0], operand[0], func);
-        atomicOp(target[1], operand[1], func);
-    } else {
-        atomicOp(target[0], operand[0], func);
-        atomicOp(target[1], operand[1], func);
-        atomicOp(target[2], operand[2], func);
-    }
+template<class T>
+__NT_FORCE_INLINE void multiply(Vec2<T>& target, const Vec2<T>& operand) {
+    atomicOp(target[0], operand[0], [](T a, T b) { return a * b; });
+    atomicOp(target[1], operand[1], [](T a, T b) { return a * b; });
+}
+
+template<class T>
+__NT_FORCE_INLINE void multiply(Vec3<T>& target, const Vec3<T>& operand) {
+    atomicOp(target[0], operand[0], [](T a, T b) { return a * b; });
+    atomicOp(target[1], operand[1], [](T a, T b) { return a * b; });
+    atomicOp(target[2], operand[2], [](T a, T b) { return a * b; });
 }
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 template<class T>
-__NT_FORCE_INLINE void divide(T& target, T operand)
-{
+__NT_FORCE_INLINE void divide(T& target, T operand) {
     atomicOp(target, operand, [](T a, T b) { return a / b; });
 }
 
-template<Int N, class T>
-__NT_FORCE_INLINE void divide(VecX<N, T>& target, const VecX<N, T>& operand)
-{
-    static_assert(N == 2 || N == 3);
-    auto func = [](T a, T b) { return a / b; };
-    if constexpr (N == 2) {
-        atomicOp(target[0], operand[0], func);
-        atomicOp(target[1], operand[1], func);
-    } else {
-        atomicOp(target[0], operand[0], func);
-        atomicOp(target[1], operand[1], func);
-        atomicOp(target[2], operand[2], func);
-    }
+template<class T>
+__NT_FORCE_INLINE void divide(Vec2<T>& target, const Vec2<T>& operand) {
+    atomicOp(target[0], operand[0], [](T a, T b) { return a / b; });
+    atomicOp(target[1], operand[1], [](T a, T b) { return a / b; });
+}
+
+template<class T>
+__NT_FORCE_INLINE void divide(Vec3<T>& target, const Vec3<T>& operand) {
+    atomicOp(target[0], operand[0], [](T a, T b) { return a / b; });
+    atomicOp(target[1], operand[1], [](T a, T b) { return a / b; });
+    atomicOp(target[2], operand[2], [](T a, T b) { return a / b; });
 }
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
