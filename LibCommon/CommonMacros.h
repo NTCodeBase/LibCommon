@@ -317,13 +317,14 @@ inline void throwIfFailed(HRESULT hr) {
     using VecNp1           = VecX<N + 1, Real_t>;                                   \
     using MatNxN           = MatXxX<N, Real_t>;                                     \
     using MatNp1xNp1       = MatXxX<N + 1, Real_t>;                                 \
+    using StdVT_Vec2r      = StdVT_Vec2<Real_t>;                                    \
     using StdVT_Vec3r      = StdVT_Vec3<Real_t>;                                    \
     using StdVT_Vec4r      = StdVT_Vec4<Real_t>;                                    \
     using StdVT_VecN       = StdVT_VecX<N, Real_t>;                                 \
     using StdVT_VecNp1     = StdVT_VecX<N + 1, Real_t>;                             \
     using StdVT_MatNxN     = StdVT_MatXxX<N, Real_t>;                               \
     using StdVT_MatNp1xNp1 = StdVT_MatXxX<N + 1, Real_t>;                           \
-    using StdVT_RealType   = StdVT<Real_t>;                                         \
+    using StdVT_Realt      = StdVT<Real_t>;                                         \
     static constexpr auto TinyReal() { return std::numeric_limits<Real_t>::min(); } \
     static constexpr auto HugeReal() { return std::numeric_limits<Real_t>::max(); }
 
