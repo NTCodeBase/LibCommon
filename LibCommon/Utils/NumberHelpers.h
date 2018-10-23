@@ -36,25 +36,55 @@ bool isValidNumber(T x) {
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 template<class IndexType, class Real_t>
-auto generatePointsOnSphere(IndexType nPoints, Real_t sphereRadius = Real_t(1), Real_t spanPolarAngle = Real_t(M_PI)) {
-    StdVT_Vec3<Real_t> points;
+auto generatePointsOnCircle(IndexType nPoints, Real_t sphereRadius = Real_t(1)) {
+    StdVT_Vec2<Real_t> points;
     points.reserve(nPoints);
-    auto a    = Real_t(4.0 * M_PI / nPoints);
-    auto d    = std::sqrt(a);
-    auto Mv   = static_cast<IndexType>(std::round(M_PI / d));
-    auto dv   = Real_t(M_PI / Mv);
-    auto dphi = a / dv;
-    for(IndexType m = 0; m < Mv; ++m) {
-        auto v    = Real_t(spanPolarAngle * (m + 0.5) / Mv);
-        auto Mphi = static_cast<IndexType>(std::round(2.0 * M_PI * std::sin(v) / dphi));
-        for(IndexType n = 0; n < Mphi; ++n) {
-            auto phi = Real_t(2 * M_PI * n / Mphi);
-            points.push_back(Vec3<Real_t>(sphereRadius * std::sin(v) * std::cos(phi),
-                                          sphereRadius * std::cos(v),
-                                          sphereRadius * std::sin(v) * std::sin(phi)));
-        }
+    ////////////////////////////////////////////////////////////////////////////////
+    const auto b   = static_cast<IndexType>(std::round(2 /*=alpha*/ * std::sqrt(nPoints)));
+    const auto phi = Real_t((std::sqrt(5) + 1.0) * 0.5);
+    for(IndexType k = 0; k < nPoints; ++k) {
+        auto r = (k > nPoints - b) ? sphereRadius : sphereRadius* std::sqrt(k - 0.5) / std::sqrt(nPoints - 0.5 * b - 0.5);
+        auto theta = Real_t(2.0 * M_PI * k / phi / phi);
+        points.push_back(Vec2<Real_t>(r * std::cos(theta), r * std::sin(theta)));
     }
     return points;
+}
+
+//-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+template<Int N, class IndexType, class Real_t>
+auto generatePointsOnSphere(IndexType nPoints, Real_t radius = Real_t(1), Real_t spanPolarAngle = Real_t(M_PI)) {
+    if constexpr (N == 2) {
+        __NT_UNUSED(spanPolarAngle);
+        StdVT_Vec2<Real_t> points;
+        points.reserve(nPoints);
+        ////////////////////////////////////////////////////////////////////////////////
+        ////////////////////////////////////////////////////////////////////////////////
+        const auto dphi = Real_t(2 * M_PI / nPoints);
+        for(IndexType k = 0; k < nPoints; ++k) {
+            auto phi = k * dphi;
+            points.push_back(Vec2<Real_t>(radius * std::cos(phi), radius * std::sin(phi)));
+        }
+        return points;
+    } else {
+        StdVT_Vec3<Real_t> points;
+        points.reserve(nPoints);
+        auto a    = Real_t(4.0 * M_PI / nPoints);
+        auto d    = std::sqrt(a);
+        auto Mv   = static_cast<IndexType>(std::round(M_PI / d));
+        auto dv   = Real_t(M_PI / Mv);
+        auto dphi = a / dv;
+        for(IndexType m = 0; m < Mv; ++m) {
+            auto v    = Real_t(spanPolarAngle * (m + 0.5) / Mv);
+            auto Mphi = static_cast<IndexType>(std::round(2.0 * M_PI * std::sin(v) / dphi));
+            for(IndexType n = 0; n < Mphi; ++n) {
+                auto phi = Real_t(2 * M_PI * n / Mphi);
+                points.push_back(Vec3<Real_t>(radius * std::sin(v) * std::cos(phi),
+                                              radius * std::cos(v),
+                                              radius * std::sin(v) * std::sin(phi)));
+            }
+        }
+        return points;
+    }
 }
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
