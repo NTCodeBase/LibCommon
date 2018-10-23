@@ -48,6 +48,7 @@ public:
     void setTranslation(const VecN& translation);
     void setRotation(const VecNp1& rotation);
     void setUniformScale(const Real_t scaleVal);
+    auto uniformScale() const { return m_UniformScale; }
     void resetTransformation();
 
     auto& getAnimation() { return m_Animations; }
