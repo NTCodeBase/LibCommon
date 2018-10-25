@@ -22,7 +22,7 @@ class ProgressBar {
 public:
     ProgressBar() = delete;
     static String getProgressBar(Real_t percentage) {
-        assert(percentage > Real_t(0) && percentage < Real_t(100.0));
+        assert(percentage > Real_t(0) && percentage < Real_t(100.0 + 1e-8));
         return m_ProgressBars[static_cast<UInt>(percentage)];
     }
 
