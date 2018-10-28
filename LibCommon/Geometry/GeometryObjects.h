@@ -113,6 +113,8 @@ public:
     void        setOriginalBox(const VecN& bMin, const VecN& bMax) { m_BoxMin = bMin; m_BoxMax = bMax; }
     const auto& originalBoxMin() const { return m_BoxMin; }
     const auto& originalBoxMax() const { return m_BoxMax; }
+    auto getTransformedBoxMin() const { return this->transform(m_BoxMin); }
+    auto getTransformedBoxMax() const { return this->transform(m_BoxMax); }
 
 protected:
     virtual void parseParameters(const JParams& jParams) override;
@@ -379,8 +381,7 @@ protected:
 };
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-enum CSGOperations
-{
+enum CSGOperations {
     Overwrite,
     Union,
     Subtraction,
@@ -389,8 +390,7 @@ enum CSGOperations
     BlendPoly
 };
 
-enum DomainDeformation
-{
+enum DomainDeformation {
     None,
     Twist,
     CheapBend
@@ -402,8 +402,7 @@ class CSGObject : public GeometryObject<N, Real_t> {
     __NT_TYPE_ALIASING
     ////////////////////////////////////////////////////////////////////////////////
 public:
-    struct CSGData
-    {
+    struct CSGData {
         SharedPtr<GeometryObject<N, Real_t>> obj = nullptr;
         CSGOperations                        op  = Union;
     };
