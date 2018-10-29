@@ -15,14 +15,12 @@
 #include <LibCommon/Utils/Formatters.h>
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-namespace Formatters
-{
+namespace Formatters {
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 // implementation
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 template<FormatType formatType, Int precision, bool bMultiThreaded>
-void Formatter<formatType, precision, bMultiThreaded>::init()
-{
+void Formatter<formatType, precision, bMultiThreaded>::init() {
     if constexpr(bMultiThreaded) { s_lock.lock(); }
     s_ss.str("");
     if constexpr(formatType == FormatType::CommaSeparated)
@@ -39,8 +37,7 @@ void Formatter<formatType, precision, bMultiThreaded>::init()
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 template<FormatType formatType, Int precision, bool bMultiThreaded>
 template<class T>
-String Formatter<formatType, precision, bMultiThreaded>::format(T x)
-{
+String Formatter<formatType, precision, bMultiThreaded>::format(T x) {
     if(!s_bInit) { init(); }
     if constexpr(bMultiThreaded) { s_lock.lock(); }
     s_ss.str("");
@@ -53,8 +50,7 @@ String Formatter<formatType, precision, bMultiThreaded>::format(T x)
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 template<FormatType formatType, Int precision, bool bMultiThreaded>
 template<Int N, class T>
-String Formatter<formatType, precision, bMultiThreaded>::format(const VecX<N, T>& vec)
-{
+String Formatter<formatType, precision, bMultiThreaded>::format(const VecX<N, T>& vec) {
     if(!s_bInit) { init(); }
     if constexpr(bMultiThreaded) { s_lock.lock(); }
     s_ss.str("");
@@ -71,8 +67,7 @@ String Formatter<formatType, precision, bMultiThreaded>::format(const VecX<N, T>
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 template<FormatType formatType, Int precision, bool bMultiThreaded>
 template<Int N, class T>
-String Formatter<formatType, precision, bMultiThreaded>::format(const MatXxX<N, T>& mat, bool breakLine)
-{
+String Formatter<formatType, precision, bMultiThreaded>::format(const MatXxX<N, T>& mat, bool breakLine) {
     if(!s_bInit) { init(); }
     if constexpr(bMultiThreaded) { s_lock.lock(); }
     s_ss.str("");
@@ -167,4 +162,4 @@ __BNN_INSTANTIATE_FORMATTER_VECTOR_COMMON_PRECISION_COMMON_VEC_SIZE(FormatType::
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-}   // end namespace namespace Formatters
+} // end namespace namespace Formatters

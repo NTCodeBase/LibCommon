@@ -22,39 +22,33 @@
 #include <iomanip>
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-namespace Formatters
-{
+namespace Formatters {
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-enum class FormatType
-{
+enum class FormatType {
     CommaSeparated,
     Scientific
 };
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 template<FormatType formatType = FormatType::CommaSeparated, Int precision = 2, bool bMultiThreaded = false>
-class Formatter
-{
+class Formatter {
 public:
     Formatter() = delete;
 
     template<class T> static String        format(T x);
     template<Int N, class T> static String format(const VecX<N, T>& vec);
-    template<Int N, class T> static String format(const MatXxX<N, T>& mat, bool breakLine = true);
+    template<Int N, class T> static String format(const MatXxX<N, T>& mat, bool breakLine = false);
 
 private:
     static void init();
     ////////////////////////////////////////////////////////////////////////////////
-    struct Numpunct : public std::numpunct<char>
-    {
+    struct Numpunct : public std::numpunct<char> {
 protected:
-        virtual char do_thousands_sep() const
-        {
+        virtual char do_thousands_sep() const {
             return ',';
         }
 
-        virtual String do_grouping() const
-        {
+        virtual String do_grouping() const {
             return "\03";
         }
     };
@@ -66,41 +60,35 @@ protected:
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 template<class T>
-String toString(T value)
-{
+String toString(T value) {
     return Formatter<FormatType::CommaSeparated, 2, true>::format(value);
 }
 
 template<class T>
-String toString5(T value)
-{
+String toString5(T value) {
     return Formatter<FormatType::CommaSeparated, 5, true>::format(value);
 }
 
 template<class T>
-String toString7(T value)
-{
+String toString7(T value) {
     return Formatter<FormatType::CommaSeparated, 7, true>::format(value);
 }
 
 template<class T>
-String toString10(T value)
-{
+String toString10(T value) {
     return Formatter<FormatType::CommaSeparated, 10, true>::format(value);
 }
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 template<class T>
-String toString2f(T value)
-{
+String toString2f(T value) {
     char buff[32];
     sprintf_s(buff, "%.2f", value);
     return String(buff);
 }
 
 template<class T>
-String toString5f(T value)
-{
+String toString5f(T value) {
     char buff[32];
     sprintf_s(buff, "%.5f", value);
     return String(buff);
@@ -108,32 +96,27 @@ String toString5f(T value)
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 template<class T>
-String toSciString(T value)
-{
+String toSciString(T value) {
     return Formatter<FormatType::Scientific, 5, true>::format(value);
 }
 
 template<class T>
-String toSciString2(T value)
-{
+String toSciString2(T value) {
     return Formatter<FormatType::Scientific, 2, true>::format(value);
 }
 
 template<class T>
-String toSciString7(T value)
-{
+String toSciString7(T value) {
     return Formatter<FormatType::Scientific, 7, true>::format(value);
 }
 
 template<class T>
-String toSciString10(T value)
-{
+String toSciString10(T value) {
     return Formatter<FormatType::Scientific, 10, true>::format(value);
 }
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-inline String byteToHex(const char* arrBytes, size_t arrSize, Int width /*= 2*/)
-{
+inline String byteToHex(const char* arrBytes, size_t arrSize, Int width /*= 2*/) {
     if(width < 2) { width = 2; }
     std::stringstream s_ss;
     for(size_t i = 0; i < arrSize; ++i) {
@@ -143,10 +126,9 @@ inline String byteToHex(const char* arrBytes, size_t arrSize, Int width /*= 2*/)
 }
 
 template<class T>
-inline String byteToHex(const StdVT<T>& vecBytes, Int width /*= 2*/)
-{
+inline String byteToHex(const StdVT<T>& vecBytes, Int width /*= 2*/) {
     return byteToHex((const char*)vecBytes.data(), vecBytes.size() * sizeof(T), width);
 }
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-}   // end namespace namespace Formatters
+} // end namespace namespace Formatters
