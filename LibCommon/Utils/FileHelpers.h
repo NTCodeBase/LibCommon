@@ -69,6 +69,7 @@ inline size_t getFileSize(const String& fileName) {
 }
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+// maximum 2 levels
 inline StdVT_String getFolderSizeInfo(const char* folderName) {
     size_t       totalSize = 0;
     StdVT_String strs;
@@ -80,16 +81,29 @@ inline StdVT_String getFolderSizeInfo(const char* folderName) {
                 for(auto& f : fs::directory_iterator(p)) {
                     if(fs::is_regular_file(f)) {
                         folderSize += fs::file_size(f);
+                    } else {
+                        size_t folderSize_l2 = 0;
+                        for(auto& f1 : fs::directory_iterator(f)) {
+                            if(fs::is_regular_file(f1)) {
+                                folderSize_l2 += fs::file_size(f1);
+                            } else {}
+                        }
+                        folderSize += folderSize_l2;
+                        strs.emplace_back(String("........") + fs::path(p).filename().string() + String("/") +
+                                          fs::path(f).filename().string() + String(": ") +
+                                          std::to_string(folderSize_l2 / 1048576) + String(" MB(s) - ") +
+                                          std::to_string(std::distance(fs::directory_iterator(f), fs::directory_iterator{})) + String(" file(s)"));
                     }
                 }
                 totalSize += folderSize;
-                strs.emplace_back(String("....") + fs::path(p).filename().string() + String(": ") + std::to_string(folderSize / 1048576) + String(" (MB) - ") +
-                                  std::to_string(std::distance(fs::directory_iterator(p), fs::directory_iterator{})) + String(" files"));
+                strs.emplace_back(String("....") + fs::path(p).filename().string() + String(": ") +
+                                  std::to_string(folderSize / 1048576) + String(" MB(s) - ") +
+                                  std::to_string(std::distance(fs::directory_iterator(p), fs::directory_iterator{})) + String(" file(s)"));
             }
         }
     }
 
-    strs[0] += std::to_string(totalSize / 1048576) + String(" (MB)");
+    strs[0] += std::to_string(totalSize / 1048576) + String(" MB(s)");
     return strs;
 }
 
