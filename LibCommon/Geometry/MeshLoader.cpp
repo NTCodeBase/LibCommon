@@ -19,8 +19,7 @@
 #include <LibCommon/Math/MathHelpers.h>
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-bool MeshLoader::loadMesh(const String& meshFile)
-{
+bool MeshLoader::loadMesh(const String& meshFile) {
     auto meshType = getMeshType(meshFile);
     if(meshType == MeshFileType::UnsupportedFileType) {
         return false;
@@ -41,8 +40,7 @@ bool MeshLoader::loadMesh(const String& meshFile)
 }
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-void MeshLoader::scaleToBox()
-{
+void MeshLoader::scaleToBox() {
     Vec3f diff    = m_AABBMax - m_AABBMin;
     float maxSize = fmaxf(fmaxf(fabsf(diff[0]), fabsf(diff[1])), fabsf(diff[2]));
     float scale   = 2.0f / maxSize;
@@ -77,22 +75,19 @@ void MeshLoader::scaleToBox()
 }
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-Vec3f MeshLoader::getCameraPosition(Vec3f camDirection, float fov /*= 45*/)
-{
+Vec3f MeshLoader::getCameraPosition(Vec3f camDirection, float fov /*= 45*/) {
     return camDirection * getCameraDistance(fov * float(0.75)) + getMeshCenter();
 }
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-float MeshLoader::getCameraDistance(float fov)
-{
+float MeshLoader::getCameraDistance(float fov) {
     float halfLength = (m_AABBMax.y - m_AABBMin.y) * float(0.5);
 
     return (halfLength / std::tan(fov * float(0.5 * M_PI / 180.0)));
 }
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-void MeshLoader::swapCoordinates(int k1, int k2)
-{
+void MeshLoader::swapCoordinates(int k1, int k2) {
     __NT_REQUIRE(k1 >= 0 && k1 <= 2 && k2 >= 0 && k2 <= 2 && k1 != k2);
     for(size_t i = 0, iend = m_Vertices.size() / 3; i < iend; ++i) {
         std::swap(m_Vertices[i * 3 + k1], m_Vertices[i * 3 + k2]);
@@ -107,8 +102,7 @@ void MeshLoader::swapCoordinates(int k1, int k2)
 }
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-MeshLoader::MeshFileType MeshLoader::getMeshType(const String& meshFile)
-{
+MeshLoader::MeshFileType MeshLoader::getMeshType(const String& meshFile) {
     const std::string extension = meshFile.substr(meshFile.rfind('.') + 1);
     if(extension == "obj" || extension == "OBJ" || extension == "Obj") {
         return MeshFileType::OBJFile;
@@ -117,8 +111,7 @@ MeshLoader::MeshFileType MeshLoader::getMeshType(const String& meshFile)
 }
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-void MeshLoader::clearData()
-{
+void MeshLoader::clearData() {
     m_isMeshReady  = false;
     m_NumTriangles = 0;
 
@@ -136,14 +129,17 @@ void MeshLoader::clearData()
 }
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-bool MeshLoader::loadObj(const String& meshFile)
-{
+bool MeshLoader::loadObj(const String& meshFile) {
     std::vector<tinyobj::shape_t>    obj_shapes;
     std::vector<tinyobj::material_t> obj_materials;
     tinyobj::attrib_t                attrib;
 
+    std::string warnStr;
     std::string errStr;
-    bool        result = tinyobj::LoadObj(&attrib, &obj_shapes, &obj_materials, &errStr, meshFile.c_str(), NULL, true);
+    bool        result = tinyobj::LoadObj(&attrib, &obj_shapes, &obj_materials, &warnStr, &errStr, meshFile.c_str(), NULL, true);
+    if(!warnStr.empty()) {
+        std::cerr << "tinyobj: " << warnStr << std::endl;
+    }
     if(!errStr.empty()) {
         std::cerr << "tinyobj: " << errStr << std::endl;
     }
@@ -240,7 +236,7 @@ bool MeshLoader::loadObj(const String& meshFile)
                     m_FaceVertexTexCoord2D.push_back(tex[k][1]);
                 }
             }
-        }         // end process current shape
+        } // end process current shape
     }
 
     ////////////////////////////////////////////////////////////////////////////////
@@ -248,8 +244,7 @@ bool MeshLoader::loadObj(const String& meshFile)
 }
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-void MeshLoader::computeFaceVertexData()
-{
+void MeshLoader::computeFaceVertexData() {
     if(m_FaceVertexNormals.size() != m_FaceVertices.size()) {
         m_FaceVertexNormals.assign(m_FaceVertices.size(), 0);
         m_FaceVertexColors.assign(m_FaceVertices.size(), 0);
