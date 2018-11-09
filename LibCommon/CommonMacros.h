@@ -298,14 +298,17 @@ inline void throwIfFailed(HRESULT hr) {
     printf("Test %s finished. Time: %s\n", funcName, testTimer.getRunTime().c_str()); \
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-// data macros
 #define __NT_REQUIRE_EQUAL(a, b)                     __NT_REQUIRE_MSG(a == b, "Numbers are not equal.");
 #define __NT_REQUIRE_APPROX_NUMBERS(a, b, threshold) __NT_REQUIRE_MSG(threshold > fabs(a - b), "Numbers are not equal.");
-#define __NT_TO_CSTRING(x)                           Formatters::toString7(x).c_str()
-#define __NT_TO_CSTRING_2(x)                         Formatters::toString2(x).c_str()
-#define __NT_TO_CSTRING_5(x)                         Formatters::toString5(x).c_str()
-#define __NT_TO_CSTRING_7(x)                         Formatters::toString7(x).c_str()
 
+//-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+#include <LibCommon/Utils/Formatters.h>
+#define __NT_TO_CSTRING(x)   Formatters::toString7(x).c_str()
+#define __NT_TO_CSTRING_2(x) Formatters::toString2(x).c_str()
+#define __NT_TO_CSTRING_5(x) Formatters::toString5(x).c_str()
+#define __NT_TO_CSTRING_7(x) Formatters::toString7(x).c_str()
+
+//-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 #define __NT_TYPE_ALIASING                                                          \
     using Vec1r            = Vec1<Real_t>;                                          \
     using Vec2r            = Vec2<Real_t>;                                          \
