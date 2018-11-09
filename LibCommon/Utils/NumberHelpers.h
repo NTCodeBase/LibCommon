@@ -42,7 +42,7 @@ auto generatePointsOnCircle(IndexType nPoints, Real_t sphereRadius = Real_t(1)) 
     ////////////////////////////////////////////////////////////////////////////////
     const auto b   = static_cast<IndexType>(std::round(2 /*=alpha*/ * std::sqrt(nPoints)));
     const auto phi = Real_t((std::sqrt(5) + 1.0) * 0.5);
-    for(IndexType k = 0; k < nPoints; ++k) {
+    for(IndexType k = 1; k <= nPoints; ++k) {
         auto r = (k > nPoints - b) ? sphereRadius : sphereRadius* std::sqrt(k - 0.5) / std::sqrt(nPoints - 0.5 * b - 0.5);
         auto theta = Real_t(2.0 * M_PI * k / phi / phi);
         points.push_back(Vec2<Real_t>(r * std::cos(theta), r * std::sin(theta)));
