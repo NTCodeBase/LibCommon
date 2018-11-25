@@ -24,6 +24,7 @@ SOURCES += $$files($$PWD/LibCommon/*.cpp, true)
 SOURCES += $$PWD/Externals/tinyobjloader/tiny_obj_loader.cc
 
 DISTFILES += LibCommon.pri
+OTHER_FILES += Makefile
 
 #-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 CONFIG(debug, debug|release) {
