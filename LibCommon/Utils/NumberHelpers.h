@@ -226,7 +226,7 @@ public:
 
 private:
     void generateCache() {
-        for(Int i = 0; i < s_CacheSize; ++i) {
+        for(UInt i = 0; i < s_CacheSize; ++i) {
             m_Cache[i] = m_Dist(m_Generator);
         }
     }
