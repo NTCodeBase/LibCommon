@@ -12,15 +12,12 @@
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 
-#pragma once
-
 #include <LibCommon/Animation/Animation.h>
 #include <algorithm>
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 template<Int N, class Real_t>
-void RigidBodyAnimation<N, Real_t>::makeReady(bool bCubicIntTranslation, bool bCubicIntRotation)
-{
+void RigidBodyAnimation<N, Real_t>::makeReady(bool bCubicIntTranslation, bool bCubicIntRotation) {
     if(m_KeyFrames.size() == 0) {
         return;
     }
@@ -83,8 +80,7 @@ void RigidBodyAnimation<N, Real_t>::makeReady(bool bCubicIntTranslation, bool bC
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 template<Int N, class Real_t>
-MatXxX<N + 1, Real_t> RigidBodyAnimation<N, Real_t>::getInactiveTransformationMatrix(UInt frame)
-{
+MatXxX<N + 1, Real_t> RigidBodyAnimation<N, Real_t>::getInactiveTransformationMatrix(UInt frame) {
     if(frame < m_StartFrame) {
         return m_StartFrameTransformationMatrix;
     } else if(frame > m_EndFrame) {
@@ -96,8 +92,7 @@ MatXxX<N + 1, Real_t> RigidBodyAnimation<N, Real_t>::getInactiveTransformationMa
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 template<Int N, class Real_t>
-MatXxX<N + 1, Real_t> RigidBodyAnimation<N, Real_t>::getTransformationMatrix(UInt frame, Real_t frameFraction /*= Real_t(0)*/)
-{
+MatXxX<N + 1, Real_t> RigidBodyAnimation<N, Real_t>::getTransformationMatrix(UInt frame, Real_t frameFraction /*= Real_t(0)*/) {
     if(nKeyFrames() == 0) {
         return MatNp1xNp1(1);
     }
@@ -134,8 +129,7 @@ MatXxX<N + 1, Real_t> RigidBodyAnimation<N, Real_t>::getTransformationMatrix(UIn
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 template<Int N, class Real_t>
-MatXxX<N + 1, Real_t> RigidBodyAnimation<N, Real_t>::getInvTransformation(UInt frame, Real_t frameFraction /*= Real_t(0)*/)
-{
+MatXxX<N + 1, Real_t> RigidBodyAnimation<N, Real_t>::getInvTransformation(UInt frame, Real_t frameFraction /*= Real_t(0)*/) {
     if(nKeyFrames() == 0) {
         return MatNp1xNp1(1);
     }
@@ -148,8 +142,7 @@ MatXxX<N + 1, Real_t> RigidBodyAnimation<N, Real_t>::getInvTransformation(UInt f
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 template<Int N, class Real_t>
-void Animation<N, Real_t>::makeReady(bool bCubicIntTranslation, bool bCubicIntRotation, bool bCubicIntScale)
-{
+void Animation<N, Real_t>::makeReady(bool bCubicIntTranslation, bool bCubicIntRotation, bool bCubicIntScale) {
     if(this->m_KeyFrames.size() == 0) {
         return;
     }
@@ -205,8 +198,7 @@ void Animation<N, Real_t>::makeReady(bool bCubicIntTranslation, bool bCubicIntRo
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 template<Int N, class Real_t>
-Real_t Animation<N, Real_t>::getUniformScale(UInt frame, Real_t frameFraction /*= Real_t(0)*/)
-{
+Real_t Animation<N, Real_t>::getUniformScale(UInt frame, Real_t frameFraction /*= Real_t(0)*/) {
     if(this->nKeyFrames() == 0) {
         return Real_t(1);
     }
@@ -227,8 +219,7 @@ Real_t Animation<N, Real_t>::getUniformScale(UInt frame, Real_t frameFraction /*
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 template<Int N, class Real_t>
-MatXxX<N + 1, Real_t> Animation<N, Real_t>::getTransformationMatrix(UInt frame, Real_t frameFraction /*= Real_t(0)*/)
-{
+MatXxX<N + 1, Real_t> Animation<N, Real_t>::getTransformationMatrix(UInt frame, Real_t frameFraction /*= Real_t(0)*/) {
     if(this->nKeyFrames() == 0) {
         return MatNp1xNp1(1);
     }

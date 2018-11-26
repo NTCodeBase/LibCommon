@@ -412,18 +412,18 @@ Quat<T> quaternionFromPositions(const Vec3<T>& p1, const Vec3<T>& p2) {
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 template<class Quaternion>
 auto quaternionMatrix(const Quaternion& q) {
-    return Mat4x4<Quaternion::value_type>(q.w, q.z, -q.y, -q.x, // col 0
-                                          -q.z, q.w, q.x, -q.y, // col 1
-                                          q.y, -q.x, q.w, -q.z, // col 2
-                                          q.x, q.y, q.z, q.w);  // col 3
+    return Mat4x4<typename Quaternion::value_type>(q.w, q.z, -q.y, -q.x, // col 0
+                                                   -q.z, q.w, q.x, -q.y, // col 1
+                                                   q.y, -q.x, q.w, -q.z, // col 2
+                                                   q.x, q.y, q.z, q.w);  // col 3
 }
 
 template<class Quaternion>
 auto quaternionMatrixTransposed3x4(const Quaternion& q) {
-    return MatMxN<3, 4, Quaternion::value_type>(q.w, -q.z, q.y,    // col 0
-                                                q.z, q.w, -q.x,    // col 1
-                                                -q.y, q.x, q.w,    // col 2
-                                                -q.x, -q.y, -q.z); // col 3
+    return MatMxN<3, 4, typename Quaternion::value_type>(q.w, -q.z, q.y,    // col 0
+                                                         q.z, q.w, -q.x,    // col 1
+                                                         -q.y, q.x, q.w,    // col 2
+                                                         -q.x, -q.y, -q.z); // col 3
 }
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+

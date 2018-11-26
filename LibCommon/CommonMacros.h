@@ -198,10 +198,11 @@ inline void throwIfFailed(HRESULT hr) {
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 #ifndef __NT_ERROR
-#   define __NT_ERROR(err)            \
-    {                                 \
-        fprintf(stderr, err ## "\n"); \
-        __NT_PRINT_LOCATION           \
+#   define __NT_ERROR(err)     \
+    {                          \
+        fprintf(stderr, err);  \
+        fprintf(stderr, "\n"); \
+        __NT_PRINT_LOCATION    \
     }
 #endif
 

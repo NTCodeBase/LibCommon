@@ -123,7 +123,7 @@ public:
         bool correct = true;
 
         for(size_t d = 0; d < D; ++d) {
-            Real_t scale = std::max((std::max(fabs(actual_grad[d]), fabs(expected_grad[d]))), Real_t(1.));
+            Real_t scale = std::max((std::max(std::abs(actual_grad[d]), std::abs(expected_grad[d]))), Real_t(1.));
             EXPECT_NEAR(actual_grad[d], expected_grad[d], 1e-2 * scale);
             if(fabs(actual_grad[d] - expected_grad[d]) > 1e-2 * scale) {
                 correct = false;
