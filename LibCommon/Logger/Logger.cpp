@@ -26,8 +26,7 @@
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 Logger::Logger(const String& loggerName, const String& rootPath, bool bLog2Console /*= true*/, bool bLog2File /*= false*/,
                LogLevel consoleLogLevel /*= LogLevel::trace*/, LogLevel fileLogLevel /*= LogLevel::trace*/) :
-    m_bLog2Console(bLog2Console), m_bLog2File(bLog2File)
-{
+    m_bLog2Console(bLog2Console), m_bLog2File(bLog2File) {
     if(!m_bLog2Console && !m_bLog2File) {
         return;
     }
@@ -65,8 +64,7 @@ Logger::Logger(const String& loggerName, const String& rootPath, bool bLog2Conso
 }
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-Logger::~Logger()
-{
+Logger::~Logger() {
     if(m_bLog2Console) {
         spdlog::drop(m_ConsoleLogger->name());
     }
@@ -77,8 +75,7 @@ Logger::~Logger()
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 void Logger::printLogIndent(const String& s, UInt indentLevel /*= 1*/,
-                            LogLevel consoleLogLevel /*= LogLevel::trace*/, LogLevel fileLogLevel /*= LogLevel::trace*/)
-{
+                            LogLevel consoleLogLevel /*= LogLevel::trace*/, LogLevel fileLogLevel /*= LogLevel::trace*/) {
     String s_formatted;
     s_formatted.reserve(256);
     s_formatted += String(s_IndentSize * indentLevel, s_PrefixPadding);
@@ -88,8 +85,7 @@ void Logger::printLogIndent(const String& s, UInt indentLevel /*= 1*/,
 }
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-void Logger::printLogPadding(const String& s, LogLevel consoleLogLevel /*= LogLevel::trace*/, LogLevel fileLogLevel /*= LogLevel::trace*/)
-{
+void Logger::printLogPadding(const String& s, LogLevel consoleLogLevel /*= LogLevel::trace*/, LogLevel fileLogLevel /*= LogLevel::trace*/) {
     auto s_formatted = s;
     s_formatted.reserve(256);
     s_formatted += String(" ");
@@ -99,8 +95,7 @@ void Logger::printLogPadding(const String& s, LogLevel consoleLogLevel /*= LogLe
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 void Logger::printLogPaddingIndent(const String& s, UInt indentLevel /*= 1*/, LogLevel consoleLogLevel /*= LogLevel::trace*/,
-                                   LogLevel fileLogLevel /*= LogLevel::trace*/)
-{
+                                   LogLevel fileLogLevel /*= LogLevel::trace*/) {
     String s_formatted;
     s_formatted.reserve(256);
     s_formatted += String(s_IndentSize * indentLevel, s_PrefixPadding);
@@ -112,8 +107,7 @@ void Logger::printLogPaddingIndent(const String& s, UInt indentLevel /*= 1*/, Lo
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 void Logger::printCenterAligned(const String& s, char paddingChar /*= Logger::s_PrefixPadding*/,
-                                LogLevel consoleLogLevel /*= LogLevel::trace*/, LogLevel fileLogLevel /*= LogLevel::trace*/)
-{
+                                LogLevel consoleLogLevel /*= LogLevel::trace*/, LogLevel fileLogLevel /*= LogLevel::trace*/) {
     size_t       length = s.length();
     const String str    = length == 0 ? s : String(" " + s + " ");
     length = str.length();
@@ -132,8 +126,7 @@ void Logger::printCenterAligned(const String& s, char paddingChar /*= Logger::s_
 }
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-void Logger::printTextBox(const String& s, LogLevel consoleLogLevel /*= LogLevel::trace*/, LogLevel fileLogLevel /*= LogLevel::trace*/)
-{
+void Logger::printTextBox(const String& s, LogLevel consoleLogLevel /*= LogLevel::trace*/, LogLevel fileLogLevel /*= LogLevel::trace*/) {
     separatorLine(consoleLogLevel, fileLogLevel);
     printCenterAligned("", ' ', consoleLogLevel, fileLogLevel);
     printCenterAligned(s,  ' ', consoleLogLevel, fileLogLevel);
@@ -142,8 +135,7 @@ void Logger::printTextBox(const String& s, LogLevel consoleLogLevel /*= LogLevel
 }
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-void Logger::printTextBox(const StdVT<String>& strs, LogLevel consoleLogLevel /*= LogLevel::trace*/, LogLevel fileLogLevel /*= LogLevel::trace*/)
-{
+void Logger::printTextBox(const StdVT<String>& strs, LogLevel consoleLogLevel /*= LogLevel::trace*/, LogLevel fileLogLevel /*= LogLevel::trace*/) {
     separatorLine(consoleLogLevel, fileLogLevel);
     printCenterAligned("", ' ', consoleLogLevel, fileLogLevel);
     for(const auto& s: strs) {
@@ -154,8 +146,7 @@ void Logger::printTextBox(const StdVT<String>& strs, LogLevel consoleLogLevel /*
 }
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-void Logger::separatorLine(int stype /*= 0*/, LogLevel consoleLogLevel /*= LogLevel::info*/, LogLevel fileLogLevel /*= LogLevel::info*/)
-{
+void Logger::separatorLine(int stype /*= 0*/, LogLevel consoleLogLevel /*= LogLevel::info*/, LogLevel fileLogLevel /*= LogLevel::info*/) {
     if(stype == 0) {
         printCenterAligned("", '=', consoleLogLevel, fileLogLevel);
     } else {
@@ -164,8 +155,7 @@ void Logger::separatorLine(int stype /*= 0*/, LogLevel consoleLogLevel /*= LogLe
 }
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-void Logger::flush()
-{
+void Logger::flush() {
     if(m_bLog2Console) {
         m_ConsoleLogger->flush();
     }
@@ -175,8 +165,7 @@ void Logger::flush()
 }
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-void Logger::printMemoryUsage(LogLevel consoleLogLevel /*= LogLevel::trace*/, LogLevel fileLogLevel /*= LogLevel::trace*/)
-{
+void Logger::printMemoryUsage(LogLevel consoleLogLevel /*= LogLevel::trace*/, LogLevel fileLogLevel /*= LogLevel::trace*/) {
     String str;
     str.reserve(256);
     str += String("Memory usage: ");
@@ -187,19 +176,18 @@ void Logger::printMemoryUsage(LogLevel consoleLogLevel /*= LogLevel::trace*/, Lo
 }
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-void Logger::printTotalRunTime(LogLevel consoleLogLevel /*= LogLevel::trace*/, LogLevel fileLogLevel /*= LogLevel::trace*/)
-{
+void Logger::printTotalRunTime(LogLevel consoleLogLevel /*= LogLevel::trace*/, LogLevel fileLogLevel /*= LogLevel::trace*/) {
     printLogPadding(getTotalRunTime(), consoleLogLevel, fileLogLevel);
 }
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-void Logger::cleanup(int signal /*= 0*/)
-{
+void Logger::cleanup(int signal /*= 0*/) {
     if(!m_bLog2Console && !m_bLog2File) {
         return;
     }
     ////////////////////////////////////////////////////////////////////////////////
-    if(signal != EXIT_SUCCESS && signal != SIGABRT) {
+    // if(signal != EXIT_SUCCESS)
+    {
         newLine();
         switch(signal) {
             case SIGINT:
@@ -215,7 +203,7 @@ void Logger::cleanup(int signal /*= 0*/)
                 printWarning("Termination signal caught");
                 break;
             case SIGABRT:
-                // dont handle this case: this is normal termination, signal raised by main window
+                printWarning("Abortion signal caught");
                 break;
             default:
                 printWarning("Unknown signal caught: " + std::to_string(signal));
@@ -227,18 +215,17 @@ void Logger::cleanup(int signal /*= 0*/)
 }
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-void Logger::signalHandler(int signal)
-{
+void Logger::signalHandler(int signal) {
     for(auto& logger: s_Instances) {
         logger->cleanup(signal);
     }
     spdlog::drop_all();
+    exit(signal);
 }
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 template<typename Rep, typename Period>
-void getDuration(std::chrono::duration<Rep, Period> t, UInt& n_days, UInt& n_hours, UInt& n_mins, UInt& n_secs)
-{
+void getDuration(std::chrono::duration<Rep, Period> t, UInt& n_days, UInt& n_hours, UInt& n_mins, UInt& n_secs) {
     assert(0 <= t.count());
 
     // approximate because a day doesn't have a fixed length
@@ -255,8 +242,7 @@ void getDuration(std::chrono::duration<Rep, Period> t, UInt& n_days, UInt& n_hou
     n_secs  = static_cast<UInt>(secs.count());
 }
 
-String Logger::getTotalRunTime()
-{
+String Logger::getTotalRunTime() {
     UInt days, hours, mins, secs;
     getDuration(Clock::now() - m_StartupTime, days, hours, mins, secs);
 
