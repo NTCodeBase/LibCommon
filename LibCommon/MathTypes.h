@@ -40,6 +40,9 @@ template<class Type> using Mat2x2 = glm::mat<2, 2, Type>;
 template<class Type> using Mat3x3 = glm::mat<3, 3, Type>;
 template<class Type> using Mat4x4 = glm::mat<4, 4, Type>;
 
+template<class Type> using Mat2x3 = glm::mat<3, 2, Type>; // 2 rows, 3 cols
+template<class Type> using Mat3x2 = glm::mat<2, 3, Type>; // 3 rows, 2 cols
+
 template<int N, class Type> using VecX          = glm::vec<N, Type>;
 template<int N, class Type> using MatXxX        = glm::mat<N, N, Type>;
 template<int M, int N, class Type> using MatMxN = glm::mat<N, M, Type>; // col major: N = cols, M = rows
