@@ -13,6 +13,3 @@
 [submodule "Externals/tinyobjloader"]
 	path = Externals/tinyobjloader
 	url = https://github.com/syoyo/tinyobjloader.git
-[submodule "Externals/fmt"]
-	path = Externals/fmt
-	url = https://github.com/fmtlib/fmt.git
