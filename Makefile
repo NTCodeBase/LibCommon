@@ -28,14 +28,16 @@ COMPILE_OBJ_SUBDIR := $(patsubst $(ROOT_PATH)/%, $(OBJ_DIR)/%, $(dir $(LIB_OBJ))
 COMPILE_OBJ_SUBDIR += $(OBJ_DIR)/LibCommon/Externals/tinyobjloader
 
 ################################################################################
-all: create_out_dir $(COMPILE_OBJ) $(OBJ_DIR)/LibCommon/Externals/tinyobjloader/tiny_obj_loader.o
-	$(GCC_PREFIX)gcc-ar$(GCC_SUFFIX) -rsv $(OUTPUT_DIR)/$(LIB_NAME) $(COMPILE_OBJ) $(OBJ_DIR)/LibCommon/Externals/tinyobjloader/tiny_obj_loader.o
-	$(GCC_PREFIX)gcc-ranlib$(GCC_SUFFIX) $(OUTPUT_DIR)/$(LIB_NAME)
+all: create_out_dir $(OUTPUT_DIR)/$(LIB_NAME)
 
 create_out_dir:
 	mkdir -p $(OUTPUT_DIR)
 	mkdir -p $(OBJ_DIR)
 	mkdir -p $(COMPILE_OBJ_SUBDIR)
+
+$(OUTPUT_DIR)/$(LIB_NAME): $(COMPILE_OBJ) $(OBJ_DIR)/LibCommon/Externals/tinyobjloader/tiny_obj_loader.o
+	$(GCC_PREFIX)gcc-ar$(GCC_SUFFIX) -rsv $(OUTPUT_DIR)/$(LIB_NAME) $(COMPILE_OBJ) $(OBJ_DIR)/LibCommon/Externals/tinyobjloader/tiny_obj_loader.o
+	$(GCC_PREFIX)gcc-ranlib$(GCC_SUFFIX) $(OUTPUT_DIR)/$(LIB_NAME)
 
 $(OBJ_DIR)/LibCommon/Externals/tinyobjloader/tiny_obj_loader.o: $(ROOT_PATH)/Externals/tinyobjloader/tiny_obj_loader.cc
 	$(COMPILER) $(INCLUDES) $(ALL_CCFLAGS) -c $< -o $@
