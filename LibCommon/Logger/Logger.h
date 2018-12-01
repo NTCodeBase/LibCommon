@@ -23,8 +23,7 @@
 #include <map>
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-class Logger
-{
+class Logger {
     using Clock = std::chrono::system_clock;
 public:
     using LogLevel = spdlog::level::level_enum;
@@ -33,8 +32,7 @@ public:
            LogLevel consoleLogLevel = LogLevel::trace, LogLevel fileLogLevel = LogLevel::trace);
     ~Logger();
     ////////////////////////////////////////////////////////////////////////////////
-    void printLog(const String& s, LogLevel consoleLogLevel = LogLevel::info, LogLevel fileLogLevel = LogLevel::info)
-    {
+    void printLog(const String& s, LogLevel consoleLogLevel = LogLevel::info, LogLevel fileLogLevel = LogLevel::info) {
         if(m_bLog2Console) { m_ConsoleLogger->log(consoleLogLevel, s); }
         if(m_bLog2File) { m_FileLogger->log(fileLogLevel, s); }
     }
@@ -68,20 +66,17 @@ public:
     void newLineDebug() { newLine(LogLevel::debug, LogLevel::debug); }
     ////////////////////////////////////////////////////////////////////////////////
     template<class Function, class... Args>
-    void printRunTime(const char* caption, Function&& function, Args&& ... args)
-    {
+    void printRunTime(const char* caption, Function&& function, Args&& ... args) {
         printLog(Timer::getRunTime<Function>(caption, std::forward<Function>(function)), std::forward<Args>(args)...);
     }
 
     template<class Function, class... Args>
-    void printRunTimeIndent(const char* caption, Function&& function, UInt indentLevel = 1, Args&& ... args)
-    {
+    void printRunTimeIndent(const char* caption, Function&& function, UInt indentLevel = 1, Args&& ... args) {
         printLogIndent(Timer::getRunTime<Function>(caption, std::forward<Function>(function)), indentLevel, std::forward<Args>(args)...);
     }
 
     template<class Function, class... Args>
-    void printRunTimeIf(const char* caption, Function&& function, Args&& ... args)
-    {
+    void printRunTimeIf(const char* caption, Function&& function, Args&& ... args) {
         Timer timer;
         timer.tick();
         bool bResult = function();
@@ -90,8 +85,7 @@ public:
     }
 
     template<class Function, class... Args>
-    void printRunTimeIndentIf(const char* caption, Function&& function, UInt indentLevel = 1, Args&& ... args)
-    {
+    void printRunTimeIndentIf(const char* caption, Function&& function, UInt indentLevel = 1, Args&& ... args) {
         Timer timer;
         timer.tick();
         bool bResult = function();
@@ -104,14 +98,12 @@ public:
     template<class... Args> void printRunTimeIfDebug(Args&& ... args) { printRunTimeIf(std::forward<Args>(args)..., LogLevel::debug, LogLevel::debug); }
 
     template<class Function>
-    void printRunTimeIndentDebug(const char* caption, Function&& function, UInt indentLevel = 1)
-    {
+    void printRunTimeIndentDebug(const char* caption, Function&& function, UInt indentLevel = 1) {
         printRunTimeIndent(caption, std::forward<Function>(function), indentLevel, LogLevel::debug, LogLevel::debug);
     }
 
     template<class Function>
-    void printRunTimeIndentIfDebug(const char* caption, Function&& function, UInt indentLevel = 1)
-    {
+    void printRunTimeIndentIfDebug(const char* caption, Function&& function, UInt indentLevel = 1) {
         printRunTimeIndentIf(caption, std::forward<Function>(function), indentLevel, LogLevel::debug, LogLevel::debug);
     }
 
@@ -120,7 +112,8 @@ public:
     void printMemoryUsage(LogLevel consoleLogLevel  = LogLevel::info, LogLevel fileLogLevel = LogLevel::info);
     void printTotalRunTime(LogLevel consoleLogLevel = LogLevel::info, LogLevel fileLogLevel = LogLevel::info);
     ////////////////////////////////////////////////////////////////////////////////
-    void        cleanup(int signal = 0);
+    void        cleanup(int signal);
+    static void cleanupAll(int signal);
     static void signalHandler(int signal);
     ////////////////////////////////////////////////////////////////////////////////
     inline const static String   s_Wrapper { "||" };

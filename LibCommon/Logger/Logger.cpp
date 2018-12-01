@@ -55,11 +55,6 @@ Logger::Logger(const String& loggerName, const String& rootPath, bool bLog2Conso
     ////////////////////////////////////////////////////////////////////////////////
     m_StartupTime = Clock::now();
     s_Instances.push_back(this);
-    ////////////////////////////////////////////////////////////////////////////////
-    signal(SIGINT,  Logger::signalHandler);
-    signal(SIGSEGV, Logger::signalHandler);
-    signal(SIGTERM, Logger::signalHandler);
-    signal(SIGABRT, Logger::signalHandler);
 }
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
@@ -180,11 +175,11 @@ void Logger::printTotalRunTime(LogLevel consoleLogLevel /*= LogLevel::trace*/, L
 }
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-void Logger::cleanup(int signal /*= 0*/) {
+void Logger::cleanup(int signal) {
     if(!m_bLog2Console && !m_bLog2File) {
         return;
     }
-    if(signal != __NT_SIGNAL_NORMAL_EXIT) {
+    if(signal > 0) {
         newLine();
         switch(signal) {
             case SIGINT:
@@ -204,16 +199,21 @@ void Logger::cleanup(int signal /*= 0*/) {
         }
         printMemoryUsage();
         printTotalRunTime();
-    }
+    } // end signal > 0
     flush();
 }
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-void Logger::signalHandler(int signal) {
+void Logger::cleanupAll(int signal) {
     for(auto& logger: s_Instances) {
         logger->cleanup(signal);
     }
     spdlog::drop_all();
+}
+
+//-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+void Logger::signalHandler(int signal) {
+    cleanupAll(signal);
     exit(signal);
 }
 
