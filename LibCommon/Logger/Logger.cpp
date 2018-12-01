@@ -57,7 +57,6 @@ Logger::Logger(const String& loggerName, const String& rootPath, bool bLog2Conso
     s_Instances.push_back(this);
     ////////////////////////////////////////////////////////////////////////////////
     signal(SIGINT,  Logger::signalHandler);
-    signal(SIGFPE,  Logger::signalHandler);
     signal(SIGSEGV, Logger::signalHandler);
     signal(SIGTERM, Logger::signalHandler);
     signal(SIGABRT, Logger::signalHandler);
@@ -185,16 +184,11 @@ void Logger::cleanup(int signal /*= 0*/) {
     if(!m_bLog2Console && !m_bLog2File) {
         return;
     }
-    ////////////////////////////////////////////////////////////////////////////////
-    // if(signal != EXIT_SUCCESS)
-    {
+    if(signal != __NT_SIGNAL_NORMAL_EXIT) {
         newLine();
         switch(signal) {
             case SIGINT:
                 printWarning("Interrupt signal caught (Ctrl_C pressed)");
-                break;
-            case SIGFPE:
-                printWarning("Floating-point exception signal caught");
                 break;
             case SIGSEGV:
                 printWarning("Segmentation violation signal caught");
