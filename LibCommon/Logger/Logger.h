@@ -20,17 +20,22 @@
 #include <spdlog/spdlog.h>
 
 #include <chrono>
-#include <map>
+#include <list>
+#include <mutex>
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 class Logger {
-    using Clock = std::chrono::system_clock;
-public:
+    using Clock    = std::chrono::system_clock;
     using LogLevel = spdlog::level::level_enum;
-    ////////////////////////////////////////////////////////////////////////////////
     Logger(const String& loggerName, const String& rootPath, bool bLog2Console = true, bool bLog2File = false,
            LogLevel consoleLogLevel = LogLevel::trace, LogLevel fileLogLevel = LogLevel::trace);
-    ~Logger();
+    virtual ~Logger();
+    struct MakeSharedEnabler;
+
+public:
+    static SharedPtr<Logger> createLogger(const String& loggerName, const String& rootPath, bool bLog2Console = true, bool bLog2File = false,
+                                          LogLevel consoleLogLevel = LogLevel::trace, LogLevel fileLogLevel = LogLevel::trace);
+    static void removeLogger(const SharedPtr<Logger>& logger);
     ////////////////////////////////////////////////////////////////////////////////
     void printLog(const String& s, LogLevel consoleLogLevel = LogLevel::info, LogLevel fileLogLevel = LogLevel::info) {
         if(m_bLog2Console) { m_ConsoleLogger->log(consoleLogLevel, s); }
@@ -112,23 +117,33 @@ public:
     void printMemoryUsage(LogLevel consoleLogLevel  = LogLevel::info, LogLevel fileLogLevel = LogLevel::info);
     void printTotalRunTime(LogLevel consoleLogLevel = LogLevel::info, LogLevel fileLogLevel = LogLevel::info);
     ////////////////////////////////////////////////////////////////////////////////
-    void        cleanup(int signal);
-    static void cleanupAll(int signal);
+    static void flushAll(int signal);
     static void signalHandler(int signal);
+    static void shutdown();
     ////////////////////////////////////////////////////////////////////////////////
-    inline const static String   s_Wrapper { "||" };
-    inline const static char     s_PrefixPadding { ' ' };
-    inline const static char     s_SuffixPadding { '*' };
-    inline const static UInt     s_IndentSize { 4u };
-    inline const static size_t   s_PaddingMaxSize { 120u };
-    inline const static UInt     s_BufferLength { 128u };
-    inline static StdVT<Logger*> s_Instances {};
+    inline const static String                 s_Wrapper { "||" };
+    inline const static char                   s_PrefixPadding { ' ' };
+    inline const static char                   s_SuffixPadding { '*' };
+    inline const static UInt                   s_IndentSize { 4u };
+    inline const static size_t                 s_PaddingMaxSize { 120u };
+    inline const static UInt                   s_BufferLength { 128u };
+    inline static UInt                         s_NumCreatedInstances { 0u };
+    inline static std::list<SharedPtr<Logger>> s_Instances {};
+    inline static std::mutex                   s_InstancingMutex;
 private:
     String getTotalRunTime();
     ////////////////////////////////////////////////////////////////////////////////
+    UInt                      m_InstanceIdx { 0 };
     Clock::time_point         m_StartupTime {};
     SharedPtr<spdlog::logger> m_ConsoleLogger;
     SharedPtr<spdlog::logger> m_FileLogger;
     bool                      m_bLog2Console;
     bool                      m_bLog2File;
+};
+
+//-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+struct Logger::MakeSharedEnabler : public Logger {
+    MakeSharedEnabler(const String& loggerName, const String& rootPath, bool bLog2Console = true, bool bLog2File = false,
+                      LogLevel consoleLogLevel = LogLevel::trace, LogLevel fileLogLevel = LogLevel::trace) :
+        Logger(loggerName, rootPath, bLog2Console, bLog2File, consoleLogLevel, fileLogLevel) {}
 };

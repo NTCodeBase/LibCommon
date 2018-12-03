@@ -24,6 +24,20 @@
 #include <csignal>
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+SharedPtr<Logger> Logger::createLogger(const String& loggerName, const String& rootPath, bool bLog2Console /*= true*/, bool bLog2File /*= false*/,
+                                       LogLevel consoleLogLevel /*= LogLevel::trace*/, LogLevel fileLogLevel /*= LogLevel::trace*/) {
+    auto logger = std::make_shared<MakeSharedEnabler>(loggerName, rootPath, bLog2Console, bLog2File, consoleLogLevel, fileLogLevel);
+    s_Instances.push_back(logger);
+    return logger;
+}
+
+//-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+void Logger::removeLogger(const SharedPtr<Logger>& logger) {
+    __NT_REQUIRE(std::find(std::begin(s_Instances), std::end(s_Instances), logger) != s_Instances.end());
+    s_Instances.remove(logger);
+}
+
+//-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 Logger::Logger(const String& loggerName, const String& rootPath, bool bLog2Console /*= true*/, bool bLog2File /*= false*/,
                LogLevel consoleLogLevel /*= LogLevel::trace*/, LogLevel fileLogLevel /*= LogLevel::trace*/) :
     m_bLog2Console(bLog2Console), m_bLog2File(bLog2File) {
@@ -31,8 +45,12 @@ Logger::Logger(const String& loggerName, const String& rootPath, bool bLog2Conso
         return;
     }
     ////////////////////////////////////////////////////////////////////////////////
+    std::scoped_lock lock{ s_InstancingMutex };
+    __NT_UNUSED(lock);
+    m_InstanceIdx = s_NumCreatedInstances++;
+    ////////////////////////////////////////////////////////////////////////////////
     if(m_bLog2Console) {
-        m_ConsoleLogger = spdlog::stdout_color_mt(loggerName + String("[console_logger]"));
+        m_ConsoleLogger = spdlog::stdout_color_mt(loggerName + String("[console_logger][idx=") + std::to_string(m_InstanceIdx) + String("]"));
         m_ConsoleLogger->set_pattern("[%Y-%m-%d] [%H:%M:%S.%e] [%^%l%$] %v");
         m_ConsoleLogger->set_level(consoleLogLevel);
     }
@@ -44,7 +62,8 @@ Logger::Logger(const String& loggerName, const String& rootPath, bool bLog2Conso
         do {
             if(String file = prefix + std::to_string(i) + String(".txt");
                !FileHelpers::fileExisted(file)) {
-                m_FileLogger = spdlog::create_async<spdlog::sinks::basic_file_sink_mt>(loggerName + String("[file_logger]"), file);
+                m_FileLogger = spdlog::create_async<spdlog::sinks::basic_file_sink_mt>(loggerName + String("[file_logger][idx=") +
+                                                                                       std::to_string(m_InstanceIdx) + String("]"), file);
                 m_FileLogger->set_pattern("[%Y-%m-%d] [%H:%M:%S.%e] [%^%l%$] %v");
                 m_FileLogger->set_level(fileLogLevel);
                 break;
@@ -54,7 +73,6 @@ Logger::Logger(const String& loggerName, const String& rootPath, bool bLog2Conso
     }
     ////////////////////////////////////////////////////////////////////////////////
     m_StartupTime = Clock::now();
-    s_Instances.push_back(this);
 }
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
@@ -175,46 +193,54 @@ void Logger::printTotalRunTime(LogLevel consoleLogLevel /*= LogLevel::trace*/, L
 }
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-void Logger::cleanup(int signal) {
-    if(!m_bLog2Console && !m_bLog2File) {
-        return;
-    }
-    if(signal > 0) {
-        newLine();
-        switch(signal) {
-            case SIGINT:
-                printWarning("Interrupt signal caught (Ctrl_C pressed)");
-                break;
-            case SIGSEGV:
-                printWarning("Segmentation violation signal caught");
-                break;
-            case SIGTERM:
-                printWarning("Termination signal caught");
-                break;
-            case SIGABRT:
-                printWarning("Abortion signal caught");
-                break;
-            default:
-                printWarning("Unknown signal caught: " + std::to_string(signal));
-        }
-        printMemoryUsage();
-        printTotalRunTime();
-    } // end signal > 0
-    flush();
-}
-
-//-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-void Logger::cleanupAll(int signal) {
+void Logger::flushAll(int signal) {
+    std::list<SharedPtr<Logger>> deletedLoggers;
+    printf("before cleanup \n"); fflush(stdout);
     for(auto& logger: s_Instances) {
-        logger->cleanup(signal);
+        if(logger.get()) {
+            if(signal > 0) {
+                logger->newLine();
+                switch(signal) {
+                    case SIGINT:
+                        logger->printWarning("Interrupt signal caught (Ctrl_C pressed)");
+                        break;
+                    case SIGSEGV:
+                        logger->printWarning("Segmentation violation signal caught");
+                        break;
+                    case SIGTERM:
+                        logger->printWarning("Termination signal caught");
+                        break;
+                    case SIGABRT:
+                        logger->printWarning("Abortion signal caught");
+                        break;
+                    default:
+                        logger->printWarning("Unknown signal caught: " + std::to_string(signal));
+                }
+                logger->printMemoryUsage();
+                logger->printTotalRunTime();
+            } // end signal > 0
+            logger->flush();
+        } else {
+            deletedLoggers.push_back(logger);
+        }
     }
-    spdlog::drop_all();
+    printf("afterr cleanup, before delete \n"); fflush(stdout);
+    for(auto& logger: deletedLoggers) {
+        s_Instances.remove(logger);
+    }
+    printf("before drop all\n"); fflush(stdout);
 }
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 void Logger::signalHandler(int signal) {
-    cleanupAll(signal);
+    flushAll(signal);
+    shutdown();
     exit(signal);
+}
+
+//-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+void Logger::shutdown() {
+    spdlog::shutdown();
 }
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
