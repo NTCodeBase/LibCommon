@@ -195,7 +195,6 @@ void Logger::printTotalRunTime(LogLevel consoleLogLevel /*= LogLevel::trace*/, L
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 void Logger::flushAll(int signal) {
     std::list<SharedPtr<Logger>> deletedLoggers;
-    printf("before cleanup \n"); fflush(stdout);
     for(auto& logger: s_Instances) {
         if(logger.get()) {
             if(signal > 0) {
@@ -224,11 +223,9 @@ void Logger::flushAll(int signal) {
             deletedLoggers.push_back(logger);
         }
     }
-    printf("afterr cleanup, before delete \n"); fflush(stdout);
     for(auto& logger: deletedLoggers) {
         s_Instances.remove(logger);
     }
-    printf("before drop all\n"); fflush(stdout);
 }
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
