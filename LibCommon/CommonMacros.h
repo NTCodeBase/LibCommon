@@ -309,6 +309,8 @@ inline void throwIfFailed(HRESULT hr) {
     using VecN             = VecX<N, Real_t>;                                       \
     using VecNp1           = VecX<N + 1, Real_t>;                                   \
     using Mat2x2r          = Mat2x2<Real_t>;                                        \
+    using Mat2x3r          = Mat2x3<Real_t>;                                        \
+    using Mat3x2r          = Mat3x2<Real_t>;                                        \
     using Mat3x3r          = Mat3x3<Real_t>;                                        \
     using Mat4x4r          = Mat4x4<Real_t>;                                        \
     using MatNxN           = MatXxX<N, Real_t>;                                     \
