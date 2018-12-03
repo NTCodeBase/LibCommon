@@ -22,8 +22,7 @@
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 template<Int N, class Real_t>
-class Grid
-{
+class Grid {
     ////////////////////////////////////////////////////////////////////////////////
     __NT_TYPE_ALIASING
     ////////////////////////////////////////////////////////////////////////////////
@@ -59,22 +58,19 @@ public:
     ////////////////////////////////////////////////////////////////////////////////
     // Grid 2D =>
     template<class IndexType>
-    IndexType getCellLinearizedIndex(IndexType i, IndexType j) const
-    {
+    IndexType getCellLinearizedIndex(IndexType i, IndexType j) const {
         static_assert(N == 2, "Array dimension != 2");
         return j * static_cast<IndexType>(getNCells()[0]) + i;
     }
 
     template<class IndexType>
-    IndexType getNodeLinearizedIndex(IndexType i, IndexType j) const
-    {
+    IndexType getNodeLinearizedIndex(IndexType i, IndexType j) const {
         static_assert(N == 2, "Array dimension != 2");
         return j * static_cast<IndexType>(getNNodes()[0]) + i;
     }
 
     template<class IndexType>
-    bool isValidCell(IndexType i, IndexType j)  const noexcept
-    {
+    bool isValidCell(IndexType i, IndexType j)  const noexcept{
         static_assert(N == 2, "Array dimension != 2");
         return (i >= 0 &&
                 j >= 0 &&
@@ -83,14 +79,12 @@ public:
     }
 
     template<class IndexType>
-    bool isValidCell(const Vec2<IndexType>& index) const noexcept
-    {
+    bool isValidCell(const Vec2<IndexType>& index) const noexcept{
         return isValidCell(index[0], index[1]);
     }
 
     template<class IndexType>
-    bool isValidNode(IndexType i, IndexType j)  const noexcept
-    {
+    bool isValidNode(IndexType i, IndexType j)  const noexcept{
         static_assert(N == 2, "Array dimension != 2");
         return (i >= 0 &&
                 j >= 0 &&
@@ -99,8 +93,7 @@ public:
     }
 
     template<class IndexType>
-    bool isValidNode(const Vec2<IndexType>& index) const noexcept
-    {
+    bool isValidNode(const Vec2<IndexType>& index) const noexcept{
         return isValidNode(index[0], index[1]);
     }
 
@@ -110,22 +103,19 @@ public:
     ////////////////////////////////////////////////////////////////////////////////
     // Grid 3D =>
     template<class IndexType>
-    IndexType getCellLinearizedIndex(IndexType i, IndexType j, IndexType k) const
-    {
+    IndexType getCellLinearizedIndex(IndexType i, IndexType j, IndexType k) const {
         static_assert(N == 3, "Array dimension != 3");
         return (k * static_cast<IndexType>(getNCells()[1]) + j) * static_cast<IndexType>(getNCells()[0]) + i;
     }
 
     template<class IndexType>
-    IndexType getNodeLinearizedIndex(IndexType i, IndexType j, IndexType k) const
-    {
+    IndexType getNodeLinearizedIndex(IndexType i, IndexType j, IndexType k) const {
         static_assert(N == 3, "Array dimension != 3");
         return (k * static_cast<IndexType>(getNNodes()[1]) + j) * static_cast<IndexType>(getNNodes()[0]) + i;
     }
 
     template<class IndexType>
-    bool isValidCell(IndexType i, IndexType j, IndexType k)  const noexcept
-    {
+    bool isValidCell(IndexType i, IndexType j, IndexType k)  const noexcept{
         static_assert(N == 3, "Array dimension != 3");
         return (i >= 0 &&
                 j >= 0 &&
@@ -136,14 +126,12 @@ public:
     }
 
     template<class IndexType>
-    bool isValidCell(const Vec3<IndexType>& index) const noexcept
-    {
+    bool isValidCell(const Vec3<IndexType>& index) const noexcept{
         return isValidCell(index[0], index[1], index[2]);
     }
 
     template<class IndexType>
-    bool isValidNode(IndexType i, IndexType j, IndexType k)  const noexcept
-    {
+    bool isValidNode(IndexType i, IndexType j, IndexType k)  const noexcept{
         static_assert(N == 3, "Array dimension != 3");
         return (i >= 0 &&
                 j >= 0 &&
@@ -154,8 +142,7 @@ public:
     }
 
     template<class IndexType>
-    bool isValidNode(const Vec3<IndexType>& index) const noexcept
-    {
+    bool isValidNode(const Vec3<IndexType>& index) const noexcept{
         return isValidNode(index[0], index[1], index[2]);
     }
 
@@ -164,8 +151,7 @@ public:
 
     ////////////////////////////////////////////////////////////////////////////////
     template<class IndexType>
-    auto getCellIdx(const VecN& ppos) const noexcept
-    {
+    auto getCellIdx(const VecN& ppos) const noexcept{
         VecX<N, IndexType> cellIdx;
         for(Int d = 0; d < N; ++d) {
             cellIdx[d] = static_cast<IndexType>((ppos[d] - m_BMin[d]) / m_CellSize);
@@ -174,8 +160,7 @@ public:
     }
 
     template<class IndexType>
-    auto getNearestValidCellIdx(const VecX<N, IndexType>& cellIdx) const noexcept
-    {
+    auto getNearestValidCellIdx(const VecX<N, IndexType>& cellIdx) const noexcept{
         VecX<N, IndexType> validCellIdx;
         for(Int d = 0; d < N; ++d) {
             validCellIdx[d] = MathHelpers::clamp<IndexType>(cellIdx[d], 0, static_cast<IndexType>(m_NCells[d]) - 1);
@@ -184,29 +169,25 @@ public:
     }
 
     template<class IndexType>
-    auto getValidCellIdx(const VecN& ppos) const noexcept
-    {
+    auto getValidCellIdx(const VecN& ppos) const noexcept{
         return getNearestValidCellIdx<IndexType>(getCellIdx<IndexType>(ppos));
     }
 
     ////////////////////////////////////////////////////////////////////////////////
     // Particle processing
     template<class IndexType>
-    auto getWorldCoordinate(const VecX<N, IndexType>& nodeIdx) const
-    {
+    auto getWorldCoordinate(const VecX<N, IndexType>& nodeIdx) const {
         return VecN(nodeIdx) * m_CellSize + m_BMin;
     }
 
     template<class IndexType>
-    auto getWorldCoordinate(IndexType i, IndexType j) const
-    {
+    auto getWorldCoordinate(IndexType i, IndexType j) const {
         static_assert(N == 2, "Array dimension != 2");
         return Vec2<Real_t>(i, j) * m_CellSize + m_BMin;
     }
 
     template<class IndexType>
-    auto getWorldCoordinate(IndexType i, IndexType j, IndexType k) const
-    {
+    auto getWorldCoordinate(IndexType i, IndexType j, IndexType k) const {
         static_assert(N == 3, "Array dimension != 3");
         return Vec3<Real_t>(i, j, k) * m_CellSize + m_BMin;
     }
@@ -214,12 +195,12 @@ public:
     auto getGridCoordinate(const VecN& ppos) const { return (ppos - m_BMin) * m_InvCellSize; }
     void getGridCoordinate(const StdVT_VecN& positions, StdVT_VecN& gridCoordinates) const;
     ////////////////////////////////////////////////////////////////////////////////
-    inline bool isInsideGrid(const VecN& ppos) const noexcept;
-    inline bool isInsideClampedBoundary(const VecN& ppos) const noexcept;
-    inline VecN constrainedBoundaryPosition(const VecN& positions) const noexcept;
-    inline VecN constrainedClampedBoundaryPosition(const VecN& positions) const noexcept;
-    inline void constrainedBoundaryInPlace(VecN& positions) const noexcept;
-    inline void constrainedClampedBoundaryInPlace(VecN& positions) const noexcept;
+    bool isInsideGrid(const VecN& ppos) const noexcept;
+    bool isInsideClampedBoundary(const VecN& ppos) const noexcept;
+    VecN constrainedBoundaryPosition(const VecN& positions) const noexcept;
+    VecN constrainedClampedBoundaryPosition(const VecN& positions) const noexcept;
+    void constrainedBoundaryInPlace(VecN& positions) const noexcept;
+    void constrainedClampedBoundaryInPlace(VecN& positions) const noexcept;
 
     void constrainToGridBoundary(StdVT_VecN& positions);
     void constrainToClampedBoundary(StdVT_VecN& positions);
@@ -237,14 +218,14 @@ public:
     template<class IndexType>
     const auto& getParticleIdxInCell(const VecX<N, IndexType>& cellIdx) const { return m_ParticleIdxInCell(cellIdx); }
 protected:
-    VecN     m_BMin           = VecN(-1.0);
-    VecN     m_BMax           = VecN(1.0);
-    VecN     m_ClampedBMin    = VecN(-1.0);
-    VecN     m_ClampedBMax    = VecN(1.0);
-    VecNui   m_NCells         = VecNui(0);
-    VecNui   m_NNodes         = VecNui(0);
-    UInt     m_NTotalCells    = 1u;
-    UInt     m_NTotalNodes    = 1u;
+    VecN   m_BMin           = VecN(-1.0);
+    VecN   m_BMax           = VecN(1.0);
+    VecN   m_ClampedBMin    = VecN(-1.0);
+    VecN   m_ClampedBMax    = VecN(1.0);
+    VecNui m_NCells         = VecNui(0);
+    VecNui m_NNodes         = VecNui(0);
+    UInt   m_NTotalCells    = 1u;
+    UInt   m_NTotalNodes    = 1u;
     Real_t m_CellSize       = Real_t(1);
     Real_t m_InvCellSize    = Real_t(1);
     Real_t m_HalfCellSize   = Real_t(0.5);
