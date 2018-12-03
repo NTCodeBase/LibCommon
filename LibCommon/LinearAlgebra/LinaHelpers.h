@@ -444,6 +444,7 @@ auto rotationMatrix2D(T angle) {
 }
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+// detail: https://en.wikipedia.org/wiki/Skew-symmetric_matrix#Cross_product
 template<Int N, class T>
 auto skewSymmetricMatrix3D(const VecX<N, T>& v) {
     Mat3x3<T> m;
