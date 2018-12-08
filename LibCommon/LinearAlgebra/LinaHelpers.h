@@ -461,4 +461,45 @@ auto skewSymmetricMatrix3D(const VecX<N, T>& v) {
 }
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+/**
+ * \brief Parallel-transports u along the t0->t1 transformation.
+ *
+ * \param [in] u vector to be parallel-transported.
+ * \param [in] t0 first vector defining transformation. It doesn't have to be normalized.
+ * \param [in] t1 second vector defining transformation. It doesn't have to be normalized.
+ */
+template<class T>
+Vec3<T> parallelTransport(const Vec3<T>& u, const Vec3<T>& t1, const Vec3<T>& t2) {
+    auto b = glm::cross(t1, t2); // binormal
+    if(const auto l2b = glm::length2(b); l2b < T(1e-14)) {
+        return u;
+    } else {
+        b /= std::sqrt(l2b); // normalize b
+    }
+    const auto n1 = glm::normalize(glm::cross(t1, b));
+    const auto n2 = glm::normalize(glm::cross(t2, b));
+    return glm::dot(u, glm::normalize(t1)) * glm::normalize(t2) + glm::dot(u, n1) * n2 + glm::dot(u, b) * b;
+}
+
+/**
+ * \brief Parallel-transports u along the t0->t1 transformation, assuming that u is normal to t0.
+ *
+ * \param [in] u vector to be parallel-transported.
+ * \param [in] t0 first vector defining transformation. It doesn't have to be normalized.
+ * \param [in] t1 second vector defining transformation. It doesn't have to be normalized.
+ */
+template<class T>
+Vec3<T> normalParallelTransport(const Vec3<T>& u, const Vec3<T>& t1, const Vec3<T>& t2) {
+    auto b = glm::cross(t1, t2); // binormal
+    if(const auto l2b = glm::length2(b); l2b < T(1e-14)) {
+        return u;
+    } else {
+        b /= std::sqrt(l2b); // normalize b
+    }
+    const auto n1 = glm::normalize(glm::cross(t1, b));
+    const auto n2 = glm::normalize(glm::cross(t2, b));
+    return glm::dot(u, n1) * n2 + glm::dot(u, b) * b;
+}
+
+//-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 } // end namespace LinaHelpers
