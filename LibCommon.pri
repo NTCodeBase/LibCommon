@@ -29,7 +29,7 @@ CONFIG += c++17
 CONFIG += force_debug_info
 
 win32 {
-    QMAKE_CXXFLAGS += /std:c++latest
+    QMAKE_CXXFLAGS += /std:c++17
     QMAKE_CXXFLAGS += /MP /W3 /Zc:wchar_t /Zi /Gm- /fp:precise /FC /EHsc /permissive- /bigobj
     QMAKE_CXXFLAGS += /D "_WINDOWS" /D "WIN32" /D "WIN64" /D "_MBCS" /D "_SILENCE_ALL_CXX17_DEPRECATION_WARNINGS" /D "PARTIO_WIN32"
 
