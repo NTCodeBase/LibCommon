@@ -462,11 +462,11 @@ auto skewSymmetricMatrix3D(const VecX<N, T>& v) {
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 /**
- * \brief Parallel-transports u along the t0->t1 transformation.
+ * \brief Parallel-transports u along the t1->t2 transformation.
  *
  * \param [in] u vector to be parallel-transported.
- * \param [in] t0 first vector defining transformation. It doesn't have to be normalized.
- * \param [in] t1 second vector defining transformation. It doesn't have to be normalized.
+ * \param [in] t1 first vector defining transformation. It doesn't have to be normalized.
+ * \param [in] t2 second vector defining transformation. It doesn't have to be normalized.
  */
 template<class T>
 Vec3<T> parallelTransport(const Vec3<T>& u, const Vec3<T>& t1, const Vec3<T>& t2) {
@@ -482,11 +482,11 @@ Vec3<T> parallelTransport(const Vec3<T>& u, const Vec3<T>& t1, const Vec3<T>& t2
 }
 
 /**
- * \brief Parallel-transports u along the t0->t1 transformation, assuming that u is normal to t0.
+ * \brief Parallel-transports u along the t1->t2 transformation, assuming that u is normal to t1.
  *
  * \param [in] u vector to be parallel-transported.
- * \param [in] t0 first vector defining transformation. It doesn't have to be normalized.
- * \param [in] t1 second vector defining transformation. It doesn't have to be normalized.
+ * \param [in] t1 first vector defining transformation. It doesn't have to be normalized.
+ * \param [in] t2 second vector defining transformation. It doesn't have to be normalized.
  */
 template<class T>
 Vec3<T> normalParallelTransport(const Vec3<T>& u, const Vec3<T>& t1, const Vec3<T>& t2) {
