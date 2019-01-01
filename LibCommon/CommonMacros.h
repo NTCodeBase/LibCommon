@@ -299,7 +299,7 @@ inline void throwIfFailed(HRESULT hr) {
 #define __NT_TO_CSTRING_7(x) Formatters::toString7(x).c_str()
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-#define __NT_TYPE_ALIASING                                                          \
+#define __NT_TYPE_ALIAS                                                             \
     using Vec1r            = Vec1<Real_t>;                                          \
     using Vec2r            = Vec2<Real_t>;                                          \
     using Vec3r            = Vec3<Real_t>;                                          \

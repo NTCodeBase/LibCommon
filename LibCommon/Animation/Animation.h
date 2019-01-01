@@ -19,17 +19,15 @@
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 // utility to hack glm error
-namespace glm
-{
+namespace glm {
 template<class T> Mat3x3<T> rotate(const Mat3x3<T>& m, T angle, const Vec2<T>&) { return glm::rotate(m, angle); }
 }
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 template<Int N, class Real_t>
-struct KeyFrame
-{
+struct KeyFrame {
     ////////////////////////////////////////////////////////////////////////////////
-    __NT_TYPE_ALIASING
+    __NT_TYPE_ALIAS
     ////////////////////////////////////////////////////////////////////////////////
     KeyFrame() = default;
     KeyFrame(UInt frame_, const VecN& translation_) : frame(frame_), translation(translation_) {}
@@ -47,10 +45,9 @@ struct KeyFrame
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 template<Int N, class Real_t>
-class RigidBodyAnimation
-{
+class RigidBodyAnimation {
     ////////////////////////////////////////////////////////////////////////////////
-    __NT_TYPE_ALIASING
+    __NT_TYPE_ALIAS
     ////////////////////////////////////////////////////////////////////////////////
 public:
     RigidBodyAnimation() = default;
@@ -90,17 +87,15 @@ protected:
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 template<Int N, class Real_t>
-class Animation : public RigidBodyAnimation<N, Real_t>
-{
+class Animation : public RigidBodyAnimation<N, Real_t> {
     ////////////////////////////////////////////////////////////////////////////////
-    __NT_TYPE_ALIASING
+    __NT_TYPE_ALIAS
     ////////////////////////////////////////////////////////////////////////////////
 public:
     Animation() = default;
     ////////////////////////////////////////////////////////////////////////////////
     void addKeyFrame(UInt frame, Real_t scale) { this->m_KeyFrames.emplace_back(KeyFrame<N, Real_t>(frame, scale)); }
-    void addKeyFrame(UInt frame, const VecN& translation, const VecNp1& rotation, Real_t scale)
-    {
+    void addKeyFrame(UInt frame, const VecN& translation, const VecNp1& rotation, Real_t scale) {
         this->m_KeyFrames.emplace_back(KeyFrame<N, Real_t>(frame, translation, rotation, scale));
     }
 

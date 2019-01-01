@@ -20,10 +20,9 @@
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 template<Int N, class Real_t>
-class BlockPCGSolver
-{
+class BlockPCGSolver {
     ////////////////////////////////////////////////////////////////////////////////
-    __NT_TYPE_ALIASING
+    __NT_TYPE_ALIAS
     ////////////////////////////////////////////////////////////////////////////////
 public:
     BlockPCGSolver() = default;
@@ -50,11 +49,11 @@ private:
     FixedBlockSparseMatrix<MatNxN> m_FixedSparseMatrix;
 
     Real_t m_ToleranceFactor = Real_t(1e-20);
-    UInt     m_MaxIterations   = 10000u;
-    bool     m_bZeroInitial    = true;
+    UInt   m_MaxIterations   = 10000u;
+    bool   m_bZeroInitial    = true;
 
     ////////////////////////////////////////////////////////////////////////////////
     // output
     Real_t m_OutResidual   = 0;
-    UInt     m_OutIterations = 0;
+    UInt   m_OutIterations = 0;
 };
