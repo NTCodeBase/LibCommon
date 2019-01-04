@@ -18,19 +18,19 @@
 #include <LibCommon/ParallelHelpers/ParallelObjects.h>
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+namespace NTCodeBase {
+//-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 // The pool of objects that are used mutually exclusively
 // In addition, if no object is available, new object will be created to serve the request
 template<class Object>
-class DynamicMutexPool
-{
+class DynamicMutexPool {
 public:
     DynamicMutexPool(UInt initSize) : m_Objects(initSize, Object()), m_bAvailable(initSize, 1) {}
 
     /**
      * \brief Get the next available object idx. If no object is available, insert a new object and return it.
      */
-    size_t getAvailableIdx()
-    {
+    size_t getAvailableIdx() {
         size_t idx = Huge<size_t>();
         m_Lock.lock();
         for(size_t i = 0; i < m_bAvailable.size(); ++i) {
@@ -55,8 +55,7 @@ public:
      * \brief Get the object. The parameter idx should be the index of an available object
      */
     template<class IndexType>
-    auto& getObj(IndexType idx)
-    {
+    auto& getObj(IndexType idx) {
         return m_Objects[idx];
     }
 
@@ -64,8 +63,7 @@ public:
      * \brief Set object to be available for next use
      */
     template<class IndexType>
-    void setAvailable(IndexType idx)
-    {
+    void setAvailable(IndexType idx) {
         m_bAvailable[idx] = 1;
     }
 
@@ -78,16 +76,14 @@ private:
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 // Fixed size pool where each object may be used by more than one threads
 template<size_t N, class Object>
-class CyclePool
-{
+class CyclePool {
 public:
     CyclePool() = default;
 
     /**
      * \brief Get the next object
      */
-    Object& getNext()
-    {
+    Object& getNext() {
         m_Lock.lock();
         if(++m_CurrentIdx == N) {
             m_CurrentIdx = 0;
@@ -105,3 +101,4 @@ private:
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+} // end namespace NTCodeBase

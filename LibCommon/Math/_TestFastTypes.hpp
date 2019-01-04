@@ -464,7 +464,7 @@ TEST_CASE("Compare_FastVec3_Performance", "Compare_FastVec3_Performance")
     StdVT<Vec3<Real_t>> positions(DATA_SIZE);
     StdVT<Vec3<Real_t>> velocities(DATA_SIZE);
     StdVT<Vec3<int>> kernelCornerNode(DATA_SIZE);
-    StdVT<Mat3x3<Real_t>> C(DATA_SIZE);;
+    StdVT<Mat3x3<Real_t>> C(DATA_SIZE);
 
     Grid<3, Real_t> grid;
     FastGrid3<Real_t> fastGrid;
@@ -522,7 +522,7 @@ TEST_CASE("Compare_FastVec3_Performance", "Compare_FastVec3_Performance")
                                                         xixp.x = xi_corner_xp.x + static_cast<Real_t>(x) * cellSize;
 
                                                         const auto vp_mp = (pvel + pC * xixp) * (w * mp);
-                                                        AtomicOperations::add(gridData(node_x, node_y, node_z), vp_mp);
+                                                        AtomicOps::add(gridData(node_x, node_y, node_z), vp_mp);
                                                     }
                                                 }
                                             }
@@ -561,7 +561,7 @@ TEST_CASE("Compare_FastVec3_Performance", "Compare_FastVec3_Performance")
                                                         xixp.x = xi_corner_xp.x + static_cast<Real_t>(x) * cellSize;
 
                                                         const auto vp_mp = (pvel + pC * xixp) * (w * mp);
-                                                        AtomicOperations::add(gridData(node_x, node_y, node_z), vp_mp.v3);
+                                                        AtomicOps::add(gridData(node_x, node_y, node_z), vp_mp.v3);
                                                     }
                                                 }
                                             }
@@ -601,7 +601,7 @@ TEST_CASE("Compare_FastVec3_Performance", "Compare_FastVec3_Performance")
                                                         xixp.x = xi_corner_xp.x + static_cast<Real_t>(x) * cellSize;
 
                                                         const auto vp_mp = (pvel + pC * xixp) * (w * mp);
-                                                        AtomicOperations::add(gridData(node_x, node_y, node_z), vp_mp.v3);
+                                                        AtomicOps::add(gridData(node_x, node_y, node_z), vp_mp.v3);
                                                     }
                                                 }
                                             }

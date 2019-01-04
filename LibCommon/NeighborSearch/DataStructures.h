@@ -18,15 +18,13 @@
 #include <LibCommon/CommonSetup.h>
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-namespace NeighborSearch
-{
+namespace NTCodeBase::NeighborSearch {
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 #define INITIAL_NUMBER_OF_INDICES 64
 #define SHIFT_POSITION            1.2345
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-struct PointID
-{
+struct PointID {
     UInt point_set_id;
     UInt point_id;
     ////////////////////////////////////////////////////////////////////////////////
@@ -38,8 +36,7 @@ template<Int N>
 struct HashKey;
 
 template<>
-struct HashKey<2>
-{
+struct HashKey<2> {
     int k[2];
     ////////////////////////////////////////////////////////////////////////////////
     HashKey() = default;
@@ -50,8 +47,7 @@ struct HashKey<2>
 };
 
 template<>
-struct HashKey<3>
-{
+struct HashKey<3> {
     int k[3];
     ////////////////////////////////////////////////////////////////////////////////
     HashKey() = default;
@@ -62,8 +58,7 @@ struct HashKey<3>
 };
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-struct HashEntry
-{
+struct HashEntry {
     std::vector<PointID> indices;
     UInt                 n_searching_points;
     ////////////////////////////////////////////////////////////////////////////////
@@ -72,8 +67,7 @@ struct HashEntry
 
     UInt n_indices() const { return static_cast<UInt>(indices.size()); }
     void add(PointID const& id) { indices.push_back(id); }
-    void erase(PointID const& id)
-    {
+    void erase(PointID const& id) {
         auto it = std::find(indices.begin(), indices.end(), id);
         if(it != indices.end()) {
             indices.erase(it);
@@ -86,20 +80,16 @@ template<Int N>
 struct SpatialHasher;
 
 template<>
-struct SpatialHasher<2>
-{
-    std::size_t operator()(HashKey<2> const& k) const
-    {
+struct SpatialHasher<2> {
+    std::size_t operator()(HashKey<2> const& k) const {
         return (73856093 * k.k[0] ^
                 19349663 * k.k[1]);
     }
 };
 
 template<>
-struct SpatialHasher<3>
-{
-    std::size_t operator()(HashKey<3> const& k) const
-    {
+struct SpatialHasher<3> {
+    std::size_t operator()(HashKey<3> const& k) const {
         return (73856093 * k.k[0] ^
                 19349663 * k.k[1] ^
                 83492791 * k.k[2]);
@@ -107,8 +97,7 @@ struct SpatialHasher<3>
 };
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-class ActivationTable
-{
+class ActivationTable {
 private:
     std::vector<std::vector<unsigned char>> m_table;
 
@@ -120,8 +109,7 @@ public:
     /** Add point set. If search_neighbors is true, neighbors in all other point sets are searched.
      * If find_neighbors is true, the new point set is activated in the neighborhood search of all other point sets.
      */
-    void add_point_set(bool search_neighbors = true, bool find_neighbors = true)
-    {
+    void add_point_set(bool search_neighbors = true, bool find_neighbors = true) {
         // add column to each row
         auto size = m_table.size();
         for(auto i = 0u; i < size; i++) {
@@ -139,16 +127,14 @@ public:
 
     /** Activate/Deactivate that neighbors in point set index2 are found when searching for neighbors of point set index1.
      */
-    void set_active(UInt index1, UInt index2, bool active)
-    {
+    void set_active(UInt index1, UInt index2, bool active) {
         m_table[index1][index2] = static_cast<unsigned char>(active);
     }
 
     /** Activate/Deactivate all point set pairs containing the given index. If search_neighbors is true, neighbors in all other point sets are searched.
      * If find_neighbors is true, the new point set is activated in the neighborhood search of all other point sets.
      */
-    void set_active(UInt index, bool search_neighbors = true, bool find_neighbors = true)
-    {
+    void set_active(UInt index, bool search_neighbors = true, bool find_neighbors = true) {
         auto size = m_table.size();
         for(auto i = 0u; i < size; i++) {
             m_table[i][index] = static_cast<unsigned char>(find_neighbors);
@@ -159,8 +145,7 @@ public:
 
     /** Activate/Deactivate all point set pairs.
      */
-    void set_active(bool active)
-    {
+    void set_active(bool active) {
         auto size = m_table.size();
         for(auto i = 0u; i < size; i++) {
             for(auto j = 0u; j < size; j++) {
@@ -169,13 +154,11 @@ public:
         }
     }
 
-    bool is_active(UInt index1, UInt index2) const
-    {
+    bool is_active(UInt index1, UInt index2) const {
         return m_table[index1][index2] != 0;
     }
 
-    bool is_searching_neighbors(UInt const index) const
-    {
+    bool is_searching_neighbors(UInt const index) const {
         for(auto i = 0u; i < m_table[index].size(); i++) {
             if(m_table[index][i]) {
                 return true;
@@ -186,4 +169,4 @@ public:
 };
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-}   // end namespace NeighborSearch
+} // end namespace NTCodeBase::NeighborSearch

@@ -17,12 +17,10 @@
 #include <LibCommon/CommonSetup.h>
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-namespace JSONHelpers
-{
+namespace NTCodeBase::JSONHelpers {
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 template<class T>
-bool readValue(const JParams& j, T& v, const String& valueName)
-{
+bool readValue(const JParams& j, T& v, const String& valueName) {
     if(j.find(valueName) == j.end()) {
         return false;
     }
@@ -37,8 +35,7 @@ bool readValue(const JParams& j, T& v, const String& valueName)
 }
 
 template<class T>
-auto readValue(const JParams& j, const String& valueName)
-{
+auto readValue(const JParams& j, const String& valueName) {
     if(j.find(valueName) == j.end()) {
         return std::make_pair(T(), false);
     }
@@ -53,8 +50,7 @@ auto readValue(const JParams& j, const String& valueName)
 }
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-inline bool readBool(const JParams& j, bool& v, const String& valueName)
-{
+inline bool readBool(const JParams& j, bool& v, const String& valueName) {
     if(j.find(valueName) == j.end()) {
         return false;
     }
@@ -74,8 +70,7 @@ inline bool readBool(const JParams& j, bool& v, const String& valueName)
     return true;
 }
 
-inline auto readBool(const JParams& j, const String& valueName)
-{
+inline auto readBool(const JParams& j, const String& valueName) {
     if(j.find(valueName) == j.end()) {
         return std::make_pair(false, false);
     }
@@ -98,8 +93,7 @@ inline auto readBool(const JParams& j, const String& valueName)
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 template<Int N, class T>
-bool readVector(const JParams& j, VecX<N, T>& vec, const String& valueName)
-{
+bool readVector(const JParams& j, VecX<N, T>& vec, const String& valueName) {
     if(j.find(valueName) == j.end()) {
         return false;
     }
@@ -128,8 +122,7 @@ bool readVector(const JParams& j, VecX<N, T>& vec, const String& valueName)
 }
 
 template<Int N, class T>
-auto readVector(const JParams& j, const String& valueName)
-{
+auto readVector(const JParams& j, const String& valueName) {
     if(j.find(valueName) == j.end()) {
         return std::make_pair(VecX<N, T>(), false);
     }
@@ -155,8 +148,7 @@ auto readVector(const JParams& j, const String& valueName)
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 template<class T>
-bool readVector(const JParams& j, StdVT<T>& vec, const String& valueName)
-{
+bool readVector(const JParams& j, StdVT<T>& vec, const String& valueName) {
     if(j.find(valueName) == j.end()) {
         return false;
     }
@@ -171,8 +163,7 @@ bool readVector(const JParams& j, StdVT<T>& vec, const String& valueName)
 }
 
 template<class T>
-auto readVector(const JParams& j, const String& valueName)
-{
+auto readVector(const JParams& j, const String& valueName) {
     if(j.find(valueName) == j.end()) {
         return std::make_pair(StdVT<T>(), false);
     }
@@ -187,4 +178,4 @@ auto readVector(const JParams& j, const String& valueName)
 }
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-} // end namespace JSONHelpers
+} // end namespace NTCodeBase::JSONHelpers

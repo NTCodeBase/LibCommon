@@ -19,14 +19,12 @@
 #include <LibCommon/NeighborSearch/PointSet.h>
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-namespace NeighborSearch
-{
+namespace NTCodeBase::NeighborSearch {
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 #define INITIAL_NUMBER_OF_NEIGHBORS 64
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-struct NeighborhoodSearchNotInitialized : public std::exception
-{
+struct NeighborhoodSearchNotInitialized : public std::exception {
     virtual const char* what() const noexcept override { return "Neighborhood search was not initialized."; }
 };
 
@@ -37,8 +35,7 @@ struct NeighborhoodSearchNotInitialized : public std::exception
  */
 
 template<Int N, class Real_t>
-class NeighborSearch
-{
+class NeighborSearch {
 public:
 
     /**
@@ -103,8 +100,7 @@ public:
      * set.
      */
     UInt add_point_set(const Real_t* x, UInt n, bool is_dynamic = true,
-                       bool search_neighbors = true, bool find_neighbors = true)
-    {
+                       bool search_neighbors = true, bool find_neighbors = true) {
         m_point_sets.push_back({ x, n, is_dynamic });
         m_activation_table.add_point_set(search_neighbors, find_neighbors);
         return static_cast<UInt>(m_point_sets.size() - 1);
@@ -156,9 +152,8 @@ public:
      * Sets the radius in which point point neighbors are searched.
      * @param r Search radius.
      */
-    void set_radius(Real_t r)
-    {
-        m_r2            = r * r;
+    void set_radius(Real_t r) {
+        m_r2 = r * r;
         m_inv_cell_size = static_cast<Real_t>(1.0 / r);
         m_initialized   = false;
     }
@@ -168,8 +163,7 @@ public:
      *   @param j Index of point set of which points should/shouldn't be found by point set i.
      *   @param active Flag in order to (de)activate that points in i find point in j.
      */
-    void set_active(UInt i, UInt j, bool active)
-    {
+    void set_active(UInt i, UInt j, bool active) {
         m_activation_table.set_active(i, j, active);
     }
 
@@ -179,15 +173,13 @@ public:
      *   @param search_neighbors If true/false enables/disables that point set i searches points in all other point sets.
      *   @param find_neighbors If true/false enable/disables that point set i is found by all other point sets.
      */
-    void set_active(UInt i, bool search_neighbors = true, bool find_neighbors = true)
-    {
+    void set_active(UInt i, bool search_neighbors = true, bool find_neighbors = true) {
         m_activation_table.set_active(i, search_neighbors, find_neighbors);
     }
 
     /** Activate/Deactivate all point set pairs.
      */
-    void set_active(bool active)
-    {
+    void set_active(bool active) {
         m_activation_table.set_active(active);
     }
 
@@ -195,8 +187,7 @@ public:
      *   @param i Searching point set.
      *   @param j Set of points to be found by i.
      */
-    bool is_active(UInt i, UInt j) const
-    {
+    bool is_active(UInt i, UInt j) const {
         return m_activation_table.is_active(i, j);
     }
 
@@ -214,21 +205,21 @@ private:
     void query3D(UInt point_set_id, UInt point_index, StdVT<StdVT_UInt>& neighbors);
 
     HashKey<N>    cell_index(const Real_t* x) const;
-    uint_fast64_t z_value(const HashKey<N>& key);     // Determines Morten value according to z-curve
+    uint_fast64_t z_value(const HashKey<N>& key); // Determines Morten value according to z-curve
 
     ////////////////////////////////////////////////////////////////////////////////
     StdVT<PointSet<N, Real_t>> m_point_sets;
-    ActivationTable              m_activation_table, m_old_activation_table;
+    ActivationTable            m_activation_table, m_old_activation_table;
 
     Real_t m_inv_cell_size;
     Real_t m_r2;
 
     std::unordered_map<HashKey<N>, UInt, SpatialHasher<N>> m_map;
-    StdVT<HashEntry>                                       m_entries;
+    StdVT<HashEntry> m_entries;
 
     bool m_erase_empty_cells;
     bool m_initialized;
 };
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-}   // end namespace NeighborSearch
+} // end namespace NTCodeBase::NeighborSearch

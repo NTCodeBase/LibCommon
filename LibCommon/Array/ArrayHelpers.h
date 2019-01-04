@@ -18,8 +18,7 @@
 #include <LibCommon/Array/Array.h>
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-namespace ArrayHelpers
-{
+namespace NTCodeBase::ArrayHelpers {
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 template<class Real_t> void getCoordinatesAndWeights(const Vec2<Real_t>& point, const Vec2ui& size, std::array<Vec2i, 8>& indices, std::array<Real_t, 8>& weights);
 template<class Real_t> void getCoordinatesAndWeights(const Vec3<Real_t>& point, const Vec3ui& size, std::array<Vec3i, 8>& indices, std::array<Real_t, 8>& weights);
@@ -44,4 +43,4 @@ template<class Real_t> Real_t interpolateValueAndGradient(Vec2<Real_t>& gradient
 template<class Real_t> Real_t interpolateValueAndGradient(Vec3<Real_t>& gradient, const Vec3<Real_t>& point, const Array3<Real_t>& grid);
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-} // end namespace ArrayHelpers
+} // end namespace NTCodeBase::ArrayHelpers

@@ -14,20 +14,18 @@
 
 #pragma once
 
-#include <Array/Array.h>
-#include <Utils/Logger.h>
-#include <Utils/FileHelpers.h>
+#include <LibCommon/Array/Array.h>
+#include <LibCommon/Logger/Logger.h>
+#include <LibCommon/Utils/FileHelpers.h>
 
 #include <cstdio>
 #include <vector>
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-namespace DataPrinter
-{
+namespace NTCodeBase::DataPrinter {
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 template<class T>
-void print(const StdVT<T>& array, const String& arrayName, size_t maxPrint = 0, int precision = 5)
-{
+void print(const StdVT<T>& array, const String& arrayName, size_t maxPrint = 0, int precision = 5) {
     size_t numPrint = maxPrint > 0 ? maxPrint : array.size();
 
     Logger logger("DataPrinter");
@@ -41,8 +39,7 @@ void print(const StdVT<T>& array, const String& arrayName, size_t maxPrint = 0, 
 }
 
 template<class T>
-void printToFile(const String& fileName, const StdVT<T>& array, const String& arrayName, size_t maxPrint = 0, int precision = 5)
-{
+void printToFile(const String& fileName, const StdVT<T>& array, const String& arrayName, size_t maxPrint = 0, int precision = 5) {
     size_t numPrint = maxPrint > 0 ? maxPrint : array.size();
 
     StdVT<String> fileContent;
@@ -57,8 +54,7 @@ void printToFile(const String& fileName, const StdVT<T>& array, const String& ar
 }
 
 template<class T>
-void printToFile(const String& fileName, const StdVT<StdVT<T>>& array, const String& arrayName, size_t maxPrint = 0, int precision = 5)
-{
+void printToFile(const String& fileName, const StdVT<StdVT<T>>& array, const String& arrayName, size_t maxPrint = 0, int precision = 5) {
     size_t numPrint = maxPrint > 0 ? maxPrint : array.size();
 
     size_t numRows = 1;
@@ -88,8 +84,7 @@ void printToFile(const String& fileName, const StdVT<StdVT<T>>& array, const Str
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 template<class T>
-void print(const Array<2, T>& array, const String& arrayName, size_t maxPrint_d0 = 0, size_t maxPrint_d1 = 0, int precision = 5)
-{
+void print(const Array<2, T>& array, const String& arrayName, size_t maxPrint_d0 = 0, size_t maxPrint_d1 = 0, int precision = 5) {
     size_t numPrint_d0 = maxPrint_d0 > 0 ? maxPrint_d0 : array.size()[0];
     size_t numPrint_d1 = maxPrint_d1 > 0 ? maxPrint_d1 : array.size()[1];
 
@@ -114,8 +109,7 @@ void print(const Array<2, T>& array, const String& arrayName, size_t maxPrint_d0
 }
 
 template<class T>
-void printToFile(const String& fileName, const Array<2, T>& array, const String& arrayName, size_t maxPrint_d0 = 0, size_t maxPrint_d1 = 0, int precision = 5)
-{
+void printToFile(const String& fileName, const Array<2, T>& array, const String& arrayName, size_t maxPrint_d0 = 0, size_t maxPrint_d1 = 0, int precision = 5) {
     size_t numPrint_d0 = maxPrint_d0 > 0 ? maxPrint_d0 : array.size()[0];
     size_t numPrint_d1 = maxPrint_d1 > 0 ? maxPrint_d1 : array.size()[1];
 
@@ -143,8 +137,7 @@ void printToFile(const String& fileName, const Array<2, T>& array, const String&
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 template<class T>
-void print(const Array<3, T>& array, const String& arrayName, size_t maxPrint_d0 = 0, size_t maxPrint_d1 = 0, size_t maxPrint_d2 = 0, int precision = 5)
-{
+void print(const Array<3, T>& array, const String& arrayName, size_t maxPrint_d0 = 0, size_t maxPrint_d1 = 0, size_t maxPrint_d2 = 0, int precision = 5) {
     size_t numPrint_d0 = maxPrint_d0 > 0 ? maxPrint_d0 : array.size()[0];
     size_t numPrint_d1 = maxPrint_d1 > 0 ? maxPrint_d1 : array.size()[1];
     size_t numPrint_d2 = maxPrint_d2 > 0 ? maxPrint_d2 : array.size()[2];
@@ -174,8 +167,7 @@ void print(const Array<3, T>& array, const String& arrayName, size_t maxPrint_d0
 }
 
 template<class T>
-void printToFile(const String& fileName, const Array<3, T>& array, const String& arrayName, size_t maxPrint_d0 = 0, size_t maxPrint_d1 = 0, size_t maxPrint_d2 = 0, int precision = 5)
-{
+void printToFile(const String& fileName, const Array<3, T>& array, const String& arrayName, size_t maxPrint_d0 = 0, size_t maxPrint_d1 = 0, size_t maxPrint_d2 = 0, int precision = 5) {
     size_t numPrint_d0 = maxPrint_d0 > 0 ? maxPrint_d0 : array.size()[0];
     size_t numPrint_d1 = maxPrint_d1 > 0 ? maxPrint_d1 : array.size()[1];
     size_t numPrint_d2 = maxPrint_d2 > 0 ? maxPrint_d2 : array.size()[2];
@@ -207,8 +199,7 @@ void printToFile(const String& fileName, const Array<3, T>& array, const String&
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 template<class T>
-void print(const Array<2, StdVT<T>>& array, const String& arrayName, size_t maxPrint_d0 = 0, size_t maxPrint_d1 = 0, int precision = 5)
-{
+void print(const Array<2, StdVT<T>>& array, const String& arrayName, size_t maxPrint_d0 = 0, size_t maxPrint_d1 = 0, int precision = 5) {
     size_t numPrint_d0 = maxPrint_d0 > 0 ? maxPrint_d0 : array.size()[0];
     size_t numPrint_d1 = maxPrint_d1 > 0 ? maxPrint_d1 : array.size()[1];
 
@@ -246,8 +237,7 @@ void print(const Array<2, StdVT<T>>& array, const String& arrayName, size_t maxP
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 template<class T>
-void printToFile(const String& fileName, const Array<2, StdVT<T>>& array, const String& arrayName, size_t maxPrint_d0 = 0, size_t maxPrint_d1 = 0, int precision = 5)
-{
+void printToFile(const String& fileName, const Array<2, StdVT<T>>& array, const String& arrayName, size_t maxPrint_d0 = 0, size_t maxPrint_d1 = 0, int precision = 5) {
     size_t numPrint_d0 = maxPrint_d0 > 0 ? maxPrint_d0 : array.size()[0];
     size_t numPrint_d1 = maxPrint_d1 > 0 ? maxPrint_d0 : array.size()[1];
 
@@ -286,8 +276,7 @@ void printToFile(const String& fileName, const Array<2, StdVT<T>>& array, const 
 template<class T>
 void print(const Array<3, StdVT<T>>& array, const String& arrayName,
            size_t maxPrint_d0 = 0, size_t maxPrint_d1 = 0, size_t maxPrint_d2 = 0,
-           int precision      = 5)
-{
+           int precision      = 5) {
     size_t numPrint_d0 = maxPrint_d0 > 0 ? maxPrint_d0 : array.size()[0];
     size_t numPrint_d1 = maxPrint_d1 > 0 ? maxPrint_d0 : array.size()[1];
     size_t numPrint_d2 = maxPrint_d2 > 0 ? maxPrint_d0 : array.sizeZ();
@@ -330,8 +319,7 @@ void print(const Array<3, StdVT<T>>& array, const String& arrayName,
 template<class T>
 void printToFile(const String& fileName, const Array<3, StdVT<T>>& array, const String& arrayName,
                  size_t maxPrint_d0 = 0, size_t maxPrint_d1 = 0, size_t maxPrint_d2 = 0,
-                 int precision      = 5)
-{
+                 int precision      = 5) {
     size_t numPrint_d0 = maxPrint_d0 > 0 ? maxPrint_d0 : array.size()[0];
     size_t numPrint_d1 = maxPrint_d1 > 0 ? maxPrint_d0 : array.size()[1];
     size_t numPrint_d2 = maxPrint_d2 > 0 ? maxPrint_d0 : array.size()[2];
@@ -372,4 +360,4 @@ void printToFile(const String& fileName, const Array<3, StdVT<T>>& array, const 
 }
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-}   // end namespace DataPrinter
+} // end namespace NTCodeBase::DataPrinter

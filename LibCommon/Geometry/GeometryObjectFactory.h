@@ -13,19 +13,15 @@
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 
 #pragma once
-
-//-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-
 #include <LibCommon/Geometry/GeometryObjects.h>
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-namespace GeometryObjectFactory
-{
+namespace NTCodeBase {
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 template<Int N, class Real_t>
-SharedPtr<GeometryObjects::GeometryObject<N, Real_t>> createGeometry(const String& geometryType, const JParams& jParams);
+SharedPtr<GeometryObject<N, Real_t>> createGeometry(const String& geometryType, const JParams& jParams);
 
 template<Int N, class Real_t>
-SharedPtr<GeometryObjects::GeometryObject<N, Real_t>> combineGeometryObjects(const StdVT<SharedPtr<GeometryObjects::GeometryObject<N, Real_t>>>& geometryObjs);
+SharedPtr<GeometryObject<N, Real_t>> combineGeometryObjects(const StdVT<SharedPtr<GeometryObject<N, Real_t>>>& geometryObjs);
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-}   // end namespace GeometryObjectFactory
+} // end namespace NTCodeBase

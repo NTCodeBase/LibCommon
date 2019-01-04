@@ -19,17 +19,17 @@
 #include <LibCommon/ParallelHelpers/ParallelSTL.h>
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+namespace NTCodeBase {
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 // A simple compressed sparse column data structure (with separate diagonal)
 // for lower triangular matrices
 template<class Real_t>
-struct SparseColumnLowerFactor
-{
-    UInt            nRows;
+struct SparseColumnLowerFactor {
+    UInt          nRows;
     StdVT<Real_t> invDiag;  // reciprocals of diagonal elements
-    StdVT_UInt      colIndex; // a list of all row indices, for each column in turn
+    StdVT_UInt    colIndex; // a list of all row indices, for each column in turn
     StdVT<Real_t> colValue; // values below the diagonal, listed column by column
-    StdVT_UInt      colStart; // where each column begins in row index (plus an extra entry at the end, of #nonzeros)
+    StdVT_UInt    colStart; // where each column begins in row index (plus an extra entry at the end, of #nonzeros)
     StdVT<Real_t> aDiag;    // just used in factorization: minimum "safe" diagonal entry allowed
 
     explicit SparseColumnLowerFactor(UInt size = 0) : nRows(size), invDiag(size), colStart(size + 1), aDiag(size) {}
@@ -41,11 +41,9 @@ struct SparseColumnLowerFactor
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 template<class Real_t>
-class PCGSolver
-{
+class PCGSolver {
 public:
-    enum Preconditioner
-    {
+    enum Preconditioner {
         JACOBI,
         MICCL0,
         MICCL0_SYMMETRIC
@@ -89,14 +87,16 @@ private:
     ////////////////////////////////////////////////////////////////////////////////
     // solver parameters
     Preconditioner m_PreconditionerType = Preconditioner::MICCL0;
-    Real_t       m_ToleranceFactor    = Real_t(1e-20);
+    Real_t         m_ToleranceFactor    = Real_t(1e-20);
     UInt           m_MaxIterations      = 10000;
-    Real_t       m_MICCL0Param        = Real_t(0.97);
-    Real_t       m_MinDiagonalRatio   = Real_t(0.25);
+    Real_t         m_MICCL0Param        = Real_t(0.97);
+    Real_t         m_MinDiagonalRatio   = Real_t(0.25);
     bool           m_bZeroInitial       = true;
 
     ////////////////////////////////////////////////////////////////////////////////
     // output
     Real_t m_OutResidual   = 0;
-    UInt     m_OutIterations = 0;
+    UInt   m_OutIterations = 0;
 };
+//-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+} // end namespace NTCodeBase

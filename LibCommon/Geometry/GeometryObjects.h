@@ -20,8 +20,7 @@
 #include <LibCommon/Animation/Animation.h>
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-namespace GeometryObjects {
-//-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+namespace NTCodeBase {
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 // Base class
@@ -84,9 +83,9 @@ protected:
     MatNp1xNp1 m_InvTransformationMatrix  = MatNp1xNp1(1.0);
     MatNp1xNp1 m_PrevTransformationMatrix = MatNp1xNp1(1.0);
 
-    MatNp1xNp1                           m_AnimationTransformationMatrix     = MatNp1xNp1(1.0);
-    MatNp1xNp1                           m_InvAnimationTransformationMatrix  = MatNp1xNp1(1.0);
-    MatNp1xNp1                           m_PrevAnimationTransformationMatrix = MatNp1xNp1(1.0);
+    MatNp1xNp1 m_AnimationTransformationMatrix     = MatNp1xNp1(1.0);
+    MatNp1xNp1 m_InvAnimationTransformationMatrix  = MatNp1xNp1(1.0);
+    MatNp1xNp1 m_PrevAnimationTransformationMatrix = MatNp1xNp1(1.0);
     StdVT<RigidBodyAnimation<N, Real_t>> m_Animations;
 };
 
@@ -426,4 +425,4 @@ protected:
 };
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-} // end namespace GeometryObjects
+} // end namespace NTCodeBase

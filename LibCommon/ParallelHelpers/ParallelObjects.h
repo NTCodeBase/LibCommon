@@ -23,7 +23,7 @@
 #undef max
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-namespace ParallelObjects {
+namespace NTCodeBase::ParallelObjects {
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 class SpinLock {
 public:
@@ -79,7 +79,7 @@ public:
     Real_t getResult() const noexcept { return m_Result; }
 
 private:
-    Real_t                        m_Result = 0;
+    Real_t m_Result = 0;
     const StdVT<VecX<N, Real_t>>& m_Vec1;
     const StdVT<VecX<N, Real_t>>& m_Vec2;
 };
@@ -124,7 +124,7 @@ public:
     Real_t getResult() const noexcept { return m_Result; }
 
 private:
-    Real_t                        m_Result = std::numeric_limits<Real_t>::max();
+    Real_t m_Result = std::numeric_limits<Real_t>::max();
     const StdVT<VecX<N, Real_t>>& m_Vector;
 };
 
@@ -167,7 +167,7 @@ public:
     Real_t getResult() const noexcept { return m_Result; }
 
 private:
-    Real_t                        m_Result = -std::numeric_limits<Real_t>::max();
+    Real_t m_Result = -std::numeric_limits<Real_t>::max();
     const StdVT<VecX<N, Real_t>>& m_Vector;
 };
 
@@ -210,7 +210,7 @@ public:
     Real_t getResult() const noexcept { return m_Result; }
 
 private:
-    Real_t                        m_Result = 0;
+    Real_t m_Result = 0;
     const StdVT<VecX<N, Real_t>>& m_Vector;
 };
 
@@ -254,7 +254,7 @@ public:
     Real_t getResult() const noexcept { return sqrt(m_Result); }
 
 private:
-    Real_t                        m_Result = 0;
+    Real_t m_Result = 0;
     const StdVT<VecX<N, Real_t>>& m_Vector;
 };
 
@@ -445,7 +445,7 @@ public:
     void join(VectorSumSqr<N, T>& pObj) { m_Result += pObj.m_Result; }
     T    getResult() const noexcept { return m_Result; }
 private:
-    T                        m_Result = T(0);
+    T m_Result = T(0);
     const StdVT<VecX<N, T>>& m_Vector;
 };
 
@@ -470,4 +470,4 @@ private:
 };
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-} // end namespace ParallelObjects
+} // end namespace NTCodeBase::ParallelObjects

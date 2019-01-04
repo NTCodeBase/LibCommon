@@ -19,8 +19,7 @@
 #include <LibCommon/ParallelHelpers/ParallelObjects.h>
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-namespace NeighborSearch
-{
+namespace NTCodeBase::NeighborSearch {
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 template<Int N, class Real_t>
 class NeighborSearch;
@@ -30,12 +29,10 @@ class NeighborSearch;
  * Represents a set of points in three-dimensional space.
  */
 template<Int N, class Real_t>
-class PointSet
-{
+class PointSet {
 public:
     PointSet(PointSet const& other) { *this = other; }
-    PointSet& operator=(PointSet const& other)
-    {
+    PointSet& operator=(PointSet const& other) {
         m_x       = other.m_x;
         m_n       = other.m_n;
         m_dynamic = other.m_dynamic;
@@ -54,8 +51,7 @@ public:
      * @param i Point index.
      * @returns Number of points neighboring point i in point set point_set.
      */
-    UInt n_neighbors(UInt point_set, UInt i) const
-    {
+    UInt n_neighbors(UInt point_set, UInt i) const {
         return static_cast<UInt>(m_neighbors[point_set][i].size());
     }
 
@@ -65,8 +61,7 @@ public:
      * @param i Point index for which the neighbors should be returned.
      * @returns Indices of neighboring point i in point set point_set.
      */
-    const StdVT_UInt& neighbors(UInt point_set, UInt i) const
-    {
+    const StdVT_UInt& neighbors(UInt point_set, UInt i) const {
         return m_neighbors[point_set][i];
     }
 
@@ -77,8 +72,7 @@ public:
      * @param k Represents kth neighbor of point i.
      * @returns Index of neighboring point i in point set point_set.
      */
-    UInt neighbor(UInt point_set, UInt i, UInt k) const
-    {
+    UInt neighbor(UInt point_set, UInt i, UInt k) const {
         return m_neighbors[point_set][i][k];
     }
 
@@ -103,8 +97,7 @@ public:
      * "Neighborhood search" has to be called beforehand.
      */
     template<class T>
-    void sort_field(T* lst) const
-    {
+    void sort_field(T* lst) const {
         if(m_sort_table.empty()) {
             std::cerr << "WARNING: No sort table was generated for the current point set. "
                       << "First invoke the method 'z_sort' of the class 'NeighborhoodSearch.'" << std::endl;
@@ -124,21 +117,18 @@ public:
 private:
     friend NeighborSearch<N, Real_t>;
     PointSet(const Real_t* x, UInt n, bool dynamic)
-        : m_x(x), m_n(n), m_dynamic(dynamic), m_neighbors(n)
-    {
+        : m_x(x), m_n(n), m_dynamic(dynamic), m_neighbors(n) {
         resize_keys(n);
     }
 
-    void resize(const Real_t* x, UInt n)
-    {
+    void resize(const Real_t* x, UInt n) {
         m_x = x;
         m_n = n;
         resize_keys(n);
         m_neighbors.resize(n);
     }
 
-    void resize_keys(UInt n)
-    {
+    void resize_keys(UInt n) {
         if constexpr (N == 2) {
             m_keys.resize(n, {
                     std::numeric_limits<int>::lowest(),
@@ -162,8 +152,7 @@ private:
         }
     }
 
-    const Real_t* point(UInt i) const
-    {
+    const Real_t* point(UInt i) const {
         if constexpr (N == 2) {
             return &m_x[2 * i];
         } else {
@@ -174,8 +163,8 @@ private:
 private:
 
     const Real_t* m_x;
-    UInt            m_n;
-    bool            m_dynamic;
+    UInt          m_n;
+    bool          m_dynamic;
 
     StdVT<HashKey<N>> m_keys, m_old_keys;
     StdVT_UInt        m_sort_table;
@@ -185,4 +174,4 @@ private:
 };
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-}   // end namespace NeighborSearch
+} // end namespace NTCodeBase::NeighborSearch

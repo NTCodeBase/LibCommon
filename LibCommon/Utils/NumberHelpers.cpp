@@ -15,8 +15,7 @@
 #include <LibCommon/Utils/NumberHelpers.h>
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-namespace NumberHelpers
-{
+namespace NTCodeBase::NumberHelpers {
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 #define __BNN_INSTANTIATE_IRAND(type)                \
     template class MT_iRandom<type>;                 \
@@ -47,4 +46,4 @@ __BNN_INSTANTIATE_FRAND(fRand,   double)
 __BNN_INSTANTIATE_FRAND(fRand01, double)
 __BNN_INSTANTIATE_FRAND(fRand11, double)
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-}   // end namespace NumberHelpers
+} // end namespace NTCodeBase::NumberHelpers

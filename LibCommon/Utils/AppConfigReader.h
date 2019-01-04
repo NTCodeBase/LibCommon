@@ -20,8 +20,9 @@
 #include <sstream>
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-class AppConfigReader
-{
+namespace NTCodeBase {
+//-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+class AppConfigReader {
 public:
     AppConfigReader(const std::string& fileName, bool bPrintErr = false) { loadConfig(fileName, bPrintErr); }
 
@@ -36,8 +37,7 @@ public:
     template<class Real_t> Real_t getRealValue(const std::string& paramName) { return static_cast<Real_t>(getDoubleValue(paramName)); }
 
 private:
-    void loadConfig(const std::string& fileName, bool bPrintErr)
-    {
+    void loadConfig(const std::string& fileName, bool bPrintErr) {
         std::ifstream inFile(fileName);
         if(!inFile.is_open()) {
             if(bPrintErr) {
@@ -75,3 +75,5 @@ private:
 
     std::map<std::string, std::string> m_AppConfigs;
 };
+//-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+} // end namespace NTCodeBase

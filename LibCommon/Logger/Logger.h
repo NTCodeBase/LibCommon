@@ -24,6 +24,8 @@
 #include <mutex>
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+namespace NTCodeBase {
+//-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 class Logger {
     using Clock    = std::chrono::system_clock;
     using LogLevel = spdlog::level::level_enum;
@@ -147,3 +149,5 @@ struct Logger::MakeSharedEnabler : public Logger {
                       LogLevel consoleLogLevel = LogLevel::trace, LogLevel fileLogLevel = LogLevel::trace) :
         Logger(loggerName, rootPath, bLog2Console, bLog2File, consoleLogLevel, fileLogLevel) {}
 };
+//-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+} // end namespace NTCodeBase

@@ -17,8 +17,7 @@
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-namespace QRSVD
-{
+namespace NTCodeBase::QRSVD {
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 
 /**
@@ -39,8 +38,7 @@ namespace QRSVD
    Assume rowi < rowk.
  */
 template<class T>
-class GivensRotation
-{
+class GivensRotation {
 public:
     Int rowi;
     Int rowk;
@@ -57,8 +55,7 @@ public:
        ( c -s ) ( a )  =  ( * )
        s  c     b       ( 0 )
      */
-    void compute(const T a, const T b)
-    {
+    void compute(const T a, const T b) {
         T d = a * a + b * b;
         c = T(1.0);
         s = T(0);
@@ -75,8 +72,7 @@ public:
        ( c -s ) ( a )  =  ( 0 )
        s  c     b       ( * )
      */
-    void computeUnconventional(const T a, const T b)
-    {
+    void computeUnconventional(const T a, const T b) {
         T d = a * a + b * b;
         c = 0;
         s = 1;
@@ -92,8 +88,7 @@ public:
        Fill the R with the entries of this rotation
      */
     template<class MatrixType>
-    void fill(const MatrixType& R) const
-    {
+    void fill(const MatrixType& R) const {
         MatrixType& A = const_cast<MatrixType&>(R);
         A = MatrixType(1.0);
         A[rowi][rowi] = c;
@@ -110,8 +105,7 @@ public:
        It only affects row i and row k of A.
      */
     template<class MatrixType>
-    void rowRotation(MatrixType& A) const
-    {
+    void rowRotation(MatrixType& A) const {
         for(Int j = 0; j < A.length(); j++) {
             T tau1 = A[j][rowi];
             T tau2 = A[j][rowk];
@@ -128,8 +122,7 @@ public:
        It only affects column i and column k of A.
      */
     template<class MatrixType>
-    void columnRotation(MatrixType& A) const
-    {
+    void columnRotation(MatrixType& A) const {
         for(Int j = 0; j < A.length(); j++) {
             T tau1 = A[rowi][j];
             T tau2 = A[rowk][j];
@@ -141,8 +134,7 @@ public:
     /**
        Multiply givens must be for same row and column
      **/
-    void operator*=(const GivensRotation<T>& A)
-    {
+    void operator*=(const GivensRotation<T>& A) {
         T new_c = c * A.c - s * A.s;
         T new_s = s * A.c + c * A.s;
         c = new_c;
@@ -152,8 +144,7 @@ public:
     /**
        Multiply givens must be for same row and column
      **/
-    GivensRotation<T> operator*(const GivensRotation<T>& A) const
-    {
+    GivensRotation<T> operator*(const GivensRotation<T>& A) const {
         GivensRotation<T> r(*this);
         r *= A;
         return r;
@@ -173,8 +164,7 @@ public:
    0 0 x
  */
 template<class T>
-void zeroChase(Mat3x3<T>& H, Mat3x3<T>& U, Mat3x3<T>& V)
-{
+void zeroChase(Mat3x3<T>& H, Mat3x3<T>& U, Mat3x3<T>& V) {
     /**
        Reduce H to of form
        x x +
@@ -231,8 +221,7 @@ void zeroChase(Mat3x3<T>& H, Mat3x3<T>& U, Mat3x3<T>& V)
    0 0 x
  */
 template<class T>
-void makeUpperBidiag(Mat3x3<T>& H, Mat3x3<T>& U, Mat3x3<T>& V)
-{
+void makeUpperBidiag(Mat3x3<T>& H, Mat3x3<T>& U, Mat3x3<T>& V) {
     U = Mat3x3<T>(1.0);
     V = Mat3x3<T>(1.0);
 
@@ -263,8 +252,7 @@ void makeUpperBidiag(Mat3x3<T>& H, Mat3x3<T>& U, Mat3x3<T>& V)
  *                     x 0 x
  */
 template<class T>
-void makeLambdaShape(Mat3x3<T>& H, Mat3x3<T>& U, Mat3x3<T>& V)
-{
+void makeLambdaShape(Mat3x3<T>& H, Mat3x3<T>& U, Mat3x3<T>& V) {
     U = Mat3x3<T>(1.0);
     V = Mat3x3<T>(1.0);
 
@@ -325,8 +313,7 @@ void makeLambdaShape(Mat3x3<T>& H, Mat3x3<T>& U, Mat3x3<T>& V)
    R is guaranteed to be the closest rotation to A.
  */
 template<class T>
-void polarDecomposition(const Mat2x2<T>& A, GivensRotation<T>& R, const Mat2x2<T>& S_Sym)
-{
+void polarDecomposition(const Mat2x2<T>& A, GivensRotation<T>& R, const Mat2x2<T>& S_Sym) {
     Vec2<T> x(A[0][0] + A[1][1], A[0][1] - A[1][0]);
     T       denominator = glm::length(x);
     R.c = (T)1;
@@ -357,16 +344,14 @@ void polarDecomposition(const Mat2x2<T>& A, GivensRotation<T>& R, const Mat2x2<T
    R is guaranteed to be the closest rotation to A.
  */
 template<class T>
-void polarDecomposition(const Mat2x2<T>& A, const Mat2x2<T>& R, const Mat2x2<T>& S_Sym)
-{
+void polarDecomposition(const Mat2x2<T>& A, const Mat2x2<T>& R, const Mat2x2<T>& S_Sym) {
     GivensRotation<T> r(0, 1);
     polarDecomposition(A, r, S_Sym);
     r.fill(R);
 }
 
 template<class T>
-std::pair<Mat2x2<T>, Mat2x2<T>> polarDecomposition(const Mat2x2<T>& A)
-{
+std::pair<Mat2x2<T>, Mat2x2<T>> polarDecomposition(const Mat2x2<T>& A) {
     Mat2x2<T> R, S_Sym;
     polarDecomposition(A, R, S_Sym);
     return std::make_pair(R, S_Sym);
@@ -381,8 +366,7 @@ std::pair<Mat2x2<T>, Mat2x2<T>> polarDecomposition(const Mat2x2<T>& A)
    \param[out] V Robustly a rotation matrix in Givens form
  */
 template<class T>
-void svd(const Mat2x2<T>& A, GivensRotation<T>& U, Vec2<T>& sigma, GivensRotation<T>& V, T tol = T(64.0)* std::numeric_limits<T>::epsilon())
-{
+void svd(const Mat2x2<T>& A, GivensRotation<T>& U, Vec2<T>& sigma, GivensRotation<T>& V, T tol = T(64.0)* std::numeric_limits<T>::epsilon()) {
     (void)tol;
     Mat2x2<T> S_Sym;
     polarDecomposition(A, U, S_Sym);
@@ -444,8 +428,7 @@ void svd(const Mat2x2<T>& A, GivensRotation<T>& U, Vec2<T>& sigma, GivensRotatio
    \param[out] V Robustly a rotation matrix.
  */
 template<class T>
-void svd(const Mat2x2<T>& A, const Mat2x2<T>& U, Vec2<T>& Sigma, const Mat2x2<T>& V, T tol = T(64.0)* std::numeric_limits<T>::epsilon())
-{
+void svd(const Mat2x2<T>& A, const Mat2x2<T>& U, Vec2<T>& Sigma, const Mat2x2<T>& V, T tol = T(64.0)* std::numeric_limits<T>::epsilon()) {
     (void)tol;
     GivensRotation<T> gv(0, 1);
     GivensRotation<T> gu(0, 1);
@@ -456,8 +439,7 @@ void svd(const Mat2x2<T>& A, const Mat2x2<T>& U, Vec2<T>& Sigma, const Mat2x2<T>
 }
 
 template<class T>
-std::tuple<Mat2x2<T>, Vec2<T>, Mat2x2<T>> svd(const Mat2x2<T>& A)
-{
+std::tuple<Mat2x2<T>, Vec2<T>, Mat2x2<T>> svd(const Mat2x2<T>& A) {
     Mat2x2<T> U, V;
     Vec2<T>   Sigma;
     svd(A, U, Sigma, V);
@@ -474,8 +456,7 @@ std::tuple<Mat2x2<T>, Vec2<T>, Mat2x2<T>> svd(const Mat2x2<T>& A)
 
  */
 template<class T>
-T wilkinsonShift(const T a1, const T b1, const T a2)
-{
+T wilkinsonShift(const T a1, const T b1, const T a2) {
     T d  = T(0.5) * (a1 - a2);
     T bs = b1 * b1;
 
@@ -489,8 +470,7 @@ T wilkinsonShift(const T a1, const T b1, const T a2)
    \brief Helper function of 3X3 SVD for processing 2X2 SVD
  */
 template<Int t, class T>
-void process(Mat3x3<T>& B, Mat3x3<T>& U, Vec3<T>& sigma, Mat3x3<T>& V)
-{
+void process(Mat3x3<T>& B, Mat3x3<T>& U, Vec3<T>& sigma, Mat3x3<T>& V) {
     Int               other = (t == 1) ? 0 : 2;
     GivensRotation<T> u(0, 1);
     GivensRotation<T> v(0, 1);
@@ -525,8 +505,7 @@ void process(Mat3x3<T>& B, Mat3x3<T>& U, Vec3<T>& sigma, Mat3x3<T>& V)
    \brief Helper function of 3X3 SVD for flipping signs due to flipping signs of sigma
  */
 template<class T>
-void flipSign(Int i, Mat3x3<T>& U, Vec3<T>& sigma)
-{
+void flipSign(Int i, Mat3x3<T>& U, Vec3<T>& sigma) {
     sigma[i] = -sigma[i];
     U[i]     = -U[i];
 }
@@ -536,8 +515,7 @@ void flipSign(Int i, Mat3x3<T>& U, Vec3<T>& sigma)
    \brief Helper function of 3X3 SVD for sorting singular values
  */
 template<class T>
-void sort0(Mat3x3<T>& U, Vec3<T>& sigma, Mat3x3<T>& V)
-{
+void sort0(Mat3x3<T>& U, Vec3<T>& sigma, Mat3x3<T>& V) {
     // Case: sigma[0] > |sigma[1]| >= |sigma[2]|
     if(fabs(sigma[1]) >= fabs(sigma[2])) {
         if(sigma[1] < 0) {
@@ -575,8 +553,7 @@ void sort0(Mat3x3<T>& U, Vec3<T>& sigma, Mat3x3<T>& V)
    \brief Helper function of 3X3 SVD for sorting singular values
  */
 template<class T>
-void sort1(Mat3x3<T>& U, Vec3<T>& sigma, Mat3x3<T>& V)
-{
+void sort1(Mat3x3<T>& U, Vec3<T>& sigma, Mat3x3<T>& V) {
     // Case: |sigma[0]| >= sigma[1] > |sigma[2]|
     if(fabs(sigma[0]) >= sigma[1]) {
         if(sigma[0] < 0) {
@@ -619,8 +596,7 @@ void sort1(Mat3x3<T>& U, Vec3<T>& sigma, Mat3x3<T>& V)
    \param[out] V is a rotation matrix.
  */
 template<class T>
-Int svd(const Mat3x3<T>& A, Mat3x3<T>& U, Vec3<T>& sigma, Mat3x3<T>& V, T tol = T(128.0)* std::numeric_limits<T>::epsilon())
-{
+Int svd(const Mat3x3<T>& A, Mat3x3<T>& U, Vec3<T>& sigma, Mat3x3<T>& V, T tol = T(128.0)* std::numeric_limits<T>::epsilon()) {
     Mat3x3<T> B = A;
     U = Mat3x3<T>(1.0);
     V = Mat3x3<T>(1.0);
@@ -776,8 +752,7 @@ Int svd(const Mat3x3<T>& A, Mat3x3<T>& U, Vec3<T>& sigma, Mat3x3<T>& V, T tol = 
 }
 
 template<class T>
-std::tuple<Mat3x3<T>, Vec3<T>, Mat3x3<T>> svd(const Mat3x3<T>& A)
-{
+std::tuple<Mat3x3<T>, Vec3<T>, Mat3x3<T>> svd(const Mat3x3<T>& A) {
     Mat3x3<T> U, V;
     Vec3<T>   Sigma;
     svd(A, U, Sigma, V);
@@ -797,8 +772,7 @@ std::tuple<Mat3x3<T>, Vec3<T>, Mat3x3<T>> svd(const Mat3x3<T>& A)
    R is guaranteed to be the closest rotation to A.
  */
 template<class T>
-void polarDecomposition(const Mat3x3<T>& A, Mat3x3<T>& R, Mat3x3<T>& S_Sym)
-{
+void polarDecomposition(const Mat3x3<T>& A, Mat3x3<T>& R, Mat3x3<T>& S_Sym) {
     const auto [U, sigma, V] = svd(A);
     const auto Vt = glm::transpose(V);
     R     = U * Vt;
@@ -808,8 +782,7 @@ void polarDecomposition(const Mat3x3<T>& A, Mat3x3<T>& R, Mat3x3<T>& S_Sym)
 }
 
 template<class T>
-std::pair<Mat3x3<T>, Mat3x3<T>> polarDecomposition(const Mat3x3<T>& A)
-{
+std::pair<Mat3x3<T>, Mat3x3<T>> polarDecomposition(const Mat3x3<T>& A) {
     Mat3x3<T> R, S_Sym;
     polarDecomposition(A, R, S_Sym);
     return std::make_pair(R, S_Sym);
@@ -817,8 +790,7 @@ std::pair<Mat3x3<T>, Mat3x3<T>> polarDecomposition(const Mat3x3<T>& A)
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 template<Int M, Int N, class T>
-void inplaceGivensR(MatMxN<M, N, T>& A)
-{
+void inplaceGivensR(MatMxN<M, N, T>& A) {
     for(Int j = 0; j < N; j++) {
         for(Int i = M - 1; i > j; i--) {
             GivensRotation<T> r(A[j][i - 1], A[j][i], i - 1, i);
@@ -828,8 +800,7 @@ void inplaceGivensR(MatMxN<M, N, T>& A)
 }
 
 template<Int M, Int N, Int L, class T>
-void simultaneousGivensQR(MatMxN<M, N, T>& A, MatMxN<M, L, T>& Q)
-{
+void simultaneousGivensQR(MatMxN<M, N, T>& A, MatMxN<M, L, T>& Q) {
     for(Int j = 0; j < N; j++) {
         for(Int i = M - 1; i > j; i--) {
             GivensRotation<T> r(A[j][i - 1], A[j][i], i - 1, i);
@@ -843,31 +814,27 @@ void simultaneousGivensQR(MatMxN<M, N, T>& A, MatMxN<M, L, T>& Q)
 }
 
 template<Int M, Int N, class T>
-void inplaceGivensQR(MatMxN<M, N, T>& A, MatMxN<M, M, T>& Q)
-{
+void inplaceGivensQR(MatMxN<M, N, T>& A, MatMxN<M, M, T>& Q) {
     Q = MatMxN<M, M, T>(1);
     simultaneousGivensQR(A, Q);
     Q = glm::transpose(Q);
 }
 
 template<Int M, Int N, class T>
-MatMxN<M, M, T> inplaceGivensQR(MatMxN<M, N, T>& A)
-{
+MatMxN<M, M, T> inplaceGivensQR(MatMxN<M, N, T>& A) {
     auto Q = MatMxN<M, M, T>(1);
     simultaneousGivensQR(A, Q);
     return glm::transpose(Q);
 }
 
 template<Int M, Int N, class T>
-void GivensQR(const MatMxN<M, N, T>& A, MatMxN<M, M, T>& Q, MatMxN<M, N, T>& R)
-{
+void GivensQR(const MatMxN<M, N, T>& A, MatMxN<M, M, T>& Q, MatMxN<M, N, T>& R) {
     R = A;
     inplaceGivensQR(R, Q);
 }
 
 template<Int M, Int N, class T>
-std::pair<MatMxN<M, M, T>, MatMxN<M, N, T>> GivensQR(const MatMxN<M, N, T>& A)
-{
+std::pair<MatMxN<M, M, T>, MatMxN<M, N, T>> GivensQR(const MatMxN<M, N, T>& A) {
     MatMxN<M, M, T> Q;
     MatMxN<M, N, T> R;
     GivensQR(A, Q, R);
@@ -888,4 +855,4 @@ __BNN_INSTANTIATE_QRSVD_FUNCS(3, float)
 __BNN_INSTANTIATE_QRSVD_FUNCS(3, double)
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-}   // end namespace QRSVD
+} // end namespace NTCodeBase::QRSVD

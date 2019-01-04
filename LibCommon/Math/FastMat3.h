@@ -17,9 +17,10 @@
 #include <LibCommon/Math/FastVec3.h>
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+namespace NTCodeBase {
+//-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 template<class T>
-class FastMat3
-{
+class FastMat3 {
 public:
     inline FastMat3() { static_assert(sizeof(T) == sizeof(float) && alignof(FastMat3<T>) == 16, "Error: Size or alignment is not correct!"); }
     inline FastMat3(__m128 c0, __m128 c1, __m128 c2) : col{{ c0 }, { c1 }, { c2 }} {}
@@ -34,22 +35,19 @@ public:
     inline void copyToMat3x3r(Mat3x3<T>& m) const { m[0] = col[0].v3; m[1] = col[1].v3; m[2] = col[2].v3; }
     ////////////////////////////////////////////////////////////////////////////////
     /// Arithmetic operators with FastMat3
-    inline FastMat3<T> operator+(const FastMat3<T>& B) const
-    {
+    inline FastMat3<T> operator+(const FastMat3<T>& B) const {
         return FastMat3<T>(_mm_add_ps(col[0].mmvalue, B.col[0].mmvalue),
                            _mm_add_ps(col[1].mmvalue, B.col[1].mmvalue),
                            _mm_add_ps(col[2].mmvalue, B.col[2].mmvalue));
     }
 
-    inline FastMat3<T> operator-(const FastMat3<T>& B) const
-    {
+    inline FastMat3<T> operator-(const FastMat3<T>& B) const {
         return FastMat3<T>(_mm_sub_ps(col[0].mmvalue, B.col[0].mmvalue),
                            _mm_sub_ps(col[1].mmvalue, B.col[1].mmvalue),
                            _mm_sub_ps(col[2].mmvalue, B.col[2].mmvalue));
     }
 
-    inline FastVec3<T> operator*(const FastVec3<T>& v) const
-    {
+    inline FastVec3<T> operator*(const FastVec3<T>& v) const {
         __m128 v0 = _mm_shuffle_ps(v.mmvalue, v.mmvalue, _MM_SHUFFLE(0, 0, 0, 0));
         __m128 v1 = _mm_shuffle_ps(v.mmvalue, v.mmvalue, _MM_SHUFFLE(1, 1, 1, 1));
         __m128 v2 = _mm_shuffle_ps(v.mmvalue, v.mmvalue, _MM_SHUFFLE(2, 2, 2, 2));
@@ -61,8 +59,7 @@ public:
         return _mm_add_ps(_mm_add_ps(m0, m1), m2);
     }
 
-    inline FastMat3<T> operator*(const FastMat3<T>& B) const
-    {
+    inline FastMat3<T> operator*(const FastMat3<T>& B) const {
         FastMat3<T> result;
         {
             __m128 e0 = _mm_shuffle_ps(B.col[0].mmvalue, B.col[0].mmvalue, _MM_SHUFFLE(0, 0, 0, 0));
@@ -102,24 +99,21 @@ public:
     }
 
     ////////////////////////////////////////////////////////////////////////////////
-    inline FastMat3<T>& operator+=(const FastMat3<T>& B)
-    {
+    inline FastMat3<T>& operator+=(const FastMat3<T>& B) {
         col[0].mmvalue = _mm_add_ps(col[0].mmvalue, B.col[0].mmvalue);
         col[1].mmvalue = _mm_add_ps(col[1].mmvalue, B.col[1].mmvalue);
         col[2].mmvalue = _mm_add_ps(col[2].mmvalue, B.col[2].mmvalue);
         return *this;
     }
 
-    inline FastMat3<T>& operator-=(const FastMat3<T>& B)
-    {
+    inline FastMat3<T>& operator-=(const FastMat3<T>& B) {
         col[0].mmvalue = _mm_sub_ps(col[0].mmvalue, B.col[0].mmvalue);
         col[1].mmvalue = _mm_sub_ps(col[1].mmvalue, B.col[1].mmvalue);
         col[2].mmvalue = _mm_sub_ps(col[2].mmvalue, B.col[2].mmvalue);
         return *this;
     }
 
-    inline FastMat3<T>& operator*=(const FastMat3<T>& B)
-    {
+    inline FastMat3<T>& operator*=(const FastMat3<T>& B) {
         __m128 col0m, col1m, col2m;
         {
             __m128 e0 = _mm_shuffle_ps(B.col[0].mmvalue, B.col[0].mmvalue, _MM_SHUFFLE(0, 0, 0, 0));
@@ -162,29 +156,25 @@ public:
     }
 
     ////////////////////////////////////////////////////////////////////////////////
-    inline FastMat3<T> operator+(T a) const
-    {
+    inline FastMat3<T> operator+(T a) const {
         return FastMat3<T>(_mm_add_ps(col[0].mmvalue, _mm_set1_ps(a)),
                            _mm_add_ps(col[1].mmvalue, _mm_set1_ps(a)),
                            _mm_add_ps(col[2].mmvalue, _mm_set1_ps(a)));
     }
 
-    inline FastMat3<T> operator-(T a) const
-    {
+    inline FastMat3<T> operator-(T a) const {
         return FastMat3<T>(_mm_sub_ps(col[0].mmvalue, _mm_set1_ps(a)),
                            _mm_sub_ps(col[1].mmvalue, _mm_set1_ps(a)),
                            _mm_sub_ps(col[2].mmvalue, _mm_set1_ps(a)));
     }
 
-    inline FastMat3<T> operator*(T a) const
-    {
+    inline FastMat3<T> operator*(T a) const {
         return FastMat3<T>(_mm_mul_ps(col[0].mmvalue, _mm_set1_ps(a)),
                            _mm_mul_ps(col[1].mmvalue, _mm_set1_ps(a)),
                            _mm_mul_ps(col[2].mmvalue, _mm_set1_ps(a)));
     }
 
-    inline FastMat3<T> operator/(T a) const
-    {
+    inline FastMat3<T> operator/(T a) const {
         assert(a != 0);
         return FastMat3<T>(_mm_div_ps(col[0].mmvalue, _mm_set1_ps(a)),
                            _mm_div_ps(col[1].mmvalue, _mm_set1_ps(a)),
@@ -192,32 +182,28 @@ public:
     }
 
     ////////////////////////////////////////////////////////////////////////////////
-    inline FastMat3<T>& operator+=(T a)
-    {
+    inline FastMat3<T>& operator+=(T a) {
         col[0].mmvalue = _mm_add_ps(col[0].mmvalue, _mm_set1_ps(a));
         col[1].mmvalue = _mm_add_ps(col[1].mmvalue, _mm_set1_ps(a));
         col[2].mmvalue = _mm_add_ps(col[2].mmvalue, _mm_set1_ps(a));
         return *this;
     }
 
-    inline FastMat3<T>& operator-=(T a)
-    {
+    inline FastMat3<T>& operator-=(T a) {
         col[0].mmvalue = _mm_sub_ps(col[0].mmvalue, _mm_set1_ps(a));
         col[1].mmvalue = _mm_sub_ps(col[1].mmvalue, _mm_set1_ps(a));
         col[2].mmvalue = _mm_sub_ps(col[2].mmvalue, _mm_set1_ps(a));
         return *this;
     }
 
-    inline FastMat3<T>& operator*=(T a)
-    {
+    inline FastMat3<T>& operator*=(T a) {
         col[0].mmvalue = _mm_mul_ps(col[0].mmvalue, _mm_set1_ps(a));
         col[1].mmvalue = _mm_mul_ps(col[1].mmvalue, _mm_set1_ps(a));
         col[2].mmvalue = _mm_mul_ps(col[2].mmvalue, _mm_set1_ps(a));
         return *this;
     }
 
-    inline FastMat3<T>& operator/=(T a)
-    {
+    inline FastMat3<T>& operator/=(T a) {
         assert(a != 0);
         col[0].mmvalue = _mm_div_ps(col[0].mmvalue, _mm_set1_ps(a));
         col[1].mmvalue = _mm_div_ps(col[1].mmvalue, _mm_set1_ps(a));
@@ -227,8 +213,7 @@ public:
 
     ////////////////////////////////////////////////////////////////////////////////
     // geometric functions
-    inline FastMat3<T> transposed() const
-    {
+    inline FastMat3<T> transposed() const {
         __m128 t0 = _mm_shuffle_ps(col[0].mmvalue, col[1].mmvalue, _MM_SHUFFLE(1, 0, 1, 0));
         __m128 t1 = _mm_shuffle_ps(col[0].mmvalue, col[1].mmvalue, _MM_SHUFFLE(2, 2, 2, 2));
         __m128 c0 = _mm_shuffle_ps(t0, col[2].mmvalue, _MM_SHUFFLE(0, 0, 2, 0));
@@ -252,3 +237,5 @@ public:
     // member variable
     FastVec3<T> col[3];
 };
+//-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+}     // end namespace NTCodeBase

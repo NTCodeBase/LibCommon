@@ -21,12 +21,13 @@
 #include <LibCommon/ParallelHelpers/Scheduler.h>
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+namespace NTCodeBase {
+//-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 // Dynamic compressed sparse row matrix
 //
 template<class Real_t>
-struct SparseMatrix
-{
+struct SparseMatrix {
 public:
     UInt nRows;
 
@@ -44,11 +45,11 @@ public:
     void clear();
 
     template<class IndexType> Real_t operator()(IndexType i, IndexType j) const;
-    template<class IndexType> void     setElement(IndexType i, IndexType j, Real_t newValue);
-    template<class IndexType> void     addElement(IndexType i, IndexType j, Real_t incrementValue);
-    template<class IndexType> void     eraseElement(IndexType i, IndexType j);
+    template<class IndexType> void   setElement(IndexType i, IndexType j, Real_t newValue);
+    template<class IndexType> void   addElement(IndexType i, IndexType j, Real_t incrementValue);
+    template<class IndexType> void   eraseElement(IndexType i, IndexType j);
 
-    void printDebug(UInt maxRows = 0) const noexcept;
+    void printDebug(UInt maxRows        = 0) const noexcept;
     void checkSymmetry(Real_t threshold = Real_t(1e-8)) const noexcept;
     void printTextFile(const char* fileName);
 
@@ -62,8 +63,7 @@ public:
 // Fixed version of SparseMatrix. This can be significantly faster for matrix-vector
 // multiplies due to better data locality.
 template<class Real_t>
-struct FixedSparseMatrix
-{
+struct FixedSparseMatrix {
     UInt nRows;
 
     // nonzero values row by row
@@ -86,3 +86,5 @@ struct FixedSparseMatrix
     ////////////////////////////////////////////////////////////////////////////////
     static void multiply(const FixedSparseMatrix<Real_t>& matrix, const StdVT<Real_t>& x, StdVT<Real_t>& result);
 };
+//-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+} // end namespace NTCodeBase

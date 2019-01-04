@@ -18,13 +18,11 @@
 #include <LibCommon/ParallelHelpers/Scheduler.h>
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-namespace NeighborSearch
-{
+namespace NTCodeBase::NeighborSearch {
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 template<Int N, class Real_t>
 NeighborSearch<N, Real_t>::NeighborSearch(Real_t r, bool erase_empty_cells) :
-    m_r2(r * r), m_inv_cell_size(static_cast<Real_t>(1.0 / r)), m_erase_empty_cells(erase_empty_cells), m_initialized(false)
-{
+    m_r2(r * r), m_inv_cell_size(static_cast<Real_t>(1.0 / r)), m_erase_empty_cells(erase_empty_cells), m_initialized(false) {
     if(r <= 0.0) {
         std::cerr << "WARNING: Neighborhood search may not be initialized with a zero or negative search radius."
                   << " This may lead to unexpected behavior." << std::endl;
@@ -34,8 +32,7 @@ NeighborSearch<N, Real_t>::NeighborSearch(Real_t r, bool erase_empty_cells) :
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 // Computes index to a world space position x.
 template<Int N, class Real_t>
-HashKey<N> NeighborSearch<N, Real_t>::cell_index(const Real_t* x) const
-{
+HashKey<N> NeighborSearch<N, Real_t>::cell_index(const Real_t* x) const {
     HashKey<N> ret;
     for(Int d = 0; d < N; ++d) {
         Real_t tmp = x[d] - Real_t(SHIFT_POSITION);
@@ -47,8 +44,7 @@ HashKey<N> NeighborSearch<N, Real_t>::cell_index(const Real_t* x) const
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 // Determines Morten value according to z-curve.
 template<Int N, class Real_t>
-uint_fast64_t NeighborSearch<N, Real_t>::z_value(const HashKey<N>& key)
-{
+uint_fast64_t NeighborSearch<N, Real_t>::z_value(const HashKey<N>& key) {
     if constexpr(N == 2) {
         return morton2D_64_encode(static_cast<uint_fast32_t>(static_cast<int64_t>(key.k[0]) - (std::numeric_limits<int>::lowest() + 1)),
                                   static_cast<uint_fast32_t>(static_cast<int64_t>(key.k[1]) - (std::numeric_limits<int>::lowest() + 1)));
@@ -62,16 +58,14 @@ uint_fast64_t NeighborSearch<N, Real_t>::z_value(const HashKey<N>& key)
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 // Determines permutation table for point array.
 template<Int N, class Real_t>
-void NeighborSearch<N, Real_t>::z_sort()
-{
+void NeighborSearch<N, Real_t>::z_sort() {
     for(PointSet<N, Real_t>& d : m_point_sets) {
         d.m_sort_table.resize(d.n_points());
         std::iota(d.m_sort_table.begin(), d.m_sort_table.end(), 0);
 
         //std::sort(d.m_sort_table.begin(), d.m_sort_table.end(),
         tbb::parallel_sort(d.m_sort_table.begin(), d.m_sort_table.end(),
-                           [&](UInt a, UInt b)
-                           {
+                           [&](UInt a, UInt b) {
                                return z_value(cell_index(d.point(a))) < z_value(cell_index(d.point(b)));
                            });
     }
@@ -81,8 +75,7 @@ void NeighborSearch<N, Real_t>::z_sort()
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 // Build hash table and entry array from scratch.
 template<Int N, class Real_t>
-void NeighborSearch<N, Real_t>::init()
-{
+void NeighborSearch<N, Real_t>::init() {
     m_entries.clear();
     m_map.clear();
 
@@ -126,10 +119,9 @@ void NeighborSearch<N, Real_t>::init()
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 template<Int N, class Real_t>
-void NeighborSearch<N, Real_t>::resize_point_set(UInt index, const Real_t* x, UInt size)
-{
+void NeighborSearch<N, Real_t>::resize_point_set(UInt index, const Real_t* x, UInt size) {
     PointSet<N, Real_t>& point_set = m_point_sets[index];
-    UInt                   old_size  = point_set.n_points();
+    UInt                 old_size  = point_set.n_points();
 
     if(!m_initialized) {
         throw NeighborhoodSearchNotInitialized {};
@@ -191,8 +183,7 @@ void NeighborSearch<N, Real_t>::resize_point_set(UInt index, const Real_t* x, UI
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 template<Int N, class Real_t>
-void NeighborSearch<N, Real_t>::update_activation_table()
-{
+void NeighborSearch<N, Real_t>::update_activation_table() {
     if(m_activation_table != m_old_activation_table) {
         for(auto& entry : m_entries) {
             auto& n = entry.n_searching_points;
@@ -209,8 +200,7 @@ void NeighborSearch<N, Real_t>::update_activation_table()
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 template<Int N, class Real_t>
-void NeighborSearch<N, Real_t>::find_neighbors(bool points_changed_)
-{
+void NeighborSearch<N, Real_t>::find_neighbors(bool points_changed_) {
     if(points_changed_) {
         update_point_sets();
     }
@@ -220,8 +210,7 @@ void NeighborSearch<N, Real_t>::find_neighbors(bool points_changed_)
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 template<Int N, class Real_t>
-void NeighborSearch<N, Real_t>::update_point_sets()
-{
+void NeighborSearch<N, Real_t>::update_point_sets() {
     if(!m_initialized) {
         init();
         m_initialized = true;
@@ -253,15 +242,13 @@ void NeighborSearch<N, Real_t>::update_point_sets()
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 template<Int N, class Real_t>
-void NeighborSearch<N, Real_t>::find_neighbors(UInt point_set_id, UInt point_index, StdVT<StdVT_UInt>& neighbors)
-{
+void NeighborSearch<N, Real_t>::find_neighbors(UInt point_set_id, UInt point_index, StdVT<StdVT_UInt>& neighbors) {
     query(point_set_id, point_index, neighbors);
 }
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 template<Int N, class Real_t>
-void NeighborSearch<N, Real_t>::erase_empty_entries(const StdVT_UInt& to_delete)
-{
+void NeighborSearch<N, Real_t>::erase_empty_entries(const StdVT_UInt& to_delete) {
     if(to_delete.empty()) {
         return;
     }
@@ -287,10 +274,9 @@ void NeighborSearch<N, Real_t>::erase_empty_entries(const StdVT_UInt& to_delete)
     std::transform(m_map.begin(), m_map.end(), kvps.begin(), [](std::pair<const HashKey<N>, UInt>& kvp) { return &kvp; });
 
     Scheduler::parallel_for(kvps.size(),
-                            [&](size_t it)
-                            {
+                            [&](size_t it) {
                                 std::pair<const HashKey<N>, UInt>* kvp_ = kvps[it];
-                                auto& kvp                               = *kvp_;
+                                auto& kvp = *kvp_;
 
                                 for(UInt i = 0; i < to_delete.size(); ++i) {
                                     if(kvp.second >= to_delete[i]) {
@@ -303,8 +289,7 @@ void NeighborSearch<N, Real_t>::erase_empty_entries(const StdVT_UInt& to_delete)
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 template<Int N, class Real_t>
-void NeighborSearch<N, Real_t>::update_hash_table(StdVT_UInt& to_delete)
-{
+void NeighborSearch<N, Real_t>::update_hash_table(StdVT_UInt& to_delete) {
     // Indicate points changing inheriting cell.
     for(UInt j = 0; j < m_point_sets.size(); ++j) {
         PointSet<N, Real_t>& d = m_point_sets[j];
@@ -348,8 +333,7 @@ void NeighborSearch<N, Real_t>::update_hash_table(StdVT_UInt& to_delete)
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 template<Int N, class Real_t>
-void NeighborSearch<N, Real_t>::query()
-{
+void NeighborSearch<N, Real_t>::query() {
     if constexpr(N == 2) {
         query2D();
     } else {
@@ -359,8 +343,7 @@ void NeighborSearch<N, Real_t>::query()
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 template<Int N, class Real_t>
-void NeighborSearch<N, Real_t>::query2D()
-{
+void NeighborSearch<N, Real_t>::query2D() {
     if constexpr(N == 2) {
         for(UInt i = 0, iend = static_cast<UInt>(m_point_sets.size()); i < iend; ++i) {
             PointSet<N, Real_t>& d = m_point_sets[i];
@@ -382,11 +365,10 @@ void NeighborSearch<N, Real_t>::query2D()
 
         // Perform neighborhood search.
         Scheduler::parallel_for(kvps.size(),
-                                [&](size_t it)
-                                {
+                                [&](size_t it) {
                                     std::pair<const HashKey<N>, UInt> const* kvp_ = kvps[it];
-                                    auto const& kvp                               = *kvp_;
-                                    HashEntry const& entry                        = m_entries[kvp.second];
+                                    auto const& kvp        = *kvp_;
+                                    HashEntry const& entry = m_entries[kvp.second];
                                     //const HashKey<N>& key                         = kvp.first;
 
                                     if(entry.n_searching_points == 0u) {
@@ -394,10 +376,10 @@ void NeighborSearch<N, Real_t>::query2D()
                                     }
 
                                     for(UInt a = 0; a < entry.n_indices(); ++a) {
-                                        const PointID& va         = entry.indices[a];
+                                        const PointID& va       = entry.indices[a];
                                         PointSet<N, Real_t>& da = m_point_sets[va.point_set_id];
                                         for(UInt b = a + 1; b < entry.n_indices(); ++b) {
-                                            const PointID& vb         = entry.indices[b];
+                                            const PointID& vb       = entry.indices[b];
                                             PointSet<N, Real_t>& db = m_point_sets[vb.point_set_id];
 
                                             if(!m_activation_table.is_active(va.point_set_id, vb.point_set_id) &&
@@ -428,11 +410,10 @@ void NeighborSearch<N, Real_t>::query2D()
         StdVT<ParallelObjects::SpinLock> entry_locks(m_entries.size());
 
         Scheduler::parallel_for(kvps.size(),
-                                [&](size_t it)
-                                {
+                                [&](size_t it) {
                                     std::pair<const HashKey<N>, UInt> const* kvp_ = kvps[it];
-                                    auto const& kvp                               = *kvp_;
-                                    HashEntry const& entry                        = m_entries[kvp.second];
+                                    auto const& kvp        = *kvp_;
+                                    HashEntry const& entry = m_entries[kvp.second];
 
                                     if(entry.n_searching_points == 0u) {
                                         return;
@@ -479,9 +460,9 @@ void NeighborSearch<N, Real_t>::query2D()
                                             for(UInt i = 0; i < entry.n_indices(); ++i) {
                                                 const PointID& va       = entry.indices[i];
                                                 HashEntry const& entry_ = m_entries[it->second];
-                                                UInt n_ind              = entry_.n_indices();
+                                                UInt n_ind = entry_.n_indices();
                                                 for(UInt j = 0; j < n_ind; ++j) {
-                                                    const PointID& vb         = entry_.indices[j];
+                                                    const PointID& vb       = entry_.indices[j];
                                                     PointSet<N, Real_t>& db = m_point_sets[vb.point_set_id];
 
                                                     PointSet<N, Real_t>& da = m_point_sets[va.point_set_id];
@@ -520,8 +501,7 @@ void NeighborSearch<N, Real_t>::query2D()
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 template<Int N, class Real_t>
-void NeighborSearch<N, Real_t>::query3D()
-{
+void NeighborSearch<N, Real_t>::query3D() {
     if constexpr(N == 3) {
         for(UInt i = 0, iend = static_cast<UInt>(m_point_sets.size()); i < iend; ++i) {
             PointSet<N, Real_t>& d = m_point_sets[i];
@@ -544,11 +524,10 @@ void NeighborSearch<N, Real_t>::query3D()
 
         // Perform neighborhood search.
         Scheduler::parallel_for(kvps.size(),
-                                [&](size_t it)
-                                {
+                                [&](size_t it) {
                                     std::pair<const HashKey<N>, UInt> const* kvp_ = kvps[it];
-                                    auto const& kvp                               = *kvp_;
-                                    HashEntry const& entry                        = m_entries[kvp.second];
+                                    auto const& kvp        = *kvp_;
+                                    HashEntry const& entry = m_entries[kvp.second];
                                     //const HashKey<N>& key                         = kvp.first;
 
                                     if(entry.n_searching_points == 0u) {
@@ -556,10 +535,10 @@ void NeighborSearch<N, Real_t>::query3D()
                                     }
 
                                     for(UInt a = 0; a < entry.n_indices(); ++a) {
-                                        const PointID& va         = entry.indices[a];
+                                        const PointID& va       = entry.indices[a];
                                         PointSet<N, Real_t>& da = m_point_sets[va.point_set_id];
                                         for(UInt b = a + 1; b < entry.n_indices(); ++b) {
-                                            const PointID& vb         = entry.indices[b];
+                                            const PointID& vb       = entry.indices[b];
                                             PointSet<N, Real_t>& db = m_point_sets[vb.point_set_id];
 
                                             if(!m_activation_table.is_active(va.point_set_id, vb.point_set_id) &&
@@ -591,11 +570,10 @@ void NeighborSearch<N, Real_t>::query3D()
         StdVT<ParallelObjects::SpinLock> entry_locks(m_entries.size());
 
         Scheduler::parallel_for(kvps.size(),
-                                [&](size_t it)
-                                {
+                                [&](size_t it) {
                                     std::pair<const HashKey<N>, UInt> const* kvp_ = kvps[it];
-                                    auto const& kvp                               = *kvp_;
-                                    HashEntry const& entry                        = m_entries[kvp.second];
+                                    auto const& kvp        = *kvp_;
+                                    HashEntry const& entry = m_entries[kvp.second];
 
                                     if(entry.n_searching_points == 0u) {
                                         return;
@@ -643,9 +621,9 @@ void NeighborSearch<N, Real_t>::query3D()
                                                 for(UInt i = 0; i < entry.n_indices(); ++i) {
                                                     const PointID& va       = entry.indices[i];
                                                     HashEntry const& entry_ = m_entries[it->second];
-                                                    UInt n_ind              = entry_.n_indices();
+                                                    UInt n_ind = entry_.n_indices();
                                                     for(UInt j = 0; j < n_ind; ++j) {
-                                                        const PointID& vb         = entry_.indices[j];
+                                                        const PointID& vb       = entry_.indices[j];
                                                         PointSet<N, Real_t>& db = m_point_sets[vb.point_set_id];
 
                                                         PointSet<N, Real_t>& da = m_point_sets[va.point_set_id];
@@ -686,8 +664,7 @@ void NeighborSearch<N, Real_t>::query3D()
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 template<Int N, class Real_t>
-void NeighborSearch<N, Real_t>::query(UInt point_set_id, UInt point_index, StdVT<StdVT_UInt>& neighbors)
-{
+void NeighborSearch<N, Real_t>::query(UInt point_set_id, UInt point_index, StdVT<StdVT_UInt>& neighbors) {
     if constexpr(N == 2) {
         query2D(point_set_id, point_index, neighbors);
     } else {
@@ -697,8 +674,7 @@ void NeighborSearch<N, Real_t>::query(UInt point_set_id, UInt point_index, StdVT
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 template<Int N, class Real_t>
-void NeighborSearch<N, Real_t>::query2D(UInt point_set_id, UInt point_index, StdVT<StdVT_UInt>& neighbors)
-{
+void NeighborSearch<N, Real_t>::query2D(UInt point_set_id, UInt point_index, StdVT<StdVT_UInt>& neighbors) {
     if constexpr(N == 3) {
         __NT_UNUSED(point_set_id);
         __NT_UNUSED(point_index);
@@ -717,7 +693,7 @@ void NeighborSearch<N, Real_t>::query2D(UInt point_set_id, UInt point_index, Std
         }
 
         const Real_t* xa       = d.point(point_index);
-        HashKey<N>      hash_key = cell_index(xa);
+        HashKey<N>    hash_key = cell_index(xa);
 
         auto                               it    = m_map.find(hash_key);
         std::pair<const HashKey<N>, UInt>& kvp   = *it;
@@ -787,8 +763,7 @@ void NeighborSearch<N, Real_t>::query2D(UInt point_set_id, UInt point_index, Std
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 template<Int N, class Real_t>
-void NeighborSearch<N, Real_t>::query3D(UInt point_set_id, UInt point_index, StdVT<StdVT_UInt>& neighbors)
-{
+void NeighborSearch<N, Real_t>::query3D(UInt point_set_id, UInt point_index, StdVT<StdVT_UInt>& neighbors) {
     if constexpr(N == 2) {
         __NT_UNUSED(point_set_id);
         __NT_UNUSED(point_index);
@@ -807,7 +782,7 @@ void NeighborSearch<N, Real_t>::query3D(UInt point_set_id, UInt point_index, Std
         }
 
         const Real_t* xa       = d.point(point_index);
-        HashKey<N>      hash_key = cell_index(xa);
+        HashKey<N>    hash_key = cell_index(xa);
 
         auto                               it    = m_map.find(hash_key);
         std::pair<const HashKey<N>, UInt>& kvp   = *it;
@@ -884,4 +859,4 @@ void NeighborSearch<N, Real_t>::query3D(UInt point_set_id, UInt point_index, Std
 __NT_INSTANTIATE_CLASS_COMMON_DIMENSIONS_AND_TYPES(NeighborSearch)
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-}   // end namespace NeighborSearch
+} // end namespace NTCodeBase::NeighborSearch

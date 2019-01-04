@@ -23,12 +23,13 @@
 #include <algorithm>
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+namespace NTCodeBase {
+//-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 template<class Real_t>
-class BandMatrix
-{
+class BandMatrix {
 private:
-    StdVT<StdVT<Real_t>> m_Upper;       // upper band
-    StdVT<StdVT<Real_t>> m_Lower;       // lower band
+    StdVT<StdVT<Real_t>> m_Upper; // upper band
+    StdVT<StdVT<Real_t>> m_Lower; // lower band
 public:
     BandMatrix() = default;
     BandMatrix(Int dim, Int n_u, Int n_l) { resize(dim, n_u, n_l); }
@@ -42,7 +43,7 @@ public:
 
     Real_t&       saved_diag(Int i);
     Real_t        saved_diag(Int i) const;
-    void            lu_decompose();
+    void          lu_decompose();
     StdVT<Real_t> r_solve(const StdVT<Real_t>& b) const;
     StdVT<Real_t> l_solve(const StdVT<Real_t>& b) const;
     StdVT<Real_t> lu_solve(const StdVT<Real_t>& b, bool is_lu_decomposed = false);
@@ -50,11 +51,9 @@ public:
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 template<class Real_t>
-class CubicSpline
-{
+class CubicSpline {
 public:
-    enum class BDType
-    {
+    enum class BDType {
         FirstOrder  = 1,
         SecondOrder = 2
     };
@@ -62,22 +61,22 @@ public:
     CubicSpline() = default;
 
     // optional, but if called it has to come be before setPoints()
-    void     setBoundary(BDType left, Real_t leftValue, BDType right, Real_t rightValue, bool bLinearExtrapolation = false);
-    void     setPoints(const StdVT<Real_t>& X, const StdVT<Real_t>& Y, bool bCubicSpline = true);
+    void   setBoundary(BDType left, Real_t leftValue, BDType right, Real_t rightValue, bool bLinearExtrapolation = false);
+    void   setPoints(const StdVT<Real_t>& X, const StdVT<Real_t>& Y, bool bCubicSpline = true);
     Real_t operator()(Real_t x) const;
     Real_t deriv(Int order, Real_t x) const;
 
 private:
-    StdVT<Real_t> m_X, m_Y;               // x,y coordinates of poInts
-    StdVT<Real_t> m_a, m_b, m_c;          // CubicSpline coefficients
-    Real_t        m_b0, m_c0;             // for left extrapolation
+    StdVT<Real_t> m_X, m_Y;      // x,y coordinates of poInts
+    StdVT<Real_t> m_a, m_b, m_c; // CubicSpline coefficients
+    Real_t        m_b0, m_c0;    // for left extrapolation
     // f(x) = a*(x-x_i)^3 + b*(x-x_i)^2 + c*(x-x_i) + y_i
 
-    BDType   m_Left                 = BDType::SecondOrder;
-    BDType   m_Right                = BDType::SecondOrder;
+    BDType m_Left                 = BDType::SecondOrder;
+    BDType m_Right                = BDType::SecondOrder;
     Real_t m_LeftValue            = Real_t(0);
     Real_t m_RightValue           = Real_t(0);
-    bool     m_bLinearExtrapolation = false;
+    bool   m_bLinearExtrapolation = false;
 };
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
@@ -86,8 +85,7 @@ private:
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 template<class Real_t>
-void BandMatrix<Real_t>::resize(Int dim, Int n_u, Int n_l)
-{
+void BandMatrix<Real_t>::resize(Int dim, Int n_u, Int n_l) {
     assert(dim > 0);
     assert(n_u >= 0);
     assert(n_l >= 0);
@@ -105,9 +103,8 @@ void BandMatrix<Real_t>::resize(Int dim, Int n_u, Int n_l)
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 template<class Real_t>
-Real_t& BandMatrix<Real_t>::operator()(Int i, Int j)
-{
-    Int k = j - i;               // what band is the entry
+Real_t& BandMatrix<Real_t>::operator()(Int i, Int j) {
+    Int k = j - i; // what band is the entry
     assert((i >= 0) && (i < dim()) && (j >= 0) && (j < dim()));
     assert((-nLower() <= k) && (k <= nUpper()));
     // k=0 -> diogonal, k<0 lower left part, k>0 upper right part
@@ -119,9 +116,8 @@ Real_t& BandMatrix<Real_t>::operator()(Int i, Int j)
 }
 
 template<class Real_t>
-Real_t BandMatrix<Real_t>::operator()(Int i, Int j) const
-{
-    Int k = j - i;               // what band is the entry
+Real_t BandMatrix<Real_t>::operator()(Int i, Int j) const {
+    Int k = j - i; // what band is the entry
     assert((i >= 0) && (i < dim()) && (j >= 0) && (j < dim()));
     assert((-nLower() <= k) && (k <= nUpper()));
     // k=0 -> diogonal, k<0 lower left part, k>0 upper right part
@@ -135,15 +131,13 @@ Real_t BandMatrix<Real_t>::operator()(Int i, Int j) const
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 // second diag (used in LU decomposition), saved in m_lower
 template<class Real_t>
-Real_t BandMatrix<Real_t>::saved_diag(Int i) const
-{
+Real_t BandMatrix<Real_t>::saved_diag(Int i) const {
     assert((i >= 0) && (i < dim()));
     return m_Lower[0][i];
 }
 
 template<class Real_t>
-Real_t& BandMatrix<Real_t>::saved_diag(Int i)
-{
+Real_t& BandMatrix<Real_t>::saved_diag(Int i) {
     assert((i >= 0) && (i < dim()));
     return m_Lower[0][i];
 }
@@ -151,10 +145,9 @@ Real_t& BandMatrix<Real_t>::saved_diag(Int i)
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 // LR-Decomposition of a band matrix
 template<class Real_t>
-void BandMatrix<Real_t>::lu_decompose()
-{
-    Int      i_max, j_max;
-    Int      j_min;
+void BandMatrix<Real_t>::lu_decompose() {
+    Int    i_max, j_max;
+    Int    j_min;
     Real_t x;
 
     // preconditioning
@@ -167,16 +160,16 @@ void BandMatrix<Real_t>::lu_decompose()
         for(Int j = j_min; j <= j_max; j++) {
             this->operator()(i, j) *= saved_diag(i);
         }
-        this->operator()(i, i) = Real_t(1.0);                          // prevents rounding errors
+        this->operator()(i, i) = Real_t(1.0); // prevents rounding errors
     }
 
     // Gauss LR-Decomposition
     for(Int k = 0; k < dim(); k++) {
-        i_max = MathHelpers::min(dim() - 1, k + nLower());                  // nLower not a mistake!
+        i_max = MathHelpers::min(dim() - 1, k + nLower()); // nLower not a mistake!
         for(Int i = k + 1; i <= i_max; ++i) {
             assert(this->operator()(k, k) != Real_t(0));
             x = -this->operator()(i, k) / this->operator()(k, k);
-            this->operator()(i, k) = -x;                                                 // assembly part of L
+            this->operator()(i, k) = -x; // assembly part of L
             j_max = MathHelpers::min(dim() - 1, k + nUpper());
             for(Int j = k + 1; j <= j_max; j++) {
                 // assembly part of R
@@ -189,11 +182,10 @@ void BandMatrix<Real_t>::lu_decompose()
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 // solves Ly=b
 template<class Real_t>
-StdVT<Real_t> BandMatrix<Real_t>::l_solve(const StdVT<Real_t>& b) const
-{
+StdVT<Real_t> BandMatrix<Real_t>::l_solve(const StdVT<Real_t>& b) const {
     assert(dim() == (Int)b.size());
     StdVT<Real_t> x(dim());
-    Int             j_start;
+    Int           j_start;
     Real_t        sum;
     for(Int i = 0; i < dim(); ++i) {
         sum     = 0;
@@ -209,11 +201,10 @@ StdVT<Real_t> BandMatrix<Real_t>::l_solve(const StdVT<Real_t>& b) const
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 // solves Rx=y
 template<class Real_t>
-StdVT<Real_t> BandMatrix<Real_t>::r_solve(const StdVT<Real_t>& b) const
-{
+StdVT<Real_t> BandMatrix<Real_t>::r_solve(const StdVT<Real_t>& b) const {
     assert(dim() == (Int)b.size());
     StdVT<Real_t> x(dim());
-    Int             j_stop;
+    Int           j_stop;
     Real_t        sum;
     for(Int i = dim() - 1; i >= 0; i--) {
         sum    = 0;
@@ -228,8 +219,7 @@ StdVT<Real_t> BandMatrix<Real_t>::r_solve(const StdVT<Real_t>& b) const
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 template<class Real_t>
-StdVT<Real_t> BandMatrix<Real_t>::lu_solve(const StdVT<Real_t>& b, bool is_lu_decomposed)
-{
+StdVT<Real_t> BandMatrix<Real_t>::lu_solve(const StdVT<Real_t>& b, bool is_lu_decomposed) {
     assert(dim() == (Int)b.size());
     StdVT<Real_t> x, y;
     if(is_lu_decomposed == false) {
@@ -242,9 +232,8 @@ StdVT<Real_t> BandMatrix<Real_t>::lu_solve(const StdVT<Real_t>& b, bool is_lu_de
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 template<class Real_t>
-void CubicSpline<Real_t>::setBoundary(BDType left, Real_t leftValue, BDType right, Real_t rightValue, bool bLinearExtrapolation /*= false*/)
-{
-    assert(m_X.size() == 0);                  // setPoints() must not have happened yet
+void CubicSpline<Real_t>::setBoundary(BDType left, Real_t leftValue, BDType right, Real_t rightValue, bool bLinearExtrapolation /*= false*/) {
+    assert(m_X.size() == 0); // setPoints() must not have happened yet
     m_Left                 = left;
     m_Right                = right;
     m_LeftValue            = leftValue;
@@ -254,8 +243,7 @@ void CubicSpline<Real_t>::setBoundary(BDType left, Real_t leftValue, BDType righ
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 template<class Real_t>
-void CubicSpline<Real_t>::setPoints(const StdVT<Real_t>& X, const StdVT<Real_t>& Y, bool bCubicSpline /*= true*/)
-{
+void CubicSpline<Real_t>::setPoints(const StdVT<Real_t>& X, const StdVT<Real_t>& Y, bool bCubicSpline /*= true*/) {
     assert(X.size() == Y.size());
     assert(X.size() > 2);
     m_X = X;
@@ -339,7 +327,7 @@ void CubicSpline<Real_t>::setPoints(const StdVT<Real_t>& X, const StdVT<Real_t>&
     Real_t h = X[n - 1] - X[n - 2];
     // m_b[n-1] is determined by the boundary condition
     m_a[n - 1] = Real_t(0);
-    m_c[n - 1] = Real_t(3.0) * m_a[n - 2] * h * h + Real_t(2.0) * m_b[n - 2] * h + m_c[n - 2];           // = f'_{n-2}(x_{n-1})
+    m_c[n - 1] = Real_t(3.0) * m_a[n - 2] * h * h + Real_t(2.0) * m_b[n - 2] * h + m_c[n - 2]; // = f'_{n-2}(x_{n-1})
     if(m_bLinearExtrapolation == true) {
         m_b[n - 1] = Real_t(0);
     }
@@ -347,8 +335,7 @@ void CubicSpline<Real_t>::setPoints(const StdVT<Real_t>& X, const StdVT<Real_t>&
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 template<class Real_t>
-Real_t CubicSpline<Real_t>::operator()(Real_t x) const
-{
+Real_t CubicSpline<Real_t>::operator()(Real_t x) const {
     size_t n = m_X.size();
     // find the closest poInt m_X[idx] < x, idx=0 even if x<m_X[0]
     auto it  = std::lower_bound(m_X.begin(), m_X.end(), x);
@@ -371,8 +358,7 @@ Real_t CubicSpline<Real_t>::operator()(Real_t x) const
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 template<class Real_t>
-Real_t CubicSpline<Real_t>::deriv(Int order, Real_t x) const
-{
+Real_t CubicSpline<Real_t>::deriv(Int order, Real_t x) const {
     assert(order > 0);
 
     size_t n = m_X.size();
@@ -427,3 +413,6 @@ Real_t CubicSpline<Real_t>::deriv(Int order, Real_t x) const
     }
     return Interpol;
 }
+
+//-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+} // end namespace NTCodeBase

@@ -13,13 +13,13 @@
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 
 #pragma once
-
 #include <LibCommon/CommonSetup.h>
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+namespace NTCodeBase {
+//-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 // This class need to be a template, as it can be used in simulation(double) and rendering(float)
-class MeshLoader
-{
+class MeshLoader {
 public:
     MeshLoader() { clearData(); }
     MeshLoader(String meshFile) { loadMesh(meshFile); }
@@ -54,8 +54,7 @@ public:
     void swapYZ() { swapCoordinates(1, 2); }
     void swapXZ() { swapCoordinates(0, 2); }
 private:
-    enum class MeshFileType
-    {
+    enum class MeshFileType {
         OBJFile,
         UnsupportedFileType
     };
@@ -82,3 +81,5 @@ private:
     StdVT_Float m_FaceVertexColors;
     StdVT_Float m_FaceVertexTexCoord2D;
 };
+//-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+} // end namespace NTCodeBase

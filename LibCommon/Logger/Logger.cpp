@@ -24,6 +24,8 @@
 #include <csignal>
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+namespace NTCodeBase {
+//-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 SharedPtr<Logger> Logger::createLogger(const String& loggerName, const String& rootPath, bool bLog2Console /*= true*/, bool bLog2File /*= false*/,
                                        LogLevel consoleLogLevel /*= LogLevel::trace*/, LogLevel fileLogLevel /*= LogLevel::trace*/) {
     auto logger = std::make_shared<MakeSharedEnabler>(loggerName, rootPath, bLog2Console, bLog2File, consoleLogLevel, fileLogLevel);
@@ -273,3 +275,6 @@ String Logger::getTotalRunTime() {
 
     return strBuilder.str();
 }
+
+//-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+} // end namespace NTCodeBase

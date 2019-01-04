@@ -14,6 +14,8 @@
 
 #pragma once
 
+#include <json.hpp>;
+
 #include <limits>
 #include <vector>
 #include <map>
@@ -22,6 +24,8 @@
 #include <string>
 #include <memory>
 
+//-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+namespace NTCodeBase {
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 // Basic types
 using Int8  = int8_t;
@@ -87,43 +91,35 @@ using StdVT_String = StdVT<String>;
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 // Conversion operators
-float constexpr operator"" _f(long double x)
-{
+float constexpr operator"" _f(long double x) {
     return static_cast<float>(x);
 }
 
-float constexpr operator"" _f(unsigned long long int x)
-{
+float constexpr operator"" _f(unsigned long long int x) {
     return static_cast<float>(x);
 }
 
-double constexpr operator"" _d(long double x)
-{
+double constexpr operator"" _d(long double x) {
     return static_cast<double>(x);
 }
 
-double constexpr operator"" _d(unsigned long long int x)
-{
+double constexpr operator"" _d(unsigned long long int x) {
     return static_cast<double>(x);
 }
 
-Int32 constexpr operator"" _int(unsigned long long int x)
-{
+Int32 constexpr operator"" _int(unsigned long long int x) {
     return static_cast<Int32>(x);
 }
 
-UInt32 constexpr operator"" _uint(unsigned long long int x)
-{
+UInt32 constexpr operator"" _uint(unsigned long long int x) {
     return static_cast<UInt32>(x);
 }
 
-UInt64 constexpr operator"" _uint64(unsigned long long int x)
-{
+UInt64 constexpr operator"" _uint64(unsigned long long int x) {
     return static_cast<UInt64>(x);
 }
 
-std::size_t constexpr operator"" _sz(unsigned long long int x)
-{
+std::size_t constexpr operator"" _sz(unsigned long long int x) {
     return static_cast<std::size_t>(x);
 }
 
@@ -134,3 +130,10 @@ std::size_t constexpr operator"" _sz(unsigned long long int x)
 template<class T> constexpr auto MEpsilon() { return std::numeric_limits<T>::epsilon(); }
 template<class T> constexpr auto Tiny() { return std::numeric_limits<T>::min(); }
 template<class T> constexpr auto Huge() { return std::numeric_limits<T>::max(); }
+
+//-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+// json type, as it's very popular nowaday
+using JParams = nlohmann::json;
+
+//-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+} // end namespace NTCodeBase

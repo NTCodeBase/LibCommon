@@ -14,6 +14,8 @@
 
 #pragma once
 
+#include <LibCommon/CommonSetup.h>
+
 #include <cstdlib>
 #include <cstdio>
 #include <fstream>
@@ -21,14 +23,11 @@
 #include <fstream>
 #include <vector>
 #include <future>
-
 #include <filesystem>
-namespace fs = std::filesystem;
-
-#include <LibCommon/CommonSetup.h>
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-namespace FileHelpers {
+namespace NTCodeBase::FileHelpers {
+namespace fs = std::filesystem;
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 inline void createFolder(const char* folderName) {
     fs::create_directories(folderName);
@@ -362,4 +361,4 @@ inline std::future<void> writeBinaryFileAsync(const StdVT<T>& dvec, const String
 }
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-} // end namespace FileHelpers
+} // end namespace NTCodeBase::FileHelpers

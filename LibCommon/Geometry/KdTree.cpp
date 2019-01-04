@@ -12,9 +12,11 @@
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 
+//-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+namespace NTCodeBase {
+//-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 #if 0
-void KdTree::buildTree(const std::shared_ptr<KDNode>& treeNode)
-{
+void KdTree::buildTree(const std::shared_ptr<KDNode>& treeNode) {
     if(treeNode->isLeaf) {
         UInt nodeCount = treeNode->count;
 
@@ -58,8 +60,7 @@ void KdTree::buildTree(const std::shared_ptr<KDNode>& treeNode)
 }
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-void KdTree::printTree(const std::shared_ptr<KDNode>& treeNode)
-{
+void KdTree::printTree(const std::shared_ptr<KDNode>& treeNode) {
     if(treeNode->isLeaf && treeNode->count >= 1) {
         auto boxMin = treeNode->boxMin;
         auto boxMax = treeNode->boxMax;
@@ -92,16 +93,14 @@ void KdTree::printTree(const std::shared_ptr<KDNode>& treeNode)
 }
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-void KdTree::getNeighborList(const Point& target, const std::shared_ptr<KDNode>& treeNode, Real radius, StdVT_UInt& result)
-{
+void KdTree::getNeighborList(const Point& target, const std::shared_ptr<KDNode>& treeNode, Real radius, StdVT_UInt& result) {
     result.resize(0);
     findNeighbors(target, treeNode, radius, result);
     tbb::parallel_sort(result.begin(), result.end());
 }
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-void KdTree::findNeighbors(const Point& target, const std::shared_ptr<KDNode>& treeNode, Real radius, StdVT_UInt& result)
-{
+void KdTree::findNeighbors(const Point& target, const std::shared_ptr<KDNode>& treeNode, Real radius, StdVT_UInt& result) {
     if(fmax(SignDistanceField::distanceToBox(target.position, treeNode->boxMin, treeNode->boxMax), 0) > radius) {
         return;
     }
@@ -123,8 +122,7 @@ void KdTree::findNeighbors(const Point& target, const std::shared_ptr<KDNode>& t
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 
-Real KdTree::getMedian(Point* points, UInt size, UInt axis)
-{
+Real KdTree::getMedian(Point* points, UInt size, UInt axis) {
     UInt k = (size & 1) ? size / 2 : size / 2 - 1;
 
     tbb::parallel_sort(points, points + size, [axis](const Point& a, const Point& b) { return a.position[axis] < b.position[axis]; });
@@ -133,3 +131,5 @@ Real KdTree::getMedian(Point* points, UInt size, UInt axis)
 }
 
 #endif
+//-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+} // end namespace NTCodeBase

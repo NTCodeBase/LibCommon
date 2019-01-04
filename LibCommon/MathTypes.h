@@ -30,6 +30,8 @@
 #include <glm/gtx/component_wise.hpp>
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+namespace NTCodeBase {
+//-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 template<class Type> using Quat   = glm::qua<Type>;
 template<class Type> using Vec1   = glm::vec<1, Type>;
 template<class Type> using Vec2   = glm::vec<2, Type>;
@@ -131,3 +133,5 @@ using StdVT_Mat4x4f = StdVT<Mat4x4f>;
 using StdVT_Mat2x2d = StdVT<Mat2x2d>;
 using StdVT_Mat3x3d = StdVT<Mat3x3d>;
 using StdVT_Mat4x4d = StdVT<Mat4x4d>;
+//-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+} // end namespace NTCodeBase

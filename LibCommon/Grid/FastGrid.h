@@ -20,14 +20,15 @@
 #include <LibCommon/Math/FastVec3.h>
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+namespace NTCodeBase {
+//-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+//-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 template<class Real_t>
-class FastGrid3
-{
+class FastGrid3 {
 public:
     inline FastGrid3() = default;
     ////////////////////////////////////////////////////////////////////////////////
-    inline void setGrid(const Vec3<Real_t>& bMin, const Vec3<Real_t>& bMax, Real_t cellSize, Real_t clampEdge = 0)
-    {
+    inline void setGrid(const Vec3<Real_t>& bMin, const Vec3<Real_t>& bMax, Real_t cellSize, Real_t clampEdge = 0) {
         m_BMin        = bMin;
         m_BMax        = bMax;
         m_ClampedBMin = bMin + clampEdge + MEpsilon<Real_t>();
@@ -82,3 +83,5 @@ protected:
     Real_t           m_CellSizeSqr  = Real_t(1);
     Real_t           m_CellVolume   = Real_t(1);
 };
+//-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+} // end namespace NTCodeBase

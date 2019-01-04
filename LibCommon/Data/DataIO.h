@@ -28,8 +28,9 @@
 #include <sstream>
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-class DataIO
-{
+namespace NTCodeBase {
+//-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+class DataIO {
 public:
     DataIO(const String& dataRootFolder,
            const String& dataFolder,
@@ -53,7 +54,7 @@ public:
 
     ////////////////////////////////////////////////////////////////////////////////
     void waitForBuffer() { if(m_WriteFutureObj.valid()) { m_WriteFutureObj.wait(); } }
-    void clearBuffer() { waitForBuffer();  m_DataBuffer.clearBuffer(); }
+    void clearBuffer() { waitForBuffer(); m_DataBuffer.clearBuffer(); }
     void flushBuffer(Int fileID);
     void flushBufferAsync(Int fileID);
 
@@ -77,8 +78,7 @@ private:
 // Implementation
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-inline Int DataIO::getLatestFileIndex(Int maxIndex)
-{
+inline Int DataIO::getLatestFileIndex(Int maxIndex) {
     for(Int index = maxIndex; index >= 1; --index) {
         if(existedFileIndex(index)) {
             return index;
@@ -89,33 +89,28 @@ inline Int DataIO::getLatestFileIndex(Int maxIndex)
 }
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-inline void DataIO::flushBuffer(Int fileID)
-{
+inline void DataIO::flushBuffer(Int fileID) {
     createOutputFolders();
     FileHelpers::writeFile(m_DataBuffer.data(), m_DataBuffer.size(), getFilePath(fileID));
 }
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-inline void DataIO::flushBufferAsync(Int fileID)
-{
-    m_WriteFutureObj = std::async(std::launch::async, [&, fileID]()
-                                  {
+inline void DataIO::flushBufferAsync(Int fileID) {
+    m_WriteFutureObj = std::async(std::launch::async, [&, fileID]() {
                                       createOutputFolders();
                                       FileHelpers::writeFile(m_DataBuffer.data(), m_DataBuffer.size(), getFilePath(fileID));
                                   });
 }
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-inline String DataIO::getFilePath(Int fileID)
-{
+inline String DataIO::getFilePath(Int fileID) {
     char filePath[1024];
     __NT_SPRINT(filePath, "%s/%s/%s.%04d.%s", m_DataFolder.c_str(), m_DataSubFolder.c_str(), m_FileName.c_str(), fileID, m_FileExtension.c_str());
     return String(filePath);
 }
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-inline void DataIO::createOutputFolders()
-{
+inline void DataIO::createOutputFolders() {
     if(m_bOutputFolderCreated) {
         return;
     }
@@ -124,3 +119,6 @@ inline void DataIO::createOutputFolders()
     FileHelpers::createFolder(outputFolder);
     m_bOutputFolderCreated = true;
 }
+
+//-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+} // end namespace NTCodeBase

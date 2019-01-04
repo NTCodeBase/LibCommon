@@ -18,8 +18,3 @@
 #include <LibCommon/MathTypes.h>
 #include <LibCommon/CommonForward.h>
 #include <LibCommon/CommonMacros.h>
-
-//-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-// more advanced types
-#include <json.hpp>
-using JParams = nlohmann::json;

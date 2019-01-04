@@ -23,14 +23,15 @@
 #include <LibCommon/ParallelHelpers/Scheduler.h>
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+namespace NTCodeBase {
+//-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 // Dynamic compressed sparse row matrix
 //
 template<class MatrixType>
-class BlockSparseMatrix
-{
+class BlockSparseMatrix {
 private:
-    using Real_t   = typename MatrixType::value_type;
+    using Real_t     = typename MatrixType::value_type;
     using VectorType = typename MatrixType::col_type;
 
     UInt m_Size;
@@ -72,10 +73,9 @@ public:
 // Fixed version of SparseMatrix. This can be significantly faster for matrix-vector
 // multiplies due to better data locality.
 template<class MatrixType>
-class FixedBlockSparseMatrix
-{
+class FixedBlockSparseMatrix {
 private:
-    using Real_t   = typename MatrixType::value_type;
+    using Real_t     = typename MatrixType::value_type;
     using VectorType = typename MatrixType::col_type;
 
     UInt m_Size;
@@ -104,3 +104,5 @@ public:
     ////////////////////////////////////////////////////////////////////////////////
     static void multiply(const FixedBlockSparseMatrix<MatrixType>& matrix, const StdVT<VectorType>& x, StdVT<VectorType>& result);
 };
+//-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+} // end namespace NTCodeBase

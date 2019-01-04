@@ -16,27 +16,26 @@
 #include <LibCommon/Utils/Formatters.h>
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+namespace NTCodeBase {
+//-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 // Dynamic compressed sparse row matrix.
 //
 template<class Real_t>
-void SparseMatrix<Real_t>::reserve(UInt size)
-{
+void SparseMatrix<Real_t>::reserve(UInt size) {
     colIndex.reserve(size);
     colValue.reserve(size);
 }
 
 template<class Real_t>
-void SparseMatrix<Real_t>::resize(UInt newSize)
-{
+void SparseMatrix<Real_t>::resize(UInt newSize) {
     nRows = newSize;
     colIndex.resize(nRows);
     colValue.resize(nRows);
 }
 
 template<class Real_t>
-void SparseMatrix<Real_t>::clear()
-{
+void SparseMatrix<Real_t>::clear() {
     for(UInt i = 0; i < nRows; ++i) {
         colIndex[i].resize(0);
         colValue[i].resize(0);
@@ -46,8 +45,7 @@ void SparseMatrix<Real_t>::clear()
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 template<class Real_t>
 template<class IndexType>
-Real_t SparseMatrix<Real_t>::operator()(IndexType i, IndexType j) const
-{
+Real_t SparseMatrix<Real_t>::operator()(IndexType i, IndexType j) const {
     assert(static_cast<UInt>(i) < nRows && static_cast<UInt>(j) < nRows);
     UInt k = 0;
     if(STLHelpers::Sorted::contain(colIndex[i], static_cast<UInt>(j), k)) {
@@ -60,8 +58,7 @@ Real_t SparseMatrix<Real_t>::operator()(IndexType i, IndexType j) const
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 template<class Real_t>
 template<class IndexType>
-void SparseMatrix<Real_t>::setElement(IndexType i, IndexType j, Real_t newValue)
-{
+void SparseMatrix<Real_t>::setElement(IndexType i, IndexType j, Real_t newValue) {
     assert(static_cast<UInt>(i) < nRows && static_cast<UInt>(j) < nRows);
     UInt k = 0;
     if(STLHelpers::Sorted::contain(colIndex[i], static_cast<UInt>(j), k)) {
@@ -74,8 +71,7 @@ void SparseMatrix<Real_t>::setElement(IndexType i, IndexType j, Real_t newValue)
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 template<class Real_t>
 template<class IndexType>
-void SparseMatrix<Real_t>::addElement(IndexType i, IndexType j, Real_t incrementValue)
-{
+void SparseMatrix<Real_t>::addElement(IndexType i, IndexType j, Real_t incrementValue) {
     assert(static_cast<UInt>(i) < nRows && static_cast<UInt>(j) < nRows);
     UInt k = 0;
     if(STLHelpers::Sorted::contain(colIndex[i], static_cast<UInt>(j), k)) {
@@ -88,8 +84,7 @@ void SparseMatrix<Real_t>::addElement(IndexType i, IndexType j, Real_t increment
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 template<class Real_t>
 template<class IndexType>
-void SparseMatrix<Real_t>::eraseElement(IndexType i, IndexType j)
-{
+void SparseMatrix<Real_t>::eraseElement(IndexType i, IndexType j) {
     assert(static_cast<UInt>(i) < nRows && static_cast<UInt>(j) < nRows);
     UInt k = 0;
     if(STLHelpers::Sorted::contain(colIndex[i], static_cast<UInt>(j), k)) {
@@ -100,8 +95,7 @@ void SparseMatrix<Real_t>::eraseElement(IndexType i, IndexType j)
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 template<class Real_t>
-void SparseMatrix<Real_t>::printDebug(UInt maxRows /*= 0*/) const noexcept
-{
+void SparseMatrix<Real_t>::printDebug(UInt maxRows /*= 0*/) const noexcept{
     if(maxRows == 0) {
         maxRows = nRows;
     }
@@ -125,15 +119,13 @@ void SparseMatrix<Real_t>::printDebug(UInt maxRows /*= 0*/) const noexcept
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 template<class Real_t>
-void SparseMatrix<Real_t>::checkSymmetry(Real_t threshold /* = Real_t(1e-8) */) const noexcept
-{
+void SparseMatrix<Real_t>::checkSymmetry(Real_t threshold /* = Real_t(1e-8) */) const noexcept{
     bool check = true;
     std::cout << "============================== Checking Matrix Symmetry... ==============================" << std::endl;
     std::cout << "Matrix size: " << nRows << std::endl;
 
     Scheduler::parallel_for(nRows,
-                            [&](UInt i)
-                            {
+                            [&](UInt i) {
                                 for(UInt j = i + 1; j < nRows; ++j) {
                                     if(STLHelpers::Sorted::contain(colIndex[i], j)) {
                                         auto err = std::abs((*this)(i, j) - (*this)(j, i));
@@ -159,8 +151,7 @@ void SparseMatrix<Real_t>::checkSymmetry(Real_t threshold /* = Real_t(1e-8) */) 
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 template<class Real_t>
-void SparseMatrix<Real_t>::printTextFile(const char* fileName)
-{
+void SparseMatrix<Real_t>::printTextFile(const char* fileName) {
     StdVT<String> matContent;
 
     for(UInt i = 0; i < nRows; ++i) {
@@ -185,8 +176,7 @@ void SparseMatrix<Real_t>::printTextFile(const char* fileName)
 // Fixed version of SparseMatrix
 //
 template<class Real_t>
-void FixedSparseMatrix<Real_t>::constructFromSparseMatrix(const SparseMatrix<Real_t>& matrix)
-{
+void FixedSparseMatrix<Real_t>::constructFromSparseMatrix(const SparseMatrix<Real_t>& matrix) {
     resize(matrix.nRows);
     rowStart[0] = 0;
     for(UInt i = 0; i < nRows; ++i) {
@@ -199,8 +189,7 @@ void FixedSparseMatrix<Real_t>::constructFromSparseMatrix(const SparseMatrix<Rea
     colValue.resize(rowStart[nRows] + 1);
 
     Scheduler::parallel_for(matrix.nRows,
-                            [&](UInt i)
-                            {
+                            [&](UInt i) {
                                 memcpy(&colIndex[rowStart[i]], matrix.colIndex[i].data(), matrix.colIndex[i].size() * sizeof(UInt));
                                 memcpy(&colValue[rowStart[i]], matrix.colValue[i].data(), matrix.colValue[i].size() * sizeof(Real_t));
                             });
@@ -209,13 +198,11 @@ void FixedSparseMatrix<Real_t>::constructFromSparseMatrix(const SparseMatrix<Rea
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 // perform result=matrix*x
 template<class Real_t>
-void FixedSparseMatrix<Real_t>::multiply(const FixedSparseMatrix<Real_t>& matrix, const StdVT<Real_t>& x, StdVT<Real_t>& result)
-{
+void FixedSparseMatrix<Real_t>::multiply(const FixedSparseMatrix<Real_t>& matrix, const StdVT<Real_t>& x, StdVT<Real_t>& result) {
     assert(matrix.nRows == static_cast<UInt>(x.size()));
     result.resize(matrix.nRows);
     Scheduler::parallel_for(matrix.nRows,
-                            [&](UInt i)
-                            {
+                            [&](UInt i) {
                                 Real_t tmpResult = 0;
                                 for(UInt j = matrix.rowStart[i], jEnd = matrix.rowStart[i + 1]; j < jEnd; ++j) {
                                     tmpResult += matrix.colValue[j] * x[matrix.colIndex[j]];
@@ -226,7 +213,7 @@ void FixedSparseMatrix<Real_t>::multiply(const FixedSparseMatrix<Real_t>& matrix
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-#define __BNN_INSTANTIATE_SPARSE_MATRIX_FUNCS(IntType, Real_t)                                              \
+#define __BNN_INSTANTIATE_SPARSE_MATRIX_FUNCS(IntType, Real_t)                                            \
     template Real_t SparseMatrix<Real_t >::operator()(IntType i, IntType j) const;                        \
     template void SparseMatrix<Real_t>::setElement<IntType>(IntType i, IntType j, Real_t newValue);       \
     template void SparseMatrix<Real_t>::addElement<IntType>(IntType i, IntType j, Real_t incrementValue); \
@@ -246,3 +233,4 @@ __NT_INSTANTIATE_STRUCT_COMMON_TYPES(SparseMatrix)
 __NT_INSTANTIATE_STRUCT_COMMON_TYPES(FixedSparseMatrix)
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+} // end namespace NTCodeBase

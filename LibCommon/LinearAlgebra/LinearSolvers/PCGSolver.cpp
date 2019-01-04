@@ -15,9 +15,10 @@
 #include <LibCommon/LinearAlgebra/LinearSolvers/PCGSolver.h>
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+namespace NTCodeBase {
+//-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 template<class Real_t>
-void SparseColumnLowerFactor<Real_t>::clear(void)
-{
+void SparseColumnLowerFactor<Real_t>::clear(void) {
     nRows = 0;
     invDiag.clear();
     colValue.clear();
@@ -28,16 +29,14 @@ void SparseColumnLowerFactor<Real_t>::clear(void)
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 template<class Real_t>
-void SparseColumnLowerFactor<Real_t>::reserve(UInt size)
-{
+void SparseColumnLowerFactor<Real_t>::reserve(UInt size) {
     invDiag.reserve(size);
     aDiag.reserve(size);
     colStart.reserve(size + 1);
 }
 
 template<class Real_t>
-void SparseColumnLowerFactor<Real_t>::resize(UInt newSize)
-{
+void SparseColumnLowerFactor<Real_t>::resize(UInt newSize) {
     nRows = newSize;
     invDiag.resize(nRows);
     aDiag.resize(nRows);
@@ -50,8 +49,7 @@ void SparseColumnLowerFactor<Real_t>::resize(UInt newSize)
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 template<class Real_t>
-void PCGSolver<Real_t>::setSolverParameters(Real_t tolerancem_ICCPrecond, int maxIterations, Real_t MICCL0Param /*= 0.97*/, Real_t minDiagonalRatio /*= 0.25*/)
-{
+void PCGSolver<Real_t>::setSolverParameters(Real_t tolerancem_ICCPrecond, int maxIterations, Real_t MICCL0Param /*= 0.97*/, Real_t minDiagonalRatio /*= 0.25*/) {
     m_ToleranceFactor  = fmax(tolerancem_ICCPrecond, Real_t(1e-30));
     m_MaxIterations    = maxIterations;
     m_MICCL0Param      = MICCL0Param;
@@ -60,8 +58,7 @@ void PCGSolver<Real_t>::setSolverParameters(Real_t tolerancem_ICCPrecond, int ma
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 template<class Real_t>
-void PCGSolver<Real_t>::reserve(UInt size)
-{
+void PCGSolver<Real_t>::reserve(UInt size) {
     s.reserve(size);
     z.reserve(size);
     r.reserve(size);
@@ -71,8 +68,7 @@ void PCGSolver<Real_t>::reserve(UInt size)
 }
 
 template<class Real_t>
-void PCGSolver<Real_t>::resize(UInt size)
-{
+void PCGSolver<Real_t>::resize(UInt size) {
     s.resize(size);
     z.resize(size);
     r.resize(size);
@@ -80,8 +76,7 @@ void PCGSolver<Real_t>::resize(UInt size)
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 template<class Real_t>
-bool PCGSolver<Real_t>::solve(const SparseMatrix<Real_t>& matrix, const StdVT<Real_t>& rhs, StdVT<Real_t>& result)
-{
+bool PCGSolver<Real_t>::solve(const SparseMatrix<Real_t>& matrix, const StdVT<Real_t>& rhs, StdVT<Real_t>& result) {
     resize(matrix.nRows);
 
     result.resize(matrix.nRows);
@@ -138,8 +133,7 @@ bool PCGSolver<Real_t>::solve(const SparseMatrix<Real_t>& matrix, const StdVT<Re
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 template<class Real_t>
-bool PCGSolver<Real_t>::solve_precond(const SparseMatrix<Real_t>& matrix, const StdVT<Real_t>& rhs, StdVT<Real_t>& result)
-{
+bool PCGSolver<Real_t>::solve_precond(const SparseMatrix<Real_t>& matrix, const StdVT<Real_t>& rhs, StdVT<Real_t>& result) {
     resize(matrix.nRows);
 
     result.resize(matrix.nRows);
@@ -189,7 +183,7 @@ bool PCGSolver<Real_t>::solve_precond(const SparseMatrix<Real_t>& matrix, const 
         Real_t rho_new = ParallelBLAS::dotProduct<Real_t>(z, r);
         Real_t beta    = rho_new / rho;
         ParallelBLAS::addScaled<Real_t, Real_t>(beta, s, z);
-        s.swap(z);                         // s=beta*s+z
+        s.swap(z); // s=beta*s+z
         rho = rho_new;
     }
 
@@ -199,8 +193,7 @@ bool PCGSolver<Real_t>::solve_precond(const SparseMatrix<Real_t>& matrix, const 
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 template<class Real_t>
-void PCGSolver<Real_t>::formPreconditioner(const SparseMatrix<Real_t>& matrix)
-{
+void PCGSolver<Real_t>::formPreconditioner(const SparseMatrix<Real_t>& matrix) {
     switch(m_PreconditionerType) {
         case Preconditioner::JACOBI:
             formPreconditioner_Jacobi(matrix);
@@ -218,8 +211,7 @@ void PCGSolver<Real_t>::formPreconditioner(const SparseMatrix<Real_t>& matrix)
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 template<class Real_t>
-void PCGSolver<Real_t>::applyPreconditioner(const StdVT<Real_t>& x, StdVT<Real_t>& result)
-{
+void PCGSolver<Real_t>::applyPreconditioner(const StdVT<Real_t>& x, StdVT<Real_t>& result) {
     if(m_PreconditionerType != Preconditioner::JACOBI) {
         solveLower(x, result);
         solveLower_TransposeInPlace(result);
@@ -230,11 +222,9 @@ void PCGSolver<Real_t>::applyPreconditioner(const StdVT<Real_t>& x, StdVT<Real_t
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 template<class Real_t>
-void PCGSolver<Real_t>::applyJacobiPreconditioner(const StdVT<Real_t>& x, StdVT<Real_t>& result)
-{
+void PCGSolver<Real_t>::applyJacobiPreconditioner(const StdVT<Real_t>& x, StdVT<Real_t>& result) {
     Scheduler::parallel_for<size_t>(0, x.size(),
-                                    [&](size_t i)
-                                    {
+                                    [&](size_t i) {
                                         result[i] = m_JacobiPrecond[i] * x[i];
                                     });
 }
@@ -243,8 +233,7 @@ void PCGSolver<Real_t>::applyJacobiPreconditioner(const StdVT<Real_t>& x, StdVT<
 // Solution routines with lower triangular matrix.
 // solve L*result=rhs
 template<class Real_t>
-void PCGSolver<Real_t>::solveLower(const StdVT<Real_t>& rhs, StdVT<Real_t>& result)
-{
+void PCGSolver<Real_t>::solveLower(const StdVT<Real_t>& rhs, StdVT<Real_t>& result) {
     result = rhs;
 
     for(UInt i = 0, iEnd = m_ICCPrecond.nRows; i < iEnd; ++i) {
@@ -259,8 +248,7 @@ void PCGSolver<Real_t>::solveLower(const StdVT<Real_t>& rhs, StdVT<Real_t>& resu
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 // solve L^T*result=rhs
 template<class Real_t>
-void PCGSolver<Real_t>::solveLower_TransposeInPlace(StdVT<Real_t>& x)
-{
+void PCGSolver<Real_t>::solveLower_TransposeInPlace(StdVT<Real_t>& x) {
     UInt i = m_ICCPrecond.nRows;
 
     do {
@@ -275,12 +263,10 @@ void PCGSolver<Real_t>::solveLower_TransposeInPlace(StdVT<Real_t>& x)
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 template<class Real_t>
-void PCGSolver<Real_t>::formPreconditioner_Jacobi(const SparseMatrix<Real_t>& matrix)
-{
+void PCGSolver<Real_t>::formPreconditioner_Jacobi(const SparseMatrix<Real_t>& matrix) {
     m_JacobiPrecond.resize(matrix.nRows);
     Scheduler::parallel_for<UInt>(0, matrix.nRows,
-                                  [&](UInt i)
-                                  {
+                                  [&](UInt i) {
                                       UInt k = 0;
                                       if(STLHelpers::Sorted::contain(matrix.colIndex[i], i, k)) {
                                           m_JacobiPrecond[i] = Real_t(1.0) / matrix.colValue[i][k];
@@ -298,8 +284,7 @@ void PCGSolver<Real_t>::formPreconditioner_Jacobi(const SparseMatrix<Real_t>& ma
 // problems in m_ICCPrecondization: if a pivot is this much less than the diagonal
 // entry from the original matrix, the original matrix entry is used instead.
 template<class Real_t>
-void PCGSolver<Real_t>::formPreconditioner_MICC0L0(const SparseMatrix<Real_t>& matrix, Real_t MICCL0Param /*= 0.97*/, Real_t minDiagonalRatio /*= 0.25*/)
-{
+void PCGSolver<Real_t>::formPreconditioner_MICC0L0(const SparseMatrix<Real_t>& matrix, Real_t MICCL0Param /*= 0.97*/, Real_t minDiagonalRatio /*= 0.25*/) {
     // first copy lower triangle of matrix into m_ICCPrecond (Note: assuming A is symmetric of course!)
     m_ICCPrecond.resize(matrix.nRows);
     for(size_t i = 0, iEnd = m_ICCPrecond.invDiag.size(); i < iEnd; ++i) {
@@ -327,12 +312,12 @@ void PCGSolver<Real_t>::formPreconditioner_MICC0L0(const SparseMatrix<Real_t>& m
 
     for(UInt k = 0, kEnd = matrix.nRows; k < kEnd; ++k) {
         if(m_ICCPrecond.aDiag[k] < std::numeric_limits<Real_t>::min()) {
-            continue;                                        // null row/column
+            continue; // null row/column
         }
 
         // figure out the final L(k,k) entry
         if(m_ICCPrecond.invDiag[k] < minDiagonalRatio * m_ICCPrecond.aDiag[k]) {
-            m_ICCPrecond.invDiag[k] = Real_t(1.0) / sqrt(m_ICCPrecond.aDiag[k]);                                     // drop to Gauss-Seidel here if the pivot looks dangerously small
+            m_ICCPrecond.invDiag[k] = Real_t(1.0) / sqrt(m_ICCPrecond.aDiag[k]); // drop to Gauss-Seidel here if the pivot looks dangerously small
         } else {
             m_ICCPrecond.invDiag[k] = Real_t(1.0) / sqrt(m_ICCPrecond.invDiag[k]);
         }
@@ -344,10 +329,10 @@ void PCGSolver<Real_t>::formPreconditioner_MICC0L0(const SparseMatrix<Real_t>& m
 
         // incompletely eliminate L(:,k) from future columns, modifying diagonals
         for(UInt p = m_ICCPrecond.colStart[k], pEnd = m_ICCPrecond.colStart[k + 1]; p < pEnd; ++p) {
-            UInt     j          = m_ICCPrecond.colIndex[p];       // work on column j
+            UInt   j          = m_ICCPrecond.colIndex[p];         // work on column j
             Real_t multiplier = m_ICCPrecond.colValue[p];
             Real_t missing    = 0;
-            UInt     a          = m_ICCPrecond.colStart[k];
+            UInt   a          = m_ICCPrecond.colStart[k];
             // first look for contributions to missing from dropped entries above the diagonal in column j
             UInt b = 0;
 
@@ -403,8 +388,7 @@ void PCGSolver<Real_t>::formPreconditioner_MICC0L0(const SparseMatrix<Real_t>& m
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 template<class Real_t>
-void PCGSolver<Real_t>::formPreconditioner_Symmetric_MICC0L0(const SparseMatrix<Real_t>& matrix, Real_t minDiagonalRatio /*= 0.25*/)
-{
+void PCGSolver<Real_t>::formPreconditioner_Symmetric_MICC0L0(const SparseMatrix<Real_t>& matrix, Real_t minDiagonalRatio /*= 0.25*/) {
     // first copy lower triangle of matrix into m_ICCPrecond (Note: assuming A is symmetric of course!)
     m_ICCPrecond.resize(matrix.nRows);
     for(size_t i = 0, iEnd = m_ICCPrecond.invDiag.size(); i < iEnd; ++i) {
@@ -433,12 +417,12 @@ void PCGSolver<Real_t>::formPreconditioner_Symmetric_MICC0L0(const SparseMatrix<
 
     for(UInt k = 0, kEnd = matrix.nRows; k < kEnd; ++k) {
         if(m_ICCPrecond.aDiag[k] < std::numeric_limits<Real_t>::min()) {
-            continue;                                        // null row/column
+            continue; // null row/column
         }
 
         // figure out the final L(k,k) entry
         if(m_ICCPrecond.invDiag[k] < minDiagonalRatio * m_ICCPrecond.aDiag[k]) {
-            m_ICCPrecond.invDiag[k] = Real_t(1.0) / sqrt(m_ICCPrecond.aDiag[k]);                                        // drop to Gauss-Seidel here if the pivot looks dangerously small
+            m_ICCPrecond.invDiag[k] = Real_t(1.0) / sqrt(m_ICCPrecond.aDiag[k]); // drop to Gauss-Seidel here if the pivot looks dangerously small
         } else {
             m_ICCPrecond.invDiag[k] = Real_t(1.0) / sqrt(m_ICCPrecond.invDiag[k]);
         }
@@ -449,7 +433,7 @@ void PCGSolver<Real_t>::formPreconditioner_Symmetric_MICC0L0(const SparseMatrix<
         }
 
         for(UInt p = m_ICCPrecond.colStart[k], pEnd = m_ICCPrecond.colStart[k + 1]; p < pEnd; ++p) {
-            UInt     j          = m_ICCPrecond.colIndex[p];       // work on column j
+            UInt   j          = m_ICCPrecond.colIndex[p];         // work on column j
             Real_t multiplier = m_ICCPrecond.colValue[p];
 
             m_ICCPrecond.invDiag[j] -= multiplier * m_ICCPrecond.colValue[p];
@@ -480,3 +464,4 @@ __NT_INSTANTIATE_CLASS_COMMON_TYPES(PCGSolver)
 __NT_INSTANTIATE_STRUCT_COMMON_TYPES(SparseColumnLowerFactor)
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+} // end namespace NTCodeBase

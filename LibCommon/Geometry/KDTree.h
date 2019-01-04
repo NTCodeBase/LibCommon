@@ -14,15 +14,16 @@
 
 #pragma once
 
+#include <LibCommon/CommonSetup.h>
+
 #include <array>
 #include <climits>
 #include <memory>
 
-#include <CommonSetup.h>
-
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-struct Point
-{
+namespace NTCodeBase {
+//-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+struct Point {
     Point() {}
     Point(const Vec3r& pos_, UInt index_) : position(pos_), index(index_) {}
     Point(const std::initializer_list& pos_, UInt index_) : position(pos_), index(index_) {}
@@ -32,8 +33,7 @@ struct Point
 };
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-struct KDNode
-{
+struct KDNode {
     KDNode(Point* points_, const Vec3r& boxMin_, const Vec3r& boxMax_) : points(points_), boxMin(boxMin_), boxMax(boxMax_), {}
 
     Point* points;
@@ -50,8 +50,7 @@ struct KDNode
 };
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-class KdTree
-{
+class KdTree {
 public:
     KdTree(UInt maxItems) : m_MaxItermsPerNode(maxItems) {}
 
@@ -66,3 +65,5 @@ private:
     ////////////////////////////////////////////////////////////////////////////////
     UInt m_MaxItermsPerNode;
 };
+//-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+} // end namespace NTCodeBase

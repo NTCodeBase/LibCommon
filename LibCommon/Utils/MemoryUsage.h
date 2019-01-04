@@ -45,13 +45,14 @@
 #endif
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+namespace NTCodeBase {
+//-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 /**
  * Returns the peak (maximum so far) resident set size (physical
  * memory use) measured in bytes, or zero if the value cannot be
  * determined on this OS.
  */
-inline size_t getPeakRSS()
-{
+inline size_t getPeakRSS() {
 #if defined(_WIN32)
     /* Windows -------------------------------------------------- */
     PROCESS_MEMORY_COUNTERS info;
@@ -63,12 +64,12 @@ inline size_t getPeakRSS()
     int           fd = -1;
 
     if((fd = open("/proc/self/psinfo", O_RDONLY)) == -1) {
-        return (size_t)0L;    /* Can't open? */
+        return (size_t)0L; /* Can't open? */
     }
 
     if(read(fd, &psinfo, sizeof(psinfo)) != sizeof(psinfo)) {
         close(fd);
-        return (size_t)0L;              /* Can't read? */
+        return (size_t)0L; /* Can't read? */
     }
 
     close(fd);
@@ -84,7 +85,7 @@ inline size_t getPeakRSS()
 #endif
 #else
     /* Unknown OS ----------------------------------------------- */
-    return (size_t)0L;                  /* Unsupported. */
+    return (size_t)0L; /* Unsupported. */
 #endif
 }
 
@@ -93,8 +94,7 @@ inline size_t getPeakRSS()
  * Returns the current resident set size (physical memory use) measured
  * in bytes, or zero if the value cannot be determined on this OS.
  */
-inline size_t getCurrentRSS()
-{
+inline size_t getCurrentRSS() {
 #if defined(_WIN32)
     /* Windows -------------------------------------------------- */
     PROCESS_MEMORY_COUNTERS info;
@@ -107,7 +107,7 @@ inline size_t getCurrentRSS()
 
     if(task_info(mach_task_self(), MACH_TASK_BASIC_INFO,
                  (task_info_t)&info, &infoCount) != KERN_SUCCESS) {
-        return (size_t)0L;    /* Can't access? */
+        return (size_t)0L; /* Can't access? */
     }
 
     return (size_t)info.resident_size;
@@ -117,18 +117,21 @@ inline size_t getCurrentRSS()
     FILE* fp  = nullptr;
 
     if((fp = fopen("/proc/self/statm", "r")) == nullptr) {
-        return (size_t)0L;    /* Can't open? */
+        return (size_t)0L; /* Can't open? */
     }
 
     if(fscanf(fp, "%*s%ld", &rss) != 1) {
         fclose(fp);
-        return (size_t)0L;              /* Can't read? */
+        return (size_t)0L; /* Can't read? */
     }
 
     fclose(fp);
     return (size_t)rss * (size_t)sysconf(_SC_PAGESIZE);
 #else
     /* AIX, BSD, Solaris, and Unknown OS ------------------------ */
-    return (size_t)0L;                  /* Unsupported. */
+    return (size_t)0L; /* Unsupported. */
 #endif
 }
+
+//-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+} // end namespace NTCodeBase
