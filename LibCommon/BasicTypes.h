@@ -14,7 +14,7 @@
 
 #pragma once
 
-#include <json.hpp>;
+#include <json.hpp>
 
 #include <limits>
 #include <vector>
