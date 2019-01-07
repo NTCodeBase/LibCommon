@@ -16,7 +16,7 @@
 #include <LibCommon/Geometry/GeometryObjects.h>
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-namespace NTCodeBase {
+namespace NTCodeBase::GeometryObjectFactory {
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 template<Int N, class Real_t>
 SharedPtr<GeometryObject<N, Real_t>> createGeometry(const String& geometryType, const JParams& jParams);
@@ -24,4 +24,4 @@ SharedPtr<GeometryObject<N, Real_t>> createGeometry(const String& geometryType, 
 template<Int N, class Real_t>
 SharedPtr<GeometryObject<N, Real_t>> combineGeometryObjects(const StdVT<SharedPtr<GeometryObject<N, Real_t>>>& geometryObjs);
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-} // end namespace NTCodeBase
+} // end namespace NTCodeBase::GeometryObjectFactory
