@@ -14,11 +14,15 @@
 
 #pragma once
 
+#include <LibCommon/Utils/Formatters.h>
 #include <cstdlib>
 #include <cstdio>
 #include <iostream>
 #include <sstream>
+#include <csignal>
 
+//-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+namespace NTCodeBase {
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 //#define __NT_SUPPORT_DOUBLE_NUMBER
 
@@ -85,7 +89,7 @@ inline void throwIfFailed(HRESULT hr) {
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 // signals
-#include <csignal>
+
 #define __NT_RAISE_TERMINATION_SIGNAL std::raise(SIGTERM);
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
@@ -111,22 +115,22 @@ inline void throwIfFailed(HRESULT hr) {
 #ifdef __NT_WINDOWS_OS__
 #ifdef QT_CORE_LIB
 #  define __NT_COMPILER_MESSAGE(msg) \
-    __pragma(message("\033[38;5;214m+++>" msg "\033[0m"))
+    __pragma (message("\033[38;5;214m+++>" msg "\033[0m"))
 
 #  define __NT_TODO \
-    __pragma(message("\033[38;5;214m+++>TODO: => " __FILE__ "(" __NT_TO_STRING(__LINE__) ") \033[0m"))
+    __pragma (message("\033[38;5;214m+++>TODO: => " __FILE__ "(" __NT_TO_STRING(__LINE__) ") \033[0m"))
 
 #  define __NT_TODO_MSG(msg) \
-    __pragma(message("\033[38;5;214m+++>TODO: " msg " => " __FILE__ "(" __NT_TO_STRING(__LINE__) ") \033[0m"))
+    __pragma (message("\033[38;5;214m+++>TODO: " msg " => " __FILE__ "(" __NT_TO_STRING(__LINE__) ") \033[0m"))
 #else
 #  define __NT_COMPILER_MESSAGE(msg) \
-    __pragma(message("+++>" msg))
+    __pragma (message("+++>" msg))
 
 #  define __NT_TODO \
-    __pragma(message("+++>TODO: => " __FILE__ "(" __NT_TO_STRING(__LINE__) ") "))
+    __pragma (message("+++>TODO: => " __FILE__ "(" __NT_TO_STRING(__LINE__) ") "))
 
 #  define __NT_TODO_MSG(msg) \
-    __pragma(message("+++>TODO: " msg " => " __FILE__ "(" __NT_TO_STRING(__LINE__) ") "))
+    __pragma (message("+++>TODO: " msg " => " __FILE__ "(" __NT_TO_STRING(__LINE__) ") "))
 #endif
 #else // not __NT_WINDOWS_OS__
 #  ifdef QT_CORE_LIB
@@ -292,11 +296,10 @@ inline void throwIfFailed(HRESULT hr) {
 #define __NT_REQUIRE_APPROX_NUMBERS(a, b, threshold) __NT_REQUIRE_MSG(threshold > fabs(a - b), "Numbers are not equal.");
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-#include <LibCommon/Utils/Formatters.h>
-#define __NT_TO_CSTRING(x)   Formatters::toString7(x).c_str()
-#define __NT_TO_CSTRING_2(x) Formatters::toString2(x).c_str()
-#define __NT_TO_CSTRING_5(x) Formatters::toString5(x).c_str()
-#define __NT_TO_CSTRING_7(x) Formatters::toString7(x).c_str()
+#define __NT_TO_CSTRING(x)                           Formatters::toString7(x).c_str()
+#define __NT_TO_CSTRING_2(x)                         Formatters::toString2(x).c_str()
+#define __NT_TO_CSTRING_5(x)                         Formatters::toString5(x).c_str()
+#define __NT_TO_CSTRING_7(x)                         Formatters::toString7(x).c_str()
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 #define __NT_TYPE_ALIAS                                                             \
@@ -361,3 +364,5 @@ inline void throwIfFailed(HRESULT hr) {
     template struct StructName<2, float>;                                 \
     template struct StructName<3, float>;
 #endif
+//-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+} // end namespace NTCodeBase
