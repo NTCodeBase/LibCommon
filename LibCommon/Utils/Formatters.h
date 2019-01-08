@@ -35,9 +35,10 @@ class Formatter {
 public:
     Formatter() = delete;
 
-    template<class T> static String        format(T x);
     template<Int N, class T> static String format(const VecX<N, T>& vec);
     template<Int N, class T> static String format(const MatXxX<N, T>& mat, bool breakLine = false);
+    template<class T> static String        format(T x);
+    static String format(bool x) { return x ? String("Yes") : String("No"); }
 
 private:
     static void init();
