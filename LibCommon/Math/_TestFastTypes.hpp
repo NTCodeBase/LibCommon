@@ -52,7 +52,7 @@ auto init_glmVec3 = [] (auto& v3_data) {
                         v3_data.resize(0);
                         v3_data.reserve(DATA_SIZE);
                         for(int i = 0; i < DATA_SIZE; ++i) {
-                            v3_data.push_back(NumberHelpers::fRand<Real_t>::vrnd<Vec3<Real_t>>());
+                            v3_data.push_back(NumberHelpers::fRand<Real_t>::template vrnd<Vec3<Real_t>>());
                         }
                     };
 
@@ -60,7 +60,7 @@ auto init_FastVec3 = [](auto& fv3_data) {
                          fv3_data.resize(0);
                          fv3_data.reserve(DATA_SIZE);
                          for(int i = 0; i < DATA_SIZE; ++i) {
-                             fv3_data.push_back(NumberHelpers::fRand<Real_t>::vrnd<Vec3<Real_t>>());
+                             fv3_data.push_back(NumberHelpers::fRand<Real_t>::template vrnd<Vec3<Real_t>>());
                          }
                      };
 
@@ -68,7 +68,7 @@ auto init_glmMat3 = [] (auto& m3_data) {
                         m3_data.resize(0);
                         m3_data.reserve(DATA_SIZE);
                         for(int i = 0; i < DATA_SIZE; ++i) {
-                            m3_data.push_back(NumberHelpers::fRand<Real_t>::vrnd<Mat3x3<Real_t>>());
+                            m3_data.push_back(NumberHelpers::fRand<Real_t>::template vrnd<Mat3x3<Real_t>>());
                         }
                     };
 
@@ -76,7 +76,7 @@ auto init_FastMat3 = [](auto& fm3_data) {
                          fm3_data.resize(0);
                          fm3_data.reserve(DATA_SIZE);
                          for(int i = 0; i < DATA_SIZE; ++i) {
-                             fm3_data.push_back(NumberHelpers::fRand<Real_t>::vrnd<Mat3x3<Real_t>>());
+                             fm3_data.push_back(NumberHelpers::fRand<Real_t>::template vrnd<Mat3x3<Real_t>>());
                          }
                      };
 
@@ -268,8 +268,8 @@ TEST_CASE("Test_FastVec3_Ops", "Test_FastVec3_Ops")
         for(int i = 0; i < DATA_SIZE; ++i) {
 #endif
                                     __NT_UNUSED(i);
-                                    Vec3<Real_t> v0      = NumberHelpers::fRand11<Real_t>::vrnd<Vec3<Real_t>>();
-                                    Vec3<Real_t> v1      = NumberHelpers::fRand11<Real_t>::vrnd<Vec3<Real_t>>();
+                                    Vec3<Real_t> v0      = NumberHelpers::fRand11<Real_t>::template vrnd<Vec3<Real_t>>();
+                                    Vec3<Real_t> v1      = NumberHelpers::fRand11<Real_t>::template vrnd<Vec3<Real_t>>();
                                     FastVec3<Real_t> fv0 = v0;
                                     FastVec3<Real_t> fv1 = v1;
                                     {
@@ -376,9 +376,9 @@ TEST_CASE("Test_FastMat3_Ops", "Test_FastMat3_Ops")
         for(int i = 0; i < DATA_SIZE; ++i) {
 #endif
                                     __NT_UNUSED(i);
-                                    Vec3<Real_t> v0      = NumberHelpers::fRand11<Real_t>::vrnd<Vec3<Real_t>>();
-                                    Mat3x3<Real_t> m0    = NumberHelpers::fRand11<Real_t>::vrnd<Mat3x3<Real_t>>();
-                                    Mat3x3<Real_t> m1    = NumberHelpers::fRand11<Real_t>::vrnd<Mat3x3<Real_t>>();
+                                    Vec3<Real_t> v0      = NumberHelpers::fRand11<Real_t>::template vrnd<Vec3<Real_t>>();
+                                    Mat3x3<Real_t> m0    = NumberHelpers::fRand11<Real_t>::template vrnd<Mat3x3<Real_t>>();
+                                    Mat3x3<Real_t> m1    = NumberHelpers::fRand11<Real_t>::template vrnd<Mat3x3<Real_t>>();
                                     FastVec3<Real_t> fv0 = v0;
                                     FastMat3<Real_t> fm0 = m0;
                                     FastMat3<Real_t> fm1 = m1;
@@ -478,13 +478,13 @@ TEST_CASE("Compare_FastVec3_Performance", "Compare_FastVec3_Performance")
         gridData.resize(grid.getNNodes());
         Scheduler::parallel_for(DATA_SIZE,
                                 [&](int i) {
-                                    w_cache[i][0] = NumberHelpers::fRand<Real_t>::vrnd<Vec3<Real_t>>();
-                                    w_cache[i][1] = NumberHelpers::fRand<Real_t>::vrnd<Vec3<Real_t>>();
-                                    w_cache[i][2] = NumberHelpers::fRand<Real_t>::vrnd<Vec3<Real_t>>();
+                                    w_cache[i][0] = NumberHelpers::fRand<Real_t>::template vrnd<Vec3<Real_t>>();
+                                    w_cache[i][1] = NumberHelpers::fRand<Real_t>::template vrnd<Vec3<Real_t>>();
+                                    w_cache[i][2] = NumberHelpers::fRand<Real_t>::template vrnd<Vec3<Real_t>>();
 
                                     mass[i]       = NumberHelpers::fRand<Real_t>::rnd();
-                                    positions[i]  = NumberHelpers::fRand01<Real_t>::vrnd<Vec3<Real_t>>();
-                                    velocities[i] = NumberHelpers::fRand<Real_t>::vrnd<Vec3<Real_t>>();
+                                    positions[i]  = NumberHelpers::fRand01<Real_t>::template vrnd<Vec3<Real_t>>();
+                                    velocities[i] = NumberHelpers::fRand<Real_t>::template vrnd<Vec3<Real_t>>();
                                     C[i]          = NumberHelpers::fRand<Real_t>::mrnd<Mat3x3<Real_t>>();
 
                                     const auto pg       = grid.getGridCoordinate(positions[i]);

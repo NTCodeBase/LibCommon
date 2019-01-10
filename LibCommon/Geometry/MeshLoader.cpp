@@ -44,7 +44,7 @@ bool MeshLoader::loadMesh(const String& meshFile) {
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 void MeshLoader::scaleToBox() {
     Vec3f diff    = m_AABBMax - m_AABBMin;
-    float maxSize = fmaxf(fmaxf(fabsf(diff[0]), fabsf(diff[1])), fabsf(diff[2]));
+    float maxSize = fmaxf(fmaxf(std::abs(diff[0]), std::abs(diff[1])), std::abs(diff[2]));
     float scale   = 2.0f / maxSize;
 
     // multiply all vertices by scale to make the mesh having max(w, h, d) = 1

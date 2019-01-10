@@ -60,7 +60,7 @@ public:
         c = T(1.0);
         s = T(0);
         if(d != 0) {
-            // T t = 1 / sqrt(d);
+            // T t = 1 / std::sqrt(d);
             T t = MathHelpers::approx_rsqrt(d);
             c = a * t;
             s = -b * t;
@@ -77,7 +77,7 @@ public:
         c = 0;
         s = 1;
         if(d != 0) {
-            // T t = 1 / sqrt(d);
+            // T t = 1 / std::sqrt(d);
             T t = MathHelpers::approx_rsqrt(d);
             s = a * t;
             c = b * t;
@@ -178,7 +178,7 @@ void zeroChase(Mat3x3<T>& H, Mat3x3<T>& U, Mat3x3<T>& V) {
        0 x x
        0 + x
        Can calculate r2 without multiplying by r1 since both entries are in first two
-       rows thus no need to divide by sqrt(a^2+b^2)
+       rows thus no need to divide by std::sqrt(a^2+b^2)
      */
     GivensRotation<T> r2(1, 2);
     if(H[0][1] != 0) {
@@ -382,7 +382,7 @@ void svd(const Mat2x2<T>& A, GivensRotation<T>& U, Vec2<T>& sigma, GivensRotatio
         sigma[1] = z;
     } else {
         T tau = T(0.5) * (x - z);
-        T w   = sqrt(tau * tau + y * y);
+        T w   = std::sqrt(tau * tau + y * y);
         // w > y > 0
         T t;
         if(tau > 0) {
@@ -392,7 +392,7 @@ void svd(const Mat2x2<T>& A, GivensRotation<T>& U, Vec2<T>& sigma, GivensRotatio
             // tau - w < -w < -y < 0 ==> division is safe
             t = y / (tau - w);
         }
-        cosine = T(1) / sqrt(t * t + T(1));
+        cosine = T(1) / std::sqrt(t * t + T(1));
         sine   = -t * cosine;
         /*
            V = [cosine -sine; sine cosine]
@@ -452,7 +452,7 @@ std::tuple<Mat2x2<T>, Vec2<T>, Mat2x2<T>> svd(const Mat2x2<T>& A) {
    a1     b1
    b1     a2
    based on the wilkinsonShift formula
-   mu = c + d - sign (d) \ sqrt (d*d + b*b), where d = (a-c)/2
+   mu = c + d - sign (d) \ std::sqrt (d*d + b*b), where d = (a-c)/2
 
  */
 template<class T>
@@ -460,7 +460,7 @@ T wilkinsonShift(const T a1, const T b1, const T a2) {
     T d  = T(0.5) * (a1 - a2);
     T bs = b1 * b1;
 
-    T mu = a2 - copysign(bs / (fabs(d) + sqrt(d * d + bs)), d);
+    T mu = a2 - copysign(bs / (std::abs(d) + std::sqrt(d * d + bs)), d);
     // T mu = a2 - bs / ( d + sign_d*sqrt (d*d + bs));
     return mu;
 }
@@ -517,7 +517,7 @@ void flipSign(Int i, Mat3x3<T>& U, Vec3<T>& sigma) {
 template<class T>
 void sort0(Mat3x3<T>& U, Vec3<T>& sigma, Mat3x3<T>& V) {
     // Case: sigma[0] > |sigma[1]| >= |sigma[2]|
-    if(fabs(sigma[1]) >= fabs(sigma[2])) {
+    if(std::abs(sigma[1]) >= std::abs(sigma[2])) {
         if(sigma[1] < 0) {
             flipSign(1, U, sigma);
             flipSign(2, U, sigma);
@@ -555,7 +555,7 @@ void sort0(Mat3x3<T>& U, Vec3<T>& sigma, Mat3x3<T>& V) {
 template<class T>
 void sort1(Mat3x3<T>& U, Vec3<T>& sigma, Mat3x3<T>& V) {
     // Case: |sigma[0]| >= sigma[1] > |sigma[2]|
-    if(fabs(sigma[0]) >= sigma[1]) {
+    if(std::abs(sigma[0]) >= sigma[1]) {
         if(sigma[0] < 0) {
             flipSign(0, U, sigma);
             flipSign(2, U, sigma);
@@ -569,7 +569,7 @@ void sort1(Mat3x3<T>& U, Vec3<T>& sigma, Mat3x3<T>& V) {
     std::swap(V[0],     V[1]);
 
     // Case: sigma[1] > |sigma[2]| >= |sigma[0]|
-    if(fabs(sigma[1]) < fabs(sigma[2])) {
+    if(std::abs(sigma[1]) < std::abs(sigma[2])) {
         std::swap(sigma[1], sigma[2]);
         std::swap(U[1],     U[2]);
         std::swap(V[1],     V[2]);
@@ -620,7 +620,7 @@ Int svd(const Mat3x3<T>& A, Mat3x3<T>& U, Vec3<T>& sigma, Mat3x3<T>& V, T tol = 
        Do implicit shift QR until A^T A is block diagonal
      */
 
-    while(fabs(beta_2) > tol && fabs(beta_1) > tol && fabs(alpha_1) > tol && fabs(alpha_2) > tol && fabs(alpha_3) > tol) {
+    while(std::abs(beta_2) > tol && std::abs(beta_1) > tol && std::abs(alpha_1) > tol && std::abs(alpha_2) > tol && std::abs(alpha_3) > tol) {
         mu = wilkinsonShift(alpha_2 * alpha_2 + beta_1 * beta_1, gamma_2, alpha_3 * alpha_3 + beta_2 * beta_2);
 
         r.compute(alpha_1 * alpha_1 - mu, gamma_1);
@@ -649,7 +649,7 @@ Int svd(const Mat3x3<T>& A, Mat3x3<T>& U, Vec3<T>& sigma, Mat3x3<T>& V, T tol = 
        0 x 0
        0 0 x
      */
-    if(fabs(beta_2) <= tol) {
+    if(std::abs(beta_2) <= tol) {
         process<0>(B, U, sigma, V);
         sort0(U, sigma, V);
     }
@@ -659,7 +659,7 @@ Int svd(const Mat3x3<T>& A, Mat3x3<T>& U, Vec3<T>& sigma, Mat3x3<T>& V, T tol = 
        0 x x
        0 0 x
      */
-    else if(fabs(beta_1) <= tol) {
+    else if(std::abs(beta_1) <= tol) {
         process<1>(B, U, sigma, V);
         sort1(U, sigma, V);
     }
@@ -669,7 +669,7 @@ Int svd(const Mat3x3<T>& A, Mat3x3<T>& U, Vec3<T>& sigma, Mat3x3<T>& V, T tol = 
        0 0 x
        0 0 x
      */
-    else if(fabs(alpha_2) <= tol) {
+    else if(std::abs(alpha_2) <= tol) {
         /**
            Reduce B to
            x x 0
@@ -690,7 +690,7 @@ Int svd(const Mat3x3<T>& A, Mat3x3<T>& U, Vec3<T>& sigma, Mat3x3<T>& V, T tol = 
        0 x x
        0 0 0
      */
-    else if(fabs(alpha_3) <= tol) {
+    else if(std::abs(alpha_3) <= tol) {
         /**
            Reduce B to
            x x +
@@ -721,7 +721,7 @@ Int svd(const Mat3x3<T>& A, Mat3x3<T>& U, Vec3<T>& sigma, Mat3x3<T>& V, T tol = 
        0 x x
        0 0 x
      */
-    else if(fabs(alpha_1) <= tol) {
+    else if(std::abs(alpha_1) <= tol) {
         /**
            Reduce B to
            0 0 +

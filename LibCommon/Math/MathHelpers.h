@@ -706,7 +706,7 @@ inline constexpr T quad_bspline_grad(T f) {
 
     if(x >= T(0.5)) {
         if(f < 0) {
-            return fabs(x - T(1.5));
+            return std::abs(x - T(1.5));
         } else {
             return (x - T(1.5));
         }

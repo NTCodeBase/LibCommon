@@ -223,7 +223,7 @@ public:
 
     void operator()(const tbb::blocked_range<size_t>& r) {
         for(size_t i = r.begin(); i != r.end(); ++i) {
-            Real_t tmp = fabs(m_Vector[i]);
+            Real_t tmp = std::abs(m_Vector[i]);
             m_Result = m_Result > tmp ? m_Result : tmp;
         }
     }
@@ -251,7 +251,7 @@ public:
     }
 
     void     join(MaxNorm2<N, Real_t>& pObj) { m_Result = m_Result > pObj.m_Result ? m_Result : pObj.m_Result; }
-    Real_t getResult() const noexcept { return sqrt(m_Result); }
+    Real_t getResult() const noexcept { return std::sqrt(m_Result); }
 
 private:
     Real_t m_Result = 0;
@@ -379,8 +379,8 @@ public:
         m_ResultMax = m_ResultMax > pObj.m_ResultMax ? m_ResultMax : pObj.m_ResultMax;
     }
 
-    Real_t getMin() const noexcept { return sqrt(m_ResultMin); }
-    Real_t getMax() const noexcept { return sqrt(m_ResultMax); }
+    Real_t getMin() const noexcept { return std::sqrt(m_ResultMin); }
+    Real_t getMax() const noexcept { return std::sqrt(m_ResultMax); }
 
 private:
     Real_t m_ResultMin = std::numeric_limits<Real_t>::max();

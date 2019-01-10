@@ -125,7 +125,7 @@ public:
         for(size_t d = 0; d < D; ++d) {
             Real_t scale = std::max((std::max(std::abs(actual_grad[d]), std::abs(expected_grad[d]))), Real_t(1.));
             EXPECT_NEAR(actual_grad[d], expected_grad[d], 1e-2 * scale);
-            if(fabs(actual_grad[d] - expected_grad[d]) > 1e-2 * scale) {
+            if(std::abs(actual_grad[d] - expected_grad[d]) > 1e-2 * scale) {
                 correct = false;
             }
         }
@@ -145,9 +145,9 @@ public:
     //    finiteHessian(x, expected_hessian, accuracy);
     //    for(int d = 0; d < D; ++d) {
     //        for(int e = 0; e < D; ++e) {
-    //            Real_t scale = std::max(static_cast<Real_t>(std::max(fabs(actual_hessian(d, e)), fabs(expected_hessian(d, e)))), (Real_t)1.);
+    //            Real_t scale = std::max(static_cast<Real_t>(std::max(std::abs(actual_hessian(d, e)), std::abs(expected_hessian(d, e)))), (Real_t)1.);
     //            EXPECT_NEAR(actual_hessian(d, e), expected_hessian(d, e), 1e-1 * scale);
-    //            if(fabs(actual_hessian(d, e) - expected_hessian(d, e)) > 1e-1 * scale) {
+    //            if(std::abs(actual_hessian(d, e) - expected_hessian(d, e)) > 1e-1 * scale) {
     //                correct = false;
     //            }
     //        }

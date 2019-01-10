@@ -60,7 +60,7 @@ T maxAbs(const StdVT<T>& vec) {
     T maxVal = 0;
 
     for(T x : vec) {
-        const T tmp = std::fabs(x);
+        const T tmp = std::abs(x);
         if(tmp > maxVal) {
             maxVal = tmp;
         }

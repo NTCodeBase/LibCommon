@@ -486,7 +486,7 @@ Real_t TriangleObject<N, Real_t>::signedDistance(const VecN& ppos0, bool bNegati
         if(sgn(glm::dot(glm::cross(ba, nor), pa)) +
            sgn(glm::dot(glm::cross(cb, nor), pb)) +
            sgn(glm::dot(glm::cross(ac, nor), pc)) < 2) {
-            auto d = sqrt(std::min(std::min(glm::length2(ba * MathHelpers::clamp(dot(ba, pa) / glm::length2(ba), Real_t(0), Real_t(1.0)) - pa),
+            auto d = std::sqrt(std::min(std::min(glm::length2(ba * MathHelpers::clamp(dot(ba, pa) / glm::length2(ba), Real_t(0), Real_t(1.0)) - pa),
                                             glm::length2(cb * MathHelpers::clamp(dot(cb, pb) / glm::length2(cb), Real_t(0), Real_t(1.0)) - pb)),
                                    glm::length2(ac * MathHelpers::clamp(dot(ac, pc) / glm::length2(ac), Real_t(0), Real_t(1.0)) - pc)));
             return bNegativeInside ? d : -d;
@@ -521,8 +521,8 @@ template<Int N, class Real_t>
 Real_t HexagonObject<N, Real_t>::signedDistance(const VecN& ppos0, bool bNegativeInside /*= true*/) const {
     __NT_REQUIRE_MSG(N == 2, "Object dimension != 2");
     auto   ppos = this->invTransform(ppos0);
-    Real_t dx   = fabs(ppos[0]);
-    Real_t dy   = fabs(ppos[1]);
+    Real_t dx   = std::abs(ppos[0]);
+    Real_t dy   = std::abs(ppos[1]);
     Real_t d    = this->m_UniformScale * (MathHelpers::max((dx * Real_t(0.866025) + dy * Real_t(0.5)), dy) - Real_t(1.0));
     return bNegativeInside ? d : -d;
 }

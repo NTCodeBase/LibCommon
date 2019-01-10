@@ -76,10 +76,10 @@ macx|unix {
     }
 
     macx {
-        QMAKE_LFLAGS += -Wl,-rpath=$$PWD/../Externals/tbb_osx/lib
+        QMAKE_LFLAGS += -Wl,-rpath=$$PWD/Externals/tbb_osx/lib
         LIBS += -ltbb -L$$PWD/Externals/tbb_osx/lib
     } else {
-        QMAKE_LFLAGS += -Wl,-rpath=$$PWD/../Externals/tbb_linux/lib/intel64/gcc4.7
+        QMAKE_LFLAGS += -Wl,-rpath=$$PWD/Externals/tbb_linux/lib/intel64/gcc4.7
         LIBS += -ltbb -L$$PWD/Externals/tbb_linux/lib/intel64/gcc4.7
     }
 }

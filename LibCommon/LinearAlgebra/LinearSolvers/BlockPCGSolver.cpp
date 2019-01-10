@@ -43,7 +43,7 @@ bool BlockPCGSolver<N, Real_t>::solve(const BlockSparseMatrix<MatNxN>& matrix, c
     Real_t tol = m_ToleranceFactor * m_OutResidual;
     Real_t rho = ParallelBLAS::dotProduct<N, Real_t>(r, r);
 
-    if(std::fabs(rho) < m_ToleranceFactor || std::isnan(rho)) {
+    if(std::abs(rho) < m_ToleranceFactor || std::isnan(rho)) {
         m_OutIterations = 0;
         return true;
     }
@@ -54,7 +54,7 @@ bool BlockPCGSolver<N, Real_t>::solve(const BlockSparseMatrix<MatNxN>& matrix, c
         FixedBlockSparseMatrix<MatNxN>::multiply(m_FixedSparseMatrix, z, s);
         Real_t tmp = ParallelBLAS::dotProduct<N, Real_t>(s, z);
 
-        if(std::fabs(tmp) < m_ToleranceFactor || std::isnan(tmp)) {
+        if(std::abs(tmp) < m_ToleranceFactor || std::isnan(tmp)) {
             m_OutIterations = iteration;
             return true;
         }
@@ -117,7 +117,7 @@ bool BlockPCGSolver<N, Real_t>::solve_precond(const BlockSparseMatrix<MatNxN>& m
     applyPreconditioner(r, z);
 
     Real_t rho = ParallelBLAS::dotProduct<N, Real_t>(z, r);
-    if(std::fabs(rho) < m_ToleranceFactor || std::isnan(rho)) {
+    if(std::abs(rho) < m_ToleranceFactor || std::isnan(rho)) {
         m_OutIterations = 0;
         return true;
     }
@@ -128,7 +128,7 @@ bool BlockPCGSolver<N, Real_t>::solve_precond(const BlockSparseMatrix<MatNxN>& m
         FixedBlockSparseMatrix<MatNxN>::multiply(m_FixedSparseMatrix, s, z);
         Real_t tmp = ParallelBLAS::dotProduct<N, Real_t>(s, z);
 
-        if(std::fabs(tmp) < m_ToleranceFactor || std::isnan(tmp)) {
+        if(std::abs(tmp) < m_ToleranceFactor || std::isnan(tmp)) {
             m_OutIterations = iteration;
             return true;
         }

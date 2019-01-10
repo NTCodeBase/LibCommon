@@ -139,7 +139,7 @@ public:
                 info = 2;
             }
 
-            if((f <= ftest1) & (fabs(dg) <= gtol * (-dginit))) {
+            if((f <= ftest1) & (std::abs(dg) <= gtol * (-dginit))) {
                 info = 1;
             }
 
@@ -172,11 +172,11 @@ public:
             }
 
             if(brackt) {
-                if(fabs(sty - stx) >= Real_t(0.66) * width1) {
+                if(std::abs(sty - stx) >= Real_t(0.66) * width1) {
                     stp = stx + Real_t(0.5) * (sty - stx);
                 }
                 width1 = width;
-                width  = fabs(sty - stx);
+                width  = std::abs(sty - stx);
             }
         }
 
@@ -194,7 +194,7 @@ public:
             return -1;
         }
 
-        Real_t sgnd = dp * (dx / fabs(dx));
+        Real_t sgnd = dp * (dx / std::abs(dx));
 
         Real_t stpf = 0;
         Real_t stpc = 0;
@@ -205,7 +205,7 @@ public:
             bound = true;
             Real_t theta = Real_t(3.0) * (fx - fp) / (stp - stx) + dx + dp;
             Real_t s     = std::max(theta, std::max(dx, dp));
-            Real_t gamma = s * sqrt((theta / s) * (theta / s) - (dx / s) * (dp / s));
+            Real_t gamma = s * std::sqrt((theta / s) * (theta / s) - (dx / s) * (dp / s));
             if(stp < stx) {
                 gamma = -gamma;
             }
@@ -214,7 +214,7 @@ public:
             Real_t r = p / q;
             stpc = stx + r * (stp - stx);
             stpq = stx + ((dx / ((fx - fp) / (stp - stx) + dx)) / Real_t(2.0)) * (stp - stx);
-            if(fabs(stpc - stx) < fabs(stpq - stx)) {
+            if(std::abs(stpc - stx) < std::abs(stpq - stx)) {
                 stpf = stpc;
             } else {
                 stpf = stpc + (stpq - stpc) / 2;
@@ -225,7 +225,7 @@ public:
             bound = false;
             Real_t theta = 3 * (fx - fp) / (stp - stx) + dx + dp;
             Real_t s     = std::max(theta, std::max(dx, dp));
-            Real_t gamma = s * sqrt((theta / s) * (theta / s) - (dx / s) * (dp / s));
+            Real_t gamma = s * std::sqrt((theta / s) * (theta / s) - (dx / s) * (dp / s));
             if(stp > stx) {
                 gamma = -gamma;
             }
@@ -235,18 +235,18 @@ public:
             Real_t r = p / q;
             stpc = stp + r * (stx - stp);
             stpq = stp + (dp / (dp - dx)) * (stx - stp);
-            if(fabs(stpc - stp) > fabs(stpq - stp)) {
+            if(std::abs(stpc - stp) > std::abs(stpq - stp)) {
                 stpf = stpc;
             } else {
                 stpf = stpq;
             }
             brackt = true;
-        } else if(fabs(dp) < fabs(dx)) {
+        } else if(std::abs(dp) < std::abs(dx)) {
             info  = 3;
             bound = 1;
             Real_t theta = 3 * (fx - fp) / (stp - stx) + dx + dp;
             Real_t s     = std::max(theta, std::max(dx, dp));
-            Real_t gamma = s * sqrt(std::max(static_cast<Real_t>(0.), (theta / s) * (theta / s) - (dx / s) * (dp / s)));
+            Real_t gamma = s * std::sqrt(std::max(static_cast<Real_t>(0.), (theta / s) * (theta / s) - (dx / s) * (dp / s)));
             if(stp > stx) {
                 gamma = -gamma;
             }
@@ -262,13 +262,13 @@ public:
             }
             stpq = stp + (dp / (dp - dx)) * (stx - stp);
             if(brackt) {
-                if(fabs(stp - stpc) < fabs(stp - stpq)) {
+                if(std::abs(stp - stpc) < std::abs(stp - stpq)) {
                     stpf = stpc;
                 } else {
                     stpf = stpq;
                 }
             } else {
-                if(fabs(stp - stpc) > fabs(stp - stpq)) {
+                if(std::abs(stp - stpc) > std::abs(stp - stpq)) {
                     stpf = stpc;
                 } else {
                     stpf = stpq;
@@ -280,7 +280,7 @@ public:
             if(brackt) {
                 Real_t theta = 3 * (fp - fy) / (sty - stp) + dy + dp;
                 Real_t s     = std::max(theta, std::max(dy, dp));
-                Real_t gamma = s * sqrt((theta / s) * (theta / s) - (dy / s) * (dp / s));
+                Real_t gamma = s * std::sqrt((theta / s) * (theta / s) - (dy / s) * (dp / s));
                 if(stp > sty) {
                     gamma = -gamma;
                 }

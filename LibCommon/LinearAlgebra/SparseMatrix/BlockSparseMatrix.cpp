@@ -127,7 +127,7 @@ void BlockSparseMatrix<MatrixType>::checkSymmetry(Real_t threshold /* = Real_t(1
                                         for(Int l = 0; l < MatrixType::length(); ++l) {
                                             err += glm::length2(errM[l]);
                                         }
-                                        err = sqrt(err);
+                                        err = std::sqrt(err);
 
                                         if(err > threshold) {
                                             check = false;

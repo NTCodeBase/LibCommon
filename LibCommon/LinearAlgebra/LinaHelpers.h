@@ -52,7 +52,7 @@ Real_t maxAbs(const MatXxX<N, Real_t>& mat) {
     Real_t result = Real_t(0);
     for(Int i = 0; i < N; ++i) {
         for(Int j = 0; j < N; ++j) {
-            result = MathHelpers::max(result, fabs(mat[i][j]));
+            result = MathHelpers::max(result, std::abs(mat[i][j]));
         }
     }
     return result;
@@ -67,7 +67,7 @@ Real_t norm2(const MatXxX<N, Real_t>& mat) {
             prod += mat[i][j] * mat[i][j];
         }
     }
-    return sqrt(prod);
+    return std::sqrt(prod);
 }
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+

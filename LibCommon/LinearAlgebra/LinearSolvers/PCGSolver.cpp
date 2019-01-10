@@ -317,9 +317,9 @@ void PCGSolver<Real_t>::formPreconditioner_MICC0L0(const SparseMatrix<Real_t>& m
 
         // figure out the final L(k,k) entry
         if(m_ICCPrecond.invDiag[k] < minDiagonalRatio * m_ICCPrecond.aDiag[k]) {
-            m_ICCPrecond.invDiag[k] = Real_t(1.0) / sqrt(m_ICCPrecond.aDiag[k]); // drop to Gauss-Seidel here if the pivot looks dangerously small
+            m_ICCPrecond.invDiag[k] = Real_t(1.0) / std::sqrt(m_ICCPrecond.aDiag[k]); // drop to Gauss-Seidel here if the pivot looks dangerously small
         } else {
-            m_ICCPrecond.invDiag[k] = Real_t(1.0) / sqrt(m_ICCPrecond.invDiag[k]);
+            m_ICCPrecond.invDiag[k] = Real_t(1.0) / std::sqrt(m_ICCPrecond.invDiag[k]);
         }
 
         // finalize the k'th column L(:,k)
@@ -422,9 +422,9 @@ void PCGSolver<Real_t>::formPreconditioner_Symmetric_MICC0L0(const SparseMatrix<
 
         // figure out the final L(k,k) entry
         if(m_ICCPrecond.invDiag[k] < minDiagonalRatio * m_ICCPrecond.aDiag[k]) {
-            m_ICCPrecond.invDiag[k] = Real_t(1.0) / sqrt(m_ICCPrecond.aDiag[k]); // drop to Gauss-Seidel here if the pivot looks dangerously small
+            m_ICCPrecond.invDiag[k] = Real_t(1.0) / std::sqrt(m_ICCPrecond.aDiag[k]); // drop to Gauss-Seidel here if the pivot looks dangerously small
         } else {
-            m_ICCPrecond.invDiag[k] = Real_t(1.0) / sqrt(m_ICCPrecond.invDiag[k]);
+            m_ICCPrecond.invDiag[k] = Real_t(1.0) / std::sqrt(m_ICCPrecond.invDiag[k]);
         }
 
         // finalize the k'th column L(:,k)
