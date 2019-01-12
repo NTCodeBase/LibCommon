@@ -73,6 +73,7 @@ macx|unix {
         message("~~~ Release build ~~~")
         QMAKE_CXXFLAGS += -O3
         QMAKE_CXXFLAGS += -DNDEBUG
+        QMAKE_CXXFLAGS += -flto
     }
 
     macx {
