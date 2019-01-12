@@ -18,6 +18,7 @@
 #include <LibCommon/Grid/Grid.h>
 #include <LibCommon/Array/Array.h>
 #include <LibCommon/Animation/Animation.h>
+#include <LibCommon/Geometry/GeometryObjectFactory.h>
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 namespace NTCodeBase {
@@ -33,10 +34,11 @@ protected:
     __NT_TYPE_ALIAS
     ////////////////////////////////////////////////////////////////////////////////
 public:
+    using RealType = Real_t; // for using in factory
+    static constexpr Int dimension() { return N; }
+    ////////////////////////////////////////////////////////////////////////////////
     GeometryObject() = default;
-    static constexpr UInt objDimension() noexcept { return static_cast<UInt>(N); }
-
-    virtual String name() = 0;
+    virtual String geometryName() const = 0;
     virtual Real_t signedDistance(const VecN& ppos0, bool bNegativeInside = true) const = 0;
     virtual VecN   getAABBMin() const;
     virtual VecN   getAABBMax() const;
@@ -95,15 +97,21 @@ protected:
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 template<Int N, class Real_t>
-class BoxObject : public GeometryObject<N, Real_t> {
+class BoxObject : public GeometryObject<N, Real_t>, RegisteredInGeometryFactory<BoxObject<N, Real_t>> {
     ////////////////////////////////////////////////////////////////////////////////
     __NT_TYPE_ALIAS
     ////////////////////////////////////////////////////////////////////////////////
 public:
     BoxObject() = delete;
     BoxObject(const JParams& jParams) { parseParameters(jParams); }
+    ////////////////////////////////////////////////////////////////////////////////
+    static auto createGeometry(const JParams& jParams) {
+        return std::static_pointer_cast<GeometryObject<N, Real_t>>(std::make_shared<BoxObject<N, Real_t>>(jParams));
+    }
 
-    virtual String   name() override { return String("BoxObject"); }
+    static auto name() { return String("Box"); }
+    ////////////////////////////////////////////////////////////////////////////////
+    virtual String geometryName() const override { return name(); }
     virtual Real_t signedDistance(const VecN& ppos0, bool bNegativeInside = true) const override;
 
     virtual VecN getAABBMin() const override;
@@ -124,27 +132,41 @@ protected:
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 template<Int N, class Real_t>
-class SphereObject : public GeometryObject<N, Real_t> {
+class SphereObject : public GeometryObject<N, Real_t>, RegisteredInGeometryFactory<SphereObject<N, Real_t>> {
     ////////////////////////////////////////////////////////////////////////////////
     __NT_TYPE_ALIAS
     ////////////////////////////////////////////////////////////////////////////////
 public:
     SphereObject() = delete;
     SphereObject(const JParams& jParams) { this->parseParameters(jParams); }
-    virtual String   name() override { if(N == 2) { return String("CircleObject"); } else { return String("SphereObject"); } }
+    ////////////////////////////////////////////////////////////////////////////////
+    static auto createGeometry(const JParams& jParams) {
+        return std::static_pointer_cast<GeometryObject<N, Real_t>>(std::make_shared<SphereObject<N, Real_t>>(jParams));
+    }
+
+    static auto name() { return String("Sphere"); }
+    ////////////////////////////////////////////////////////////////////////////////
+    virtual String geometryName() const override { return name(); }
     virtual Real_t signedDistance(const VecN& ppos0, bool bNegativeInside = true) const override;
 };
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 template<Int N, class Real_t>
-class TorusObject : public GeometryObject<N, Real_t> {
+class TorusObject : public GeometryObject<N, Real_t>, RegisteredInGeometryFactory<TorusObject<N, Real_t>> {
     ////////////////////////////////////////////////////////////////////////////////
     __NT_TYPE_ALIAS
     ////////////////////////////////////////////////////////////////////////////////
 public:
     TorusObject() = delete;
     TorusObject(const JParams& jParams) { parseParameters(jParams); }
-    virtual String   name() override { return String("TorusObject"); }
+    ////////////////////////////////////////////////////////////////////////////////
+    static auto createGeometry(const JParams& jParams) {
+        return std::static_pointer_cast<GeometryObject<N, Real_t>>(std::make_shared<TorusObject<N, Real_t>>(jParams));
+    }
+
+    static auto name() { return String("Torus"); }
+    ////////////////////////////////////////////////////////////////////////////////
+    virtual String geometryName() const override { return name(); }
     virtual Real_t signedDistance(const VecN& ppos0, bool bNegativeInside = true) const override;
     void setRingRadius(Real_t ringRadius) { __NT_REQUIRE(ringRadius > 0); m_RingRadius = ringRadius; }
 protected:
@@ -155,62 +177,101 @@ protected:
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 template<Int N, class Real_t>
-class Torus28Object : public TorusObject<N, Real_t> {
+class Torus28Object : public TorusObject<N, Real_t>, RegisteredInGeometryFactory<Torus28Object<N, Real_t>> {
     ////////////////////////////////////////////////////////////////////////////////
     __NT_TYPE_ALIAS
     ////////////////////////////////////////////////////////////////////////////////
 public:
     Torus28Object() = delete;
     Torus28Object(const JParams& jParams) : TorusObject<N, Real_t>(jParams) { this->parseParameters(jParams); }
+    ////////////////////////////////////////////////////////////////////////////////
+    static auto createGeometry(const JParams& jParams) {
+        return std::static_pointer_cast<GeometryObject<N, Real_t>>(std::make_shared<Torus28Object<N, Real_t>>(jParams));
+    }
+
+    static auto name() { return String("Torus28"); }
+    ////////////////////////////////////////////////////////////////////////////////
+    virtual String geometryName() const override { return name(); }
     virtual Real_t signedDistance(const VecN& ppos0, bool bNegativeInside = true) const override;
 };
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 template<Int N, class Real_t>
-class Torus2InfObject : public TorusObject<N, Real_t> {
+class Torus2InfObject : public TorusObject<N, Real_t>, RegisteredInGeometryFactory<Torus2InfObject<N, Real_t>> {
     ////////////////////////////////////////////////////////////////////////////////
     __NT_TYPE_ALIAS
     ////////////////////////////////////////////////////////////////////////////////
 public:
     Torus2InfObject() = delete;
     Torus2InfObject(const JParams& jParams) : TorusObject<N, Real_t>(jParams) { this->parseParameters(jParams); }
+    ////////////////////////////////////////////////////////////////////////////////
+    static auto createGeometry(const JParams& jParams) {
+        return std::static_pointer_cast<GeometryObject<N, Real_t>>(std::make_shared<Torus2InfObject<N, Real_t>>(jParams));
+    }
+
+    static auto name() { return String("Torus2Inf"); }
+    ////////////////////////////////////////////////////////////////////////////////
+    virtual String geometryName() const override { return name(); }
     virtual Real_t signedDistance(const VecN& ppos0, bool bNegativeInside = true) const override;
 };
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 template<Int N, class Real_t>
-class Torus88Object : public TorusObject<N, Real_t> {
+class Torus88Object : public TorusObject<N, Real_t>, RegisteredInGeometryFactory<Torus88Object<N, Real_t>> {
     ////////////////////////////////////////////////////////////////////////////////
     __NT_TYPE_ALIAS
     ////////////////////////////////////////////////////////////////////////////////
 public:
     Torus88Object() = delete;
     Torus88Object(const JParams& jParams) : TorusObject<N, Real_t>(jParams) { this->parseParameters(jParams); }
+    ////////////////////////////////////////////////////////////////////////////////
+    static auto createGeometry(const JParams& jParams) {
+        return std::static_pointer_cast<GeometryObject<N, Real_t>>(std::make_shared<Torus88Object<N, Real_t>>(jParams));
+    }
+
+    static auto name() { return String("Torus88"); }
+    ////////////////////////////////////////////////////////////////////////////////
+    virtual String geometryName() const override { return name(); }
     virtual Real_t signedDistance(const VecN& ppos0, bool bNegativeInside = true) const override;
 };
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 template<Int N, class Real_t>
-class TorusInfInfObject : public TorusObject<N, Real_t> {
+class TorusInfInfObject : public TorusObject<N, Real_t>, RegisteredInGeometryFactory<TorusInfInfObject<N, Real_t>> {
     ////////////////////////////////////////////////////////////////////////////////
     __NT_TYPE_ALIAS
     ////////////////////////////////////////////////////////////////////////////////
 public:
     TorusInfInfObject() = delete;
     TorusInfInfObject(const JParams& jParams) : TorusObject<N, Real_t>(jParams) { this->parseParameters(jParams); }
+    ////////////////////////////////////////////////////////////////////////////////
+    static auto createGeometry(const JParams& jParams) {
+        return std::static_pointer_cast<GeometryObject<N, Real_t>>(std::make_shared<TorusInfInfObject<N, Real_t>>(jParams));
+    }
+
+    static auto name() { return String("TorusInfInf"); }
+    ////////////////////////////////////////////////////////////////////////////////
+    virtual String geometryName() const override { return name(); }
     virtual Real_t signedDistance(const VecN& ppos0, bool bNegativeInside = true) const override;
 };
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 template<Int N, class Real_t>
-class CylinderObject : public GeometryObject<N, Real_t> {
+class CylinderObject : public GeometryObject<N, Real_t>, RegisteredInGeometryFactory<CylinderObject<N, Real_t>> {
     ////////////////////////////////////////////////////////////////////////////////
     __NT_TYPE_ALIAS
     ////////////////////////////////////////////////////////////////////////////////
 public:
     CylinderObject() = delete;
     CylinderObject(const JParams& jParams) { parseParameters(jParams); }
-    virtual String   name() override { return String("CylinderObject"); }
+    ////////////////////////////////////////////////////////////////////////////////
+    static auto createGeometry(const JParams& jParams) {
+        return std::static_pointer_cast<GeometryObject<N, Real_t>>(std::make_shared<CylinderObject<N, Real_t>>(jParams));
+    }
+
+    static auto name() { return String("Cylinder"); }
+    ////////////////////////////////////////////////////////////////////////////////
+    virtual String geometryName() const override { return name(); }
     virtual Real_t signedDistance(const VecN& ppos0, bool bNegativeInside = true) const override;
     void setRadius(Real_t radius) { m_Radius = radius; }
 protected:
@@ -220,14 +281,21 @@ protected:
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 template<Int N, class Real_t>
-class ConeObject : public GeometryObject<N, Real_t> {
+class ConeObject : public GeometryObject<N, Real_t>, RegisteredInGeometryFactory<ConeObject<N, Real_t>> {
     ////////////////////////////////////////////////////////////////////////////////
     __NT_TYPE_ALIAS
     ////////////////////////////////////////////////////////////////////////////////
 public:
     ConeObject() = delete;
     ConeObject(const JParams& jParams) { parseParameters(jParams); }
-    virtual String   name() override { return String("ConeObject"); }
+    ////////////////////////////////////////////////////////////////////////////////
+    static auto createGeometry(const JParams& jParams) {
+        return std::static_pointer_cast<GeometryObject<N, Real_t>>(std::make_shared<ConeObject<N, Real_t>>(jParams));
+    }
+
+    static auto name() { return String("Cone"); }
+    ////////////////////////////////////////////////////////////////////////////////
+    virtual String geometryName() const override { return name(); }
     virtual Real_t signedDistance(const VecN& ppos0, bool bNegativeInside = true) const override;
     void setBaseRadius(Real_t radius) { m_Radius = radius; }
 protected:
@@ -237,14 +305,21 @@ protected:
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 template<Int N, class Real_t>
-class PlaneObject : public GeometryObject<N, Real_t> {
+class PlaneObject : public GeometryObject<N, Real_t>, RegisteredInGeometryFactory<PlaneObject<N, Real_t>> {
     ////////////////////////////////////////////////////////////////////////////////
     __NT_TYPE_ALIAS
     ////////////////////////////////////////////////////////////////////////////////
 public:
     PlaneObject() = delete;
     PlaneObject(const JParams& jParams) { parseParameters(jParams); }
-    virtual String   name() override { return String("PlaneObject"); }
+    ////////////////////////////////////////////////////////////////////////////////
+    static auto createGeometry(const JParams& jParams) {
+        return std::static_pointer_cast<GeometryObject<N, Real_t>>(std::make_shared<PlaneObject<N, Real_t>>(jParams));
+    }
+
+    static auto name() { return String("Plane"); }
+    ////////////////////////////////////////////////////////////////////////////////
+    virtual String geometryName() const override { return name(); }
     virtual Real_t signedDistance(const VecN& ppos0, bool bNegativeInside = true) const override;
 
     void setNormal(const VecN& normal) { m_Normal = normal; }
@@ -257,14 +332,21 @@ protected:
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 template<Int N, class Real_t>
-class TriangleObject : public GeometryObject<N, Real_t> {
+class TriangleObject : public GeometryObject<N, Real_t>, RegisteredInGeometryFactory<TriangleObject<N, Real_t>> {
     ////////////////////////////////////////////////////////////////////////////////
     __NT_TYPE_ALIAS
     ////////////////////////////////////////////////////////////////////////////////
 public:
     TriangleObject() = delete;
     TriangleObject(const JParams& jParams) { parseParameters(jParams); }
-    virtual String   name() override { return String("TriangleObject"); }
+    ////////////////////////////////////////////////////////////////////////////////
+    static auto createGeometry(const JParams& jParams) {
+        return std::static_pointer_cast<GeometryObject<N, Real_t>>(std::make_shared<TriangleObject<N, Real_t>>(jParams));
+    }
+
+    static auto name() { return String("Triangle"); }
+    ////////////////////////////////////////////////////////////////////////////////
+    virtual String geometryName() const override { return name(); }
     virtual Real_t signedDistance(const VecN& ppos0, bool bNegativeInside = true) const override;
     template<class IndexType> void setVertex(IndexType idx, const VecN& vertex) { m_Vertices[idx] = vertex; }
 protected:
@@ -274,27 +356,41 @@ protected:
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 template<Int N, class Real_t>
-class HexagonObject : public GeometryObject<N, Real_t> {
+class HexagonObject : public GeometryObject<N, Real_t>, RegisteredInGeometryFactory<HexagonObject<N, Real_t>> {
     ////////////////////////////////////////////////////////////////////////////////
     __NT_TYPE_ALIAS
     ////////////////////////////////////////////////////////////////////////////////
 public:
     HexagonObject() = delete;
     HexagonObject(const JParams& jParams) { this->parseParameters(jParams); }
-    virtual String   name() override { return String("HexagonObject"); }
+    ////////////////////////////////////////////////////////////////////////////////
+    static auto createGeometry(const JParams& jParams) {
+        return std::static_pointer_cast<GeometryObject<N, Real_t>>(std::make_shared<HexagonObject<N, Real_t>>(jParams));
+    }
+
+    static auto name() { return String("Hexagon"); }
+    ////////////////////////////////////////////////////////////////////////////////
+    virtual String geometryName() const override { return name(); }
     virtual Real_t signedDistance(const VecN& ppos0, bool bNegativeInside = true) const override;
 };
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 template<Int N, class Real_t>
-class TriangularPrismObject : public GeometryObject<N, Real_t> {
+class TriangularPrismObject : public GeometryObject<N, Real_t>, RegisteredInGeometryFactory<TriangularPrismObject<N, Real_t>> {
     ////////////////////////////////////////////////////////////////////////////////
     __NT_TYPE_ALIAS
     ////////////////////////////////////////////////////////////////////////////////
 public:
     TriangularPrismObject() = delete;
     TriangularPrismObject(const JParams& jParams) { parseParameters(jParams); }
-    virtual String   name() override { return String("TriangularPrismObject"); }
+    ////////////////////////////////////////////////////////////////////////////////
+    static auto createGeometry(const JParams& jParams) {
+        return std::static_pointer_cast<GeometryObject<N, Real_t>>(std::make_shared<TriangularPrismObject<N, Real_t>>(jParams));
+    }
+
+    static auto name() { return String("TriangularPrism"); }
+    ////////////////////////////////////////////////////////////////////////////////
+    virtual String geometryName() const override { return name(); }
     virtual Real_t signedDistance(const VecN& ppos0, bool bNegativeInside = true) const override;
     void setWidth(Real_t ratio) { m_Width = ratio; }
 protected:
@@ -304,14 +400,21 @@ protected:
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 template<Int N, class Real_t>
-class HexagonalPrismObject : public GeometryObject<N, Real_t> {
+class HexagonalPrismObject : public GeometryObject<N, Real_t>, RegisteredInGeometryFactory<HexagonalPrismObject<N, Real_t>> {
     ////////////////////////////////////////////////////////////////////////////////
     __NT_TYPE_ALIAS
     ////////////////////////////////////////////////////////////////////////////////
 public:
     HexagonalPrismObject() = delete;
     HexagonalPrismObject(const JParams& jParams) { parseParameters(jParams); }
-    virtual String   name() override { return String("HexagonalPrismObject"); }
+    ////////////////////////////////////////////////////////////////////////////////
+    static auto createGeometry(const JParams& jParams) {
+        return std::static_pointer_cast<GeometryObject<N, Real_t>>(std::make_shared<HexagonalPrismObject<N, Real_t>>(jParams));
+    }
+
+    static auto name() { return String("HexagonalPrism"); }
+    ////////////////////////////////////////////////////////////////////////////////
+    virtual String geometryName() const override { return name(); }
     virtual Real_t signedDistance(const VecN& ppos0, bool bNegativeInside = true) const override;
     void             setWidth(Real_t ratio) { m_Width = ratio; }
 protected:
@@ -321,14 +424,21 @@ protected:
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 template<Int N, class Real_t>
-class CapsuleObject : public GeometryObject<N, Real_t> {
+class CapsuleObject : public GeometryObject<N, Real_t>, RegisteredInGeometryFactory<CapsuleObject<N, Real_t>> {
     ////////////////////////////////////////////////////////////////////////////////
     __NT_TYPE_ALIAS
     ////////////////////////////////////////////////////////////////////////////////
 public:
     CapsuleObject() = delete;
     CapsuleObject(const JParams& jParams) { parseParameters(jParams); }
-    virtual String   name() override { return String("CapsuleObject"); }
+    ////////////////////////////////////////////////////////////////////////////////
+    static auto createGeometry(const JParams& jParams) {
+        return std::static_pointer_cast<GeometryObject<N, Real_t>>(std::make_shared<CapsuleObject<N, Real_t>>(jParams));
+    }
+
+    static auto name() { return String("Capsule"); }
+    ////////////////////////////////////////////////////////////////////////////////
+    virtual String geometryName() const override { return name(); }
     virtual Real_t signedDistance(const VecN& ppos0, bool bNegativeInside = true) const override;
     void setRadius(Real_t radius) { m_Radius = radius; }
 protected:
@@ -340,14 +450,21 @@ protected:
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 template<Int N, class Real_t>
-class EllipsoidObject : public GeometryObject<N, Real_t> {
+class EllipsoidObject : public GeometryObject<N, Real_t>, RegisteredInGeometryFactory<EllipsoidObject<N, Real_t>> {
     ////////////////////////////////////////////////////////////////////////////////
     __NT_TYPE_ALIAS
     ////////////////////////////////////////////////////////////////////////////////
 public:
     EllipsoidObject() = delete;
     EllipsoidObject(const JParams& jParams) { parseParameters(jParams); }
-    virtual String   name() override { return String("SphereObject"); }
+    ////////////////////////////////////////////////////////////////////////////////
+    static auto createGeometry(const JParams& jParams) {
+        return std::static_pointer_cast<GeometryObject<N, Real_t>>(std::make_shared<EllipsoidObject<N, Real_t>>(jParams));
+    }
+
+    static auto name() { return String("Ellipsoid"); }
+    ////////////////////////////////////////////////////////////////////////////////
+    virtual String geometryName() const override { return name(); }
     virtual Real_t signedDistance(const VecN& ppos0, bool bNegativeInside = true) const override;
     void setRadiusRatio(const VecN& scale) { m_RadiusRatio = scale; }
 protected:
@@ -357,14 +474,21 @@ protected:
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 template<Int N, class Real_t>
-class TriMeshObject : public GeometryObject<N, Real_t> {
+class TriMeshObject : public GeometryObject<N, Real_t>, RegisteredInGeometryFactory<TriMeshObject<N, Real_t>> {
     ////////////////////////////////////////////////////////////////////////////////
     __NT_TYPE_ALIAS
     ////////////////////////////////////////////////////////////////////////////////
 public:
     TriMeshObject() = delete;
     TriMeshObject(const JParams& jParams) { parseParameters(jParams); }
-    virtual String   name() override { return String("TriMeshObject"); }
+    ////////////////////////////////////////////////////////////////////////////////
+    static auto createGeometry(const JParams& jParams) {
+        return std::static_pointer_cast<GeometryObject<N, Real_t>>(std::make_shared<TriMeshObject<N, Real_t>>(jParams));
+    }
+
+    static auto name() { return String("Mesh"); }
+    ////////////////////////////////////////////////////////////////////////////////
+    virtual String geometryName() const override { return name(); }
     virtual Real_t signedDistance(const VecN&, bool bNegativeInside = true) const override;
 
     auto& meshFile() { return m_TriMeshFile; }
@@ -396,7 +520,7 @@ enum DomainDeformation {
 };
 
 template<Int N, class Real_t>
-class CSGObject : public GeometryObject<N, Real_t> {
+class CSGObject : public GeometryObject<N, Real_t>, RegisteredInGeometryFactory<CSGObject<N, Real_t>> {
     ////////////////////////////////////////////////////////////////////////////////
     __NT_TYPE_ALIAS
     ////////////////////////////////////////////////////////////////////////////////
@@ -407,7 +531,14 @@ public:
     };
     CSGObject() = delete;
     CSGObject(const JParams& jParams) { this->parseParameters(jParams); }
-    virtual String   name() override { return String("CSGObject"); }
+    ////////////////////////////////////////////////////////////////////////////////
+    static auto createGeometry(const JParams& jParams) {
+        return std::static_pointer_cast<GeometryObject<N, Real_t>>(std::make_shared<CSGObject<N, Real_t>>(jParams));
+    }
+
+    static auto name() { return String("CSGObject"); }
+    ////////////////////////////////////////////////////////////////////////////////
+    virtual String geometryName() const override { return name(); }
     virtual Real_t signedDistance(const VecN& ppos0, bool bNegativeInside = true) const override;
 
     void addObject(const CSGData& obj) { m_Objects.push_back(obj); }
