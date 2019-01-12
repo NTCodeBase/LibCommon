@@ -60,6 +60,10 @@ protected:
 };
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+inline String toString(bool bVal) {
+    return bVal ? String("Yes") : String("No");
+}
+
 template<class T>
 String toString(T value) {
     return Formatter<FormatType::CommaSeparated, 2, true>::format(value);
