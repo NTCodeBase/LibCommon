@@ -30,6 +30,12 @@
 namespace NTCodeBase::NumberHelpers {
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 template<class T>
+constexpr bool isFloat() { return std::is_same_v<T, float>; }
+
+template<class T>
+constexpr String nameRealT() { return isFloat<T>() ? String("float") : String("double"); }
+//-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+template<class T>
 bool isValidNumber(T x) {
     return !std::isnan(x) && !std::isinf(x);
 }
