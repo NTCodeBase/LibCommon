@@ -15,6 +15,8 @@
 #pragma once
 
 #include <LibCommon/Utils/Formatters.h>
+#include <debugbreak.h>
+
 #include <cstdlib>
 #include <cstdio>
 #include <iostream>
@@ -89,7 +91,6 @@ inline void throwIfFailed(HRESULT hr) {
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 // signals
-
 #define __NT_RAISE_TERMINATION_SIGNAL std::raise(SIGTERM);
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
@@ -109,6 +110,12 @@ inline void throwIfFailed(HRESULT hr) {
 #define __NT_ALIGN16 _MM_ALIGN16
 #else
 #define __NT_ALIGN16 __attribute__((aligned(16)))
+#endif
+
+#ifdef __NT_DEBUG__
+#  define __NT_DEBUG_BREAK_OR_TERMINATE debug_break();
+#else
+#  define __NT_DEBUG_BREAK_OR_TERMINATE __NT_RAISE_TERMINATION_SIGNAL
 #endif
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
@@ -205,35 +212,22 @@ inline void throwIfFailed(HRESULT hr) {
         __NT_ERROR(err)               \
         __NT_RAISE_TERMINATION_SIGNAL \
     }
-//exit(EXIT_FAILURE);
+
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-#ifdef __NT_DEBUG__
-#  define __NT_REQUIRE(condition)                                             \
+
+#define __NT_REQUIRE(condition)                                               \
     {                                                                         \
         if(!(condition))                                                      \
         {                                                                     \
             String erMsg = String("Assertion failed: ") + String(#condition); \
             printf("%s\n", erMsg.c_str());                                    \
             __NT_PRINT_LOCATION                                               \
-            assert(false);                                                    \
+                __NT_DEBUG_BREAK_OR_TERMINATE                                 \
         }                                                                     \
     }
-#else
-#  define __NT_REQUIRE(condition)                                             \
-    {                                                                         \
-        if(!(condition))                                                      \
-        {                                                                     \
-            String erMsg = String("Assertion failed: ") + String(#condition); \
-            printf("%s\n", erMsg.c_str());                                    \
-            __NT_PRINT_LOCATION                                               \
-            exit(EXIT_FAILURE);                                               \
-        }                                                                     \
-    }
-#endif
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-#ifdef __NT_DEBUG__
-#  define __NT_REQUIRE_MSG(condition, msg)                                    \
+#define __NT_REQUIRE_MSG(condition, msg)                                      \
     {                                                                         \
         if(!(condition))                                                      \
         {                                                                     \
@@ -241,32 +235,7 @@ inline void throwIfFailed(HRESULT hr) {
             String rsMsg = String("Reason: ") + String(msg);                  \
             printf("%s\n%s\n", erMsg.c_str(), rsMsg.c_str());                 \
             __NT_PRINT_LOCATION                                               \
-            assert(false);                                                    \
-        }                                                                     \
-    }
-#else
-#  define __NT_REQUIRE_MSG(condition, msg)                                    \
-    {                                                                         \
-        if(!(condition))                                                      \
-        {                                                                     \
-            String erMsg = String("Assertion failed: ") + String(#condition); \
-            String rsMsg = String("Reason: ") + String(msg);                  \
-            printf("%s\n%s\n", erMsg.c_str(), rsMsg.c_str());                 \
-            __NT_PRINT_LOCATION                                               \
-            exit(EXIT_FAILURE);                                               \
-        }                                                                     \
-    }
-#endif
-
-//-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-#define __NT_CHECK_ERROR(condition, msg)                                      \
-    {                                                                         \
-        if(!(condition))                                                      \
-        {                                                                     \
-            String erMsg = String("Assertion failed: ") + String(#condition); \
-            String rsMsg = String("Reason: ") + String(msg);                  \
-            printf("%s\n%s\n", erMsg.c_str(), rsMsg.c_str());                 \
-            __NT_PRINT_LOCATION                                               \
+                __NT_DEBUG_BREAK_OR_TERMINATE                                 \
         }                                                                     \
     }
 

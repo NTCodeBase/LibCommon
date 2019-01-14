@@ -16,3 +16,6 @@
 [submodule "Externals/fmt"]
 	path = Externals/fmt
 	url = https://github.com/fmtlib/fmt.git
+[submodule "Externals/debugbreak"]
+	path = Externals/debugbreak
+	url = https://github.com/scottt/debugbreak.git

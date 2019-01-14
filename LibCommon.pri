@@ -14,6 +14,7 @@
 
 INCLUDEPATH += $$PWD/
 INCLUDEPATH += $$PWD/Externals/Catch2/single_include
+INCLUDEPATH += $$PWD/Externals/debugbreak
 INCLUDEPATH += $$PWD/Externals/fmt/include
 INCLUDEPATH += $$PWD/Externals/glm
 INCLUDEPATH += $$PWD/Externals/json/single_include/nlohmann
