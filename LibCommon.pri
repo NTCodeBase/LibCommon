@@ -60,7 +60,7 @@ win32 {
 macx|unix {
     CONFIG += c++1z
     QMAKE_CXXFLAGS += -std=c++17
-    QMAKE_CXXFLAGS += -w -g -fpermissive
+    QMAKE_CXXFLAGS += -w -g
     QMAKE_CXXFLAGS += -march=native
 
 #    QMAKE_MAC_SDK = macosx10.12
