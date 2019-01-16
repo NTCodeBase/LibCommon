@@ -17,6 +17,7 @@
 #include <LibCommon/CommonSetup.h>
 #include <LibCommon/Timer/Timer.h>
 
+#define SPDLOG_FMT_EXTERNAL
 #include <spdlog/spdlog.h>
 
 #include <chrono>
