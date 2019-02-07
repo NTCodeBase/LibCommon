@@ -10,6 +10,8 @@ ALL_CCFLAGS ?= -g -W -O3 -lstdc++fs -DNDEBUG -std=c++17 $(FLAG_FLTO)
 ROOT_PATH := $(shell dirname $(realpath $(lastword $(MAKEFILE_LIST))))
 
 INCLUDES += -I$(ROOT_PATH)/
+INCLUDES += -I$(ROOT_PATH)/Externals/debugbreak
+INCLUDES += -I$(ROOT_PATH)/Externals/fmt/include
 INCLUDES += -I$(ROOT_PATH)/Externals/glm
 INCLUDES += -I$(ROOT_PATH)/Externals/json/single_include/nlohmann
 INCLUDES += -I$(ROOT_PATH)/Externals/spdlog/include
