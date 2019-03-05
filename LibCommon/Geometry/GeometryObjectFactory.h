@@ -25,28 +25,15 @@ class GeometryObjectFactory {
 public:
     GeometryObjectFactory() = delete;
     ////////////////////////////////////////////////////////////////////////////////
-    static bool registerGeometry(const String& geometryName, CreationFuncPtr creationFunc);
-    static StdVT_String getGeometryList() { return s_GeometryObjectList; }
-    ////////////////////////////////////////////////////////////////////////////////
     static GeometryPtr createGeometry(const String& geometryName, const JParams& jParams);
     static GeometryPtr combineGeometryObjects(const StdVT<GeometryPtr>& geometryObjs);
 private:
+    static bool                                         registerGeometry(const String& geometryName, CreationFuncPtr creationFunc);
+    static void                                         registerGeometries();
     static std::unordered_map<String, CreationFuncPtr>& getCreationFuncPtrs();
     static String                                       factoryName();
-    static inline StdVT_String s_GeometryObjectList {};
+    static inline bool s_bInitialized = false;
 };
 
-//-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-//-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-// RegisteredInGeometryFactory
-//-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-//-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-template<class GeometryObj>
-class RegisteredInGeometryFactory {
-protected:
-    RegisteredInGeometryFactory() { __NT_REQUIRE(s_bRegistered); }
-    static inline bool s_bRegistered =
-        GeometryObjectFactory<GeometryObj::dimension(), typename GeometryObj::RealType>::registerGeometry(GeometryObj::name(), GeometryObj::createGeometry);
-};
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 } // end namespace NTCodeBase::GeometryObjectFactory

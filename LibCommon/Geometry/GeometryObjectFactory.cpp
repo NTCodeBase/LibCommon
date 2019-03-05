@@ -26,10 +26,13 @@ bool GeometryObjectFactory<N, Real_t>::registerGeometry(const String& geometryNa
 #endif
     auto[it, bSuccess] = getCreationFuncPtrs().emplace(geometryName, creationFunc);
     __NT_UNUSED(it);
-    if(bSuccess) {
-        s_GeometryObjectList.push_back(geometryName);
-    }
     return bSuccess;
+}
+
+//-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+template<Int N, class Real_t>
+void GeometryObjectFactory<N, Real_t>::registerGeometries() {
+    __NT_REQUIRE(registerGeometry(BoxObject<N, Real_t>::name(), BoxObject<N, Real_t>::createGeometry));
 }
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
