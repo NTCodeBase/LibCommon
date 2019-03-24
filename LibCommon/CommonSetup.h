@@ -21,4 +21,5 @@
 #include <LibCommon/CommonMacros.h>
 ////////////////////////////////////////////////////////////////////////////////
 #define FMT_HEADER_ONLY
+#define FMT_USE_WINDOWS_H 0
 #include <fmt/format.h>

@@ -48,16 +48,6 @@ namespace NTCodeBase {
 #     define NOMINMAX
 #   endif
 #   define __func__ __FUNCTION__
-#   include <Windows.h>
-#   include <exception>
-#   include <string>
-
-inline void throwIfFailed(HRESULT hr) {
-    if(FAILED(hr)) {
-        throw std::exception(std::to_string(hr).c_str());
-    }
-}
-
 #endif // __NT_WINDOWS_OS__
 
 #ifdef __NT_WINDOWS_OS__
@@ -122,22 +112,22 @@ inline void throwIfFailed(HRESULT hr) {
 #ifdef __NT_WINDOWS_OS__
 #ifdef QT_CORE_LIB
 #  define __NT_COMPILER_MESSAGE(msg) \
-    __pragma (message("\033[38;5;214m+++>" msg "\033[0m"))
+    __pragma(message("\033[38;5;214m+++>" msg "\033[0m"))
 
 #  define __NT_TODO \
-    __pragma (message("\033[38;5;214m+++>TODO: => " __FILE__ "(" __NT_TO_STRING(__LINE__) ") \033[0m"))
+    __pragma(message("\033[38;5;214m+++>TODO: => " __FILE__ "(" __NT_TO_STRING(__LINE__) ") \033[0m"))
 
 #  define __NT_TODO_MSG(msg) \
-    __pragma (message("\033[38;5;214m+++>TODO: " msg " => " __FILE__ "(" __NT_TO_STRING(__LINE__) ") \033[0m"))
+    __pragma(message("\033[38;5;214m+++>TODO: " msg " => " __FILE__ "(" __NT_TO_STRING(__LINE__) ") \033[0m"))
 #else
 #  define __NT_COMPILER_MESSAGE(msg) \
-    __pragma (message("+++>" msg))
+    __pragma(message("+++>" msg))
 
 #  define __NT_TODO \
-    __pragma (message("+++>TODO: => " __FILE__ "(" __NT_TO_STRING(__LINE__) ") "))
+    __pragma(message("+++>TODO: => " __FILE__ "(" __NT_TO_STRING(__LINE__) ") "))
 
 #  define __NT_TODO_MSG(msg) \
-    __pragma (message("+++>TODO: " msg " => " __FILE__ "(" __NT_TO_STRING(__LINE__) ") "))
+    __pragma(message("+++>TODO: " msg " => " __FILE__ "(" __NT_TO_STRING(__LINE__) ") "))
 #endif
 #else // not __NT_WINDOWS_OS__
 #  ifdef QT_CORE_LIB
