@@ -502,4 +502,17 @@ Vec3<T> normalParallelTransport(const Vec3<T>& u, const Vec3<T>& t1, const Vec3<
 }
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+/**
+ * \brief Solve system of linear equations { a1 * x + b1 * y + c1 = 0, a2 * x + b2 * y + c2 = 0 }
+ */
+template<class T>
+std::pair<T, T> solveLinearSystem(T a1, T b1, T c1,
+                                  T a2, T b2, T c2) {
+    T delta = a1 * b2 - a2 * b1;
+    T x     = (b1 * c2 - b2 * c1) / delta;
+    T y     = (c1 * a2 - c2 * a1) / delta;
+    return { x, y };
+}
+
+//-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 } // end namespace NTCodeBase::LinaHelpers
