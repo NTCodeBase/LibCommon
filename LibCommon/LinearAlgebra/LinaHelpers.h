@@ -444,6 +444,22 @@ auto rotationMatrix2D(T angle) {
 }
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+// Rotate a matrix 2 rows/N cols counter-clockwise by 90 degree
+template<class T>
+auto rotateRightAngle2D(const Vec2<T>& v) {
+    return Vec2<T>(-v[1], v[0]);
+}
+
+template<Int N, class T>
+auto rotateRightAngle2D(const glm::mat<N, 2, T>& m) {
+    glm::mat<N, 2, T> result;
+    for(Int i = 0; i < N; ++i) {
+        result[i] = Vec2<T>(-m[i][1], m[i][0]);
+    }
+    return result;
+}
+
+//-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 // detail: https://en.wikipedia.org/wiki/Skew-symmetric_matrix#Cross_product
 template<Int N, class T>
 auto skewSymmetricMatrix3D(const VecX<N, T>& v) {
