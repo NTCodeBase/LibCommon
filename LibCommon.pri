@@ -21,6 +21,7 @@ INCLUDEPATH += $$PWD/Externals/json/single_include/nlohmann
 INCLUDEPATH += $$PWD/Externals/spdlog/include
 INCLUDEPATH += $$PWD/Externals/tinyobjloader
 INCLUDEPATH += $$PWD/Externals/tinyply/source
+INCLUDEPATH += $$PWD/Externals/zlib_win/include
 
 win32: INCLUDEPATH += $$PWD/Externals/tbb_win/include
 macx: INCLUDEPATH += $$PWD/Externals/tbb_osx/include
@@ -33,7 +34,8 @@ CONFIG += force_debug_info
 win32 {
     QMAKE_CXXFLAGS += /std:c++17
     QMAKE_CXXFLAGS += /MP /W3 /Zc:wchar_t /Zi /Gm- /fp:precise /FC /EHsc /permissive- /bigobj
-    QMAKE_CXXFLAGS += /D "_WINDOWS" /D "WIN32" /D "WIN64" /D "_MBCS" /D "_SILENCE_ALL_CXX17_DEPRECATION_WARNINGS" /D "PARTIO_WIN32"
+    QMAKE_CXXFLAGS += /D "_WINDOWS" /D "WIN32" /D "WIN64" /D "_MBCS" /D "_SILENCE_ALL_CXX17_DEPRECATION_WARNINGS"
+    QMAKE_CXXFLAGS += /D "PARTIO_WIN32" /D "PARTIO_USE_ZLIB" /D "NOMINMAX"
 
     CONFIG(debug, debug|release) {
         message("~~~ Debug build ~~~")
@@ -43,7 +45,7 @@ win32 {
     } else {
         QMAKE_CXXFLAGS += /Zo /Qpar /Gy /O2 /Ob2 /Oi /Ot /GF
         QMAKE_CXXFLAGS += /D "NDEBUG"
-        LIBS += -ltbb
+        LIBS += -ltbb -lzlib
         static {
             message("~~~ Static Release build ~~~")
             CONFIG += static
@@ -52,10 +54,11 @@ win32 {
         } else {
             message("~~~ Dynamic Release build ~~~")
             QMAKE_CXXFLAGS += /MD
-        }
+        }`
     }
 
     LIBS += -L$$PWD/Externals/tbb_win/lib/intel64/vc14
+    LIBS += -L$$PWD/Externals/zlib_win/lib
 }
 
 macx|unix {
@@ -63,6 +66,7 @@ macx|unix {
     QMAKE_CXXFLAGS += -std=c++17
     QMAKE_CXXFLAGS += -w -g
     QMAKE_CXXFLAGS += -march=native
+    QMAKE_CXXFLAGS += -DPARTIO_USE_ZLIB -DNOMINMAX
 
 #    QMAKE_MAC_SDK = macosx10.12
 #    QMAKE_MACOSX_DEPLOYMENT_TARGET = 10.12
@@ -81,8 +85,10 @@ macx|unix {
     macx {
         QMAKE_LFLAGS += -Wl,-rpath=$$PWD/Externals/tbb_osx/lib
         LIBS += -ltbb -L$$PWD/Externals/tbb_osx/lib
+        LIBS += -lzlib -L$$PWD/Externals/zlib_osx/lib
     } else {
         QMAKE_LFLAGS += -Wl,-rpath=$$PWD/Externals/tbb_linux/lib/intel64/gcc4.7
         LIBS += -ltbb -L$$PWD/Externals/tbb_linux/lib/intel64/gcc4.7
+        LIBS += -lzlib -L$$PWD/Externals/zlib_linux/lib
     }
 }
