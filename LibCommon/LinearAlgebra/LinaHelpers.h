@@ -24,8 +24,8 @@
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 namespace NTCodeBase::LinaHelpers {
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-template<Int N, class Real_t>
-bool hasValidElements(const VecX<N, Real_t>& vec) {
+template<Int N, class T>
+bool hasValidElements(const VecX<N, T>& vec) {
     for(Int i = 0; i < N; ++i) {
         if(!NumberHelpers::isValidNumber(vec[i])) {
             return false;
@@ -34,8 +34,8 @@ bool hasValidElements(const VecX<N, Real_t>& vec) {
     return true;
 }
 
-template<Int N, class Real_t>
-bool hasValidElements(const MatXxX<N, Real_t>& mat) {
+template<Int N, class T>
+bool hasValidElements(const MatXxX<N, T>& mat) {
     for(Int i = 0; i < N; ++i) {
         for(Int j = 0; j < N; ++j) {
             if(!NumberHelpers::isValidNumber(mat[i][j])) {
@@ -47,9 +47,30 @@ bool hasValidElements(const MatXxX<N, Real_t>& mat) {
 }
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-template<Int N, class Real_t>
-Real_t maxAbs(const MatXxX<N, Real_t>& mat) {
-    Real_t result = Real_t(0);
+// return 0 if ||v|| is too small
+template<Int N, class T>
+VecX<N, T> safeNormalize(const VecX<N, T>& v) {
+    T l2 = glm::length2(v);
+    if(l2 > T(1e-20)) {
+        return v / std::sqrt(l2);
+    }
+    return VecX<N, T>(0);
+}
+
+// return v0 if ||v|| is too small
+template<Int N, class T>
+VecX<N, T> safeNormalize(const VecX<N, T>& v, const VecX<N, T>& v0) {
+    T l2 = glm::length2(v);
+    if(l2 > T(1e-20)) {
+        return v / std::sqrt(l2);
+    }
+    return v0;
+}
+
+//-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+template<Int N, class T>
+T maxAbs(const MatXxX<N, T>& mat) {
+    T result = T(0);
     for(Int i = 0; i < N; ++i) {
         for(Int j = 0; j < N; ++j) {
             result = MathHelpers::max(result, std::abs(mat[i][j]));
@@ -59,9 +80,9 @@ Real_t maxAbs(const MatXxX<N, Real_t>& mat) {
 }
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-template<Int N, class Real_t>
-Real_t norm2(const MatXxX<N, Real_t>& mat) {
-    Real_t prod = Real_t(0);
+template<Int N, class T>
+T norm2(const MatXxX<N, T>& mat) {
+    T prod = T(0);
     for(Int i = 0; i < N; ++i) {
         for(Int j = 0; j < N; ++j) {
             prod += mat[i][j] * mat[i][j];
@@ -81,9 +102,9 @@ void fill(MatXxX<N, T>& mat, S x) {
 }
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-template<Int N, class Real_t>
-Real_t trace(const MatXxX<N, Real_t>& mat) {
-    Real_t prod = Real_t(0);
+template<Int N, class T>
+T trace(const MatXxX<N, T>& mat) {
+    T prod = T(0);
     for(Int i = 0; i < N; ++i) {
         prod += mat[i][i];
     }
@@ -91,28 +112,28 @@ Real_t trace(const MatXxX<N, Real_t>& mat) {
 }
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-template<Int N, class Real_t>
-MatXxX<N, Real_t> dev(const MatXxX<N, Real_t>& mat) {
-    return mat - MatXxX<N, Real_t>(LinaHelpers::trace<Real_t>(mat) / Real_t(N));
+template<Int N, class T>
+MatXxX<N, T> dev(const MatXxX<N, T>& mat) {
+    return mat - MatXxX<N, T>(LinaHelpers::trace<T>(mat) / T(N));
 }
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-template<Int N, class Real_t>
-void sumToDiag(MatXxX<N, Real_t>& mat, Real_t c) {
+template<Int N, class T>
+void sumToDiag(MatXxX<N, T>& mat, T c) {
     for(Int i = 0; i < N; ++i) {
         mat[i][i] += c;
     }
 }
 
-template<Int N, class Real_t>
-void sum1ToDiag(MatXxX<N, Real_t>& mat) {
+template<Int N, class T>
+void sum1ToDiag(MatXxX<N, T>& mat) {
     for(Int i = 0; i < N; ++i) {
-        mat[i][i] += Real_t(1.0);
+        mat[i][i] += T(1.0);
     }
 }
 
-template<Int N, class Real_t>
-MatXxX<N, Real_t> getDiagSum(const MatXxX<N, Real_t>& mat, Real_t c) {
+template<Int N, class T>
+MatXxX<N, T> getDiagSum(const MatXxX<N, T>& mat, T c) {
     auto result = mat;
     for(Int i = 0; i < N; ++i) {
         result[i][i] += c;
@@ -120,8 +141,8 @@ MatXxX<N, Real_t> getDiagSum(const MatXxX<N, Real_t>& mat, Real_t c) {
     return result;
 }
 
-template<Int N, class Real_t>
-MatXxX<N, Real_t> getDiagSum(const MatXxX<N, Real_t>& mat, const VecX<N, Real_t>& c) {
+template<Int N, class T>
+MatXxX<N, T> getDiagSum(const MatXxX<N, T>& mat, const VecX<N, T>& c) {
     auto result = mat;
     for(Int i = 0; i < N; ++i) {
         result[i][i] += c[i];
@@ -130,9 +151,9 @@ MatXxX<N, Real_t> getDiagSum(const MatXxX<N, Real_t>& mat, const VecX<N, Real_t>
 }
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-template<Int N, class Real_t>
-VecX<N, Real_t> extractDiag(const MatXxX<N, Real_t>& mat) {
-    VecX<N, Real_t> diag;
+template<Int N, class T>
+VecX<N, T> extractDiag(const MatXxX<N, T>& mat) {
+    VecX<N, T> diag;
     for(Int i = 0; i < N; ++i) {
         diag[i] = mat[i][i];
     }
@@ -140,9 +161,9 @@ VecX<N, Real_t> extractDiag(const MatXxX<N, Real_t>& mat) {
 }
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-template<Int N, class Real_t>
-MatXxX<N, Real_t> diagMatrix(const VecX<N, Real_t>& diag) {
-    MatXxX<N, Real_t> mat(0);
+template<Int N, class T>
+MatXxX<N, T> diagMatrix(const VecX<N, T>& diag) {
+    MatXxX<N, T> mat(0);
     for(Int i = 0; i < N; ++i) {
         mat[i][i] = diag[i];
     }
@@ -150,8 +171,8 @@ MatXxX<N, Real_t> diagMatrix(const VecX<N, Real_t>& diag) {
 }
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-template<Int N, class Real_t>
-void diagProduct(MatXxX<N, Real_t>& mat, const VecX<N, Real_t>& vec) {
+template<Int N, class T>
+void diagProduct(MatXxX<N, T>& mat, const VecX<N, T>& vec) {
     for(Int i = 0; i < N; ++i) {
         for(Int j = 0; j < N; ++j) {
             mat[i][j] *= vec[i];
@@ -161,8 +182,8 @@ void diagProduct(MatXxX<N, Real_t>& mat, const VecX<N, Real_t>& vec) {
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 //Matrix * Matrix^-1
-template<Int N, class Real_t>
-void diagProductInv(MatXxX<N, Real_t>& mat, const VecX<N, Real_t>& vec) {
+template<Int N, class T>
+void diagProductInv(MatXxX<N, T>& mat, const VecX<N, T>& vec) {
     for(Int i = 0; i < N; ++i) {
         for(Int j = 0; j < N; ++j) {
             mat[i][j] /= vec[i];
@@ -171,9 +192,9 @@ void diagProductInv(MatXxX<N, Real_t>& mat, const VecX<N, Real_t>& vec) {
 }
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-template<Int N, class Real_t>
-Real_t frobeniusInnerProduct(const MatXxX<N, Real_t>& m1, const MatXxX<N, Real_t>& m2) {
-    Real_t prod = Real_t(0);
+template<Int N, class T>
+T frobeniusInnerProduct(const MatXxX<N, T>& m1, const MatXxX<N, T>& m2) {
+    T prod = T(0);
     for(Int i = 0; i < N; ++i) {
         for(Int j = 0; j < N; ++j) {
             prod += m1[i][j] * m2[i][j];
@@ -183,9 +204,9 @@ Real_t frobeniusInnerProduct(const MatXxX<N, Real_t>& m1, const MatXxX<N, Real_t
 }
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-template<Int N, class Real_t>
-VecX<N, Real_t> innerProduct(const VecX<N, Real_t>& vec, const MatXxX<N, Real_t>& mat) {
-    VecX<N, Real_t> prod(0);
+template<Int N, class T>
+VecX<N, T> innerProduct(const VecX<N, T>& vec, const MatXxX<N, T>& mat) {
+    VecX<N, T> prod(0);
     for(Int i = 0; i < N; ++i) {
         for(Int j = 0; j < N; ++j) {
             prod[i] += vec[j] * mat[j][i];
@@ -195,9 +216,9 @@ VecX<N, Real_t> innerProduct(const VecX<N, Real_t>& vec, const MatXxX<N, Real_t>
 }
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-template<Int N, class Real_t>
-MatXxX<N, Real_t> innerProduct(const MatXxX<N, Real_t>& m1, const MatXxX<N, Real_t>& m2) {
-    MatXxX<N, Real_t> prod(0);
+template<Int N, class T>
+MatXxX<N, T> innerProduct(const MatXxX<N, T>& m1, const MatXxX<N, T>& m2) {
+    MatXxX<N, T> prod(0);
     for(Int i = 0; i < N; ++i) {
         for(Int j = 0; j < N; ++j) {
             for(Int k = 0; k < N; ++k) {
@@ -210,19 +231,19 @@ MatXxX<N, Real_t> innerProduct(const MatXxX<N, Real_t>& m1, const MatXxX<N, Real
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 // TODO: check row-col major
-template<class Real_t>
-Mat2x2<Real_t> cofactor(const Mat2x2<Real_t>& mat) {
-    return Mat2x2<Real_t>(mat[1][1], -mat[0][1],
-                          -mat[1][0], mat[0][0]);
+template<class T>
+Mat2x2<T> cofactor(const Mat2x2<T>& mat) {
+    return Mat2x2<T>(mat[1][1], -mat[0][1],
+                     -mat[1][0], mat[0][0]);
 }
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 // TODO: test value row-col major
-template<class Real_t>
-Real_t elementCofactor(const Mat3x3<Real_t>& mat, Int x, Int y) {
-    Real_t         cofactor_v;
-    Real_t         minor;
-    Mat2x2<Real_t> minor_mat;
+template<class T>
+T elementCofactor(const Mat3x3<T>& mat, Int x, Int y) {
+    T         cofactor_v;
+    T         minor;
+    Mat2x2<T> minor_mat;
 
     minor_mat[0][0] = mat[(x + 1) % 3][(y + 1) % 3];
     minor_mat[1][1] = mat[(x + 2) % 3][(y + 2) % 3];
@@ -238,9 +259,9 @@ Real_t elementCofactor(const Mat3x3<Real_t>& mat, Int x, Int y) {
 }
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-template<class Real_t>
-Mat3x3<Real_t> cofactor(const Mat3x3<Real_t>& mat) {
-    Mat2x2<Real_t> result;
+template<class T>
+Mat3x3<T> cofactor(const Mat3x3<T>& mat) {
+    Mat2x2<T> result;
     for(Int i = 0; i < 2; ++i) {
         for(Int j = 0; j < 2; ++j) {
             result[i][j] = elementCofactor(mat, i, j);
@@ -250,23 +271,23 @@ Mat3x3<Real_t> cofactor(const Mat3x3<Real_t>& mat) {
 }
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-template<class Real_t>
-Real_t vonMisesPlaneStress(const Mat3x3<Real_t>& mat) {
-    const Real_t vm = mat[0][0] * mat[0][0] + mat[1][1] * mat[1][1] + mat[2][2] * mat[2][2] -
-                      mat[0][0] * mat[1][1] - mat[1][1] * mat[2][2] - mat[2][2] * mat[0][0] +
-                      (mat[0][1] * mat[1][0] + mat[1][2] * mat[2][1] + mat[2][0] * mat[0][2]) * Real_t(3.0);
+template<class T>
+T vonMisesPlaneStress(const Mat3x3<T>& mat) {
+    const T vm = mat[0][0] * mat[0][0] + mat[1][1] * mat[1][1] + mat[2][2] * mat[2][2] -
+                 mat[0][0] * mat[1][1] - mat[1][1] * mat[2][2] - mat[2][2] * mat[0][0] +
+                 (mat[0][1] * mat[1][0] + mat[1][2] * mat[2][1] + mat[2][0] * mat[0][2]) * T(3.0);
 
     return vm > 0 ? std::sqrt(vm) : 0;
 }
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-template<Int N, class Real_t>
-MatXxX<N, Real_t> randMatrix(Real_t minVal = Real_t(0), Real_t maxVal = Real_t(1.0)) {
-    std::random_device                     rd;
-    std::mt19937                           gen(rd());
-    std::uniform_real_distribution<Real_t> dis(minVal, maxVal);
+template<Int N, class T>
+MatXxX<N, T> randMatrix(T minVal = T(0), T maxVal = T(1.0)) {
+    std::random_device                rd;
+    std::mt19937                      gen(rd());
+    std::uniform_real_distribution<T> dis(minVal, maxVal);
 
-    MatXxX<N, Real_t> result;
+    MatXxX<N, T> result;
     for(Int i = 0; i < N; ++i) {
         for(Int j = 0; j < N; ++j) {
             result[i][j] = dis(gen);
@@ -276,13 +297,13 @@ MatXxX<N, Real_t> randMatrix(Real_t minVal = Real_t(0), Real_t maxVal = Real_t(1
 }
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-template<Int N, class SizeType, class Real_t>
-StdVT<MatXxX<N, Real_t>> randVecMatrices(SizeType size, Real_t minVal = Real_t(0), Real_t maxVal = Real_t(1.0)) {
-    std::random_device                     rd;
-    std::mt19937                           gen(rd());
-    std::uniform_real_distribution<Real_t> dis(minVal, maxVal);
+template<Int N, class SizeType, class T>
+StdVT<MatXxX<N, T>> randVecMatrices(SizeType size, T minVal = T(0), T maxVal = T(1.0)) {
+    std::random_device                rd;
+    std::mt19937                      gen(rd());
+    std::uniform_real_distribution<T> dis(minVal, maxVal);
 
-    StdVT<MatXxX<N, Real_t>> results;
+    StdVT<MatXxX<N, T>> results;
     results.resize(size);
     for(SizeType idx = 0; idx < size; ++idx) {
         for(Int i = 0; i < N; ++i) {
@@ -295,90 +316,90 @@ StdVT<MatXxX<N, Real_t>> randVecMatrices(SizeType size, Real_t minVal = Real_t(0
 }
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-template<Int N, class Real_t>
-auto orientedSVD(const MatXxX<N, Real_t>& M) {
-    MatXxX<N, Real_t> U, Vt;
-    VecX<N, Real_t>   S;
+template<Int N, class T>
+auto orientedSVD(const MatXxX<N, T>& M) {
+    MatXxX<N, T> U, Vt;
+    VecX<N, T>   S;
 
     QRSVD::svd(M, U, S, Vt);
     Vt = glm::transpose(Vt);
 
-    MatXxX<N, Real_t> J = MatXxX<N, Real_t>(1.0);
-    J[N - 1][N - 1] = Real_t(-1.0);
+    MatXxX<N, T> J = MatXxX<N, T>(1.0);
+    J[N - 1][N - 1] = T(-1.0);
 
     // Check for inversion
-    if(glm::determinant(U) < Real_t(0)) {
+    if(glm::determinant(U) < T(0)) {
         U         = U * J;
-        S[N - 1] *= Real_t(-1.0);
+        S[N - 1] *= T(-1.0);
     }
-    if(glm::determinant(Vt) < Real_t(0)) {
+    if(glm::determinant(Vt) < T(0)) {
         Vt        = J * Vt;
-        S[N - 1] *= Real_t(-1.0);
+        S[N - 1] *= T(-1.0);
     }
 
     return std::make_tuple(U, S, Vt);
 } // end oriented svd
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-template<class Real_t>
-void QRDifferential(const Mat2x2<Real_t>& Q, const Mat2x2<Real_t>& R, const Mat2x2<Real_t>& dF, Mat2x2<Real_t>& dQ, Mat2x2<Real_t>& dR) {
+template<class T>
+void QRDifferential(const Mat2x2<T>& Q, const Mat2x2<T>& R, const Mat2x2<T>& dF, Mat2x2<T>& dQ, Mat2x2<T>& dR) {
     __NT_REQUIRE(R[0][0] != 0);
-    Mat2x2<Real_t> QtdF = glm::transpose(Q) * dF;
-    Real_t         a    = -QtdF[0][1] / R[0][0];
-    Mat2x2<Real_t> QtdQ(0, -a, a, 0);
+    Mat2x2<T> QtdF = glm::transpose(Q) * dF;
+    T         a    = -QtdF[0][1] / R[0][0];
+    Mat2x2<T> QtdQ(0, -a, a, 0);
     dQ = Q * QtdQ;
     dR = glm::transpose(Q) * dF - QtdQ * R;
 }
 
-template<class Real_t>
-void QRDifferential(const Mat3x3<Real_t>& Q, const Mat3x3<Real_t>& R, const Mat3x3<Real_t>& dF, Mat3x3<Real_t>& dQ, Mat3x3<Real_t>& dR) {
+template<class T>
+void QRDifferential(const Mat3x3<T>& Q, const Mat3x3<T>& R, const Mat3x3<T>& dF, Mat3x3<T>& dQ, Mat3x3<T>& dR) {
     __NT_REQUIRE(R[0][0] != 0 && R[1][1] != 0);
-    Mat3x3<Real_t> QtdF = glm::transpose(Q) * dF;
-    Real_t         w3   = QtdF[0][1] / R[0][0];
-    Real_t         w2   = -QtdF[0][2] / R[0][0];
-    Real_t         w1   = (QtdF[1][2] + w2 * R[1][0]) / R[1][1];
-    Mat3x3<Real_t> QtdQ(0, w3, -w2, -w3, 0, w1, w2, -w1, 0);
+    Mat3x3<T> QtdF = glm::transpose(Q) * dF;
+    T         w3   = QtdF[0][1] / R[0][0];
+    T         w2   = -QtdF[0][2] / R[0][0];
+    T         w1   = (QtdF[1][2] + w2 * R[1][0]) / R[1][1];
+    Mat3x3<T> QtdQ(0, w3, -w2, -w3, 0, w1, w2, -w1, 0);
     dQ = Q * QtdQ;
     dR = glm::transpose(Q) * dF - QtdQ * R;
 }
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-template<Int N, class Real_t>
-auto symmetryDecomposition(const MatXxX<N, Real_t>& M) {
-    MatXxX<N, Real_t> symComp, skewSymComp;
-    auto              Mt = glm::transpose(M);
+template<Int N, class T>
+auto symmetryDecomposition(const MatXxX<N, T>& M) {
+    MatXxX<N, T> symComp, skewSymComp;
+    auto         Mt = glm::transpose(M);
 
-    symComp     = Real_t(0.5) * (M + Mt);
-    skewSymComp = Real_t(0.5) * (M - Mt);
+    symComp     = T(0.5) * (M + Mt);
+    skewSymComp = T(0.5) * (M - Mt);
     return std::make_tuple(symComp, skewSymComp);
 }
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-template<Int N, class Real_t>
-auto extractFiberCotangentStress(const MatXxX<N, Real_t>& VP, const MatXxX<N, Real_t>& F) {
+template<Int N, class T>
+auto extractFiberCotangentStress(const MatXxX<N, T>& VP, const MatXxX<N, T>& F) {
     if constexpr (N == 2) {
         return glm::outerProduct(VP[1], F[1]);
     } else {
-        return MatMxN<3, 2, Real_t>(VP[1], VP[2]) * glm::transpose(MatMxN<3, 2, Real_t>(F[1], F[2]));
+        return MatMxN<3, 2, T>(VP[1], VP[2]) * glm::transpose(MatMxN<3, 2, T>(F[1], F[2]));
     }
 }
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-template<Int N, class Real_t>
-MatXxX<N, Real_t> getOrthogonalSystem(const VecX<N, Real_t>& d1) {
+template<Int N, class T>
+MatXxX<N, T> getOrthogonalSystem(const VecX<N, T>& d1) {
     if constexpr (N == 2) {
-        MatXxX<N, Real_t> M;
+        MatXxX<N, T> M;
         M[0] = glm::normalize(d1);
-        M[1] = glm::normalize(Vec2<Real_t>(-d1.y, d1.x));
+        M[1] = glm::normalize(Vec2<T>(-d1.y, d1.x));
         return M;
     } else {
-        const Vec3<Real_t> basis[3] = { Vec3<Real_t>(1, 0, 0), Vec3<Real_t>(0, 1, 0), Vec3<Real_t>(0, 0, 1) };
-        Vec3<Real_t>       u;
-        MatXxX<N, Real_t>  M;
+        const Vec3<T> basis[3] = { Vec3<T>(1, 0, 0), Vec3<T>(0, 1, 0), Vec3<T>(0, 0, 1) };
+        Vec3<T>       u;
+        MatXxX<N, T>  M;
         M[0] = glm::normalize(d1);
 
         for(UInt i = 0; i < 3; ++i) {
-            if(auto de = glm::dot(M[0], basis[i]); de > Real_t(0.1)) {
+            if(auto de = glm::dot(M[0], basis[i]); de > T(0.1)) {
                 u = basis[i];
                 break;
             }
