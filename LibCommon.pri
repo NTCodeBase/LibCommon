@@ -85,10 +85,10 @@ macx|unix {
     macx {
         QMAKE_LFLAGS += -Wl,-rpath=$$PWD/Externals/tbb_osx/lib
         LIBS += -ltbb -L$$PWD/Externals/tbb_osx/lib
-        LIBS += -lzlib -L$$PWD/Externals/zlib_osx/lib
+        LIBS += -lz -L$$PWD/Externals/zlib_osx/lib
     } else {
         QMAKE_LFLAGS += -Wl,-rpath=$$PWD/Externals/tbb_linux/lib/intel64/gcc4.7
         LIBS += -ltbb -L$$PWD/Externals/tbb_linux/lib/intel64/gcc4.7
-        LIBS += -lzlib -L$$PWD/Externals/zlib_linux/lib
+        LIBS += -lz -L$$PWD/Externals/zlib_linux/lib
     }
 }
