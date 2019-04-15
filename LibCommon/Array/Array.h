@@ -327,6 +327,9 @@ public:
     void swap(Array<N, T>& other) { std::swap(m_Size, other.m_Size); m_Data.swap(other.m_Data); }
 
     template<class IndexType>
+    void reserve(IndexType size) { m_Data.reserve(size); }
+
+    template<class IndexType>
     void reserve(const VecX<N, IndexType>& size) { m_Data.reserve(glm::compMul(size)); }
 
     template<class IndexType>
