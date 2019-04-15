@@ -41,7 +41,7 @@ win32 {
         message("~~~ Debug build ~~~")
         QMAKE_CXXFLAGS += /D "_DEBUG"
         QMAKE_CXXFLAGS += /Od /MDd
-        LIBS += -ltbb_debug
+        LIBS += -ltbb_debug -lzlib
     } else {
         QMAKE_CXXFLAGS += /Zo /Qpar /Gy /O2 /Ob2 /Oi /Ot /GF
         QMAKE_CXXFLAGS += /D "NDEBUG"
