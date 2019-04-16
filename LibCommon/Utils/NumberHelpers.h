@@ -33,11 +33,33 @@ template<class T>
 constexpr bool isFloat() { return std::is_same_v<T, float>; }
 
 template<class T>
-constexpr String nameRealT() { return isFloat<T>() ? String("float") : String("double"); }
+String nameRealT() { return isFloat<T>() ? String("float") : String("double"); }
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 template<class T>
 bool isValidNumber(T x) {
     return !std::isnan(x) && !std::isinf(x);
+}
+
+//-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+template<class T>
+T isPowerOfTwo(T n) {
+    return !(n == 0) && !(n & (n - 1));
+}
+
+template<class T>
+T nextPowerOfTwo(T n) {
+    if(n > 0) {
+        --n;
+
+        n |= n >> 1;
+        n |= n >> 2;
+        n |= n >> 4;
+        n |= n >> 8;
+        n |= n >> 16;
+
+        return n + static_cast<T>(1);
+    }
+    return 0;
 }
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
