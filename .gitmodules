@@ -22,3 +22,6 @@
 [submodule "Externals/tinyply"]
 	path = Externals/tinyply
 	url = https://github.com/ddiakopoulos/tinyply.git
+[submodule "Externals/libmorton"]
+	path = Externals/libmorton
+	url = https://github.com/Forceflow/libmorton.git

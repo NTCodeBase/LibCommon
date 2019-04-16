@@ -18,6 +18,7 @@ INCLUDEPATH += $$PWD/Externals/debugbreak
 INCLUDEPATH += $$PWD/Externals/fmt/include
 INCLUDEPATH += $$PWD/Externals/glm
 INCLUDEPATH += $$PWD/Externals/json/single_include/nlohmann
+INCLUDEPATH += $$PWD/Externals/libmorton/libmorton/include
 INCLUDEPATH += $$PWD/Externals/spdlog/include
 INCLUDEPATH += $$PWD/Externals/tinyobjloader
 INCLUDEPATH += $$PWD/Externals/tinyply/source
