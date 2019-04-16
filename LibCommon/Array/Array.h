@@ -17,6 +17,7 @@
 #include <LibCommon/CommonSetup.h>
 #include <LibCommon/Data/DataIO.h>
 #include <LibCommon/Utils/FileHelpers.h>
+#include <LibCommon/Utils/NumberHelpers.h>
 
 #include <algorithm>
 #include <cassert>
@@ -25,10 +26,12 @@
 #include <sstream>
 #include <cstdlib>
 
+#include <morton.h>
+
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 namespace NTCodeBase {
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-template<Int N, class T>
+template<Int N, class T, bool USE_Z_ORDER = false>
 class Array {
 public:
     using iterator               = typename StdVT<T>::iterator;
@@ -40,12 +43,17 @@ public:
     ////////////////////////////////////////////////////////////////////////////////
     // constructors & destructor
     Array() = default;
-    Array(const Array<N, T>& other) : m_Size(other.m_Size), m_Data(other.m_Data) {}
+    Array(const Array<N, T, USE_Z_ORDER>& other) : m_Size(other.m_Size), m_Data(other.m_Data) {}
 
     template<class IndexType>
     Array(const VecX<N, IndexType>& size) {
-        for(Int d = 0; d < N; ++d) {
-            m_Size[d] = static_cast<size_type>(size[d]);
+        if constexpr (USE_Z_ORDER) {
+            const auto maxSize = glm::compMax(size);
+            m_Size = VecX<N, size_type>(NumberHelpers::nextPowerOfTwo(static_cast<size_type>(maxSize)));
+        } else {
+            for(Int d = 0; d < N; ++d) {
+                m_Size[d] = static_cast<size_type>(size[d]);
+            }
         }
         m_Data.resize(glm::compMul(m_Size));
     }
@@ -54,7 +62,7 @@ public:
 
     ////////////////////////////////////////////////////////////////////////////////
     // assignment operator
-    Array<N, T>& operator=(const Array<N, T>& other) {
+    Array<N, T, USE_Z_ORDER>& operator=(const Array<N, T, USE_Z_ORDER>& other) {
         // check for self-assignment
         if(&other == this) {
             return *this;
@@ -150,7 +158,29 @@ public:
         __NT_REQUIRE(bIndexValid);
     }
 
-    bool equalSize(const Array<N, T>& other) const {
+    template<class IndexType>
+    void checkZIndex(size_t z_index, IndexType i, IndexType j) const {
+        static_assert(N == 2, "Array dimension != 2");
+        bool bIndexValid = z_index < m_Data.size();
+        if(!bIndexValid) {
+            printf("Invalid z_index = %zu, x = %u, y = %u, total size = %zu * %zu (%zu)\n", z_index, static_cast<UInt>(i), static_cast<UInt>(j),
+                   m_Size[0], m_Size[1], m_Data.size());
+        }
+        __NT_REQUIRE(bIndexValid);
+    }
+
+    template<class IndexType>
+    void checkZIndex(size_t z_index, IndexType i, IndexType j, IndexType k) const {
+        static_assert(N == 3, "Array dimension != 3");
+        bool bIndexValid = z_index < m_Data.size();
+        if(!bIndexValid) {
+            printf("Invalid z_index = %zu, x = %u, y = %u, z = %u, total size = %zu * %zu * %zu (%zu)\n", z_index,
+                   static_cast<UInt>(i), static_cast<UInt>(j), static_cast<UInt>(k), m_Size[0], m_Size[1], m_Size[2], m_Data.size());
+        }
+        __NT_REQUIRE(bIndexValid);
+    }
+
+    bool equalSize(const Array<N, T, USE_Z_ORDER>& other) const {
         for(Int d = 0; d < N; ++d) {
             if(m_Size[d] != other.m_Size[d]) {
                 return false;
@@ -186,7 +216,15 @@ public:
 #ifndef NDEBUG
         checkIndex<IndexType>(Vec2<IndexType>(i, j));
 #endif
-        return static_cast<size_type>(j) * m_Size[0] + static_cast<size_type>(i);
+        if constexpr (USE_Z_ORDER) {
+            const auto z_index = libmorton::morton2D_64_encode(static_cast<uint_fast32_t>(i), static_cast<uint_fast32_t>(j));
+#ifndef NDEBUG
+            checkZIndex(z_index, i, j);
+#endif
+            return z_index;
+        } else {
+            return static_cast<size_type>(j) * m_Size[0] + static_cast<size_type>(i);
+        }
     }
 
     template<class IndexType>
@@ -241,7 +279,15 @@ public:
 #ifndef NDEBUG
         checkIndex<IndexType>(Vec3<IndexType>(i, j, k));
 #endif
-        return (static_cast<size_type>(k) * m_Size[1] + static_cast<size_type>(j)) * m_Size[0] + static_cast<size_type>(i);
+        if constexpr (USE_Z_ORDER) {
+            const auto z_index = libmorton::morton3D_64_encode(static_cast<uint_fast32_t>(i), static_cast<uint_fast32_t>(j), static_cast<uint_fast32_t>(k));
+#ifndef NDEBUG
+            checkZIndex(z_index, i, j, k);
+#endif
+            return z_index;
+        } else {
+            return (static_cast<size_type>(k) * m_Size[1] + static_cast<size_type>(j)) * m_Size[0] + static_cast<size_type>(i);
+        }
     }
 
     template<class IndexType>
@@ -321,22 +367,49 @@ public:
     }
 
     void assign(const T& value) { m_Data.assign(m_Data.size(), value); }
-    void copyDataFrom(const Array<N, T>& other) { __NT_REQUIRE(equalSize(other)); m_Data = other.m_Data; }
+    void copyDataFrom(const Array<N, T, USE_Z_ORDER>& other) { __NT_REQUIRE(equalSize(other)); m_Data = other.m_Data; }
     void setZero() { m_Data.assign(m_Data.size(), 0); }
     void clear() { m_Data.resize(0); m_Size = VecX<N, size_type>(0); }
-    void swap(Array<N, T>& other) { std::swap(m_Size, other.m_Size); m_Data.swap(other.m_Data); }
+    void swap(Array<N, T, USE_Z_ORDER>& other) { std::swap(m_Size, other.m_Size); m_Data.swap(other.m_Data); }
 
     template<class IndexType>
     void reserve(IndexType size) { m_Data.reserve(size); }
 
     template<class IndexType>
-    void reserve(const VecX<N, IndexType>& size) { m_Data.reserve(glm::compMul(size)); }
+    void reserve(const VecX<N, IndexType>& size) {
+        if constexpr (USE_Z_ORDER) {
+            auto      maxSize = NumberHelpers::nextPowerOfTwo(glm::compMax(size));
+            IndexType size1D  = IndexType(1);
+            for(int i = 0; i < N; ++i) {
+                size1D *= maxSize;
+            }
+            m_Data.reserve(size1D);
+        } else {
+            m_Data.reserve(glm::compMul(size));
+        }
+    }
 
     template<class IndexType>
-    void resize(const VecX<N, IndexType>& newSize) { m_Size = newSize; m_Data.resize(glm::compMul(m_Size)); }
+    void resize(const VecX<N, IndexType>& newSize) {
+        if constexpr (USE_Z_ORDER) {
+            auto maxSize = glm::compMax(newSize);
+            m_Size = VecX<N, size_type>(NumberHelpers::nextPowerOfTwo(static_cast<size_type>(maxSize)));
+        } else {
+            m_Size = newSize;
+        }
+        m_Data.resize(glm::compMul(m_Size));
+    }
 
     template<class IndexType>
-    void resize(const VecX<N, IndexType>& newSize, const T& value) { m_Size = newSize; m_Data.resize(glm::compMul(m_Size), value); }
+    void resize(const VecX<N, IndexType>& newSize, const T& value) {
+        if constexpr (USE_Z_ORDER) {
+            auto maxSize = glm::compMax(newSize);
+            m_Size = VecX<N, size_type>(NumberHelpers::nextPowerOfTwo(static_cast<size_type>(maxSize)));
+        } else {
+            m_Size = newSize;
+        }
+        m_Data.resize(glm::compMul(m_Size), value);
+    }
 
     ////////////////////////////////////////////////////////////////////////////////
     // Array2D =>
@@ -355,7 +428,13 @@ public:
     template<class IndexType>
     void reserve(IndexType sizeX, IndexType sizeY) {
         static_assert(N == 2, "Array dimension != 2");
-        m_Data.reserve(sizeX * sizeY);
+        if constexpr (USE_Z_ORDER) {
+            auto maxSize = sizeX > sizeY ? sizeX : sizeY;
+            maxSize = NumberHelpers::nextPowerOfTwo(maxSize);
+            m_Data.reserve(maxSize * maxSize);
+        } else {
+            m_Data.reserve(sizeX * sizeY);
+        }
     }
 
     template<class IndexType>
@@ -390,7 +469,13 @@ public:
     template<class IndexType>
     void reserve(IndexType sizeX, IndexType sizeY, IndexType sizeZ) {
         static_assert(N == 3, "Array dimension != 3");
-        m_Data.reserve(sizeX * sizeY * sizeZ);
+        if constexpr (USE_Z_ORDER) {
+            auto maxSize = MathHelpers::max(sizeX, sizeY, sizeZ);
+            maxSize = NumberHelpers::nextPowerOfTwo(maxSize);
+            m_Data.reserve(maxSize * maxSize * maxSize);
+        } else {
+            m_Data.reserve(sizeX * sizeY * sizeZ);
+        }
     }
 
     template<class IndexType>
@@ -425,7 +510,7 @@ public:
             return false;
         }
 
-        for(Int d = 0; d < N; ++d) {
+        for(UInt d = 0; d < N; ++d) {
             UInt tmp;
             buffer.getData<UInt>(tmp, sizeof(UInt) * d);
             m_Size[d] = static_cast<size_type>(tmp);
