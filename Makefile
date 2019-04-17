@@ -14,6 +14,7 @@ INCLUDES += -I$(ROOT_PATH)/Externals/debugbreak
 INCLUDES += -I$(ROOT_PATH)/Externals/fmt/include
 INCLUDES += -I$(ROOT_PATH)/Externals/glm
 INCLUDES += -I$(ROOT_PATH)/Externals/json/single_include/nlohmann
+INCLUDES += -I$(ROOT_PATH)/Externals/libmorton/libmorton/include
 INCLUDES += -I$(ROOT_PATH)/Externals/spdlog/include
 INCLUDES += -I$(ROOT_PATH)/Externals/tinyobjloader
 INCLUDES += -I$(ROOT_PATH)/Externals/tbb_linux/include
