@@ -484,17 +484,36 @@ auto rotateRightAngle2D(const glm::mat<N, 2, T>& m) {
 // detail: https://en.wikipedia.org/wiki/Skew-symmetric_matrix#Cross_product
 template<Int N, class T>
 auto skewSymmetricMatrix3D(const VecX<N, T>& v) {
-    Mat3x3<T> m;
-    m[0][0] = 0;
-    m[1][1] = 0;
-    m[2][2] = 0;
-    m[1][2] = v[0];
-    m[2][1] = -v[0];
-    m[2][0] = v[1];
-    m[0][2] = -v[1];
-    m[0][1] = v[2];
-    m[1][0] = -v[2];
-    return m;
+    return Mat3x3<T>(
+        /*m[0][0] =*/ 0,
+        /*m[0][1] =*/ v[2],
+        /*m[0][2] =*/ -v[1],
+
+        /*m[1][0] =*/ -v[2],
+        /*m[1][1] =*/ 0,
+        /*m[1][2] =*/ v[0],
+
+        /*m[2][0] =*/ v[1],
+        /*m[2][1] =*/ -v[0],
+        /*m[2][2] =*/ 0
+        );
+}
+
+template<Int N, class T>
+auto transposedSkewSymmetricMatrix3D(const VecX<N, T>& v) {
+    return Mat3x3<T>(
+        /*m[0][0] =*/ 0,
+        /*m[0][1] =*/ -v[2],
+        /*m[0][2] =*/ v[1],
+
+        /*m[1][0] =*/ v[2],
+        /*m[1][1] =*/ 0,
+        /*m[1][2] =*/ -v[0],
+
+        /*m[2][0] =*/ -v[1],
+        /*m[2][1] =*/ v[0],
+        /*m[2][2] =*/ 0
+        );
 }
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
