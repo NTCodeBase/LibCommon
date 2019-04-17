@@ -223,10 +223,10 @@ void PCGSolver<Real_t>::applyPreconditioner(const StdVT<Real_t>& x, StdVT<Real_t
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 template<class Real_t>
 void PCGSolver<Real_t>::applyJacobiPreconditioner(const StdVT<Real_t>& x, StdVT<Real_t>& result) {
-    Scheduler::parallel_for<size_t>(0, x.size(),
-                                    [&](size_t i) {
-                                        result[i] = m_JacobiPrecond[i] * x[i];
-                                    });
+    ParallelExec::run<size_t>(0, x.size(),
+                              [&](size_t i) {
+                                  result[i] = m_JacobiPrecond[i] * x[i];
+                              });
 }
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
@@ -265,15 +265,15 @@ void PCGSolver<Real_t>::solveLower_TransposeInPlace(StdVT<Real_t>& x) {
 template<class Real_t>
 void PCGSolver<Real_t>::formPreconditioner_Jacobi(const SparseMatrix<Real_t>& matrix) {
     m_JacobiPrecond.resize(matrix.nRows);
-    Scheduler::parallel_for<UInt>(0, matrix.nRows,
-                                  [&](UInt i) {
-                                      UInt k = 0;
-                                      if(STLHelpers::Sorted::contain(matrix.colIndex[i], i, k)) {
-                                          m_JacobiPrecond[i] = Real_t(1.0) / matrix.colValue[i][k];
-                                      } else {
-                                          m_JacobiPrecond[i] = 0;
-                                      }
-                                  });
+    ParallelExec::run<UInt>(0, matrix.nRows,
+                            [&](UInt i) {
+                                UInt k = 0;
+                                if(STLHelpers::Sorted::contain(matrix.colIndex[i], i, k)) {
+                                    m_JacobiPrecond[i] = Real_t(1.0) / matrix.colValue[i][k];
+                                } else {
+                                    m_JacobiPrecond[i] = 0;
+                                }
+                            });
 }
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+

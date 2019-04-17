@@ -17,7 +17,7 @@
 
 #include <Utils/Formatters.h>
 #include <Utils/MathHelpers.h>
-#include <ParallelHelpers/Scheduler.h>
+#include <ParallelHelpers/ParallelExec.h>
 #include <NeighborSearch/NeighborSearch.h>
 #include <Grid/Grid.h>
 #include <catch.hpp>
@@ -32,7 +32,7 @@
 #include <random>
 
 using Real_t = float;
-using Clock    = std::chrono::high_resolution_clock;
+using Clock  = std::chrono::high_resolution_clock;
 using namespace Banana;
 
 #define DIM 2
@@ -43,7 +43,7 @@ using namespace Banana;
 StdVT<VecX<DIM, Real_t>> positions;
 Grid<DIM, Real_t>        grid = Grid<DIM, Real_t>(VecX<DIM, Real_t>(-2), VecX<DIM, Real_t>(2), Real_t(1.0 / 128.0));
 
-const size_t N               = 50;
+const size_t N = 50;
 const size_t N_enright_steps = 5;
 
 const Real_t r_omega  = 0.75_f;
@@ -52,8 +52,7 @@ const Real_t radius   = 2.001_f * (2.0_f * r_omega / static_cast<Real_t>(N - 1))
 const Real_t radius2  = radius * radius;
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-Real_t compute_average_number_of_neighbors(const NeighborSearch::NeighborSearch<DIM, Real_t>& nsearch)
-{
+Real_t compute_average_number_of_neighbors(const NeighborSearch::NeighborSearch<DIM, Real_t>& nsearch) {
     UInt64      res = 0;
     const auto& d   = nsearch.point_set(0);
 
@@ -65,8 +64,7 @@ Real_t compute_average_number_of_neighbors(const NeighborSearch::NeighborSearch<
 }
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-Real_t compute_average_distance(const NeighborSearch::NeighborSearch<DIM, Real_t>& nsearch)
-{
+Real_t compute_average_distance(const NeighborSearch::NeighborSearch<DIM, Real_t>& nsearch) {
     UInt64      res   = 0;
     UInt64      count = 0;
     auto const& d     = nsearch.point_set(0);
@@ -84,36 +82,33 @@ Real_t compute_average_distance(const NeighborSearch::NeighborSearch<DIM, Real_t
 }
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-StdVT<StdVT<UInt>> brute_force_search(size_t n_positions)
-{
+StdVT<StdVT<UInt>> brute_force_search(size_t n_positions) {
     StdVT<StdVT<UInt>> brute_force_neighbors(n_positions);
-    Scheduler::parallel_for(n_positions,
-                            [&](size_t i)
-                            {
-                                StdVT<UInt>& neighbors        = brute_force_neighbors[i];
-                                const VecX<DIM, Real_t>& xa = positions[i];
+    ParallelExec::run(n_positions,
+                      [&](size_t i) {
+                          StdVT<UInt>& neighbors      = brute_force_neighbors[i];
+                          const VecX<DIM, Real_t>& xa = positions[i];
 
-                                for(UInt j = 0, jend = UInt(n_positions); j < jend; ++j) {
-                                    if(i == size_t(j)) {
-                                        continue;
-                                    }
+                          for(UInt j = 0, jend = UInt(n_positions); j < jend; ++j) {
+                              if(i == size_t(j)) {
+                                  continue;
+                              }
 
-                                    const VecX<DIM, Real_t>& xb = positions[j];
-                                    Real_t l2                   = glm::length2(xa - xb);
-                                    if(l2 < radius * radius) {
-                                        neighbors.push_back(j);
-                                    }
-                                }
-                            });
+                              const VecX<DIM, Real_t>& xb = positions[j];
+                              Real_t l2 = glm::length2(xa - xb);
+                              if(l2 < radius * radius) {
+                                  neighbors.push_back(j);
+                              }
+                          }
+                      });
     return brute_force_neighbors;
 }
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-bool compare_with_bruteforce_search(const NeighborSearch::NeighborSearch<DIM, Real_t>& nsearch)
-{
-    const auto& d0                    = nsearch.point_set(0);
+bool compare_with_bruteforce_search(const NeighborSearch::NeighborSearch<DIM, Real_t>& nsearch) {
+    const auto& d0 = nsearch.point_set(0);
     auto        brute_force_neighbors = brute_force_search(d0.n_points());
-    bool        success               = true;
+    bool        success = true;
 
     for(UInt i = 0, iend = UInt(d0.n_points()); i < iend; ++i) {
         auto const& bfn = brute_force_neighbors[i];
@@ -150,8 +145,7 @@ bool compare_with_bruteforce_search(const NeighborSearch::NeighborSearch<DIM, Re
 }
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-bool compare_with_grid_search(const NeighborSearch::NeighborSearch<DIM, Real_t>& nsearch, StdVT<StdVT<UInt>>& gridSearchResult)
-{
+bool compare_with_grid_search(const NeighborSearch::NeighborSearch<DIM, Real_t>& nsearch, StdVT<StdVT<UInt>>& gridSearchResult) {
     const auto& d0      = nsearch.point_set(0);
     bool        success = true;
     for(UInt i = 0, iend = UInt(d0.n_points()); i < iend; ++i) {
@@ -175,12 +169,11 @@ bool compare_with_grid_search(const NeighborSearch::NeighborSearch<DIM, Real_t>&
 }
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-bool compare_single_query_with_bruteforce_search(NeighborSearch::NeighborSearch<DIM, Real_t>& nsearch)
-{
+bool compare_single_query_with_bruteforce_search(NeighborSearch::NeighborSearch<DIM, Real_t>& nsearch) {
     StdVT<StdVT<UInt>> neighbors;
-    const auto&        d0                    = nsearch.point_set(0);
+    const auto&        d0 = nsearch.point_set(0);
     auto               brute_force_neighbors = brute_force_search(d0.n_points());
-    bool               success               = true;
+    bool               success = true;
 
     for(UInt i = 0, iend = UInt(d0.n_points()); i < iend; ++i) {
         const auto& bfn = brute_force_neighbors[i];
@@ -205,8 +198,7 @@ bool compare_single_query_with_bruteforce_search(NeighborSearch::NeighborSearch<
 }
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-VecX<DIM, Real_t> enright_velocity_field(VecX<DIM, Real_t> const& x)
-{
+VecX<DIM, Real_t> enright_velocity_field(VecX<DIM, Real_t> const& x) {
     Real_t sin_pi_x_2 = Real_t(std::sin(Real_t(M_PI) * x[0]));
     Real_t sin_pi_y_2 = Real_t(std::sin(Real_t(M_PI) * x[1]));
     sin_pi_x_2 *= sin_pi_x_2;
@@ -234,19 +226,17 @@ VecX<DIM, Real_t> enright_velocity_field(VecX<DIM, Real_t> const& x)
 }
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-void advect()
-{
+void advect() {
     const Real_t timestep = 0.01_f;
-    Scheduler::parallel_for<size_t>(0, positions.size(), [&](size_t i)
-                                    {
-                                        auto& x       = positions[i];
-                                        const auto& v = enright_velocity_field(x);
-                                        x[0]         += timestep * v[0];
-                                        x[1]         += timestep * v[1];
-                                        if constexpr(DIM == 3) {
-                                            x[2] += timestep * v[1];
-                                        }
-                                    });
+    ParallelExec::run<size_t>(0, positions.size(), [&](size_t i) {
+                                  auto& x       = positions[i];
+                                  const auto& v = enright_velocity_field(x);
+                                  x[0]         += timestep * v[0];
+                                  x[1]         += timestep * v[1];
+                                  if constexpr(DIM == 3) {
+                                      x[2] += timestep * v[1];
+                                  }
+                              });
 }
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+

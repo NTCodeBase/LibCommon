@@ -18,7 +18,7 @@
 #include <LibCommon/Utils/STLHelpers.h>
 #include <LibCommon/Utils/FileHelpers.h>
 #include <LibCommon/Utils/NumberHelpers.h>
-#include <LibCommon/ParallelHelpers/Scheduler.h>
+#include <LibCommon/ParallelHelpers/ParallelExec.h>
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 namespace NTCodeBase {

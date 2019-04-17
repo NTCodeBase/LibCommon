@@ -164,27 +164,27 @@ bool BlockPCGSolver<N, Real_t>::solve_precond(const BlockSparseMatrix<MatNxN>& m
 template<Int N, class Real_t>
 void BlockPCGSolver<N, Real_t>::formPreconditioner(const BlockSparseMatrix<MatNxN>& matrix) {
     m_JacobiPreconditioner.resize(matrix.size());
-    Scheduler::parallel_for(matrix.size(),
-                            [&](UInt i) {
-                                const auto& v = matrix.getIndices(i);
-                                const auto it = std::lower_bound(v.begin(), v.end(), i);
-                                MatNxN tmp_inv;
-                                if(it != v.end()) {
-                                    MatNxN tmp = matrix.getValues(i)[std::distance(v.begin(), it)];
-                                    for(Int j = 0; j < MatNxN::length(); ++j) {
-                                        for(Int k = 0; k < MatNxN::length(); ++k) {
-                                            tmp_inv[k][j] = (j == k && tmp[j][j] != 0) ? typename MatNxN::value_type(1.0) / tmp[j][j] : 0;
-                                        }
-                                    }
-                                }
-                                m_JacobiPreconditioner[i] = tmp_inv;
-                            });
+    ParallelExec::run(matrix.size(),
+                      [&](UInt i) {
+                          const auto& v = matrix.getIndices(i);
+                          const auto it = std::lower_bound(v.begin(), v.end(), i);
+                          MatNxN tmp_inv;
+                          if(it != v.end()) {
+                              MatNxN tmp = matrix.getValues(i)[std::distance(v.begin(), it)];
+                              for(Int j = 0; j < MatNxN::length(); ++j) {
+                                  for(Int k = 0; k < MatNxN::length(); ++k) {
+                                      tmp_inv[k][j] = (j == k && tmp[j][j] != 0) ? typename MatNxN::value_type(1.0) / tmp[j][j] : 0;
+                                  }
+                              }
+                          }
+                          m_JacobiPreconditioner[i] = tmp_inv;
+                      });
 }
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 template<Int N, class Real_t>
 void BlockPCGSolver<N, Real_t>::applyPreconditioner(const StdVT_VecN& x, StdVT_VecN& result) {
-    Scheduler::parallel_for(x.size(), [&](size_t i) { result[i] = m_JacobiPreconditioner[i] * x[i]; });
+    ParallelExec::run(x.size(), [&](size_t i) { result[i] = m_JacobiPreconditioner[i] * x[i]; });
 }
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+

@@ -206,7 +206,7 @@
     <ClInclude Include="LibCommon\ParallelHelpers\ParallelSTL.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="LibCommon\ParallelHelpers\Scheduler.h">
+    <ClInclude Include="LibCommon\ParallelHelpers\ParallelExec.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="LibCommon\Timer\ScopeTimer.h">

@@ -16,7 +16,7 @@
 #include <LibCommon/Utils/NumberHelpers.h>
 #include <LibCommon/Timer/Timer.h>
 #include <LibCommon/ParallelHelpers/AtomicOperations.h>
-#include <LibCommon/ParallelHelpers/Scheduler.h>
+#include <LibCommon/ParallelHelpers/ParallelExec.h>
 
 namespace TestArray {
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
@@ -58,11 +58,11 @@ double test_function(const StdVT<Vec3ui>& indices) {
     for(int i = 0; i < PERFORMANCE_TEST_NUM; ++i) {
         timer.tick();
         data_array.assign(0);
-        Scheduler::parallel_for(NUM_ELEMENTS,
-                                [&](UInt i) {
-                                    Vec3ui idx = indices[i];
-                                    AtomicOps::add(data_array(idx[0], idx[1], idx[2]), Real_t(1));
-                                });
+        ParallelExec::run(NUM_ELEMENTS,
+                          [&](UInt i) {
+                              Vec3ui idx = indices[i];
+                              AtomicOps::add(data_array(idx[0], idx[1], idx[2]), Real_t(1));
+                          });
         data_array0 = data_array(0, 0, 0);
         totalTime  += timer.tock();
     }
@@ -83,11 +83,11 @@ double test_function_change_size(const StdVT<Vec3ui>& indices) {
     for(int i = 0; i < PERFORMANCE_TEST_NUM; ++i) {
         timer.tick();
         data_array.assign(0);
-        Scheduler::parallel_for(NUM_ELEMENTS,
-                                [&](UInt i) {
-                                    Vec3ui idx = indices[i];
-                                    AtomicOps::add(data_array(idx[0], idx[1], idx[2]), Real_t(1));
-                                });
+        ParallelExec::run(NUM_ELEMENTS,
+                          [&](UInt i) {
+                              Vec3ui idx = indices[i];
+                              AtomicOps::add(data_array(idx[0], idx[1], idx[2]), Real_t(1));
+                          });
         data_array0 = data_array(0, 0, 0);
         totalTime  += timer.tock();
     }

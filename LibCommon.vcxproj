@@ -170,7 +170,7 @@
     <ClInclude Include="LibCommon\ParallelHelpers\ParallelBLAS.h" />
     <ClInclude Include="LibCommon\ParallelHelpers\ParallelObjects.h" />
     <ClInclude Include="LibCommon\ParallelHelpers\ParallelSTL.h" />
-    <ClInclude Include="LibCommon\ParallelHelpers\Scheduler.h" />
+    <ClInclude Include="LibCommon\ParallelHelpers\ParallelExec.h" />
     <ClInclude Include="LibCommon\ParallelHelpers\_ParallelHelpers.Test.hpp" />
     <ClInclude Include="LibCommon\Timer\ScopeTimer.h" />
     <ClInclude Include="LibCommon\Timer\Timer.h" />

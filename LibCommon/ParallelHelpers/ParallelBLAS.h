@@ -19,7 +19,7 @@
 
 #include <tbb/tbb.h>
 #include <LibCommon/ParallelHelpers/ParallelObjects.h>
-#include <LibCommon/ParallelHelpers/Scheduler.h>
+#include <LibCommon/ParallelHelpers/ParallelExec.h>
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 namespace NTCodeBase::ParallelBLAS {
@@ -66,7 +66,7 @@ template<class VectorType>
 inline StdVT<VectorType> add(const StdVT<VectorType>& x, const StdVT<VectorType>& y) {
     __NT_REQUIRE(x.size() == y.size());
     StdVT<VectorType> z(x.size());
-    Scheduler::parallel_for(z.size(), [&](size_t i) { z[i] = x[i] + y[i]; });
+    ParallelExec::run(z.size(), [&](size_t i) { z[i] = x[i] + y[i]; });
     return z;
 }
 
@@ -74,7 +74,7 @@ template<class VectorType>
 inline StdVT<VectorType> minus(const StdVT<VectorType>& x, const StdVT<VectorType>& y) {
     __NT_REQUIRE(x.size() == y.size());
     StdVT<VectorType> z(x.size());
-    Scheduler::parallel_for(z.size(), [&](size_t i) { z[i] = x[i] - y[i]; });
+    ParallelExec::run(z.size(), [&](size_t i) { z[i] = x[i] - y[i]; });
     return z;
 }
 
@@ -83,7 +83,7 @@ inline StdVT<VectorType> minus(const StdVT<VectorType>& x, const StdVT<VectorTyp
 //
 template<class Real_t, class VectorType>
 inline void addScaled(Real_t alpha, const StdVT<VectorType>& x, StdVT<VectorType>& y) {
-    Scheduler::parallel_for(x.size(), [&, alpha](size_t i) { y[i] += alpha * x[i]; });
+    ParallelExec::run(x.size(), [&, alpha](size_t i) { y[i] += alpha * x[i]; });
 }
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
@@ -91,7 +91,7 @@ inline void addScaled(Real_t alpha, const StdVT<VectorType>& x, StdVT<VectorType
 //
 template<class Real_t, class VectorType>
 inline void scaledAdd(Real_t beta, const StdVT<VectorType>& x, StdVT<VectorType>& y) {
-    Scheduler::parallel_for(x.size(), [&, beta](size_t i) { y[i] = beta * y[i] + x[i]; });
+    ParallelExec::run(x.size(), [&, beta](size_t i) { y[i] = beta * y[i] + x[i]; });
 }
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
@@ -99,7 +99,7 @@ inline void scaledAdd(Real_t beta, const StdVT<VectorType>& x, StdVT<VectorType>
 //
 template<class Real_t, class VectorType>
 inline void scale(Real_t alpha, StdVT<VectorType>& x) {
-    Scheduler::parallel_for(x.size(), [&, alpha](size_t i) { x[i] *= alpha; });
+    ParallelExec::run(x.size(), [&, alpha](size_t i) { x[i] *= alpha; });
 }
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
@@ -107,7 +107,7 @@ inline void scale(Real_t alpha, StdVT<VectorType>& x) {
 template<class Real_t, class VectorType>
 inline StdVT<VectorType> multiply(Real_t alpha, const StdVT<VectorType>& x) {
     StdVT<VectorType> y(x.size());
-    Scheduler::parallel_for(x.size(), [&, alpha](size_t i) { y[i] = x[i] * alpha; });
+    ParallelExec::run(x.size(), [&, alpha](size_t i) { y[i] = x[i] * alpha; });
     return y;
 }
 

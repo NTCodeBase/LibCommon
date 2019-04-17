@@ -22,7 +22,7 @@
 #include <random>
 
 #include <LibCommon/CommonSetup.h>
-#include <LibCommon/ParallelHelpers/Scheduler.h>
+#include <LibCommon/ParallelHelpers/ParallelExec.h>
 #include <LibCommon/ParallelHelpers/ParallelObjects.h>
 #include <LibCommon/Math/MathHelpers.h>
 
@@ -354,17 +354,17 @@ void jitter(VecX<N, RealType1>& ppos, RealType2 maxJitter) {
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 template<Int N, class Real_t>
 void translate(StdVT_VecX<N, Real_t>& points, const VecX<N, Real_t>& translation) {
-    Scheduler::parallel_for(points.size(), [&](size_t i) {
-                                points[i] = points[i] + translation;
-                            });
+    ParallelExec::run(points.size(), [&](size_t i) {
+                          points[i] = points[i] + translation;
+                      });
 }
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 template<Int N, class Real_t>
 void scale(StdVT_VecX<N, Real_t>& points, const VecX<N, Real_t>& scale) {
-    Scheduler::parallel_for(points.size(), [&](size_t i) {
-                                points[i] = points[i] * scale;
-                            });
+    ParallelExec::run(points.size(), [&](size_t i) {
+                          points[i] = points[i] * scale;
+                      });
 }
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
@@ -396,20 +396,20 @@ void rotate(StdVT_VecX<N, Real_t>& points, const VecX<N, Real_t>& rotation) {
     R[2][1] = sinR * sinA - cosR * cosA * sinE;
     R[2][2] = cosA * cosE;
 
-    Scheduler::parallel_for(points.size(), [&](size_t i) {
-                                const auto& pi = points[i];
-                                points[i]      = Vec3<Real_t>(glm::dot(R[0], pi),
-                                                              glm::dot(R[1], pi),
-                                                              glm::dot(R[2], pi));
-                            });
+    ParallelExec::run(points.size(), [&](size_t i) {
+                          const auto& pi = points[i];
+                          points[i]      = Vec3<Real_t>(glm::dot(R[0], pi),
+                                                        glm::dot(R[1], pi),
+                                                        glm::dot(R[2], pi));
+                      });
 }
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 template<Int N, class Real_t>
 void transform(StdVT_VecX<N, Real_t>& points, const VecX<N, Real_t>& translation, const VecX<N, Real_t>& scale) {
-    Scheduler::parallel_for(points.size(), [&](size_t i) {
-                                points[i] = points[i] * scale + translation;
-                            });
+    ParallelExec::run(points.size(), [&](size_t i) {
+                          points[i] = points[i] * scale + translation;
+                      });
 }
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
@@ -441,13 +441,13 @@ void transform(StdVT_Vec3<Real_t>& points, const Vec3<Real_t>& translation, cons
     R[2][1] = sinR * sinA - cosR * cosA * sinE;
     R[2][2] = cosA * cosE;
 
-    Scheduler::parallel_for(points.size(), [&](size_t i) {
-                                const auto& pi = points[i];
-                                Vec3<Real_t> tmp(glm::dot(R[0], pi),
-                                                 glm::dot(R[1], pi),
-                                                 glm::dot(R[2], pi));
-                                points[i] = tmp * scale + translation;
-                            });
+    ParallelExec::run(points.size(), [&](size_t i) {
+                          const auto& pi = points[i];
+                          Vec3<Real_t> tmp(glm::dot(R[0], pi),
+                                           glm::dot(R[1], pi),
+                                           glm::dot(R[2], pi));
+                          points[i] = tmp * scale + translation;
+                      });
 }
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
@@ -469,7 +469,7 @@ auto generatePointsOnCircle(IndexType nPoints, Real_t sphereRadius = Real_t(1)) 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 template<Int N, class IndexType, class Real_t>
 auto generatePointsOnSphere(IndexType nPoints, Real_t radius = Real_t(1), Real_t spanPolarAngle = Real_t(M_PI)) {
-    if constexpr (N == 2) {
+    if constexpr(N == 2) {
         __NT_UNUSED(spanPolarAngle);
         StdVT_Vec2<Real_t> points;
         points.reserve(nPoints);

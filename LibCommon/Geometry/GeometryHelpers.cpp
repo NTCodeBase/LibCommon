@@ -148,7 +148,7 @@ void sweep(const StdVT<Vec3ui>& tri, const StdVT_Vec3<Real_t>& x,
         k1 = -1;
     }
 
-    //    Scheduler::parallel_for<Int>(i0, i1 + 1, j0, j1 + 1, k0, k1 + 1,
+    //    ParallelExec::run<Int>(i0, i1 + 1, j0, j1 + 1, k0, k1 + 1,
     //                                       [&](Int i, Int j, Int k)
 
     for(Int k = k0; k != k1; k += dk) {

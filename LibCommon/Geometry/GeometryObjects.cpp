@@ -487,8 +487,8 @@ Real_t TriangleObject<N, Real_t>::signedDistance(const VecN& ppos0, bool bNegati
            sgn(glm::dot(glm::cross(cb, nor), pb)) +
            sgn(glm::dot(glm::cross(ac, nor), pc)) < 2) {
             auto d = std::sqrt(std::min(std::min(glm::length2(ba * MathHelpers::clamp(dot(ba, pa) / glm::length2(ba), Real_t(0), Real_t(1.0)) - pa),
-                                            glm::length2(cb * MathHelpers::clamp(dot(cb, pb) / glm::length2(cb), Real_t(0), Real_t(1.0)) - pb)),
-                                   glm::length2(ac * MathHelpers::clamp(dot(ac, pc) / glm::length2(ac), Real_t(0), Real_t(1.0)) - pc)));
+                                                 glm::length2(cb * MathHelpers::clamp(dot(cb, pb) / glm::length2(cb), Real_t(0), Real_t(1.0)) - pb)),
+                                        glm::length2(ac * MathHelpers::clamp(dot(ac, pc) / glm::length2(ac), Real_t(0), Real_t(1.0)) - pc)));
             return bNegativeInside ? d : -d;
         } else {
             auto d = -sqrt(std::min(std::min(glm::length2(ba * MathHelpers::clamp(dot(ba, pa) / glm::length2(ba), Real_t(0), Real_t(1.0)) - pa),
@@ -662,16 +662,16 @@ void computeSDFMesh(const StdVT<Vec3ui>& faces, const StdVT_Vec3<Real_t>& vertic
         Int k0 = MathHelpers::clamp(static_cast<Int>(MathHelpers::min(fp[2], fq[2], fr[2])) - exactBand, 0, static_cast<Int>(nk - 1));
         Int k1 = MathHelpers::clamp(static_cast<Int>(MathHelpers::max(fp[2], fq[2], fr[2])) + exactBand + 1, 0, static_cast<Int>(nk - 1));
 
-        Scheduler::parallel_for<Int>(i0, i1 + 1, j0, j1 + 1, k0, k1 + 1,
-                                     [&](Int i, Int j, Int k) {
-                                         Vec3<Real_t> gx = Vec3<Real_t>(i, j, k) * cellSize + origin;
-                                         Real_t d        = GeometryHelpers::point_triangle_distance(gx, vertices[p], vertices[q], vertices[r]);
+        ParallelExec::run<Int>(i0, i1 + 1, j0, j1 + 1, k0, k1 + 1,
+                               [&](Int i, Int j, Int k) {
+                                   Vec3<Real_t> gx = Vec3<Real_t>(i, j, k) * cellSize + origin;
+                                   Real_t d        = GeometryHelpers::point_triangle_distance(gx, vertices[p], vertices[q], vertices[r]);
 
-                                         if(d < SDF(i, j, k)) {
-                                             SDF(i, j, k)         = d;
-                                             closest_tri(i, j, k) = face;
-                                         }
-                                     });
+                                   if(d < SDF(i, j, k)) {
+                                       SDF(i, j, k)         = d;
+                                       closest_tri(i, j, k) = face;
+                                   }
+                               });
 
         // and do intersection counts
         j0 = MathHelpers::clamp(static_cast<Int>(std::ceil(MathHelpers::min(fp[1], fq[1], fr[1]))) - 10, 0, static_cast<Int>(nj - 1));
@@ -713,20 +713,20 @@ void computeSDFMesh(const StdVT<Vec3ui>& faces, const StdVT_Vec3<Real_t>& vertic
     }
 
     // then figure out signs (inside/outside) from intersection counts
-    Scheduler::parallel_for<UInt>(0, nk,
-                                  [&](UInt k) {
-                                      for(UInt j = 0; j < nj; ++j) {
-                                          UInt total_count = 0;
+    ParallelExec::run<UInt>(0, nk,
+                            [&](UInt k) {
+                                for(UInt j = 0; j < nj; ++j) {
+                                    UInt total_count = 0;
 
-                                          for(UInt i = 0; i < ni; ++i) {
-                                              total_count += intersectionCount(i, j, k);
+                                    for(UInt i = 0; i < ni; ++i) {
+                                        total_count += intersectionCount(i, j, k);
 
-                                              if(total_count & 1) {             // if parity of intersections so far is odd,
-                                                  SDF(i, j, k) = -SDF(i, j, k); // we are inside the mesh
-                                              }
-                                          }
-                                      }
-                                  });
+                                        if(total_count & 1) {                      // if parity of intersections so far is odd,
+                                            SDF(i, j, k) = -SDF(i, j, k);          // we are inside the mesh
+                                        }
+                                    }
+                                }
+                            });
 }
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+

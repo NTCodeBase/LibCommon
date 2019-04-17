@@ -15,7 +15,7 @@
 #include <LibCommon/NeighborSearch/Morton/Morton.h>
 #include <LibCommon/NeighborSearch/NeighborSearch.h>
 #include <LibCommon/NeighborSearch/DataStructures.h>
-#include <LibCommon/ParallelHelpers/Scheduler.h>
+#include <LibCommon/ParallelHelpers/ParallelExec.h>
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 namespace NTCodeBase::NeighborSearch {
@@ -273,18 +273,18 @@ void NeighborSearch<N, Real_t>::erase_empty_entries(const StdVT_UInt& to_delete)
     StdVT<std::pair<const HashKey<N>, UInt>*> kvps(m_map.size());
     std::transform(m_map.begin(), m_map.end(), kvps.begin(), [](std::pair<const HashKey<N>, UInt>& kvp) { return &kvp; });
 
-    Scheduler::parallel_for(kvps.size(),
-                            [&](size_t it) {
-                                std::pair<const HashKey<N>, UInt>* kvp_ = kvps[it];
-                                auto& kvp = *kvp_;
+    ParallelExec::run(kvps.size(),
+                      [&](size_t it) {
+                          std::pair<const HashKey<N>, UInt>* kvp_ = kvps[it];
+                          auto& kvp = *kvp_;
 
-                                for(UInt i = 0; i < to_delete.size(); ++i) {
-                                    if(kvp.second >= to_delete[i]) {
-                                        kvp.second -= static_cast<UInt>(to_delete.size() - i);
-                                        break;
-                                    }
-                                }
-                            });
+                          for(UInt i = 0; i < to_delete.size(); ++i) {
+                              if(kvp.second >= to_delete[i]) {
+                                  kvp.second -= static_cast<UInt>(to_delete.size() - i);
+                                  break;
+                              }
+                          }
+                      });
 }
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
@@ -364,138 +364,138 @@ void NeighborSearch<N, Real_t>::query2D() {
         std::transform(m_map.begin(), m_map.end(), kvps.begin(), [](std::pair<const HashKey<N>, UInt> const& kvp) { return &kvp; });
 
         // Perform neighborhood search.
-        Scheduler::parallel_for(kvps.size(),
-                                [&](size_t it) {
-                                    std::pair<const HashKey<N>, UInt> const* kvp_ = kvps[it];
-                                    auto const& kvp        = *kvp_;
-                                    HashEntry const& entry = m_entries[kvp.second];
-                                    //const HashKey<N>& key                         = kvp.first;
+        ParallelExec::run(kvps.size(),
+                          [&](size_t it) {
+                              std::pair<const HashKey<N>, UInt> const* kvp_ = kvps[it];
+                              auto const& kvp        = *kvp_;
+                              HashEntry const& entry = m_entries[kvp.second];
+                              //const HashKey<N>& key                         = kvp.first;
 
-                                    if(entry.n_searching_points == 0u) {
-                                        return;
-                                    }
+                              if(entry.n_searching_points == 0u) {
+                                  return;
+                              }
 
-                                    for(UInt a = 0; a < entry.n_indices(); ++a) {
-                                        const PointID& va       = entry.indices[a];
-                                        PointSet<N, Real_t>& da = m_point_sets[va.point_set_id];
-                                        for(UInt b = a + 1; b < entry.n_indices(); ++b) {
-                                            const PointID& vb       = entry.indices[b];
-                                            PointSet<N, Real_t>& db = m_point_sets[vb.point_set_id];
+                              for(UInt a = 0; a < entry.n_indices(); ++a) {
+                                  const PointID& va       = entry.indices[a];
+                                  PointSet<N, Real_t>& da = m_point_sets[va.point_set_id];
+                                  for(UInt b = a + 1; b < entry.n_indices(); ++b) {
+                                      const PointID& vb       = entry.indices[b];
+                                      PointSet<N, Real_t>& db = m_point_sets[vb.point_set_id];
 
-                                            if(!m_activation_table.is_active(va.point_set_id, vb.point_set_id) &&
-                                               !m_activation_table.is_active(vb.point_set_id, va.point_set_id)) {
-                                                continue;
-                                            }
+                                      if(!m_activation_table.is_active(va.point_set_id, vb.point_set_id) &&
+                                         !m_activation_table.is_active(vb.point_set_id, va.point_set_id)) {
+                                          continue;
+                                      }
 
-                                            const Real_t* xa = da.point(va.point_id);
-                                            const Real_t* xb = db.point(vb.point_id);
+                                      const Real_t* xa = da.point(va.point_id);
+                                      const Real_t* xb = db.point(vb.point_id);
 
-                                            auto tmp0 = xa[0] - xb[0];
-                                            auto tmp1 = xa[1] - xb[1];
-                                            auto l2   = tmp0 * tmp0 + tmp1 * tmp1;
+                                      auto tmp0 = xa[0] - xb[0];
+                                      auto tmp1 = xa[1] - xb[1];
+                                      auto l2   = tmp0 * tmp0 + tmp1 * tmp1;
 
-                                            if(l2 < m_r2) {
-                                                if(m_activation_table.is_active(va.point_set_id, vb.point_set_id)) {
-                                                    da.m_neighbors[vb.point_set_id][va.point_id].push_back(vb.point_id);
-                                                }
-                                                if(m_activation_table.is_active(vb.point_set_id, va.point_set_id)) {
-                                                    db.m_neighbors[va.point_set_id][vb.point_id].push_back(va.point_id);
-                                                }
-                                            }
-                                        }
-                                    }
-                                });
+                                      if(l2 < m_r2) {
+                                          if(m_activation_table.is_active(va.point_set_id, vb.point_set_id)) {
+                                              da.m_neighbors[vb.point_set_id][va.point_id].push_back(vb.point_id);
+                                          }
+                                          if(m_activation_table.is_active(vb.point_set_id, va.point_set_id)) {
+                                              db.m_neighbors[va.point_set_id][vb.point_id].push_back(va.point_id);
+                                          }
+                                      }
+                                  }
+                              }
+                          });
 
         StdVT<std::array<bool, 9>>       visited(m_entries.size(), { false });
         StdVT<ParallelObjects::SpinLock> entry_locks(m_entries.size());
 
-        Scheduler::parallel_for(kvps.size(),
-                                [&](size_t it) {
-                                    std::pair<const HashKey<N>, UInt> const* kvp_ = kvps[it];
-                                    auto const& kvp        = *kvp_;
-                                    HashEntry const& entry = m_entries[kvp.second];
+        ParallelExec::run(kvps.size(),
+                          [&](size_t it) {
+                              std::pair<const HashKey<N>, UInt> const* kvp_ = kvps[it];
+                              auto const& kvp        = *kvp_;
+                              HashEntry const& entry = m_entries[kvp.second];
 
-                                    if(entry.n_searching_points == 0u) {
-                                        return;
-                                    }
-                                    const HashKey<N>& key = kvp.first;
+                              if(entry.n_searching_points == 0u) {
+                                  return;
+                              }
+                              const HashKey<N>& key = kvp.first;
 
-                                    for(int dk = -1; dk <= 1; dk++) {
-                                        for(int dl = -1; dl <= 1; dl++) {
-                                            int l_ind = 3 * (dk + 1) + (dl + 1);
-                                            if(l_ind == 4) {
-                                                continue;
-                                            }
-                                            entry_locks[kvp.second].lock();
-                                            if(visited[kvp.second][l_ind]) {
-                                                entry_locks[kvp.second].unlock();
-                                                continue;
-                                            }
-                                            entry_locks[kvp.second].unlock();
+                              for(int dk = -1; dk <= 1; dk++) {
+                                  for(int dl = -1; dl <= 1; dl++) {
+                                      int l_ind = 3 * (dk + 1) + (dl + 1);
+                                      if(l_ind == 4) {
+                                          continue;
+                                      }
+                                      entry_locks[kvp.second].lock();
+                                      if(visited[kvp.second][l_ind]) {
+                                          entry_locks[kvp.second].unlock();
+                                          continue;
+                                      }
+                                      entry_locks[kvp.second].unlock();
 
-                                            auto it = m_map.find({ key.k[0] + dk, key.k[1] + dl });
-                                            if(it == m_map.end()) {
-                                                continue;
-                                            }
+                                      auto it = m_map.find({ key.k[0] + dk, key.k[1] + dl });
+                                      if(it == m_map.end()) {
+                                          continue;
+                                      }
 
-                                            std::array<UInt, 2> entry_ids { { kvp.second, it->second } };
-                                            if(entry_ids[0] > entry_ids[1]) {
-                                                std::swap(entry_ids[0], entry_ids[1]);
-                                            }
-                                            entry_locks[entry_ids[0]].lock();
-                                            entry_locks[entry_ids[1]].lock();
+                                      std::array<UInt, 2> entry_ids { { kvp.second, it->second } };
+                                      if(entry_ids[0] > entry_ids[1]) {
+                                          std::swap(entry_ids[0], entry_ids[1]);
+                                      }
+                                      entry_locks[entry_ids[0]].lock();
+                                      entry_locks[entry_ids[1]].lock();
 
-                                            if(visited[kvp.second][l_ind]) {
-                                                entry_locks[entry_ids[1]].unlock();
-                                                entry_locks[entry_ids[0]].unlock();
-                                                continue;
-                                            }
+                                      if(visited[kvp.second][l_ind]) {
+                                          entry_locks[entry_ids[1]].unlock();
+                                          entry_locks[entry_ids[0]].unlock();
+                                          continue;
+                                      }
 
-                                            visited[kvp.second][l_ind]     = true;
-                                            visited[it->second][8 - l_ind] = true;
+                                      visited[kvp.second][l_ind]     = true;
+                                      visited[it->second][8 - l_ind] = true;
 
-                                            entry_locks[entry_ids[1]].unlock();
-                                            entry_locks[entry_ids[0]].unlock();
+                                      entry_locks[entry_ids[1]].unlock();
+                                      entry_locks[entry_ids[0]].unlock();
 
-                                            for(UInt i = 0; i < entry.n_indices(); ++i) {
-                                                const PointID& va       = entry.indices[i];
-                                                HashEntry const& entry_ = m_entries[it->second];
-                                                UInt n_ind = entry_.n_indices();
-                                                for(UInt j = 0; j < n_ind; ++j) {
-                                                    const PointID& vb       = entry_.indices[j];
-                                                    PointSet<N, Real_t>& db = m_point_sets[vb.point_set_id];
+                                      for(UInt i = 0; i < entry.n_indices(); ++i) {
+                                          const PointID& va       = entry.indices[i];
+                                          HashEntry const& entry_ = m_entries[it->second];
+                                          UInt n_ind = entry_.n_indices();
+                                          for(UInt j = 0; j < n_ind; ++j) {
+                                              const PointID& vb       = entry_.indices[j];
+                                              PointSet<N, Real_t>& db = m_point_sets[vb.point_set_id];
 
-                                                    PointSet<N, Real_t>& da = m_point_sets[va.point_set_id];
+                                              PointSet<N, Real_t>& da = m_point_sets[va.point_set_id];
 
-                                                    if(!m_activation_table.is_active(va.point_set_id, vb.point_set_id) &&
-                                                       !m_activation_table.is_active(vb.point_set_id, va.point_set_id)) {
-                                                        continue;
-                                                    }
+                                              if(!m_activation_table.is_active(va.point_set_id, vb.point_set_id) &&
+                                                 !m_activation_table.is_active(vb.point_set_id, va.point_set_id)) {
+                                                  continue;
+                                              }
 
-                                                    const Real_t* xa = da.point(va.point_id);
-                                                    const Real_t* xb = db.point(vb.point_id);
+                                              const Real_t* xa = da.point(va.point_id);
+                                              const Real_t* xb = db.point(vb.point_id);
 
-                                                    auto tmp0 = xa[0] - xb[0];
-                                                    auto tmp1 = xa[1] - xb[1];
-                                                    auto l2   = tmp0 * tmp0 + tmp1 * tmp1;
+                                              auto tmp0 = xa[0] - xb[0];
+                                              auto tmp1 = xa[1] - xb[1];
+                                              auto l2   = tmp0 * tmp0 + tmp1 * tmp1;
 
-                                                    if(l2 < m_r2) {
-                                                        if(m_activation_table.is_active(va.point_set_id, vb.point_set_id)) {
-                                                            da.m_locks[vb.point_set_id][va.point_id].lock();
-                                                            da.m_neighbors[vb.point_set_id][va.point_id].push_back(vb.point_id);
-                                                            da.m_locks[vb.point_set_id][va.point_id].unlock();
-                                                        }
-                                                        if(m_activation_table.is_active(vb.point_set_id, va.point_set_id)) {
-                                                            db.m_locks[va.point_set_id][vb.point_id].lock();
-                                                            db.m_neighbors[va.point_set_id][vb.point_id].push_back(va.point_id);
-                                                            db.m_locks[va.point_set_id][vb.point_id].unlock();
-                                                        }
-                                                    }
-                                                }
-                                            }
-                                        }
-                                    }
-                                });
+                                              if(l2 < m_r2) {
+                                                  if(m_activation_table.is_active(va.point_set_id, vb.point_set_id)) {
+                                                      da.m_locks[vb.point_set_id][va.point_id].lock();
+                                                      da.m_neighbors[vb.point_set_id][va.point_id].push_back(vb.point_id);
+                                                      da.m_locks[vb.point_set_id][va.point_id].unlock();
+                                                  }
+                                                  if(m_activation_table.is_active(vb.point_set_id, va.point_set_id)) {
+                                                      db.m_locks[va.point_set_id][vb.point_id].lock();
+                                                      db.m_neighbors[va.point_set_id][vb.point_id].push_back(va.point_id);
+                                                      db.m_locks[va.point_set_id][vb.point_id].unlock();
+                                                  }
+                                              }
+                                          }
+                                      }
+                                  }
+                              }
+                          });
     }
 }
 
@@ -523,142 +523,142 @@ void NeighborSearch<N, Real_t>::query3D() {
         std::transform(m_map.begin(), m_map.end(), kvps.begin(), [](std::pair<const HashKey<N>, UInt> const& kvp) { return &kvp; });
 
         // Perform neighborhood search.
-        Scheduler::parallel_for(kvps.size(),
-                                [&](size_t it) {
-                                    std::pair<const HashKey<N>, UInt> const* kvp_ = kvps[it];
-                                    auto const& kvp        = *kvp_;
-                                    HashEntry const& entry = m_entries[kvp.second];
-                                    //const HashKey<N>& key                         = kvp.first;
+        ParallelExec::run(kvps.size(),
+                          [&](size_t it) {
+                              std::pair<const HashKey<N>, UInt> const* kvp_ = kvps[it];
+                              auto const& kvp        = *kvp_;
+                              HashEntry const& entry = m_entries[kvp.second];
+                              //const HashKey<N>& key                         = kvp.first;
 
-                                    if(entry.n_searching_points == 0u) {
-                                        return;
-                                    }
+                              if(entry.n_searching_points == 0u) {
+                                  return;
+                              }
 
-                                    for(UInt a = 0; a < entry.n_indices(); ++a) {
-                                        const PointID& va       = entry.indices[a];
-                                        PointSet<N, Real_t>& da = m_point_sets[va.point_set_id];
-                                        for(UInt b = a + 1; b < entry.n_indices(); ++b) {
-                                            const PointID& vb       = entry.indices[b];
-                                            PointSet<N, Real_t>& db = m_point_sets[vb.point_set_id];
+                              for(UInt a = 0; a < entry.n_indices(); ++a) {
+                                  const PointID& va       = entry.indices[a];
+                                  PointSet<N, Real_t>& da = m_point_sets[va.point_set_id];
+                                  for(UInt b = a + 1; b < entry.n_indices(); ++b) {
+                                      const PointID& vb       = entry.indices[b];
+                                      PointSet<N, Real_t>& db = m_point_sets[vb.point_set_id];
 
-                                            if(!m_activation_table.is_active(va.point_set_id, vb.point_set_id) &&
-                                               !m_activation_table.is_active(vb.point_set_id, va.point_set_id)) {
-                                                continue;
-                                            }
+                                      if(!m_activation_table.is_active(va.point_set_id, vb.point_set_id) &&
+                                         !m_activation_table.is_active(vb.point_set_id, va.point_set_id)) {
+                                          continue;
+                                      }
 
-                                            const Real_t* xa = da.point(va.point_id);
-                                            const Real_t* xb = db.point(vb.point_id);
+                                      const Real_t* xa = da.point(va.point_id);
+                                      const Real_t* xb = db.point(vb.point_id);
 
-                                            auto tmp0 = xa[0] - xb[0];
-                                            auto tmp1 = xa[1] - xb[1];
-                                            auto tmp2 = xa[2] - xb[2];
-                                            auto l2   = tmp0 * tmp0 + tmp1 * tmp1 + tmp2 * tmp2;
+                                      auto tmp0 = xa[0] - xb[0];
+                                      auto tmp1 = xa[1] - xb[1];
+                                      auto tmp2 = xa[2] - xb[2];
+                                      auto l2   = tmp0 * tmp0 + tmp1 * tmp1 + tmp2 * tmp2;
 
-                                            if(l2 < m_r2) {
-                                                if(m_activation_table.is_active(va.point_set_id, vb.point_set_id)) {
-                                                    da.m_neighbors[vb.point_set_id][va.point_id].push_back(vb.point_id);
-                                                }
-                                                if(m_activation_table.is_active(vb.point_set_id, va.point_set_id)) {
-                                                    db.m_neighbors[va.point_set_id][vb.point_id].push_back(va.point_id);
-                                                }
-                                            }
-                                        }
-                                    }
-                                });
+                                      if(l2 < m_r2) {
+                                          if(m_activation_table.is_active(va.point_set_id, vb.point_set_id)) {
+                                              da.m_neighbors[vb.point_set_id][va.point_id].push_back(vb.point_id);
+                                          }
+                                          if(m_activation_table.is_active(vb.point_set_id, va.point_set_id)) {
+                                              db.m_neighbors[va.point_set_id][vb.point_id].push_back(va.point_id);
+                                          }
+                                      }
+                                  }
+                              }
+                          });
 
         StdVT<std::array<bool, 27>>      visited(m_entries.size(), { false });
         StdVT<ParallelObjects::SpinLock> entry_locks(m_entries.size());
 
-        Scheduler::parallel_for(kvps.size(),
-                                [&](size_t it) {
-                                    std::pair<const HashKey<N>, UInt> const* kvp_ = kvps[it];
-                                    auto const& kvp        = *kvp_;
-                                    HashEntry const& entry = m_entries[kvp.second];
+        ParallelExec::run(kvps.size(),
+                          [&](size_t it) {
+                              std::pair<const HashKey<N>, UInt> const* kvp_ = kvps[it];
+                              auto const& kvp        = *kvp_;
+                              HashEntry const& entry = m_entries[kvp.second];
 
-                                    if(entry.n_searching_points == 0u) {
-                                        return;
-                                    }
-                                    const HashKey<N>& key = kvp.first;
+                              if(entry.n_searching_points == 0u) {
+                                  return;
+                              }
+                              const HashKey<N>& key = kvp.first;
 
-                                    for(int dj = -1; dj <= 1; dj++) {
-                                        for(int dk = -1; dk <= 1; dk++) {
-                                            for(int dl = -1; dl <= 1; dl++) {
-                                                int l_ind = 9 * (dj + 1) + 3 * (dk + 1) + (dl + 1);
-                                                if(l_ind == 13) {
-                                                    continue;
-                                                }
-                                                entry_locks[kvp.second].lock();
-                                                if(visited[kvp.second][l_ind]) {
-                                                    entry_locks[kvp.second].unlock();
-                                                    continue;
-                                                }
-                                                entry_locks[kvp.second].unlock();
+                              for(int dj = -1; dj <= 1; dj++) {
+                                  for(int dk = -1; dk <= 1; dk++) {
+                                      for(int dl = -1; dl <= 1; dl++) {
+                                          int l_ind = 9 * (dj + 1) + 3 * (dk + 1) + (dl + 1);
+                                          if(l_ind == 13) {
+                                              continue;
+                                          }
+                                          entry_locks[kvp.second].lock();
+                                          if(visited[kvp.second][l_ind]) {
+                                              entry_locks[kvp.second].unlock();
+                                              continue;
+                                          }
+                                          entry_locks[kvp.second].unlock();
 
-                                                auto it = m_map.find({ key.k[0] + dj, key.k[1] + dk, key.k[2] + dl });
-                                                if(it == m_map.end()) {
-                                                    continue;
-                                                }
+                                          auto it = m_map.find({ key.k[0] + dj, key.k[1] + dk, key.k[2] + dl });
+                                          if(it == m_map.end()) {
+                                              continue;
+                                          }
 
-                                                std::array<UInt, 2> entry_ids { { kvp.second, it->second } };
-                                                if(entry_ids[0] > entry_ids[1]) {
-                                                    std::swap(entry_ids[0], entry_ids[1]);
-                                                }
-                                                entry_locks[entry_ids[0]].lock();
-                                                entry_locks[entry_ids[1]].lock();
+                                          std::array<UInt, 2> entry_ids { { kvp.second, it->second } };
+                                          if(entry_ids[0] > entry_ids[1]) {
+                                              std::swap(entry_ids[0], entry_ids[1]);
+                                          }
+                                          entry_locks[entry_ids[0]].lock();
+                                          entry_locks[entry_ids[1]].lock();
 
-                                                if(visited[kvp.second][l_ind]) {
-                                                    entry_locks[entry_ids[1]].unlock();
-                                                    entry_locks[entry_ids[0]].unlock();
-                                                    continue;
-                                                }
+                                          if(visited[kvp.second][l_ind]) {
+                                              entry_locks[entry_ids[1]].unlock();
+                                              entry_locks[entry_ids[0]].unlock();
+                                              continue;
+                                          }
 
-                                                visited[kvp.second][l_ind]      = true;
-                                                visited[it->second][26 - l_ind] = true;
+                                          visited[kvp.second][l_ind]      = true;
+                                          visited[it->second][26 - l_ind] = true;
 
-                                                entry_locks[entry_ids[1]].unlock();
-                                                entry_locks[entry_ids[0]].unlock();
+                                          entry_locks[entry_ids[1]].unlock();
+                                          entry_locks[entry_ids[0]].unlock();
 
-                                                for(UInt i = 0; i < entry.n_indices(); ++i) {
-                                                    const PointID& va       = entry.indices[i];
-                                                    HashEntry const& entry_ = m_entries[it->second];
-                                                    UInt n_ind = entry_.n_indices();
-                                                    for(UInt j = 0; j < n_ind; ++j) {
-                                                        const PointID& vb       = entry_.indices[j];
-                                                        PointSet<N, Real_t>& db = m_point_sets[vb.point_set_id];
+                                          for(UInt i = 0; i < entry.n_indices(); ++i) {
+                                              const PointID& va       = entry.indices[i];
+                                              HashEntry const& entry_ = m_entries[it->second];
+                                              UInt n_ind = entry_.n_indices();
+                                              for(UInt j = 0; j < n_ind; ++j) {
+                                                  const PointID& vb       = entry_.indices[j];
+                                                  PointSet<N, Real_t>& db = m_point_sets[vb.point_set_id];
 
-                                                        PointSet<N, Real_t>& da = m_point_sets[va.point_set_id];
+                                                  PointSet<N, Real_t>& da = m_point_sets[va.point_set_id];
 
-                                                        if(!m_activation_table.is_active(va.point_set_id, vb.point_set_id) &&
-                                                           !m_activation_table.is_active(vb.point_set_id, va.point_set_id)) {
-                                                            continue;
-                                                        }
+                                                  if(!m_activation_table.is_active(va.point_set_id, vb.point_set_id) &&
+                                                     !m_activation_table.is_active(vb.point_set_id, va.point_set_id)) {
+                                                      continue;
+                                                  }
 
-                                                        const Real_t* xa = da.point(va.point_id);
-                                                        const Real_t* xb = db.point(vb.point_id);
+                                                  const Real_t* xa = da.point(va.point_id);
+                                                  const Real_t* xb = db.point(vb.point_id);
 
-                                                        auto tmp0 = xa[0] - xb[0];
-                                                        auto tmp1 = xa[1] - xb[1];
-                                                        auto tmp2 = xa[2] - xb[2];
-                                                        auto l2   = tmp0 * tmp0 + tmp1 * tmp1 + tmp2 * tmp2;
+                                                  auto tmp0 = xa[0] - xb[0];
+                                                  auto tmp1 = xa[1] - xb[1];
+                                                  auto tmp2 = xa[2] - xb[2];
+                                                  auto l2   = tmp0 * tmp0 + tmp1 * tmp1 + tmp2 * tmp2;
 
-                                                        if(l2 < m_r2) {
-                                                            if(m_activation_table.is_active(va.point_set_id, vb.point_set_id)) {
-                                                                da.m_locks[vb.point_set_id][va.point_id].lock();
-                                                                da.m_neighbors[vb.point_set_id][va.point_id].push_back(vb.point_id);
-                                                                da.m_locks[vb.point_set_id][va.point_id].unlock();
-                                                            }
-                                                            if(m_activation_table.is_active(vb.point_set_id, va.point_set_id)) {
-                                                                db.m_locks[va.point_set_id][vb.point_id].lock();
-                                                                db.m_neighbors[va.point_set_id][vb.point_id].push_back(va.point_id);
-                                                                db.m_locks[va.point_set_id][vb.point_id].unlock();
-                                                            }
-                                                        }
-                                                    }
-                                                }
-                                            }
-                                        }
-                                    }
-                                });
+                                                  if(l2 < m_r2) {
+                                                      if(m_activation_table.is_active(va.point_set_id, vb.point_set_id)) {
+                                                          da.m_locks[vb.point_set_id][va.point_id].lock();
+                                                          da.m_neighbors[vb.point_set_id][va.point_id].push_back(vb.point_id);
+                                                          da.m_locks[vb.point_set_id][va.point_id].unlock();
+                                                      }
+                                                      if(m_activation_table.is_active(vb.point_set_id, va.point_set_id)) {
+                                                          db.m_locks[va.point_set_id][vb.point_id].lock();
+                                                          db.m_neighbors[va.point_set_id][vb.point_id].push_back(va.point_id);
+                                                          db.m_locks[va.point_set_id][vb.point_id].unlock();
+                                                      }
+                                                  }
+                                              }
+                                          }
+                                      }
+                                  }
+                              }
+                          });
     }
 }
 

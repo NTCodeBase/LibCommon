@@ -119,26 +119,26 @@ void BlockSparseMatrix<MatrixType>::checkSymmetry(Real_t threshold /* = Real_t(1
     std::cout << "============================== Checking Matrix Symmetry... ==============================" << std::endl;
     std::cout << "Matrix size: " << m_Size << std::endl;
 
-    Scheduler::parallel_for(m_Size, [&](UInt i) {
-                                for(UInt j = i + 1; j < m_Size; ++j) {
-                                    if(STLHelpers::Sorted::contain(m_ColIndex[i], j)) {
-                                        auto errM  = (*this)(i, j) - (*this)(j, i);
-                                        Real_t err = 0;
-                                        for(Int l = 0; l < MatrixType::length(); ++l) {
-                                            err += glm::length2(errM[l]);
-                                        }
-                                        err = std::sqrt(err);
+    ParallelExec::run(m_Size, [&](UInt i) {
+                          for(UInt j = i + 1; j < m_Size; ++j) {
+                              if(STLHelpers::Sorted::contain(m_ColIndex[i], j)) {
+                                  auto errM  = (*this)(i, j) - (*this)(j, i);
+                                  Real_t err = 0;
+                                  for(Int l = 0; l < MatrixType::length(); ++l) {
+                                      err += glm::length2(errM[l]);
+                                  }
+                                  err = std::sqrt(err);
 
-                                        if(err > threshold) {
-                                            check = false;
-                                            std::cout << "Invalid matrix element at index " << i << ", " << j
-                                                      << ", err = " << err << ": "
-                                                      << "matrix(" << i << ", " << j << ") = " << Formatters::toString((*this)(i, j)) << " != "
-                                                      << "matrix(" << j << ", " << i << ") = " << Formatters::toString((*this)(j, i)) << std::endl;
-                                        }
-                                    }
-                                }
-                            });
+                                  if(err > threshold) {
+                                      check = false;
+                                      std::cout << "Invalid matrix element at index " << i << ", " << j
+                                                << ", err = " << err << ": "
+                                                << "matrix(" << i << ", " << j << ") = " << Formatters::toString((*this)(i, j)) << " != "
+                                                << "matrix(" << j << ", " << i << ") = " << Formatters::toString((*this)(j, i)) << std::endl;
+                                  }
+                              }
+                          }
+                      });
 
     if(check) {
         std::cout << "All matrix elements are valid!" << std::endl;
@@ -329,11 +329,11 @@ void FixedBlockSparseMatrix<MatrixType>::constructFromSparseMatrix(const BlockSp
     m_ColValue.resize(m_RowStart[m_Size]);
     m_ColIndex.resize(m_RowStart[m_Size]);
 
-    Scheduler::parallel_for(matrix.size(),
-                            [&](UInt i) {
-                                memcpy(&m_ColIndex[m_RowStart[i]], matrix.getIndices(i).data(), matrix.getIndices(i).size() * sizeof(UInt));
-                                memcpy(&m_ColValue[m_RowStart[i]], matrix.getValues(i).data(),  matrix.getValues(i).size() * sizeof(MatrixType));
-                            });
+    ParallelExec::run(matrix.size(),
+                      [&](UInt i) {
+                          memcpy(&m_ColIndex[m_RowStart[i]], matrix.getIndices(i).data(), matrix.getIndices(i).size() * sizeof(UInt));
+                          memcpy(&m_ColValue[m_RowStart[i]], matrix.getValues(i).data(),  matrix.getValues(i).size() * sizeof(MatrixType));
+                      });
 }
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
@@ -342,14 +342,14 @@ template<class MatrixType>
 void FixedBlockSparseMatrix<MatrixType>::multiply(const FixedBlockSparseMatrix<MatrixType>& matrix, const StdVT<VectorType>& x, StdVT<VectorType>& result) {
     assert(matrix.size() == static_cast<UInt>(x.size()));
     result.resize(matrix.size());
-    Scheduler::parallel_for(matrix.size(),
-                            [&](UInt i) {
-                                VectorType tmpResult(0);
-                                for(UInt j = matrix.m_RowStart[i], jEnd = matrix.m_RowStart[i + 1]; j < jEnd; ++j) {
-                                    tmpResult += matrix.m_ColValue[j] * x[matrix.m_ColIndex[j]];
-                                }
-                                result[i] = tmpResult;
-                            });
+    ParallelExec::run(matrix.size(),
+                      [&](UInt i) {
+                          VectorType tmpResult(0);
+                          for(UInt j = matrix.m_RowStart[i], jEnd = matrix.m_RowStart[i + 1]; j < jEnd; ++j) {
+                              tmpResult += matrix.m_ColValue[j] * x[matrix.m_ColIndex[j]];
+                          }
+                          result[i] = tmpResult;
+                      });
 }
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+

@@ -124,21 +124,21 @@ void SparseMatrix<Real_t>::checkSymmetry(Real_t threshold /* = Real_t(1e-8) */) 
     std::cout << "============================== Checking Matrix Symmetry... ==============================" << std::endl;
     std::cout << "Matrix size: " << nRows << std::endl;
 
-    Scheduler::parallel_for(nRows,
-                            [&](UInt i) {
-                                for(UInt j = i + 1; j < nRows; ++j) {
-                                    if(STLHelpers::Sorted::contain(colIndex[i], j)) {
-                                        auto err = std::abs((*this)(i, j) - (*this)(j, i));
-                                        if(err > threshold) {
-                                            check = false;
-                                            std::cout << "Invalid matrix element at index " << i << ", " << j
-                                                      << ", err = " << err << ": "
-                                                      << "matrix(" << i << ", " << j << ") = " << (*this)(i, j) << " != "
-                                                      << "matrix(" << j << ", " << i << ") = " << (*this)(j, i) << std::endl;
-                                        }
-                                    }
-                                }
-                            });
+    ParallelExec::run(nRows,
+                      [&](UInt i) {
+                          for(UInt j = i + 1; j < nRows; ++j) {
+                              if(STLHelpers::Sorted::contain(colIndex[i], j)) {
+                                  auto err = std::abs((*this)(i, j) - (*this)(j, i));
+                                  if(err > threshold) {
+                                      check = false;
+                                      std::cout << "Invalid matrix element at index " << i << ", " << j
+                                                << ", err = " << err << ": "
+                                                << "matrix(" << i << ", " << j << ") = " << (*this)(i, j) << " != "
+                                                << "matrix(" << j << ", " << i << ") = " << (*this)(j, i) << std::endl;
+                                  }
+                              }
+                          }
+                      });
 
     if(check) {
         std::cout << "All matrix elements are valid!" << std::endl;
@@ -188,11 +188,11 @@ void FixedSparseMatrix<Real_t>::constructFromSparseMatrix(const SparseMatrix<Rea
     colIndex.resize(rowStart[nRows] + 1);
     colValue.resize(rowStart[nRows] + 1);
 
-    Scheduler::parallel_for(matrix.nRows,
-                            [&](UInt i) {
-                                memcpy(&colIndex[rowStart[i]], matrix.colIndex[i].data(), matrix.colIndex[i].size() * sizeof(UInt));
-                                memcpy(&colValue[rowStart[i]], matrix.colValue[i].data(), matrix.colValue[i].size() * sizeof(Real_t));
-                            });
+    ParallelExec::run(matrix.nRows,
+                      [&](UInt i) {
+                          memcpy(&colIndex[rowStart[i]], matrix.colIndex[i].data(), matrix.colIndex[i].size() * sizeof(UInt));
+                          memcpy(&colValue[rowStart[i]], matrix.colValue[i].data(), matrix.colValue[i].size() * sizeof(Real_t));
+                      });
 }
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
@@ -201,14 +201,14 @@ template<class Real_t>
 void FixedSparseMatrix<Real_t>::multiply(const FixedSparseMatrix<Real_t>& matrix, const StdVT<Real_t>& x, StdVT<Real_t>& result) {
     assert(matrix.nRows == static_cast<UInt>(x.size()));
     result.resize(matrix.nRows);
-    Scheduler::parallel_for(matrix.nRows,
-                            [&](UInt i) {
-                                Real_t tmpResult = 0;
-                                for(UInt j = matrix.rowStart[i], jEnd = matrix.rowStart[i + 1]; j < jEnd; ++j) {
-                                    tmpResult += matrix.colValue[j] * x[matrix.colIndex[j]];
-                                }
-                                result[i] = tmpResult;
-                            });
+    ParallelExec::run(matrix.nRows,
+                      [&](UInt i) {
+                          Real_t tmpResult = 0;
+                          for(UInt j = matrix.rowStart[i], jEnd = matrix.rowStart[i + 1]; j < jEnd; ++j) {
+                              tmpResult += matrix.colValue[j] * x[matrix.colIndex[j]];
+                          }
+                          result[i] = tmpResult;
+                      });
 }
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+

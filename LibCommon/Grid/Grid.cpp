@@ -13,7 +13,7 @@
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 
 #include <LibCommon/Grid/Grid.h>
-#include <LibCommon/ParallelHelpers/Scheduler.h>
+#include <LibCommon/ParallelHelpers/ParallelExec.h>
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 namespace NTCodeBase {
@@ -55,7 +55,7 @@ void Grid<N, Real_t>::setCellSize(Real_t cellSize) {
 template<Int N, class Real_t>
 void Grid<N, Real_t>::getGridCoordinate(const StdVT_VecN& positions, StdVT_VecN& gridCoordinates) const {
     assert(positions.size() == gridCoordinates.size());
-    Scheduler::parallel_for(positions.size(), [&](size_t p) { gridCoordinates[p] = getGridCoordinate(positions[p]); });
+    ParallelExec::run(positions.size(), [&](size_t p) { gridCoordinates[p] = getGridCoordinate(positions[p]); });
 }
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
@@ -135,45 +135,45 @@ void Grid<N, Real_t>::constrainedClampedBoundaryInPlace(VecN& position) const no
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 template<Int N, class Real_t>
 void Grid<N, Real_t>::constrainToGridBoundary(StdVT_VecN& positions) {
-    Scheduler::parallel_for(positions.size(),
-                            [&](size_t p) {
-                                auto pos   = positions[p];
-                                auto dirty = false;
-                                for(Int d = 0; d < N; ++d) {
-                                    if(pos[d] < m_BMin[d]) {
-                                        dirty  = true;
-                                        pos[d] = m_BMin[d];
-                                    } else if(pos[d] > m_BMax[d]) {
-                                        dirty  = true;
-                                        pos[d] = m_BMax[d];
-                                    }
-                                }
-                                if(dirty) {
-                                    positions[p] = pos;
-                                }
-                            });
+    ParallelExec::run(positions.size(),
+                      [&](size_t p) {
+                          auto pos   = positions[p];
+                          auto dirty = false;
+                          for(Int d = 0; d < N; ++d) {
+                              if(pos[d] < m_BMin[d]) {
+                                  dirty  = true;
+                                  pos[d] = m_BMin[d];
+                              } else if(pos[d] > m_BMax[d]) {
+                                  dirty  = true;
+                                  pos[d] = m_BMax[d];
+                              }
+                          }
+                          if(dirty) {
+                              positions[p] = pos;
+                          }
+                      });
 }
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 template<Int N, class Real_t>
 void Grid<N, Real_t>::constrainToClampedBoundary(StdVT_VecN& positions) {
-    Scheduler::parallel_for(positions.size(),
-                            [&](size_t p) {
-                                auto pos   = positions[p];
-                                auto dirty = false;
-                                for(Int d = 0; d < N; ++d) {
-                                    if(pos[d] < m_ClampedBMin[d]) {
-                                        dirty  = true;
-                                        pos[d] = m_ClampedBMin[d];
-                                    } else if(pos[d] > m_ClampedBMax[d]) {
-                                        dirty  = true;
-                                        pos[d] = m_ClampedBMax[d];
-                                    }
-                                }
-                                if(dirty) {
-                                    positions[p] = pos;
-                                }
-                            });
+    ParallelExec::run(positions.size(),
+                      [&](size_t p) {
+                          auto pos   = positions[p];
+                          auto dirty = false;
+                          for(Int d = 0; d < N; ++d) {
+                              if(pos[d] < m_ClampedBMin[d]) {
+                                  dirty  = true;
+                                  pos[d] = m_ClampedBMin[d];
+                              } else if(pos[d] > m_ClampedBMax[d]) {
+                                  dirty  = true;
+                                  pos[d] = m_ClampedBMax[d];
+                              }
+                          }
+                          if(dirty) {
+                              positions[p] = pos;
+                          }
+                      });
 }
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
@@ -189,13 +189,13 @@ void Grid<N, Real_t>::collectIndexToCells(const StdVT_VecN& positions) {
         cell.resize(0);
     }
 
-    Scheduler::parallel_for(static_cast<UInt>(positions.size()),
-                            [&](UInt p) {
-                                auto cellIdx = getCellIdx<Int>(positions[p]);
-                                m_Lock(cellIdx).lock();
-                                m_ParticleIdxInCell(cellIdx).push_back(p);
-                                m_Lock(cellIdx).unlock();
-                            });
+    ParallelExec::run(static_cast<UInt>(positions.size()),
+                      [&](UInt p) {
+                          auto cellIdx = getCellIdx<Int>(positions[p]);
+                          m_Lock(cellIdx).lock();
+                          m_ParticleIdxInCell(cellIdx).push_back(p);
+                          m_Lock(cellIdx).unlock();
+                      });
 
     ////////////////////////////////////////////////////////////////////////////////
     // reset particle index vector
@@ -216,15 +216,15 @@ void Grid<N, Real_t>::collectIndexToCells(const StdVT_VecN& positions, StdVT<Vec
         cell.resize(0);
     }
 
-    Scheduler::parallel_for(static_cast<UInt>(positions.size()),
-                            [&](UInt p) {
-                                auto cellIdx       = getCellIdx<Int>(positions[p]);
-                                particleCellIdx[p] = cellIdx;
+    ParallelExec::run(static_cast<UInt>(positions.size()),
+                      [&](UInt p) {
+                          auto cellIdx       = getCellIdx<Int>(positions[p]);
+                          particleCellIdx[p] = cellIdx;
 
-                                m_Lock(cellIdx).lock();
-                                m_ParticleIdxInCell(cellIdx).push_back(p);
-                                m_Lock(cellIdx).unlock();
-                            });
+                          m_Lock(cellIdx).lock();
+                          m_ParticleIdxInCell(cellIdx).push_back(p);
+                          m_Lock(cellIdx).unlock();
+                      });
 
     ////////////////////////////////////////////////////////////////////////////////
     // reset particle index vector
@@ -245,16 +245,16 @@ void Grid<N, Real_t>::collectIndexToCells(const StdVT_VecN& positions, StdVT_Vec
         cell.resize(0);
     }
 
-    Scheduler::parallel_for(static_cast<UInt>(positions.size()),
-                            [&](UInt p) {
-                                auto cellPos       = getCellIdx<Real_t>(positions[p]);
-                                auto cellIdx       = VecX<N, Int>(cellPos);
-                                gridCoordinates[p] = cellPos;
+    ParallelExec::run(static_cast<UInt>(positions.size()),
+                      [&](UInt p) {
+                          auto cellPos       = getCellIdx<Real_t>(positions[p]);
+                          auto cellIdx       = VecX<N, Int>(cellPos);
+                          gridCoordinates[p] = cellPos;
 
-                                m_Lock(cellIdx).lock();
-                                m_ParticleIdxInCell(cellIdx).push_back(p);
-                                m_Lock(cellIdx).unlock();
-                            });
+                          m_Lock(cellIdx).lock();
+                          m_ParticleIdxInCell(cellIdx).push_back(p);
+                          m_Lock(cellIdx).unlock();
+                      });
 
     ////////////////////////////////////////////////////////////////////////////////
     // reset particle index vector
@@ -264,7 +264,7 @@ void Grid<N, Real_t>::collectIndexToCells(const StdVT_VecN& positions, StdVT_Vec
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 template<Int N, class Real_t>
 void Grid<N, Real_t>::getNeighborList(const StdVT_VecN& positions, StdVT<StdVT_UInt>& neighborList, Int cellSpan /*= 1*/) {
-    Scheduler::parallel_for(positions.size(), [&](size_t p) { getNeighborList(positions[p], neighborList[p], cellSpan); });
+    ParallelExec::run(positions.size(), [&](size_t p) { getNeighborList(positions[p], neighborList[p], cellSpan); });
 }
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
@@ -311,7 +311,7 @@ void Grid<N, Real_t>::getNeighborList(const VecN& ppos, StdVT_UInt& neighborList
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 template<Int N, class Real_t>
 void Grid<N, Real_t>::getNeighborList(const StdVT_VecN& positions, StdVT<StdVT_UInt>& neighborList, Real_t d2, Int cellSpan /*= 1*/) {
-    Scheduler::parallel_for(positions.size(), [&](size_t p) { getNeighborList(positions, positions[p], neighborList[p], d2, cellSpan); });
+    ParallelExec::run(positions.size(), [&](size_t p) { getNeighborList(positions, positions[p], neighborList[p], d2, cellSpan); });
 }
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
