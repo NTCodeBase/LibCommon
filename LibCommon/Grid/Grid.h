@@ -60,7 +60,7 @@ public:
     ////////////////////////////////////////////////////////////////////////////////
     // Grid 2D =>
     template<class IndexType>
-    IndexType getCellLinearizedIndex(IndexType i, IndexType j) const {
+    IndexType getFlatIndex(IndexType i, IndexType j) const {
         static_assert(N == 2, "Array dimension != 2");
         return j * static_cast<IndexType>(getNCells()[0]) + i;
     }
@@ -72,7 +72,7 @@ public:
     }
 
     template<class IndexType>
-    bool isValidCell(IndexType i, IndexType j)  const noexcept{
+    bool isValidCell(IndexType i, IndexType j) const noexcept{
         static_assert(N == 2, "Array dimension != 2");
         return (i >= 0 &&
                 j >= 0 &&
@@ -86,7 +86,7 @@ public:
     }
 
     template<class IndexType>
-    bool isValidNode(IndexType i, IndexType j)  const noexcept{
+    bool isValidNode(IndexType i, IndexType j) const noexcept{
         static_assert(N == 2, "Array dimension != 2");
         return (i >= 0 &&
                 j >= 0 &&
@@ -105,7 +105,7 @@ public:
     ////////////////////////////////////////////////////////////////////////////////
     // Grid 3D =>
     template<class IndexType>
-    IndexType getCellLinearizedIndex(IndexType i, IndexType j, IndexType k) const {
+    IndexType getFlatIndex(IndexType i, IndexType j, IndexType k) const {
         static_assert(N == 3, "Array dimension != 3");
         return (k * static_cast<IndexType>(getNCells()[1]) + j) * static_cast<IndexType>(getNCells()[0]) + i;
     }
@@ -117,7 +117,7 @@ public:
     }
 
     template<class IndexType>
-    bool isValidCell(IndexType i, IndexType j, IndexType k)  const noexcept{
+    bool isValidCell(IndexType i, IndexType j, IndexType k) const noexcept{
         static_assert(N == 3, "Array dimension != 3");
         return (i >= 0 &&
                 j >= 0 &&
@@ -133,7 +133,7 @@ public:
     }
 
     template<class IndexType>
-    bool isValidNode(IndexType i, IndexType j, IndexType k)  const noexcept{
+    bool isValidNode(IndexType i, IndexType j, IndexType k) const noexcept{
         static_assert(N == 3, "Array dimension != 3");
         return (i >= 0 &&
                 j >= 0 &&

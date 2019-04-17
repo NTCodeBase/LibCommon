@@ -47,7 +47,7 @@ public:
 
     template<class IndexType>
     Array(const VecX<N, IndexType>& size) {
-        if constexpr (USE_Z_ORDER) {
+        if constexpr(USE_Z_ORDER) {
             const auto maxSize = glm::compMax(size);
             m_Size = VecX<N, size_type>(NumberHelpers::nextPowerOfTwo(static_cast<size_type>(maxSize)));
         } else {
@@ -211,12 +211,12 @@ public:
     }
 
     template<class IndexType>
-    size_type getCellLinearizedIndex(IndexType i, IndexType j) const {
+    size_type getFlatIndex(IndexType i, IndexType j) const {
         static_assert(N == 2, "Array dimension != 2");
 #ifndef NDEBUG
         checkIndex<IndexType>(Vec2<IndexType>(i, j));
 #endif
-        if constexpr (USE_Z_ORDER) {
+        if constexpr(USE_Z_ORDER) {
             const auto z_index = libmorton::morton2D_64_encode(static_cast<uint_fast32_t>(i), static_cast<uint_fast32_t>(j));
 #ifndef NDEBUG
             checkZIndex(z_index, i, j);
@@ -228,33 +228,33 @@ public:
     }
 
     template<class IndexType>
-    size_type getCellLinearizedIndex(const Vec2<IndexType>& index) const {
+    size_type getFlatIndex(const Vec2<IndexType>& index) const {
         static_assert(N == 2, "Array dimension != 2");
-        getCellLinearizedIndex<IndexType>(index[0], index[1]);
+        getFlatIndex<IndexType>(index[0], index[1]);
     }
 
     template<class IndexType>
     const T& operator()(IndexType i, IndexType j) const {
         static_assert(N == 2, "Array dimension != 2");
-        return m_Data[getCellLinearizedIndex<IndexType>(i, j)];
+        return m_Data[getFlatIndex<IndexType>(i, j)];
     }
 
     template<class IndexType>
     T& operator()(IndexType i, IndexType j) {
         static_assert(N == 2, "Array dimension != 2");
-        return m_Data[getCellLinearizedIndex<IndexType>(i, j)];
+        return m_Data[getFlatIndex<IndexType>(i, j)];
     }
 
     template<class IndexType>
     const T& operator()(const Vec2<IndexType>& index) const {
         static_assert(N == 2, "Array dimension != 2");
-        return m_Data[getCellLinearizedIndex<IndexType>(index[0], index[1])];
+        return m_Data[getFlatIndex<IndexType>(index[0], index[1])];
     }
 
     template<class IndexType>
     T& operator()(const Vec2<IndexType>& index) {
         static_assert(N == 2, "Array dimension != 2");
-        return m_Data[getCellLinearizedIndex<IndexType>(index[0], index[1])];
+        return m_Data[getFlatIndex<IndexType>(index[0], index[1])];
     }
 
     // => Array2D
@@ -274,12 +274,12 @@ public:
     }
 
     template<class IndexType>
-    size_type getCellLinearizedIndex(IndexType i, IndexType j, IndexType k) const {
+    size_type getFlatIndex(IndexType i, IndexType j, IndexType k) const {
         static_assert(N == 3, "Array dimension != 3");
 #ifndef NDEBUG
         checkIndex<IndexType>(Vec3<IndexType>(i, j, k));
 #endif
-        if constexpr (USE_Z_ORDER) {
+        if constexpr(USE_Z_ORDER) {
             const auto z_index = libmorton::morton3D_64_encode(static_cast<uint_fast32_t>(i), static_cast<uint_fast32_t>(j), static_cast<uint_fast32_t>(k));
 #ifndef NDEBUG
             checkZIndex(z_index, i, j, k);
@@ -291,33 +291,33 @@ public:
     }
 
     template<class IndexType>
-    size_type getCellLinearizedIndex(const Vec3<IndexType>& index) const {
+    size_type getFlatIndex(const Vec3<IndexType>& index) const {
         static_assert(N == 3, "Array dimension != 3");
-        return getCellLinearizedIndex<IndexType>(index[0], index[1], index[2]);
+        return getFlatIndex<IndexType>(index[0], index[1], index[2]);
     }
 
     template<class IndexType>
     const T& operator()(IndexType i, IndexType j, IndexType k) const {
         static_assert(N == 3, "Array dimension != 3");
-        return m_Data[getCellLinearizedIndex<IndexType>(i, j, k)];
+        return m_Data[getFlatIndex<IndexType>(i, j, k)];
     }
 
     template<class IndexType>
     T& operator()(IndexType i, IndexType j, IndexType k) {
         static_assert(N == 3, "Array dimension != 3");
-        return m_Data[getCellLinearizedIndex<IndexType>(i, j, k)];
+        return m_Data[getFlatIndex<IndexType>(i, j, k)];
     }
 
     template<class IndexType>
     const T& operator()(const Vec3<IndexType>& index) const {
         static_assert(N == 3, "Array dimension != 3");
-        return m_Data[getCellLinearizedIndex<IndexType>(index[0], index[1], index[2])];
+        return m_Data[getFlatIndex<IndexType>(index[0], index[1], index[2])];
     }
 
     template<class IndexType>
     T& operator()(const Vec3<IndexType>& index) {
         static_assert(N == 3, "Array dimension != 3");
-        return m_Data[getCellLinearizedIndex<IndexType>(index[0], index[1], index[2])];
+        return m_Data[getFlatIndex<IndexType>(index[0], index[1], index[2])];
     }
 
     // => Array3D
@@ -377,7 +377,7 @@ public:
 
     template<class IndexType>
     void reserve(const VecX<N, IndexType>& size) {
-        if constexpr (USE_Z_ORDER) {
+        if constexpr(USE_Z_ORDER) {
             auto      maxSize = NumberHelpers::nextPowerOfTwo(glm::compMax(size));
             IndexType size1D  = IndexType(1);
             for(int i = 0; i < N; ++i) {
@@ -391,7 +391,7 @@ public:
 
     template<class IndexType>
     void resize(const VecX<N, IndexType>& newSize) {
-        if constexpr (USE_Z_ORDER) {
+        if constexpr(USE_Z_ORDER) {
             auto maxSize = glm::compMax(newSize);
             m_Size = VecX<N, size_type>(NumberHelpers::nextPowerOfTwo(static_cast<size_type>(maxSize)));
         } else {
@@ -402,7 +402,7 @@ public:
 
     template<class IndexType>
     void resize(const VecX<N, IndexType>& newSize, const T& value) {
-        if constexpr (USE_Z_ORDER) {
+        if constexpr(USE_Z_ORDER) {
             auto maxSize = glm::compMax(newSize);
             m_Size = VecX<N, size_type>(NumberHelpers::nextPowerOfTwo(static_cast<size_type>(maxSize)));
         } else {
@@ -428,7 +428,7 @@ public:
     template<class IndexType>
     void reserve(IndexType sizeX, IndexType sizeY) {
         static_assert(N == 2, "Array dimension != 2");
-        if constexpr (USE_Z_ORDER) {
+        if constexpr(USE_Z_ORDER) {
             auto maxSize = sizeX > sizeY ? sizeX : sizeY;
             maxSize = NumberHelpers::nextPowerOfTwo(maxSize);
             m_Data.reserve(maxSize * maxSize);
@@ -469,7 +469,7 @@ public:
     template<class IndexType>
     void reserve(IndexType sizeX, IndexType sizeY, IndexType sizeZ) {
         static_assert(N == 3, "Array dimension != 3");
-        if constexpr (USE_Z_ORDER) {
+        if constexpr(USE_Z_ORDER) {
             auto maxSize = MathHelpers::max(sizeX, sizeY, sizeZ);
             maxSize = NumberHelpers::nextPowerOfTwo(maxSize);
             m_Data.reserve(maxSize * maxSize * maxSize);
