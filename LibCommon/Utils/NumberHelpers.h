@@ -134,6 +134,13 @@ public:
         return result;
     }
 
+    void setSeed(UInt seed) {
+        m_Lock.lock();
+        m_CacheIdx  = 0;
+        m_Generator = std::mt19937(seed);
+        m_Lock.unlock();
+    }
+
 private:
     void generateCache() {
         for(UInt i = 0; i < s_CacheSize; ++i) {
@@ -199,6 +206,13 @@ public:
         return result;
     }
 
+    void setSeed(UInt seed) {
+        m_Lock.lock();
+        m_CacheIdx  = 0;
+        m_Generator = std::mt19937(seed);
+        m_Lock.unlock();
+    }
+
 private:
     void generateCache() {
         for(UInt i = 0; i < s_CacheSize; ++i) {
@@ -221,6 +235,7 @@ public:
     static auto rnd() { return s_Rand.rnd(); }
     template<class VT> static auto vrnd() { return s_Rand.template vrnd<VT>(); }
     template<class Matrix> static auto mrnd() { return s_Rand.template mrnd<Matrix>(); }
+    static void setSeed(UInt seed) { s_Rand.setSeed(seed); }
 private:
     static inline MT_iRandom<T> s_Rand = MT_iRandom<T>();
 };
@@ -231,6 +246,7 @@ public:
     static auto rnd() { return s_Rand.rnd(); }
     template<class VT> static auto vrnd() { return s_Rand.template vrnd<VT>(); }
     template<class Matrix> static auto mrnd() { return s_Rand.template mrnd<Matrix>(); }
+    static void setSeed(UInt seed) { s_Rand.setSeed(seed); }
 private:
     static inline MT_fRandom<T> s_Rand = MT_fRandom<T>();
 };
@@ -241,6 +257,7 @@ public:
     static auto rnd() { return s_Rand.rnd(); }
     template<class VT> static auto vrnd() { return s_Rand.template vrnd<VT>(); }
     template<class Matrix> static auto mrnd() { return s_Rand.template mrnd<Matrix>(); }
+    static void setSeed(UInt seed) { s_Rand.setSeed(seed); }
 private:
     static inline MT_fRandom<T> s_Rand = MT_fRandom<T>(T(0), T(1));
 };
@@ -251,6 +268,7 @@ public:
     static auto rnd() { return s_Rand.rnd(); }
     template<class VT> static auto vrnd() { return s_Rand.template vrnd<VT>(); }
     template<class Matrix> static auto mrnd() { return s_Rand.template mrnd<Matrix>(); }
+    static void setSeed(UInt seed) { s_Rand.setSeed(seed); }
 private:
     static inline MT_fRandom<T> s_Rand = MT_fRandom<T>(T(-1), T(1));
 };
@@ -469,7 +487,7 @@ auto generatePointsOnCircle(IndexType nPoints, Real_t sphereRadius = Real_t(1)) 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 template<Int N, class IndexType, class Real_t>
 auto generatePointsOnSphere(IndexType nPoints, Real_t radius = Real_t(1), Real_t spanPolarAngle = Real_t(M_PI)) {
-    if constexpr(N == 2) {
+    if constexpr (N == 2) {
         __NT_UNUSED(spanPolarAngle);
         StdVT_Vec2<Real_t> points;
         points.reserve(nPoints);
