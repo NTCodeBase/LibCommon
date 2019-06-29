@@ -39,9 +39,9 @@ auto generateData = [] {
                         StdVT<Vec3ui> result;
                         result.reserve(NUM_ELEMENTS);
                         for(UInt i = 0; i < NUM_ELEMENTS; ++i) {
-                            result.push_back(Vec3ui(rand() % ARRAY_SIZE[0],
-                                                    rand() % ARRAY_SIZE[1],
-                                                    rand() % ARRAY_SIZE[2]));
+                            result.push_back(Vec3ui(static_cast<UInt>(rand()) % ARRAY_SIZE[0],
+                                                    static_cast<UInt>(rand()) % ARRAY_SIZE[1],
+                                                    static_cast<UInt>(rand()) % ARRAY_SIZE[2]));
                         }
                         return result;
                     };
@@ -66,9 +66,9 @@ double test_function(const StdVT<Vec3ui>& indices) {
         data_array0 = data_array(0, 0, 0);
         totalTime  += timer.tock();
     }
-    printf("Use z_order: %s, array size = %u-%u-%u, array(0, 0, 0) = %f, time = %f ms (%f s)\n", (USE_Z_ORDER ? "True" : "False"),
-           data_array.vsize()[0], data_array.vsize()[1], data_array.vsize()[2],
-           data_array0, float(totalTime), float(totalTime / 1000.0));
+    printf("Use z_order: %s, array size = %zd-%zd-%zd, array(0, 0, 0) = %f, time = %f ms (%f s)\n", (USE_Z_ORDER ? "True" : "False"),
+           data_array.resolution()[0], data_array.resolution()[1], data_array.resolution()[2],
+           float(data_array0), float(totalTime), float(totalTime / 1000.0));
     return totalTime;
 }
 
@@ -91,8 +91,8 @@ double test_function_change_size(const StdVT<Vec3ui>& indices) {
         data_array0 = data_array(0, 0, 0);
         totalTime  += timer.tock();
     }
-    printf("Use z_order: %s, array size = %u-%u-%u, array(0, 0, 0) = %f, time = %f ms (%f s)\n", "False",
-           data_array.vsize()[0], data_array.vsize()[1], data_array.vsize()[2],
+    printf("Use z_order: %s, array size = %zd-%zd-%zd, array(0, 0, 0) = %f, time = %f ms (%f s)\n", "False",
+           data_array.resolution()[0], data_array.resolution()[1], data_array.resolution()[2],
            data_array0, float(totalTime), float(totalTime / 1000.0));
     return totalTime;
 }
@@ -103,9 +103,9 @@ void test_array_access() {
     auto       normalTime           = test_function<false>(indices);
     auto       normalTimeChangeSize = test_function_change_size(indices);
     auto       zTime = test_function<true>(indices);
-    printf("Normal time: %f\n",             float(normalTime ));
-    printf("Normal time change size: %f\n", float(normalTimeChangeSize ));
-    printf("z time: %f\n",                  float(zTime ));
+    printf("Normal time: %f\n",             float(normalTime));
+    printf("Normal time change size: %f\n", float(normalTimeChangeSize));
+    printf("z time: %f\n",                  float(zTime));
 }
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+

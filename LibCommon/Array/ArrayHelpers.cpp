@@ -70,8 +70,8 @@ template<class Real_t>
 Real_t interpolateValueLinear(const Vec2<Real_t>& point, const Array2<Real_t>& grid) {
     Int    i, j;
     Real_t fi, fj;
-    MathHelpers::get_barycentric(point[0], i, fi, 0, static_cast<Int>(grid.vsize()[0]));
-    MathHelpers::get_barycentric(point[1], j, fj, 0, static_cast<Int>(grid.vsize()[1]));
+    MathHelpers::get_barycentric(point[0], i, fi, 0, static_cast<Int>(grid.resolution()[0]));
+    MathHelpers::get_barycentric(point[1], j, fj, 0, static_cast<Int>(grid.resolution()[1]));
     return MathHelpers::bilerp(grid(i, j), grid(i + 1, j), grid(i, j + 1), grid(i + 1, j + 1), fi, fj);
 }
 
@@ -80,9 +80,9 @@ template<class Real_t>
 Real_t interpolateValueLinear(const Vec3<Real_t>& point, const Array3<Real_t>& grid) {
     Int    i, j, k;
     Real_t fi, fj, fk;
-    MathHelpers::get_barycentric(point[0], i, fi, 0, static_cast<Int>(grid.vsize()[0]));
-    MathHelpers::get_barycentric(point[1], j, fj, 0, static_cast<Int>(grid.vsize()[1]));
-    MathHelpers::get_barycentric(point[2], k, fk, 0, static_cast<Int>(grid.vsize()[2]));
+    MathHelpers::get_barycentric(point[0], i, fi, 0, static_cast<Int>(grid.resolution()[0]));
+    MathHelpers::get_barycentric(point[1], j, fj, 0, static_cast<Int>(grid.resolution()[1]));
+    MathHelpers::get_barycentric(point[2], k, fk, 0, static_cast<Int>(grid.resolution()[2]));
     return MathHelpers::trilerp(
         grid(i, j, k), grid(i + 1, j, k), grid(i, j + 1, k), grid(i + 1, j + 1, k),
         grid(i, j, k + 1), grid(i + 1, j, k + 1), grid(i, j + 1, k + 1), grid(i + 1, j + 1, k + 1),
@@ -102,8 +102,8 @@ template<class Real_t>
 Vec2<Real_t> interpolateValueAffine(const Vec2<Real_t>& point, const Array2<Real_t>& grid) {
     Int    i, j;
     Real_t fi, fj;
-    MathHelpers::get_barycentric(point[0], i, fi, 0, static_cast<Int>(grid.vsize()[0]));
-    MathHelpers::get_barycentric(point[1], j, fj, 0, static_cast<Int>(grid.vsize()[1]));
+    MathHelpers::get_barycentric(point[0], i, fi, 0, static_cast<Int>(grid.resolution()[0]));
+    MathHelpers::get_barycentric(point[1], j, fj, 0, static_cast<Int>(grid.resolution()[1]));
     return grad_bilerp(
         grid(i, j), grid(i + 1, j),
         grid(i, j + 1), grid(i + 1, j + 1),
@@ -115,8 +115,8 @@ template<class Real_t>
 Real_t interpolateValueCubicBSpline(const Vec2<Real_t>& point, const Array2<Real_t>& grid) {
     Int    i, j;
     Real_t fi, fj;
-    MathHelpers::get_barycentric(point[0], i, fi, 0, static_cast<Int>(grid.vsize()[0]));
-    MathHelpers::get_barycentric(point[1], j, fj, 0, static_cast<Int>(grid.vsize()[1]));
+    MathHelpers::get_barycentric(point[0], i, fi, 0, static_cast<Int>(grid.resolution()[0]));
+    MathHelpers::get_barycentric(point[1], j, fj, 0, static_cast<Int>(grid.resolution()[1]));
 
     Real_t sumW   = 0;
     Real_t sumVal = 0;
@@ -142,9 +142,9 @@ template<class Real_t>
 Real_t interpolateValueCubicBSpline(const Vec3<Real_t>& point, const Array3<Real_t>& grid) {
     Int    i, j, k;
     Real_t fi, fj, fk;
-    MathHelpers::get_barycentric(point[0], i, fi, 0, static_cast<Int>(grid.vsize()[0]));
-    MathHelpers::get_barycentric(point[1], j, fj, 0, static_cast<Int>(grid.vsize()[1]));
-    MathHelpers::get_barycentric(point[2], k, fk, 0, static_cast<Int>(grid.vsize()[2]));
+    MathHelpers::get_barycentric(point[0], i, fi, 0, static_cast<Int>(grid.resolution()[0]));
+    MathHelpers::get_barycentric(point[1], j, fj, 0, static_cast<Int>(grid.resolution()[1]));
+    MathHelpers::get_barycentric(point[2], k, fk, 0, static_cast<Int>(grid.resolution()[2]));
 
     Real_t sumW   = 0;
     Real_t sumVal = 0;
@@ -174,8 +174,8 @@ template<class Real_t>
 Vec2<Real_t> interpolateGradient(const Vec2<Real_t>& point, const Array2<Real_t>& grid) {
     Int    i, j;
     Real_t fi, fj;
-    MathHelpers::get_barycentric(point[0], i, fi, 0, static_cast<Int>(grid.vsize()[0]));
-    MathHelpers::get_barycentric(point[1], j, fj, 0, static_cast<Int>(grid.vsize()[1]));
+    MathHelpers::get_barycentric(point[0], i, fi, 0, static_cast<Int>(grid.resolution()[0]));
+    MathHelpers::get_barycentric(point[1], j, fj, 0, static_cast<Int>(grid.resolution()[1]));
 
     Real_t v00 = grid(i, j);
     Real_t v01 = grid(i, j + 1);
@@ -198,9 +198,9 @@ Vec3<Real_t> interpolateGradient(const Vec3<Real_t>& point, const Array3<Real_t>
     Int    i, j, k;
     Real_t fi, fj, fk;
 
-    MathHelpers::get_barycentric(point[0], i, fi, 0, static_cast<Int>(grid.vsize()[0]));
-    MathHelpers::get_barycentric(point[1], j, fj, 0, static_cast<Int>(grid.vsize()[1]));
-    MathHelpers::get_barycentric(point[2], k, fk, 0, static_cast<Int>(grid.vsize()[2]));
+    MathHelpers::get_barycentric(point[0], i, fi, 0, static_cast<Int>(grid.resolution()[0]));
+    MathHelpers::get_barycentric(point[1], j, fj, 0, static_cast<Int>(grid.resolution()[1]));
+    MathHelpers::get_barycentric(point[2], k, fk, 0, static_cast<Int>(grid.resolution()[2]));
 
     Real_t v000 = grid(i, j, k);
     Real_t v001 = grid(i, j, k + 1);
@@ -237,8 +237,8 @@ template<class Real_t>
 Vec2<Real_t> interpolateGradientValue(const Vec2<Real_t>& point, const Array2<Real_t>& grid, Real_t cellSize) {
     Int    i, j;
     Real_t fi, fj;
-    MathHelpers::get_barycentric(point[0], i, fi, 0, static_cast<Int>(grid.vsize()[0]));
-    MathHelpers::get_barycentric(point[1], j, fj, 0, static_cast<Int>(grid.vsize()[1]));
+    MathHelpers::get_barycentric(point[0], i, fi, 0, static_cast<Int>(grid.resolution()[0]));
+    MathHelpers::get_barycentric(point[1], j, fj, 0, static_cast<Int>(grid.resolution()[1]));
 
     Real_t v00 = grid(i, j);
     Real_t v01 = grid(i, j + 1);
@@ -257,9 +257,9 @@ Vec3<Real_t> interpolateGradientValue(const Vec3<Real_t>& point, const Array3<Re
     Int    i, j, k;
     Real_t fi, fj, fk;
 
-    MathHelpers::get_barycentric(point[0], i, fi, 0, static_cast<Int>(grid.vsize()[0]));
-    MathHelpers::get_barycentric(point[1], j, fj, 0, static_cast<Int>(grid.vsize()[1]));
-    MathHelpers::get_barycentric(point[2], k, fk, 0, static_cast<Int>(grid.vsize()[2]));
+    MathHelpers::get_barycentric(point[0], i, fi, 0, static_cast<Int>(grid.resolution()[0]));
+    MathHelpers::get_barycentric(point[1], j, fj, 0, static_cast<Int>(grid.resolution()[1]));
+    MathHelpers::get_barycentric(point[2], k, fk, 0, static_cast<Int>(grid.resolution()[2]));
 
     Real_t v000 = grid(i, j, k);
     Real_t v001 = grid(i, j, k + 1);
@@ -286,8 +286,8 @@ template<class Real_t>
 Real_t interpolateValueAndGradient(Vec2<Real_t>& gradient, const Vec2<Real_t>& point, const Array2<Real_t>& grid) {
     Int    i, j;
     Real_t fi, fj;
-    MathHelpers::get_barycentric(point[0], i, fi, 0, static_cast<Int>(grid.vsize()[0]));
-    MathHelpers::get_barycentric(point[1], j, fj, 0, static_cast<Int>(grid.vsize()[1]));
+    MathHelpers::get_barycentric(point[0], i, fi, 0, static_cast<Int>(grid.resolution()[0]));
+    MathHelpers::get_barycentric(point[1], j, fj, 0, static_cast<Int>(grid.resolution()[1]));
 
     Real_t v00 = grid(i, j);
     Real_t v01 = grid(i, j + 1);
@@ -312,9 +312,9 @@ Real_t interpolateValueAndGradient(Vec3<Real_t>& gradient, const Vec3<Real_t>& p
     Int    i, j, k;
     Real_t fi, fj, fk;
 
-    MathHelpers::get_barycentric(point[0], i, fi, 0, static_cast<Int>(grid.vsize()[0]));
-    MathHelpers::get_barycentric(point[1], j, fj, 0, static_cast<Int>(grid.vsize()[1]));
-    MathHelpers::get_barycentric(point[2], k, fk, 0, static_cast<Int>(grid.vsize()[2]));
+    MathHelpers::get_barycentric(point[0], i, fi, 0, static_cast<Int>(grid.resolution()[0]));
+    MathHelpers::get_barycentric(point[1], j, fj, 0, static_cast<Int>(grid.resolution()[1]));
+    MathHelpers::get_barycentric(point[2], k, fk, 0, static_cast<Int>(grid.resolution()[2]));
 
     Real_t v000 = grid(i, j, k);
     Real_t v001 = grid(i, j, k + 1);
