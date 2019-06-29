@@ -198,7 +198,7 @@ void BlockSparseMatrix<MatrixType>::writeMatlabFile(const char* fileName, int sh
 template<class MatrixType>
 void BlockSparseMatrix<MatrixType>::writeBinaryFile(const char* fileName) const {
     FILE* fptr;
-#ifdef __NT_WINDOWS_OS__
+#ifdef NT_IN_WINDOWS_OS
     fopen_s(&fptr, fileName, "wb");
 #else
     fptr = fopen(fileName, "wb");
@@ -221,7 +221,7 @@ void BlockSparseMatrix<MatrixType>::writeBinaryFile(const char* fileName) const 
     // write data, row by row
     UInt rowSize;
     for(UInt i = 0; i < m_Size; ++i) {
-        __NT_REQUIRE(m_ColIndex[i].size() == m_ColValue[i].size());
+        NT_REQUIRE(m_ColIndex[i].size() == m_ColValue[i].size());
         rowSize = static_cast<UInt>(m_ColIndex[i].size());
         fwrite(&rowSize,             sizeof(UInt),       1,       fptr);
         fwrite(m_ColIndex[i].data(), sizeof(UInt),       rowSize, fptr);
@@ -256,18 +256,18 @@ bool BlockSparseMatrix<MatrixType>::loadFromBinaryFile(const char* fileName) {
     bool bConsistentSize = true;
     {
         UInt matrixSize;
-        __NT_REQUIRE(fread(&matrixSize,  sizeof(UInt), 1, fptr) == sizeof(UInt));
-        __NT_REQUIRE(fread(&elementSize, sizeof(UInt), 1, fptr) == sizeof(UInt));
+        NT_REQUIRE(fread(&matrixSize, sizeof(UInt), 1, fptr) == sizeof(UInt));
+        NT_REQUIRE(fread(&elementSize, sizeof(UInt), 1, fptr) == sizeof(UInt));
         resize(matrixSize);
         if(elementSize != sizeof(MatrixType)) {
             bConsistentSize = false;
             Int N = MatrixType::length();
             if(elementSize > sizeof(MatrixType)) {
-                __NT_REQUIRE(sizeof(double) * N * N == elementSize);
-                __NT_REQUIRE(sizeof(float) * N * N == sizeof(MatrixType));
+                NT_REQUIRE(sizeof(double) * N * N == elementSize);
+                NT_REQUIRE(sizeof(float) * N * N == sizeof(MatrixType));
             } else {
-                __NT_REQUIRE(sizeof(float) * N * N == elementSize);
-                __NT_REQUIRE(sizeof(double) * N * N == sizeof(MatrixType));
+                NT_REQUIRE(sizeof(float) * N * N == elementSize);
+                NT_REQUIRE(sizeof(double) * N * N == sizeof(MatrixType));
             }
         }
     }
@@ -278,16 +278,16 @@ bool BlockSparseMatrix<MatrixType>::loadFromBinaryFile(const char* fileName) {
     UInt  rowSize;
     char* buffer = new char[elementSize];
     for(UInt i = 0; i < m_Size; ++i) {
-        __NT_REQUIRE(fread(&rowSize,             sizeof(UInt), 1,       fptr) == sizeof(UInt));
+        NT_REQUIRE(fread(&rowSize, sizeof(UInt), 1, fptr) == sizeof(UInt));
         m_ColIndex[i].resize(rowSize);
-        __NT_REQUIRE(fread(m_ColIndex[i].data(), sizeof(UInt), rowSize, fptr) == sizeof(UInt) * rowSize);
+        NT_REQUIRE(fread(m_ColIndex[i].data(), sizeof(UInt), rowSize, fptr) == sizeof(UInt) * rowSize);
 
         m_ColValue[i].resize(rowSize);
         if(bConsistentSize) {
-            __NT_REQUIRE(fread(m_ColValue[i].data(), sizeof(MatrixType), rowSize, fptr) == sizeof(MatrixType) * rowSize);
+            NT_REQUIRE(fread(m_ColValue[i].data(), sizeof(MatrixType), rowSize, fptr) == sizeof(MatrixType) * rowSize);
         } else {
             for(UInt j = 0; j < rowSize; ++j) {
-                __NT_REQUIRE(fread(buffer, elementSize, 1, fptr) == elementSize);
+                NT_REQUIRE(fread(buffer, elementSize, 1, fptr) == elementSize);
                 Real_t* dst = glm::value_ptr(m_ColValue[i][j]);
                 Int     N   = MatrixType::length();
                 if(elementSize > sizeof(MatrixType)) {

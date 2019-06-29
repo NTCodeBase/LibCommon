@@ -90,7 +90,7 @@ float MeshLoader::getCameraDistance(float fov) {
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 void MeshLoader::swapCoordinates(int k1, int k2) {
-    __NT_REQUIRE(k1 >= 0 && k1 <= 2 && k2 >= 0 && k2 <= 2 && k1 != k2);
+    NT_REQUIRE(k1 >= 0 && k1 <= 2 && k2 >= 0 && k2 <= 2 && k1 != k2);
     for(size_t i = 0, iend = m_Vertices.size() / 3; i < iend; ++i) {
         std::swap(m_Vertices[i * 3 + k1], m_Vertices[i * 3 + k2]);
     }

@@ -26,44 +26,44 @@
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 namespace NTCodeBase {
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-#define __NT_SUPPORT_DOUBLE_NUMBER
+#define NT_SUPPORT_DOUBLE_NUMBER
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 #if defined(_WIN32) || defined(_WIN64)
-#   define __NT_WINDOWS_OS__
+#   define NT_IN_WINDOWS_OS
 #elif defined(__APPLE__)
-#   define __NT_OSX__
+#   define NT_IN_OSX
 #elif defined(linux) || defined(__linux__)
-#   define __NT_LINUX_OS__
+#   define NT_IN_LINUX_OS
 #endif
 
-#ifndef __NT_UNUSED
-#   define __NT_UNUSED(x) ((void)x)
+#ifndef NT_UNUSED
+#   define NT_UNUSED(x) ((void)x)
 #endif
 
-#ifdef __NT_WINDOWS_OS__
+#ifdef NT_IN_WINDOWS_OS
 //  Exclude rarely-used stuff from Windows headers
 #   define WIN32_LEAN_AND_MEAN
 #   ifndef NOMINMAX
 #     define NOMINMAX
 #   endif
 #   define __func__ __FUNCTION__
-#endif // __NT_WINDOWS_OS__
+#endif // NT_IN_WINDOWS_OS
 
-#ifdef __NT_WINDOWS_OS__
-#   define __NT_SPRINT sprintf_s
-#   define __NT_SSCAN  sscanf_s
+#ifdef NT_IN_WINDOWS_OS
+#   define NT_SPRINT sprintf_s
+#   define NT_SSCAN  sscanf_s
 #else
-#   define __NT_SPRINT sprintf
-#   define __NT_SSCAN  sscanf
+#   define NT_SPRINT sprintf
+#   define NT_SSCAN  sscanf
 #endif
 
 #if defined(DEBUG) || defined(_DEBUG)
-#  define __NT_DEBUG__
+#  define NT_DEBUG
 #endif
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-#ifdef __NT_WINDOWS_OS__
+#ifdef NT_IN_WINDOWS_OS
 // Enable memory leak detection
 #  ifdef _DEBUG
 #    define _CRTDBG_MAP_ALLOC
@@ -81,7 +81,7 @@ namespace NTCodeBase {
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 // signals
-#define __NT_RAISE_TERMINATION_SIGNAL std::raise(SIGTERM);
+#define NT_RAISE_TERMINATION_SIGNAL std::raise(SIGTERM);
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
@@ -93,73 +93,73 @@ namespace NTCodeBase {
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 // Utility
-#define _STR(x)           #x
-#define __NT_TO_STRING(x) _STR(x)
+#define STR(x)            #x
+#define NT_TOTO_STRING(x) STR(x)
 
-#ifdef __NT_WINDOWS_OS__
-#define __NT_ALIGN16 _MM_ALIGN16
+#ifdef NT_IN_WINDOWS_OS
+#define NT_ALIGN16 _MM_ALIGN16
 #else
-#define __NT_ALIGN16 __attribute__((aligned(16)))
+#define NT_ALIGN16 __attribute__((aligned(16)))
 #endif
 
-#ifdef __NT_DEBUG__
-#  define __NT_DEBUG_BREAK_OR_TERMINATE debug_break();
+#ifdef NT_DEBUG
+#  define NT_DEBUG_BREAK_OR_TERMINATE debug_break();
 #else
-#  define __NT_DEBUG_BREAK_OR_TERMINATE __NT_RAISE_TERMINATION_SIGNAL
+#  define NT_DEBUG_BREAK_OR_TERMINATE NT_RAISE_TERMINATION_SIGNAL
 #endif
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-#ifdef __NT_WINDOWS_OS__
+#ifdef NT_IN_WINDOWS_OS
 #ifdef QT_CORE_LIB
-#  define __NT_COMPILER_MESSAGE(msg) \
+#  define NT_COMPILER_MESSAGE(msg) \
     __pragma(message("\033[38;5;214m+++>" msg "\033[0m"))
 
-#  define __NT_TODO \
-    __pragma(message("\033[38;5;214m+++>TODO: => " __FILE__ "(" __NT_TO_STRING(__LINE__) ") \033[0m"))
+#  define NT_TODO \
+    __pragma(message("\033[38;5;214m+++>TODO: => " __FILE__ "(" NT_TOTO_STRING(__LINE__) ") \033[0m"))
 
-#  define __NT_TODO_MSG(msg) \
-    __pragma(message("\033[38;5;214m+++>TODO: " msg " => " __FILE__ "(" __NT_TO_STRING(__LINE__) ") \033[0m"))
+#  define NT_TODO_MSG(msg) \
+    __pragma(message("\033[38;5;214m+++>TODO: " msg " => " __FILE__ "(" NT_TOTO_STRING(__LINE__) ") \033[0m"))
 #else
-#  define __NT_COMPILER_MESSAGE(msg) \
+#  define NT_COMPILER_MESSAGE(msg) \
     __pragma(message("+++>" msg))
 
-#  define __NT_TODO \
-    __pragma(message("+++>TODO: => " __FILE__ "(" __NT_TO_STRING(__LINE__) ") "))
+#  define NT_TODO \
+    __pragma(message("+++>TODO: => " __FILE__ "(" NT_TOTO_STRING(__LINE__) ") "))
 
-#  define __NT_TODO_MSG(msg) \
-    __pragma(message("+++>TODO: " msg " => " __FILE__ "(" __NT_TO_STRING(__LINE__) ") "))
+#  define NT_TODO_MSG(msg) \
+    __pragma(message("+++>TODO: " msg " => " __FILE__ "(" NT_TOTO_STRING(__LINE__) ") "))
 #endif
-#else // not __NT_WINDOWS_OS__
+#else // not NT_IN_WINDOWS_OS
 #  ifdef QT_CORE_LIB
 #    define PRAGMA_MESSAGE(x) _Pragma(#x)
-#    define __NT_COMPILER_MESSAGE(msg) \
+#    define NT_COMPILER_MESSAGE(msg) \
     PRAGMA_MESSAGE(message "\033[38;5;214m+++>" msg "\033[0m")
 
-#    define __NT_TODO \
-    PRAGMA_MESSAGE(message "\033[38;5;214m+++>TODO: => " __FILE__ "(" __NT_TO_STRING(__LINE__) ") \033[0m")
+#    define NT_TODO \
+    PRAGMA_MESSAGE(message "\033[38;5;214m+++>TODO: => " __FILE__ "(" NT_TOTO_STRING(__LINE__) ") \033[0m")
 
-#    define __NT_TODO_MSG(msg) \
-    PRAGMA_MESSAGE(message "\033[38;5;214m+++>TODO: " msg " => " __FILE__ "(" __NT_TO_STRING(__LINE__) ") \033[0m")
+#    define NT_TODO_MSG(msg) \
+    PRAGMA_MESSAGE(message "\033[38;5;214m+++>TODO: " msg " => " __FILE__ "(" NT_TOTO_STRING(__LINE__) ") \033[0m")
 #  else
-#    define __NT_COMPILER_MESSAGE(msg) \
+#    define NT_COMPILER_MESSAGE(msg) \
     PRAGMA_MESSAGE(message "+++>" msg)
 
-#    define __NT_TODO \
-    PRAGMA_MESSAGE(message "+++>TODO: => " __FILE__ "(" __NT_TO_STRING(__LINE__) ") ")
+#    define NT_TODO \
+    PRAGMA_MESSAGE(message "+++>TODO: => " __FILE__ "(" NT_TOTO_STRING(__LINE__) ") ")
 
-#    define __NT_TODO_MSG(msg) \
-    PRAGMA_MESSAGE(message "+++>TODO: " msg " => " __FILE__ "(" __NT_TO_STRING(__LINE__) ") ")
+#    define NT_TODO_MSG(msg) \
+    PRAGMA_MESSAGE(message "+++>TODO: " msg " => " __FILE__ "(" NT_TOTO_STRING(__LINE__) ") ")
 #  endif
 #endif
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-#define __NT_PRINT_LINE                         \
+#define NT_PRINT_LINE                           \
     {                                           \
         printf("%d: %s\n", __LINE__, __FILE__); \
         fflush(stdout);                         \
     }
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-#define __NT_PRINT_EXP(x)                                                                     \
+#define NT_PRINT_EXP(x)                                                                       \
     {                                                                                         \
         std::stringstream ss;                                                                 \
         ss << "Printing at line: " << __LINE__ << ", file: " << __FILE__ << ":" << std::endl; \
@@ -169,7 +169,7 @@ namespace NTCodeBase {
     }
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-#define __NT_PRINT_LOCATION                                   \
+#define NT_PRINT_LOCATION                                     \
     {                                                         \
         std::stringstream ss;                                 \
         ss << "Function: " << __func__ << std::endl;          \
@@ -179,89 +179,89 @@ namespace NTCodeBase {
     }
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-#ifndef __NT_INFO
-#   define __NT_INFO(info)     \
+#ifndef NT_INFO
+#   define NT_INFO(info)       \
     {                          \
         fprintf(stderr, info); \
     }
 #endif
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-#ifndef __NT_ERROR
-#   define __NT_ERROR(err)     \
+#ifndef NT_ERROR
+#   define NT_ERROR(err)       \
     {                          \
         fprintf(stderr, err);  \
         fprintf(stderr, "\n"); \
-        __NT_PRINT_LOCATION    \
+        NT_PRINT_LOCATION      \
     }
 #endif
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-#define __NT_DIE(err)                 \
-    {                                 \
-        __NT_ERROR(err)               \
-        __NT_RAISE_TERMINATION_SIGNAL \
+#define NT_DIE(err)                 \
+    {                               \
+        NT_ERROR(err)               \
+        NT_RAISE_TERMINATION_SIGNAL \
     }
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 
-#define __NT_REQUIRE(condition)                                               \
+#define NT_REQUIRE(condition)                                                 \
     {                                                                         \
         if(!(condition))                                                      \
         {                                                                     \
             String erMsg = String("Assertion failed: ") + String(#condition); \
             printf("%s\n", erMsg.c_str());                                    \
-            __NT_PRINT_LOCATION                                               \
-                __NT_DEBUG_BREAK_OR_TERMINATE                                 \
+            NT_PRINT_LOCATION                                                 \
+                NT_DEBUG_BREAK_OR_TERMINATE                                   \
         }                                                                     \
     }
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-#define __NT_REQUIRE_MSG(condition, msg)                                      \
+#define NT_REQUIRE_MSG(condition, msg)                                        \
     {                                                                         \
         if(!(condition))                                                      \
         {                                                                     \
             String erMsg = String("Assertion failed: ") + String(#condition); \
             String rsMsg = String("Reason: ") + String(msg);                  \
             printf("%s\n%s\n", erMsg.c_str(), rsMsg.c_str());                 \
-            __NT_PRINT_LOCATION                                               \
-                __NT_DEBUG_BREAK_OR_TERMINATE                                 \
+            NT_PRINT_LOCATION                                                 \
+                NT_DEBUG_BREAK_OR_TERMINATE                                   \
         }                                                                     \
     }
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-#define __NT_UNIMPLEMENTED_FUNC          __NT_DIE("Called function is unimplemented.")
-#define __NT_CALLED_TO_WRONG_PLACE       __NT_DIE("This function should not be reached.")
-#define __NT_DENIED_CALL_TO_BASE_CLASS   __NT_DIE("This function should not be called from base class.")
-#define __NT_DENIED_SWITCH_DEFAULT_VALUE __NT_DIE("Invalid default value in switch statement.")
-#define __NT_DIE_UNKNOWN_ERROR           __NT_DIE("An unknown error has occured...")
+#define NT_UNIMPLEMENTED_FUNC          NT_DIE("Called function is unimplemented.")
+#define NT_CALLED_TO_WRONG_PLACE       NT_DIE("This function should not be reached.")
+#define NT_DENIED_CALL_TO_BASE_CLASS   NT_DIE("This function should not be called from base class.")
+#define NT_DENIED_SWITCH_DEFAULT_VALUE NT_DIE("Invalid default value in switch statement.")
+#define NT_DIE_UNKNOWN_ERROR           NT_DIE("An unknown error has occured...")
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 // test
-#define __NT_PERORMANCE_TEST_BEGIN \
-    Timer testTimer;               \
+#define NT_PERORMANCE_TEST_BEGIN \
+    Timer testTimer;             \
     testTimer.tick();
 
-#define __NT_PERORMANCE_TEST_END(funcName) \
-    testTimer.tock();                      \
+#define NT_PERORMANCE_TEST_END(funcName) \
+    testTimer.tock();                    \
     printf("Test %s finished. Time: %s\n", funcName, testTimer.getRunTime().c_str());
 
-#define __NT_PERORMANCE_TEST_END_WITH_RUN_TIME(funcName, runTime)                     \
+#define NT_PERORMANCE_TEST_END_WITH_RUN_TIME(funcName, runTime)                       \
     runTime = testTimer.tock();                                                       \
     printf("Test %s finished. Time: %s\n", funcName, testTimer.getRunTime().c_str()); \
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-#define __NT_REQUIRE_EQUAL(a, b)                     __NT_REQUIRE_MSG(a == b, "Numbers are not equal.");
-#define __NT_REQUIRE_APPROX_NUMBERS(a, b, threshold) __NT_REQUIRE_MSG(threshold > std::abs(a - b), "Numbers are not equal.");
+#define NT_REQUIRE_EQUAL(a, b)                     NT_REQUIRE_MSG(a == b, "Numbers are not equal.");
+#define NT_REQUIRE_APPROX_NUMBERS(a, b, threshold) NT_REQUIRE_MSG(threshold > std::abs(a - b), "Numbers are not equal.");
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-#define __NT_TO_CSTRING(x)                           Formatters::toString7(x).c_str()
-#define __NT_TO_CSTRING_2(x)                         Formatters::toString2(x).c_str()
-#define __NT_TO_CSTRING_5(x)                         Formatters::toString5(x).c_str()
-#define __NT_TO_CSTRING_7(x)                         Formatters::toString7(x).c_str()
+#define NT_TO_CSTRING(x)                           Formatters::toString7(x).c_str()
+#define NT_TO_CSTRING_2(x)                         Formatters::toString2(x).c_str()
+#define NT_TO_CSTRING_5(x)                         Formatters::toString5(x).c_str()
+#define NT_TO_CSTRING_7(x)                         Formatters::toString7(x).c_str()
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-#define __NT_TYPE_ALIAS                                                             \
+#define NT_TYPE_ALIAS                                                               \
     using Vec1r            = Vec1<Real_t>;                                          \
     using Vec2r            = Vec2<Real_t>;                                          \
     using Vec3r            = Vec3<Real_t>;                                          \
@@ -288,39 +288,39 @@ namespace NTCodeBase {
     static constexpr auto TinyReal() { return std::numeric_limits<Real_t>::min(); } \
     static constexpr auto HugeReal() { return std::numeric_limits<Real_t>::max(); }
 
-#ifdef __NT_SUPPORT_DOUBLE_NUMBER
-#  define __NT_INSTANTIATE_CLASS_COMMON_TYPES(ClassName) \
-    template class ClassName<float>;                     \
+#ifdef NT_SUPPORT_DOUBLE_NUMBER
+#  define NT_INSTANTIATE_CLASS_COMMON_TYPES(ClassName) \
+    template class ClassName<float>;                   \
     template class ClassName<double>;
 
-#  define __NT_INSTANTIATE_STRUCT_COMMON_TYPES(StructName) \
-    template struct StructName<float>;                     \
+#  define NT_INSTANTIATE_STRUCT_COMMON_TYPES(StructName) \
+    template struct StructName<float>;                   \
     template struct StructName<double>;
 
-#  define __NT_INSTANTIATE_CLASS_COMMON_DIMENSIONS_AND_TYPES(ClassName) \
-    template class ClassName<2, float>;                                 \
-    template class ClassName<3, float>;                                 \
-    template class ClassName<2, double>;                                \
+#  define NT_INSTANTIATE_CLASS_COMMON_DIMENSIONS_AND_TYPES(ClassName) \
+    template class ClassName<2, float>;                               \
+    template class ClassName<3, float>;                               \
+    template class ClassName<2, double>;                              \
     template class ClassName<3, double>;
 
-#  define __NT_INSTANTIATE_STRUCT_COMMON_DIMENSIONS_AND_TYPES(StructName) \
-    template struct StructName<2, float>;                                 \
-    template struct StructName<3, float>;                                 \
-    template struct StructName<2, double>;                                \
+#  define NT_INSTANTIATE_STRUCT_COMMON_DIMENSIONS_AND_TYPES(StructName) \
+    template struct StructName<2, float>;                               \
+    template struct StructName<3, float>;                               \
+    template struct StructName<2, double>;                              \
     template struct StructName<3, double>;
 #else
-#  define __NT_INSTANTIATE_CLASS_COMMON_TYPES(ClassName) \
+#  define NT_INSTANTIATE_CLASS_COMMON_TYPES(ClassName) \
     template class ClassName<float>;
 
-#  define __NT_INSTANTIATE_STRUCT_COMMON_TYPES(StructName) \
+#  define NT_INSTANTIATE_STRUCT_COMMON_TYPES(StructName) \
     template struct StructName<float>;
 
-#  define __NT_INSTANTIATE_CLASS_COMMON_DIMENSIONS_AND_TYPES(ClassName) \
-    template class ClassName<2, float>;                                 \
+#  define NT_INSTANTIATE_CLASS_COMMON_DIMENSIONS_AND_TYPES(ClassName) \
+    template class ClassName<2, float>;                               \
     template class ClassName<3, float>;
 
-#  define __NT_INSTANTIATE_STRUCT_COMMON_DIMENSIONS_AND_TYPES(StructName) \
-    template struct StructName<2, float>;                                 \
+#  define NT_INSTANTIATE_STRUCT_COMMON_DIMENSIONS_AND_TYPES(StructName) \
+    template struct StructName<2, float>;                               \
     template struct StructName<3, float>;
 #endif
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+

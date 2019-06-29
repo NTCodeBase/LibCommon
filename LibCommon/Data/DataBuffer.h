@@ -78,10 +78,10 @@ public:
     // if vSize = 0: read size (UInt) from the buffer starting at startOffset
     size_t getData(void* dataPtr, size_t dataSize, size_t startOffset = 0);
 
-    template<class T> size_t        getData(T& value, size_t startOffset                = 0) { return getData((void*)&value, sizeof(T), startOffset); }
-    template<class T> size_t        getData(StdVT<T>& dvec, size_t startOffset          = 0, UInt vSize = 0);
-    template<class T> size_t        getData(StdVT<StdVT<T>>& dvec, size_t startOffset   = 0, UInt vSize = 0);
-    template<Int N, class T> size_t getData(StdVT<VecX<N, T>>& dvec, size_t startOffset = 0, UInt vSize = 0);
+    template<class T> size_t        getData(T& value, size_t startOffset                                = 0) { return getData((void*)&value, sizeof(T), startOffset); }
+    template<class T> size_t        getData(StdVT<T>& dvec, size_t startOffset                          = 0, UInt vSize= 0);
+    template<class T> size_t        getData(StdVT<StdVT<T>>& dvec, size_t startOffset                   = 0, UInt vSize= 0);
+    template<Int N, class T> size_t getData(StdVT<VecX<N, T>>& dvec, size_t startOffset                 = 0, UInt vSize= 0);
     ////////////////////////////////////////////////////////////////////////////////
 
 private:
@@ -101,7 +101,7 @@ inline void DataBuffer::append(const void* dataPtr, size_t dataSize) {
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 inline size_t DataBuffer::getData(void* dataPtr, size_t dataSize, size_t startOffset /*= 0*/) {
-    __NT_REQUIRE(startOffset + dataSize <= m_Buffer.size());
+    NT_REQUIRE(startOffset + dataSize <= m_Buffer.size());
     std::memcpy(dataPtr, (void*)data(startOffset), dataSize);
     return dataSize;
 }

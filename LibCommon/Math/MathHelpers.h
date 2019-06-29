@@ -891,9 +891,9 @@ T fraction_inside(T phi_bl, T phi_br, T phi_tl, T phi_tr) {
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 template<class Real_t>
 Vec3<Real_t> EulerToAxisAngle(Vec2<Real_t> EulerAngles, bool bRadiansIn = true, bool bRadiansOut = true) {
-    __NT_UNUSED(EulerAngles);
-    __NT_UNUSED(bRadiansIn);
-    __NT_UNUSED(bRadiansOut);
+    NT_UNUSED(EulerAngles);
+    NT_UNUSED(bRadiansIn);
+    NT_UNUSED(bRadiansOut);
     // This function is a fake function for 2D rotation, so the result is not correct
     return Vec3<Real_t>(Vec2<Real_t>(1), 0);
 }

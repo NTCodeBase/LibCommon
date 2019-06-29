@@ -62,7 +62,7 @@ public:
 
     String getStringValue(const String& tag) const {
         auto it = this->find(tag);
-        __NT_REQUIRE(it != this->end());
+        NT_REQUIRE(it != this->end());
         return it->second;
     }
 
@@ -77,7 +77,7 @@ public:
 
     int getIntValue(const String& tag) const {
         auto it = this->find(tag);
-        __NT_REQUIRE(it != this->end());
+        NT_REQUIRE(it != this->end());
         value = std::stoi(it->second);
     }
 
@@ -94,7 +94,7 @@ public:
     template<class Real_t>
     Real_t getRealValue(const String& tag) const {
         auto it = this->find(tag);
-        __NT_REQUIRE(it != this->end());
+        NT_REQUIRE(it != this->end());
         return static_cast<Real_t>(std::stof(it->second));
     }
 };

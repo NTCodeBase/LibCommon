@@ -35,7 +35,7 @@ SharedPtr<Logger> Logger::createLogger(const String& loggerName, const String& r
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 void Logger::removeLogger(const SharedPtr<Logger>& logger) {
-    __NT_REQUIRE(std::find(std::begin(s_Instances), std::end(s_Instances), logger) != s_Instances.end());
+    NT_REQUIRE(std::find(std::begin(s_Instances), std::end(s_Instances), logger) != s_Instances.end());
     s_Instances.remove(logger);
 }
 
@@ -48,7 +48,7 @@ Logger::Logger(const String& loggerName, const String& rootPath, bool bLog2Conso
     }
     ////////////////////////////////////////////////////////////////////////////////
     std::scoped_lock lock{ s_InstancingMutex };
-    __NT_UNUSED(lock);
+    NT_UNUSED(lock);
     m_InstanceIdx = s_NumCreatedInstances++;
     ////////////////////////////////////////////////////////////////////////////////
     if(m_bLog2Console) {

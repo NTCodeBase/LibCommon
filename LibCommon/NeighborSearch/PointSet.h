@@ -129,7 +129,7 @@ private:
     }
 
     void resize_keys(UInt n) {
-        if constexpr (N == 2) {
+        if constexpr(N == 2) {
             m_keys.resize(n, {
                     std::numeric_limits<int>::lowest(),
                     std::numeric_limits<int>::lowest()
@@ -153,7 +153,7 @@ private:
     }
 
     const Real_t* point(UInt i) const {
-        if constexpr (N == 2) {
+        if constexpr(N == 2) {
             return &m_x[2 * i];
         } else {
             return &m_x[3 * i];

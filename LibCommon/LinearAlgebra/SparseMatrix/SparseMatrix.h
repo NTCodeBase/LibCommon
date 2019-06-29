@@ -49,7 +49,7 @@ public:
     template<class IndexType> void   addElement(IndexType i, IndexType j, Real_t incrementValue);
     template<class IndexType> void   eraseElement(IndexType i, IndexType j);
 
-    void printDebug(UInt maxRows        = 0) const noexcept;
+    void printDebug(UInt maxRows = 0) const noexcept;
     void checkSymmetry(Real_t threshold = Real_t(1e-8)) const noexcept;
     void printTextFile(const char* fileName);
 

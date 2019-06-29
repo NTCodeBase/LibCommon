@@ -343,7 +343,7 @@ auto orientedSVD(const MatXxX<N, T>& M) {
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 template<class T>
 void QRDifferential(const Mat2x2<T>& Q, const Mat2x2<T>& R, const Mat2x2<T>& dF, Mat2x2<T>& dQ, Mat2x2<T>& dR) {
-    __NT_REQUIRE(R[0][0] != 0);
+    NT_REQUIRE(R[0][0] != 0);
     Mat2x2<T> QtdF = glm::transpose(Q) * dF;
     T         a    = -QtdF[0][1] / R[0][0];
     Mat2x2<T> QtdQ(0, -a, a, 0);
@@ -353,7 +353,7 @@ void QRDifferential(const Mat2x2<T>& Q, const Mat2x2<T>& R, const Mat2x2<T>& dF,
 
 template<class T>
 void QRDifferential(const Mat3x3<T>& Q, const Mat3x3<T>& R, const Mat3x3<T>& dF, Mat3x3<T>& dQ, Mat3x3<T>& dR) {
-    __NT_REQUIRE(R[0][0] != 0 && R[1][1] != 0);
+    NT_REQUIRE(R[0][0] != 0 && R[1][1] != 0);
     Mat3x3<T> QtdF = glm::transpose(Q) * dF;
     T         w3   = QtdF[0][1] / R[0][0];
     T         w2   = -QtdF[0][2] / R[0][0];
@@ -377,7 +377,7 @@ auto symmetryDecomposition(const MatXxX<N, T>& M) {
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 template<Int N, class T>
 auto extractFiberCotangentStress(const MatXxX<N, T>& VP, const MatXxX<N, T>& F) {
-    if constexpr (N == 2) {
+    if constexpr(N == 2) {
         return glm::outerProduct(VP[1], F[1]);
     } else {
         return MatMxN<3, 2, T>(VP[1], VP[2]) * glm::transpose(MatMxN<3, 2, T>(F[1], F[2]));
@@ -387,7 +387,7 @@ auto extractFiberCotangentStress(const MatXxX<N, T>& VP, const MatXxX<N, T>& F) 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 template<Int N, class T>
 MatXxX<N, T> getOrthogonalSystem(const VecX<N, T>& d1) {
-    if constexpr (N == 2) {
+    if constexpr(N == 2) {
         MatXxX<N, T> M;
         M[0] = glm::normalize(d1);
         M[1] = glm::normalize(Vec2<T>(-d1.y, d1.x));

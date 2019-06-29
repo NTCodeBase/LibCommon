@@ -42,7 +42,7 @@ void RigidBodyAnimation<N, Real_t>::makeReady(bool bCubicIntTranslation, bool bC
     ////////////////////////////////////////////////////////////////////////////////
     m_StartFrame = m_KeyFrames.front().frame;
     m_EndFrame   = m_KeyFrames.back().frame;
-    __NT_REQUIRE(m_EndFrame > m_StartFrame);
+    NT_REQUIRE(m_EndFrame > m_StartFrame);
     m_FrameRange = m_EndFrame - m_StartFrame;
     ////////////////////////////////////////////////////////////////////////////////
     StdVT<Real_t> frames;
@@ -99,7 +99,7 @@ MatXxX<N + 1, Real_t> RigidBodyAnimation<N, Real_t>::getTransformationMatrix(UIn
         return MatNp1xNp1(1);
     }
     ////////////////////////////////////////////////////////////////////////////////
-    __NT_REQUIRE(m_bReady)
+    NT_REQUIRE(m_bReady)
     VecN translation;
     VecNp1 rotation;
 
@@ -136,7 +136,7 @@ MatXxX<N + 1, Real_t> RigidBodyAnimation<N, Real_t>::getInvTransformation(UInt f
         return MatNp1xNp1(1);
     }
     ////////////////////////////////////////////////////////////////////////////////
-    __NT_REQUIRE(m_bReady);
+    NT_REQUIRE(m_bReady);
     return glm::inverse(getTransformationMatrix(frame, frameFraction));
 }
 
@@ -193,7 +193,7 @@ void Animation<N, Real_t>::makeReady(bool bCubicIntTranslation, bool bCubicIntRo
     this->m_ScaleInterpolator.setBoundary(CubicSpline<Real_t>::BDType::FirstOrder, 0, CubicSpline<Real_t>::BDType::FirstOrder, 0);
     this->m_ScaleInterpolator.setPoints(frames, scales, bCubicIntScale);
     ////////////////////////////////////////////////////////////////////////////////
-    __NT_REQUIRE(this->m_EndFrame > this->m_StartFrame);
+    NT_REQUIRE(this->m_EndFrame > this->m_StartFrame);
     this->m_FrameRange = this->m_EndFrame - this->m_StartFrame;
     this->m_bReady     = true;
 }
@@ -226,7 +226,7 @@ MatXxX<N + 1, Real_t> Animation<N, Real_t>::getTransformationMatrix(UInt frame, 
         return MatNp1xNp1(1);
     }
     ////////////////////////////////////////////////////////////////////////////////
-    __NT_REQUIRE(this->m_bReady)
+    NT_REQUIRE(this->m_bReady)
     VecN translation;
     VecNp1 rotation;
     Real_t scale;
@@ -261,6 +261,6 @@ MatXxX<N + 1, Real_t> Animation<N, Real_t>::getTransformationMatrix(UInt frame, 
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-__NT_INSTANTIATE_CLASS_COMMON_DIMENSIONS_AND_TYPES(RigidBodyAnimation)
+NT_INSTANTIATE_CLASS_COMMON_DIMENSIONS_AND_TYPES(RigidBodyAnimation)
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 } // end namespace NTCodeBase

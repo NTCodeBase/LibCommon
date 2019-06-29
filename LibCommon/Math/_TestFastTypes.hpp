@@ -267,7 +267,7 @@ TEST_CASE("Test_FastVec3_Ops", "Test_FastVec3_Ops")
 #else
         for(int i = 0; i < DATA_SIZE; ++i) {
 #endif
-                              __NT_UNUSED(i);
+                              NT_UNUSED(i);
                               Vec3<Real_t> v0      = NumberHelpers::fRand11<Real_t>::template vrnd<Vec3<Real_t>>();
                               Vec3<Real_t> v1      = NumberHelpers::fRand11<Real_t>::template vrnd<Vec3<Real_t>>();
                               FastVec3<Real_t> fv0 = v0;
@@ -375,7 +375,7 @@ TEST_CASE("Test_FastMat3_Ops", "Test_FastMat3_Ops")
 #else
         for(int i = 0; i < DATA_SIZE; ++i) {
 #endif
-                              __NT_UNUSED(i);
+                              NT_UNUSED(i);
                               Vec3<Real_t> v0      = NumberHelpers::fRand11<Real_t>::template vrnd<Vec3<Real_t>>();
                               Mat3x3<Real_t> m0    = NumberHelpers::fRand11<Real_t>::template vrnd<Mat3x3<Real_t>>();
                               Mat3x3<Real_t> m1    = NumberHelpers::fRand11<Real_t>::template vrnd<Mat3x3<Real_t>>();

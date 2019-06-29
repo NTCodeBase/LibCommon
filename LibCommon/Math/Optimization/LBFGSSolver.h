@@ -73,7 +73,7 @@ public:
     ////////////////////////////////////////////////////////////////////////////////
     auto        nIters() const { return m_nIters; }
     const auto& objVals() const { return m_ObjVals; }
-    const auto& runtimes()  const { return m_Runtimes; }
+    const auto& runtimes() const { return m_Runtimes; }
 protected:
     size_t        m_nIters;
     StdVT<Real_t> m_ObjVals;

@@ -487,8 +487,8 @@ auto generatePointsOnCircle(IndexType nPoints, Real_t sphereRadius = Real_t(1)) 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 template<Int N, class IndexType, class Real_t>
 auto generatePointsOnSphere(IndexType nPoints, Real_t radius = Real_t(1), Real_t spanPolarAngle = Real_t(M_PI)) {
-    if constexpr (N == 2) {
-        __NT_UNUSED(spanPolarAngle);
+    if constexpr(N == 2) {
+        NT_UNUSED(spanPolarAngle);
         StdVT_Vec2<Real_t> points;
         points.reserve(nPoints);
         ////////////////////////////////////////////////////////////////////////////////

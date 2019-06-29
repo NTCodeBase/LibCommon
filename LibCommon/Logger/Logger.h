@@ -46,15 +46,15 @@ public:
     }
 
     void printLogPadding(const String& s, LogLevel consoleLogLevel = LogLevel::info, LogLevel fileLogLevel = LogLevel::info);
-    void printLogIndent(const String& s, UInt indentLevel          = 1, LogLevel consoleLogLevel = LogLevel::info, LogLevel fileLogLevel = LogLevel::info);
-    void printLogPaddingIndent(const String& s,  UInt indentLevel  = 1, LogLevel consoleLogLevel = LogLevel::info, LogLevel fileLogLevel = LogLevel::info);
+    void printLogIndent(const String& s, UInt indentLevel         = 1, LogLevel consoleLogLevel = LogLevel::info, LogLevel fileLogLevel = LogLevel::info);
+    void printLogPaddingIndent(const String& s,  UInt indentLevel = 1, LogLevel consoleLogLevel = LogLevel::info, LogLevel fileLogLevel = LogLevel::info);
 
     void printCenterAligned(const String& s, char paddingChar             = Logger::s_PrefixPadding, LogLevel consoleLogLevel = LogLevel::info, LogLevel fileLogLevel = LogLevel::info);
     void printTextBox(const String& s, LogLevel consoleLogLevel           = LogLevel::info, LogLevel fileLogLevel = LogLevel::info);
     void printTextBox(const StdVT<String>& strs, LogLevel consoleLogLevel = LogLevel::info, LogLevel fileLogLevel = LogLevel::info);
 
     void newLine(LogLevel consoleLogLevel = LogLevel::info, LogLevel fileLogLevel = LogLevel::info) { printLog("", consoleLogLevel, fileLogLevel); }
-    void separatorLine(int stype          = 0, LogLevel consoleLogLevel = LogLevel::info, LogLevel fileLogLevel = LogLevel::info);
+    void separatorLine(int stype = 0, LogLevel consoleLogLevel = LogLevel::info, LogLevel fileLogLevel = LogLevel::info);
     ////////////////////////////////////////////////////////////////////////////////
     template<class... Args> void printLogIf(bool bCondition, Args&& ... args) { if(bCondition) { printLog(std::forward<Args>(args)...); } }
     template<class... Args> void printLogIndentIf(bool bCondition, Args&& ... args) { if(bCondition) { printLogIndent(std::forward<Args>(args)...); } }

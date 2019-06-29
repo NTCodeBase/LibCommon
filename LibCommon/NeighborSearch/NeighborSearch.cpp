@@ -676,9 +676,9 @@ void NeighborSearch<N, Real_t>::query(UInt point_set_id, UInt point_index, StdVT
 template<Int N, class Real_t>
 void NeighborSearch<N, Real_t>::query2D(UInt point_set_id, UInt point_index, StdVT<StdVT_UInt>& neighbors) {
     if constexpr(N == 3) {
-        __NT_UNUSED(point_set_id);
-        __NT_UNUSED(point_index);
-        __NT_UNUSED(neighbors);
+        NT_UNUSED(point_set_id);
+        NT_UNUSED(point_index);
+        NT_UNUSED(neighbors);
     }
 
     if constexpr(N == 2) {
@@ -765,9 +765,9 @@ void NeighborSearch<N, Real_t>::query2D(UInt point_set_id, UInt point_index, Std
 template<Int N, class Real_t>
 void NeighborSearch<N, Real_t>::query3D(UInt point_set_id, UInt point_index, StdVT<StdVT_UInt>& neighbors) {
     if constexpr(N == 2) {
-        __NT_UNUSED(point_set_id);
-        __NT_UNUSED(point_index);
-        __NT_UNUSED(neighbors);
+        NT_UNUSED(point_set_id);
+        NT_UNUSED(point_index);
+        NT_UNUSED(neighbors);
     }
 
     if constexpr(N == 3) {
@@ -856,7 +856,7 @@ void NeighborSearch<N, Real_t>::query3D(UInt point_set_id, UInt point_index, Std
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-__NT_INSTANTIATE_CLASS_COMMON_DIMENSIONS_AND_TYPES(NeighborSearch)
+NT_INSTANTIATE_CLASS_COMMON_DIMENSIONS_AND_TYPES(NeighborSearch)
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 } // end namespace NTCodeBase::NeighborSearch

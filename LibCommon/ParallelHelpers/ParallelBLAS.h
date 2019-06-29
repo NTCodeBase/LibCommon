@@ -31,7 +31,7 @@ namespace NTCodeBase::ParallelBLAS {
 //
 template<class Real_t>
 inline Real_t dotProduct(const StdVT<Real_t>& x, const StdVT<Real_t>& y) {
-    __NT_REQUIRE(x.size() == y.size());
+    NT_REQUIRE(x.size() == y.size());
     ParallelObjects::DotProduct<1, Real_t> pObj(x, y);
     tbb::parallel_reduce(tbb::blocked_range<size_t>(0, x.size()), pObj);
 
@@ -40,7 +40,7 @@ inline Real_t dotProduct(const StdVT<Real_t>& x, const StdVT<Real_t>& y) {
 
 template<Int N, class Real_t>
 inline Real_t dotProduct(const StdVT<VecX<N, Real_t>>& x, const StdVT<VecX<N, Real_t>>& y) {
-    __NT_REQUIRE(x.size() == y.size());
+    NT_REQUIRE(x.size() == y.size());
     ParallelObjects::DotProduct<N, Real_t> pObj(x, y);
     tbb::parallel_reduce(tbb::blocked_range<size_t>(0, x.size()), pObj);
 
@@ -67,7 +67,7 @@ inline Real_t norm2(const StdVT<VecX<N, Real_t>>& x) {
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 template<class VectorType>
 inline StdVT<VectorType> add(const StdVT<VectorType>& x, const StdVT<VectorType>& y) {
-    __NT_REQUIRE(x.size() == y.size());
+    NT_REQUIRE(x.size() == y.size());
     StdVT<VectorType> z(x.size());
     ParallelExec::run(z.size(), [&](size_t i) { z[i] = x[i] + y[i]; });
     return z;
@@ -75,7 +75,7 @@ inline StdVT<VectorType> add(const StdVT<VectorType>& x, const StdVT<VectorType>
 
 template<class VectorType>
 inline StdVT<VectorType> minus(const StdVT<VectorType>& x, const StdVT<VectorType>& y) {
-    __NT_REQUIRE(x.size() == y.size());
+    NT_REQUIRE(x.size() == y.size());
     StdVT<VectorType> z(x.size());
     ParallelExec::run(z.size(), [&](size_t i) { z[i] = x[i] - y[i]; });
     return z;

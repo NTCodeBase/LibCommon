@@ -22,7 +22,7 @@ namespace NTCodeBase::AtomicOps {
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 template<class T, class Function>
 inline void atomicOp(T& target, T operand, Function&& f) {
-    std::atomic<T>& tgt = *((std::atomic<T>*)&target);
+    std::atomic<T>& tgt = *((std::atomic<T>*) & target);
 
     T cur_val = target;
     T new_val;

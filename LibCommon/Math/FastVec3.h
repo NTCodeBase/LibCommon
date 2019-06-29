@@ -23,14 +23,14 @@
 namespace NTCodeBase {
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 template<class T>
-class __NT_ALIGN16 FastVec3 {
+class NT_ALIGN16 FastVec3 {
 public:
     inline FastVec3() { static_assert(sizeof(T) == sizeof(float) && alignof(FastVec3<T>) == 16, "Error: Size or alignment is not correct!"); }
     inline FastVec3(__m128 mval) : mmvalue(mval) {}
     inline FastVec3(T x) : mmvalue(_mm_set1_ps(x)) {}
     inline FastVec3(T x, T y, T z) : mmvalue(_mm_setr_ps(x, y, z, 1)) {}
     inline FastVec3(int x, int y, int z) : mmvalue(_mm_cvtepi32_ps(_mm_setr_epi32(x, y, z, 1))) {}
-    inline FastVec3(unsigned int x, unsigned int y, unsigned int z) : mmvalue(_mm_cvtepi32_ps(_mm_setr_epi32(x, y, z, 1))) { __NT_DIE("Wrong"); }
+    inline FastVec3(unsigned int x, unsigned int y, unsigned int z) : mmvalue(_mm_cvtepi32_ps(_mm_setr_epi32(x, y, z, 1))) { NT_DIE("Wrong"); }
     inline FastVec3(const Vec2<T>& v) : mmvalue(_mm_setr_ps(v.x, v.y, 0, 1)) {}
     inline FastVec3(const Vec3<T>& v) : mmvalue(_mm_setr_ps(v.x, v.y, v.z, 1)) {}
     inline FastVec3(const Vec3i& vi) : mmvalue(_mm_cvtepi32_ps(_mm_setr_epi32(vi.x, vi.y, vi.z, 1))) {}
@@ -110,9 +110,21 @@ private:
 };
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-template<class T> inline FastVec3<T> operator+(T a, const FastVec3<T>& b) { return b + a; }
-template<class T> inline FastVec3<T> operator-(T a, const FastVec3<T>& b) { return FastVec3(_mm_set1_ps(a)) - b; }
-template<class T> inline FastVec3<T> operator*(T a, const FastVec3<T>& b) { return b * a; }
-template<class T> inline FastVec3<T> operator/(T a, const FastVec3<T>& b) { return FastVec3(_mm_set1_ps(a)) / b; }
+template<class T> inline FastVec3<T> operator+(T a, const FastVec3<T>& b) {
+    return b + a;
+}
+
+template<class T> inline FastVec3<T> operator-(T a, const FastVec3<T>& b) {
+    return FastVec3(_mm_set1_ps(a)) - b;
+}
+
+template<class T> inline FastVec3<T> operator*(T a, const FastVec3<T>& b) {
+    return b * a;
+}
+
+template<class T> inline FastVec3<T> operator/(T a, const FastVec3<T>& b) {
+    return FastVec3(_mm_set1_ps(a)) / b;
+}
+
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 } // end namespace NTCodeBase

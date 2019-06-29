@@ -23,7 +23,7 @@
 #include <tbb/tbb.h>
 #endif
 
-//#define __NT_NO_PARALLEL
+//#define NT_NO_PARALLEL
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 namespace NTCodeBase::ParallelExec {
@@ -41,7 +41,7 @@ inline void warmUp() {
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 template<class IndexType, class Function>
 void run(IndexType beginIdx, IndexType endIdx, Function&& function) {
-#if defined(__NT_NO_PARALLEL) || defined(__NT_DISABLE_PARALLEL)
+#if defined(NT_NO_PARALLEL) || defined(NT_DISABLE_PARALLEL)
     for(IndexType i = beginIdx; i < endIdx; ++i) {
         function(i);
     }

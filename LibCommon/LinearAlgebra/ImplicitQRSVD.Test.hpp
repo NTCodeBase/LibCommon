@@ -28,8 +28,7 @@ template<class T>
 void testAccuracy(const StdVT<Mat3x3<T>>& AA,
                   const StdVT<Mat3x3<T>>& UU,
                   const StdVT<Vec3<T>>&   SS,
-                  const StdVT<Mat3x3<T>>& VV)
-{
+                  const StdVT<Mat3x3<T>>& VV) {
     T max_UUt_error = 0, max_VVt_error = 0, max_detU_error = 0, max_detV_error = 0, max_reconstruction_error = 0;
     T ave_UUt_error = 0, ave_VVt_error = 0, ave_detU_error = 0, ave_detV_error = 0, ave_reconstruction_error = 0;
     for(size_t i = 0; i < AA.size(); i++) {
@@ -80,8 +79,7 @@ void testAccuracy(const StdVT<Mat3x3<T>>& AA,
 }
 
 template<class T>
-void runImplicitQRSVD(const Int repeat, const StdVT<Mat3x3<T>>& tests, const bool accuracy_test)
-{
+void runImplicitQRSVD(const Int repeat, const StdVT<Mat3x3<T>>& tests, const bool accuracy_test) {
     StdVT<Mat3x3<T>> UU, VV;
     StdVT<Vec3<T>>   SS;
     Timer            timer;
@@ -111,8 +109,7 @@ void runImplicitQRSVD(const Int repeat, const StdVT<Mat3x3<T>>& tests, const boo
 }
 
 template<class T>
-void addRandomCases(StdVT<Mat3x3<T>>& tests, const T random_range, const Int N)
-{
+void addRandomCases(StdVT<Mat3x3<T>>& tests, const T random_range, const Int N) {
     Int old_count = tests.size();
     std::cout << std::setprecision(10) << "Adding random test cases with range " << -random_range << " to " << random_range << std::endl;
     for(Int t = 0; t < N; t++) {
@@ -125,8 +122,7 @@ void addRandomCases(StdVT<Mat3x3<T>>& tests, const T random_range, const Int N)
 }
 
 template<class T>
-void addIntegerCases(StdVT<Mat3x3<T>>& tests, const Int int_range)
-{
+void addIntegerCases(StdVT<Mat3x3<T>>& tests, const Int int_range) {
     Int old_count = tests.size();
     std::cout << std::setprecision(10) << "Adding integer test cases with range " << -int_range << " to " << int_range << std::endl;
     Mat3x3<T> Z;
@@ -148,8 +144,7 @@ void addIntegerCases(StdVT<Mat3x3<T>>& tests, const Int int_range)
 }
 
 template<class T>
-void addPerturbationFromIdentityCases(StdVT<Mat3x3<T>>& tests, const Int num_perturbations, const T perturb)
-{
+void addPerturbationFromIdentityCases(StdVT<Mat3x3<T>>& tests, const Int num_perturbations, const T perturb) {
     Int              old_count = tests.size();
     StdVT<Mat3x3<T>> tests_tmp;
     Mat3x3<T>        Z = Mat3x3<T>(1.0);
@@ -167,8 +162,7 @@ void addPerturbationFromIdentityCases(StdVT<Mat3x3<T>>& tests, const Int num_per
 }
 
 template<class T>
-void addPerturbationCases(StdVT<Mat3x3<T>>& tests, const Int int_range, const Int num_perturbations, const T perturb)
-{
+void addPerturbationCases(StdVT<Mat3x3<T>>& tests, const Int int_range, const Int num_perturbations, const T perturb) {
     Int              old_count = tests.size();
     StdVT<Mat3x3<T>> tests_tmp;
     Mat3x3<T>        Z;
@@ -197,8 +191,7 @@ void addPerturbationCases(StdVT<Mat3x3<T>>& tests, const Int int_range, const In
     std::cout << std::setprecision(10) << "Total test cases: " << tests.size() << std::endl;
 }
 
-void runBenchmark()
-{
+void runBenchmark() {
     bool run_qr;
 
     bool        test_float;
@@ -231,104 +224,104 @@ void runBenchmark()
 
     for(Int test_number = 1; test_number <= 10; test_number++) {
         if(test_number == 1) {
-            title                           = "random timing test";
-            number_of_repeated_experiments  = number_of_repeated_experiments_for_timing;
-            accuracy_test                   = false;
-            test_random                     = true, random_range = 3, number_of_random_cases = 1024 * 1024;                                                                                                                                          // random test
-            test_integer                    = false;                                                                                                                                                                                                 // integer test
-            integer_range                   = 2;                                                                                                                                                                                                     // this variable is used by both integer test and perturbed integer test
-            test_perturbation               = false, integer_range = 3, perturbation_count = 4, float_perturbation = (float)256 * std::numeric_limits<float>::epsilon(), double_perturbation = (double)256 * std::numeric_limits<double>::epsilon(); // perturbed integer test
-            test_perturbation_from_identity = false, perturbation_from_identity_count = 1024 * 1024, float_perturbation_identity = 1e-3, double_perturbation_identity = 1e-3;                                                                        // perturbed itentity test
+            title = "random timing test";
+            number_of_repeated_experiments = number_of_repeated_experiments_for_timing;
+            accuracy_test     = false;
+            test_random       = true, random_range = 3, number_of_random_cases = 1024 * 1024;                                                                                                                                          // random test
+            test_integer      = false;                                                                                                                                                                                                 // integer test
+            integer_range     = 2;                                                                                                                                                                                                     // this variable is used by both integer test and perturbed integer test
+            test_perturbation = false, integer_range = 3, perturbation_count = 4, float_perturbation = (float)256 * std::numeric_limits<float>::epsilon(), double_perturbation = (double)256 * std::numeric_limits<double>::epsilon(); // perturbed integer test
+            test_perturbation_from_identity = false, perturbation_from_identity_count = 1024 * 1024, float_perturbation_identity = 1e-3, double_perturbation_identity = 1e-3;                                                          // perturbed itentity test
         }
         if(test_number == 2) {
-            title                           = "integer timing test";
-            number_of_repeated_experiments  = number_of_repeated_experiments_for_timing;
-            accuracy_test                   = false;
-            test_random                     = false, random_range = 3, number_of_random_cases = 1024 * 1024;                                                                                                                      // random test
-            test_integer                    = true;                                                                                                                                                                               // integer test
-            integer_range                   = 2;                                                                                                                                                                                  // this variable is used by both integer test and perturbed integer test
-            test_perturbation               = false, perturbation_count = 4, float_perturbation = (float)256 * std::numeric_limits<float>::epsilon(), double_perturbation = (double)256 * std::numeric_limits<double>::epsilon(); // perturbed integer test
-            test_perturbation_from_identity = false, perturbation_from_identity_count = 1024 * 1024, float_perturbation_identity = 1e-3, double_perturbation_identity = 1e-3;                                                     // perturbed itentity test
+            title = "integer timing test";
+            number_of_repeated_experiments = number_of_repeated_experiments_for_timing;
+            accuracy_test     = false;
+            test_random       = false, random_range = 3, number_of_random_cases = 1024 * 1024;                                                                                                                      // random test
+            test_integer      = true;                                                                                                                                                                               // integer test
+            integer_range     = 2;                                                                                                                                                                                  // this variable is used by both integer test and perturbed integer test
+            test_perturbation = false, perturbation_count = 4, float_perturbation = (float)256 * std::numeric_limits<float>::epsilon(), double_perturbation = (double)256 * std::numeric_limits<double>::epsilon(); // perturbed integer test
+            test_perturbation_from_identity = false, perturbation_from_identity_count = 1024 * 1024, float_perturbation_identity = 1e-3, double_perturbation_identity = 1e-3;                                       // perturbed itentity test
         }
         if(test_number == 3) {
-            title                           = "integer-perturbation timing test: 256 eps";
-            number_of_repeated_experiments  = number_of_repeated_experiments_for_timing;
-            accuracy_test                   = false;
-            test_random                     = false, random_range = 3, number_of_random_cases = 1024 * 1024;                                                                                                                     // random test
-            test_integer                    = false;                                                                                                                                                                             // integer test
-            integer_range                   = 2;                                                                                                                                                                                 // this variable is used by both integer test and perturbed integer test
-            test_perturbation               = true, perturbation_count = 4, float_perturbation = (float)256 * std::numeric_limits<float>::epsilon(), double_perturbation = (double)256 * std::numeric_limits<double>::epsilon(); // perturbed integer test
-            test_perturbation_from_identity = false, perturbation_from_identity_count = 1024 * 1024, float_perturbation_identity = 1e-3, double_perturbation_identity = 1e-3;                                                    // perturbed itentity test
+            title = "integer-perturbation timing test: 256 eps";
+            number_of_repeated_experiments = number_of_repeated_experiments_for_timing;
+            accuracy_test     = false;
+            test_random       = false, random_range = 3, number_of_random_cases = 1024 * 1024;                                                                                                                     // random test
+            test_integer      = false;                                                                                                                                                                             // integer test
+            integer_range     = 2;                                                                                                                                                                                 // this variable is used by both integer test and perturbed integer test
+            test_perturbation = true, perturbation_count = 4, float_perturbation = (float)256 * std::numeric_limits<float>::epsilon(), double_perturbation = (double)256 * std::numeric_limits<double>::epsilon(); // perturbed integer test
+            test_perturbation_from_identity = false, perturbation_from_identity_count = 1024 * 1024, float_perturbation_identity = 1e-3, double_perturbation_identity = 1e-3;                                      // perturbed itentity test
         }
         if(test_number == 4) {
-            title                           = "identity-perturbation timing test: 1e-3";
-            number_of_repeated_experiments  = number_of_repeated_experiments_for_timing;
-            accuracy_test                   = false;
-            test_random                     = false, random_range = 3, number_of_random_cases = 1024 * 1024;                                                                                                                      // random test
-            test_integer                    = false;                                                                                                                                                                              // integer test
-            integer_range                   = 2;                                                                                                                                                                                  // this variable is used by both integer test and perturbed integer test
-            test_perturbation               = false, perturbation_count = 4, float_perturbation = (float)256 * std::numeric_limits<float>::epsilon(), double_perturbation = (double)256 * std::numeric_limits<double>::epsilon(); // perturbed integer test
-            test_perturbation_from_identity = true, perturbation_from_identity_count = 1024 * 1024, float_perturbation_identity = 1e-3, double_perturbation_identity = 1e-3;                                                      // perturbed itentity test
+            title = "identity-perturbation timing test: 1e-3";
+            number_of_repeated_experiments = number_of_repeated_experiments_for_timing;
+            accuracy_test     = false;
+            test_random       = false, random_range = 3, number_of_random_cases = 1024 * 1024;                                                                                                                      // random test
+            test_integer      = false;                                                                                                                                                                              // integer test
+            integer_range     = 2;                                                                                                                                                                                  // this variable is used by both integer test and perturbed integer test
+            test_perturbation = false, perturbation_count = 4, float_perturbation = (float)256 * std::numeric_limits<float>::epsilon(), double_perturbation = (double)256 * std::numeric_limits<double>::epsilon(); // perturbed integer test
+            test_perturbation_from_identity = true, perturbation_from_identity_count = 1024 * 1024, float_perturbation_identity = 1e-3, double_perturbation_identity = 1e-3;                                        // perturbed itentity test
         }
         if(test_number == 5) {
-            title                           = "identity-perturbation timing test: 256 eps";
-            number_of_repeated_experiments  = number_of_repeated_experiments_for_timing;
-            accuracy_test                   = false;
-            test_random                     = false, random_range = 3, number_of_random_cases = 1024 * 1024;                                                                                                                                                               // random test
-            test_integer                    = false;                                                                                                                                                                                                                       // integer test
-            integer_range                   = 2;                                                                                                                                                                                                                           // this variable is used by both integer test and perturbed integer test
-            test_perturbation               = false, perturbation_count = 4, float_perturbation = (float)256 * std::numeric_limits<float>::epsilon(), double_perturbation = (double)256 * std::numeric_limits<double>::epsilon();                                          // perturbed integer test
+            title = "identity-perturbation timing test: 256 eps";
+            number_of_repeated_experiments = number_of_repeated_experiments_for_timing;
+            accuracy_test     = false;
+            test_random       = false, random_range = 3, number_of_random_cases = 1024 * 1024;                                                                                                                                                                             // random test
+            test_integer      = false;                                                                                                                                                                                                                                     // integer test
+            integer_range     = 2;                                                                                                                                                                                                                                         // this variable is used by both integer test and perturbed integer test
+            test_perturbation = false, perturbation_count = 4, float_perturbation = (float)256 * std::numeric_limits<float>::epsilon(), double_perturbation = (double)256 * std::numeric_limits<double>::epsilon();                                                        // perturbed integer test
             test_perturbation_from_identity = true, perturbation_from_identity_count = 1024 * 1024, float_perturbation_identity = (float)256 * std::numeric_limits<float>::epsilon(), double_perturbation_identity = (double)256 * std::numeric_limits<double>::epsilon(); // perturbed itentity test
         }
 
         if(test_number == 6) {
-            title                           = "random accuracy test";
-            number_of_repeated_experiments  = 1;
-            accuracy_test                   = true;
-            test_random                     = true, random_range = 3, number_of_random_cases = 1024 * 1024;                                                                                                                                          // random test
-            test_integer                    = false;                                                                                                                                                                                                 // integer test
-            integer_range                   = 2;                                                                                                                                                                                                     // this variable is used by both integer test and perturbed integer test
-            test_perturbation               = false, integer_range = 3, perturbation_count = 4, float_perturbation = (float)256 * std::numeric_limits<float>::epsilon(), double_perturbation = (double)256 * std::numeric_limits<double>::epsilon(); // perturbed integer test
-            test_perturbation_from_identity = false, perturbation_from_identity_count = 1024 * 1024, float_perturbation_identity = 1e-3, double_perturbation_identity = 1e-3;                                                                        // perturbed itentity test
+            title = "random accuracy test";
+            number_of_repeated_experiments = 1;
+            accuracy_test     = true;
+            test_random       = true, random_range = 3, number_of_random_cases = 1024 * 1024;                                                                                                                                          // random test
+            test_integer      = false;                                                                                                                                                                                                 // integer test
+            integer_range     = 2;                                                                                                                                                                                                     // this variable is used by both integer test and perturbed integer test
+            test_perturbation = false, integer_range = 3, perturbation_count = 4, float_perturbation = (float)256 * std::numeric_limits<float>::epsilon(), double_perturbation = (double)256 * std::numeric_limits<double>::epsilon(); // perturbed integer test
+            test_perturbation_from_identity = false, perturbation_from_identity_count = 1024 * 1024, float_perturbation_identity = 1e-3, double_perturbation_identity = 1e-3;                                                          // perturbed itentity test
         }
         if(test_number == 7) {
-            title                           = "integer accuracy test";
-            number_of_repeated_experiments  = 1;
-            accuracy_test                   = true;
-            test_random                     = false, random_range = 3, number_of_random_cases = 1024 * 1024;                                                                                                                      // random test
-            test_integer                    = true;                                                                                                                                                                               // integer test
-            integer_range                   = 2;                                                                                                                                                                                  // this variable is used by both integer test and perturbed integer test
-            test_perturbation               = false, perturbation_count = 4, float_perturbation = (float)256 * std::numeric_limits<float>::epsilon(), double_perturbation = (double)256 * std::numeric_limits<double>::epsilon(); // perturbed integer test
-            test_perturbation_from_identity = false, perturbation_from_identity_count = 1024 * 1024, float_perturbation_identity = 1e-3, double_perturbation_identity = 1e-3;                                                     // perturbed itentity test
+            title = "integer accuracy test";
+            number_of_repeated_experiments = 1;
+            accuracy_test     = true;
+            test_random       = false, random_range = 3, number_of_random_cases = 1024 * 1024;                                                                                                                      // random test
+            test_integer      = true;                                                                                                                                                                               // integer test
+            integer_range     = 2;                                                                                                                                                                                  // this variable is used by both integer test and perturbed integer test
+            test_perturbation = false, perturbation_count = 4, float_perturbation = (float)256 * std::numeric_limits<float>::epsilon(), double_perturbation = (double)256 * std::numeric_limits<double>::epsilon(); // perturbed integer test
+            test_perturbation_from_identity = false, perturbation_from_identity_count = 1024 * 1024, float_perturbation_identity = 1e-3, double_perturbation_identity = 1e-3;                                       // perturbed itentity test
         }
         if(test_number == 8) {
-            title                           = "integer-perturbation accuracy test: 256 eps";
-            number_of_repeated_experiments  = 1;
-            accuracy_test                   = true;
-            test_random                     = false, random_range = 3, number_of_random_cases = 1024 * 1024;                                                                                                                     // random test
-            test_integer                    = false;                                                                                                                                                                             // integer test
-            integer_range                   = 2;                                                                                                                                                                                 // this variable is used by both integer test and perturbed integer test
-            test_perturbation               = true, perturbation_count = 4, float_perturbation = (float)256 * std::numeric_limits<float>::epsilon(), double_perturbation = (double)256 * std::numeric_limits<double>::epsilon(); // perturbed integer test
-            test_perturbation_from_identity = false, perturbation_from_identity_count = 1024 * 1024, float_perturbation_identity = 1e-3, double_perturbation_identity = 1e-3;                                                    // perturbed itentity test
+            title = "integer-perturbation accuracy test: 256 eps";
+            number_of_repeated_experiments = 1;
+            accuracy_test     = true;
+            test_random       = false, random_range = 3, number_of_random_cases = 1024 * 1024;                                                                                                                     // random test
+            test_integer      = false;                                                                                                                                                                             // integer test
+            integer_range     = 2;                                                                                                                                                                                 // this variable is used by both integer test and perturbed integer test
+            test_perturbation = true, perturbation_count = 4, float_perturbation = (float)256 * std::numeric_limits<float>::epsilon(), double_perturbation = (double)256 * std::numeric_limits<double>::epsilon(); // perturbed integer test
+            test_perturbation_from_identity = false, perturbation_from_identity_count = 1024 * 1024, float_perturbation_identity = 1e-3, double_perturbation_identity = 1e-3;                                      // perturbed itentity test
         }
         if(test_number == 9) {
-            title                           = "identity-perturbation accuracy test: 1e-3";
-            number_of_repeated_experiments  = 1;
-            accuracy_test                   = true;
-            test_random                     = false, random_range = 3, number_of_random_cases = 1024 * 1024;                                                                                                                      // random test
-            test_integer                    = false;                                                                                                                                                                              // integer test
-            integer_range                   = 2;                                                                                                                                                                                  // this variable is used by both integer test and perturbed integer test
-            test_perturbation               = false, perturbation_count = 4, float_perturbation = (float)256 * std::numeric_limits<float>::epsilon(), double_perturbation = (double)256 * std::numeric_limits<double>::epsilon(); // perturbed integer test
-            test_perturbation_from_identity = true, perturbation_from_identity_count = 1024 * 1024, float_perturbation_identity = 1e-3, double_perturbation_identity = 1e-3;                                                      // perturbed itentity test
+            title = "identity-perturbation accuracy test: 1e-3";
+            number_of_repeated_experiments = 1;
+            accuracy_test     = true;
+            test_random       = false, random_range = 3, number_of_random_cases = 1024 * 1024;                                                                                                                      // random test
+            test_integer      = false;                                                                                                                                                                              // integer test
+            integer_range     = 2;                                                                                                                                                                                  // this variable is used by both integer test and perturbed integer test
+            test_perturbation = false, perturbation_count = 4, float_perturbation = (float)256 * std::numeric_limits<float>::epsilon(), double_perturbation = (double)256 * std::numeric_limits<double>::epsilon(); // perturbed integer test
+            test_perturbation_from_identity = true, perturbation_from_identity_count = 1024 * 1024, float_perturbation_identity = 1e-3, double_perturbation_identity = 1e-3;                                        // perturbed itentity test
         }
         if(test_number == 10) {
-            title                           = "identity-perturbation accuracy test: 256 eps";
-            number_of_repeated_experiments  = 1;
-            accuracy_test                   = true;
-            test_random                     = false, random_range = 3, number_of_random_cases = 1024 * 1024;                                                                                                                                                               // random test
-            test_integer                    = false;                                                                                                                                                                                                                       // integer test
-            integer_range                   = 2;                                                                                                                                                                                                                           // this variable is used by both integer test and perturbed integer test
-            test_perturbation               = false, perturbation_count = 4, float_perturbation = (float)256 * std::numeric_limits<float>::epsilon(), double_perturbation = (double)256 * std::numeric_limits<double>::epsilon();                                          // perturbed integer test
+            title = "identity-perturbation accuracy test: 256 eps";
+            number_of_repeated_experiments = 1;
+            accuracy_test     = true;
+            test_random       = false, random_range = 3, number_of_random_cases = 1024 * 1024;                                                                                                                                                                             // random test
+            test_integer      = false;                                                                                                                                                                                                                                     // integer test
+            integer_range     = 2;                                                                                                                                                                                                                                         // this variable is used by both integer test and perturbed integer test
+            test_perturbation = false, perturbation_count = 4, float_perturbation = (float)256 * std::numeric_limits<float>::epsilon(), double_perturbation = (double)256 * std::numeric_limits<double>::epsilon();                                                        // perturbed integer test
             test_perturbation_from_identity = true, perturbation_from_identity_count = 1024 * 1024, float_perturbation_identity = (float)256 * std::numeric_limits<float>::epsilon(), double_perturbation_identity = (double)256 * std::numeric_limits<double>::epsilon(); // perturbed itentity test
         }
 

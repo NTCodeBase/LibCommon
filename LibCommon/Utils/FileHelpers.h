@@ -49,7 +49,7 @@ inline bool fileExisted(const String& fileName) {
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 inline std::size_t countFiles(const String& folderPath) {
     using fp = bool (*)(const fs::path&);
-    return std::count_if(fs::directory_iterator(folderPath), fs::directory_iterator{}, (fp)fs::is_regular_file);
+    return std::count_if(fs::directory_iterator(folderPath), fs::directory_iterator {}, (fp)fs::is_regular_file);
 }
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
@@ -91,13 +91,13 @@ inline StdVT_String getFolderSizeInfo(const char* folderName) {
                         strs.emplace_back(String("........") + fs::path(p).filename().string() + String("/") +
                                           fs::path(f).filename().string() + String(": ") +
                                           std::to_string(folderSize_l2 / 1048576) + String(" MB(s) - ") +
-                                          std::to_string(std::distance(fs::directory_iterator(f), fs::directory_iterator{})) + String(" file(s)"));
+                                          std::to_string(std::distance(fs::directory_iterator(f), fs::directory_iterator {})) + String(" file(s)"));
                     }
                 }
                 totalSize += folderSize;
                 strs.emplace_back(String("....") + fs::path(p).filename().string() + String(": ") +
                                   std::to_string(folderSize / 1048576) + String(" MB(s) - ") +
-                                  std::to_string(std::distance(fs::directory_iterator(p), fs::directory_iterator{})) + String(" file(s)"));
+                                  std::to_string(std::distance(fs::directory_iterator(p), fs::directory_iterator {})) + String(" file(s)"));
             }
         }
     }
@@ -113,19 +113,19 @@ inline StdVT_String getFolderSizeInfo(const String& folderName) {
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 inline String getFullFilePath(const String& topFolder, const String& dataSubFolder, const String& fileName, const String& fileExtension, int fileID) {
     char buff[512];
-    __NT_SPRINT(buff, "%s/%s/%s.%04d.%s", topFolder.c_str(), dataSubFolder.c_str(), fileName.c_str(), fileID, fileExtension.c_str());
+    NT_SPRINT(buff, "%s/%s/%s.%04d.%s", topFolder.c_str(), dataSubFolder.c_str(), fileName.c_str(), fileID, fileExtension.c_str());
     return String(buff);
 }
 
 inline String getFullFilePath(const char* topFolder, const char* dataSubFolder, const char* fileName, const char* fileExtension, int fileID) {
     char buff[512];
-    __NT_SPRINT(buff, "%s/%s/%s.%04d.%s", topFolder, dataSubFolder, fileName, fileID, fileExtension);
+    NT_SPRINT(buff, "%s/%s/%s.%04d.%s", topFolder, dataSubFolder, fileName, fileID, fileExtension);
     return String(buff);
 }
 
 inline String getFullFilePath(const String& topFolder, const char* dataSubFolder, const char* fileName, const char* fileExtension, int fileID) {
     char buff[512];
-    __NT_SPRINT(buff, "%s/%s/%s.%04d.%s", topFolder.c_str(), dataSubFolder, fileName, fileID, fileExtension);
+    NT_SPRINT(buff, "%s/%s/%s.%04d.%s", topFolder.c_str(), dataSubFolder, fileName, fileID, fileExtension);
     return String(buff);
 }
 
@@ -147,7 +147,7 @@ inline void copyFile(const char* srcFile, const char* dstFile) {
 
     FILE* src = nullptr;
     FILE* dst = nullptr;
-#ifdef __NT_WINDOWS_OS__
+#ifdef NT_IN_WINDOWS_OS
     fopen_s(&src, srcFile, "r");
     fopen_s(&dst, dstFile, "w");
 #else
@@ -155,8 +155,12 @@ inline void copyFile(const char* srcFile, const char* dstFile) {
     src = fopen(srcFile, "r");
 #endif
     if(src == nullptr || dst == nullptr) {
-        if(src != nullptr) { fclose(src); }
-        if(dst != nullptr) { fclose(dst); }
+        if(src != nullptr) {
+            fclose(src);
+        }
+        if(dst != nullptr) {
+            fclose(dst);
+        }
         return;
     }
 
@@ -227,7 +231,7 @@ inline bool writeFile(const void* dataBuffer, size_t dataSize, const String& fil
 inline std::future<void> writeFileAsync(const void* dataBuffer, size_t dataSize, const char* fileName) {
     std::future<void> futureObj = std::async(std::launch::async, [&] {
                                                  std::ofstream file(fileName, std::ios::binary | std::ios::out);
-                                                 __NT_REQUIRE_MSG(file.is_open(), "Could not open file for writing.");
+                                                 NT_REQUIRE_MSG(file.is_open(), "Could not open file for writing.");
 
                                                  file.write((char*)dataBuffer, dataSize);
                                                  file.close();

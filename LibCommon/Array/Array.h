@@ -155,7 +155,7 @@ public:
 
             printf("%s\n", ss.str().c_str());
         }
-        __NT_REQUIRE(bIndexValid);
+        NT_REQUIRE(bIndexValid);
     }
 
     template<class IndexType>
@@ -166,7 +166,7 @@ public:
             printf("Invalid z_index = %zu, x = %u, y = %u, total size = %zu * %zu (%zu)\n", z_index, static_cast<UInt>(i), static_cast<UInt>(j),
                    m_Size[0], m_Size[1], m_Data.size());
         }
-        __NT_REQUIRE(bIndexValid);
+        NT_REQUIRE(bIndexValid);
     }
 
     template<class IndexType>
@@ -177,7 +177,7 @@ public:
             printf("Invalid z_index = %zu, x = %u, y = %u, z = %u, total size = %zu * %zu * %zu (%zu)\n", z_index,
                    static_cast<UInt>(i), static_cast<UInt>(j), static_cast<UInt>(k), m_Size[0], m_Size[1], m_Size[2], m_Data.size());
         }
-        __NT_REQUIRE(bIndexValid);
+        NT_REQUIRE(bIndexValid);
     }
 
     bool equalSize(const Array<N, T, USE_Z_ORDER>& other) const {
@@ -367,7 +367,7 @@ public:
     }
 
     void assign(const T& value) { m_Data.assign(m_Data.size(), value); }
-    void copyDataFrom(const Array<N, T, USE_Z_ORDER>& other) { __NT_REQUIRE(equalSize(other)); m_Data = other.m_Data; }
+    void copyDataFrom(const Array<N, T, USE_Z_ORDER>& other) { NT_REQUIRE(equalSize(other)); m_Data = other.m_Data; }
     void setZero() { m_Data.assign(m_Data.size(), 0); }
     void clear() { m_Data.resize(0); m_Size = VecX<N, size_type>(0); }
     void swap(Array<N, T, USE_Z_ORDER>& other) { std::swap(m_Size, other.m_Size); m_Data.swap(other.m_Data); }
@@ -515,7 +515,7 @@ public:
             buffer.getData<UInt>(tmp, sizeof(UInt) * d);
             m_Size[d] = static_cast<size_type>(tmp);
         }
-        __NT_REQUIRE(buffer.buffer().size() == N * sizeof(UInt) + sizeof(T) * glm::compMul(m_Size));
+        NT_REQUIRE(buffer.buffer().size() == N * sizeof(UInt) + sizeof(T) * glm::compMul(m_Size));
         buffer.getData(m_Data, sizeof(UInt) * N, static_cast<UInt>(glm::compMul(m_Size)));
         return true;
     }

@@ -22,8 +22,7 @@
 #endif
 
 template<typename morton>
-inline bool findFirstSetBit(const morton x, unsigned long* firstbit_location)
-{
+inline bool findFirstSetBit(const morton x, unsigned long* firstbit_location) {
 #if _MSC_VER && !_WIN64
     // 32 BIT on 32 BIT
     if(sizeof(morton) <= 4) {
@@ -32,7 +31,7 @@ inline bool findFirstSetBit(const morton x, unsigned long* firstbit_location)
     // 64 BIT on 32 BIT
     else {
         *firstbit_location = 0;
-        if(_BitScanReverse(firstbit_location, (x >> 32))) {          // check first part
+        if(_BitScanReverse(firstbit_location, (x >> 32))) { // check first part
             firstbit_location += 32;
             return true;
         }

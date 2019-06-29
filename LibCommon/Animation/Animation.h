@@ -20,7 +20,9 @@
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 // utility to hack glm error
 namespace glm {
-template<class T> NTCodeBase::Mat3x3<T> rotate(const NTCodeBase::Mat3x3<T>& m, T angle, const NTCodeBase::Vec2<T>&) { return glm::rotate(m, angle); }
+template<class T> NTCodeBase::Mat3x3<T> rotate(const NTCodeBase::Mat3x3<T>& m, T angle, const NTCodeBase::Vec2<T>&) {
+    return glm::rotate(m, angle);
+}
 }
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 namespace NTCodeBase {
@@ -28,7 +30,7 @@ namespace NTCodeBase {
 template<Int N, class Real_t>
 struct KeyFrame {
     ////////////////////////////////////////////////////////////////////////////////
-    __NT_TYPE_ALIAS
+    NT_TYPE_ALIAS
     ////////////////////////////////////////////////////////////////////////////////
     KeyFrame() = default;
     KeyFrame(UInt frame_, const VecN& translation_) : frame(frame_), translation(translation_) {}
@@ -48,7 +50,7 @@ struct KeyFrame {
 template<Int N, class Real_t>
 class RigidBodyAnimation {
     ////////////////////////////////////////////////////////////////////////////////
-    __NT_TYPE_ALIAS
+    NT_TYPE_ALIAS
     ////////////////////////////////////////////////////////////////////////////////
 public:
     RigidBodyAnimation() = default;
@@ -90,7 +92,7 @@ protected:
 template<Int N, class Real_t>
 class Animation : public RigidBodyAnimation<N, Real_t> {
     ////////////////////////////////////////////////////////////////////////////////
-    __NT_TYPE_ALIAS
+    NT_TYPE_ALIAS
     ////////////////////////////////////////////////////////////////////////////////
 public:
     Animation() = default;

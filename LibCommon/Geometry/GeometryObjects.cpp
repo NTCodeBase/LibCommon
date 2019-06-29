@@ -55,7 +55,7 @@ VecX<N, Real_t> GeometryObject<N, Real_t>::gradSignedDistance(const VecN& ppos, 
 
         return (Vec2<Real_t>(ddx0, ddy0) + Vec2<Real_t>(ddx1, ddy1)) * Real_t(0.5);
     } else {
-        __NT_REQUIRE_MSG(N == 3, "Array dimension != 2,3");
+        NT_REQUIRE_MSG(N == 3, "Array dimension != 2,3");
 
         Real_t v000 = signedDistance(Vec3<Real_t>(ppos[0] - dx, ppos[1] - dx, ppos[2] - dx), bNegativeInside);
         Real_t v001 = signedDistance(Vec3<Real_t>(ppos[0] - dx, ppos[1] - dx, ppos[2] + dx), bNegativeInside);
@@ -235,10 +235,10 @@ void GeometryObject<N, Real_t>::parseParameters(const JParams& jParams) {
                 animationObj.periodic() = bPeriodic;
             }
 
-            __NT_REQUIRE(jAnimation.find("KeyFrames") != jAnimation.end());
+            NT_REQUIRE(jAnimation.find("KeyFrames") != jAnimation.end());
             for(auto& jKeyFrame : jAnimation["KeyFrames"]) {
                 auto& keyFrame = animationObj.addKeyFrame();
-                __NT_REQUIRE(JSONHelpers::readValue(jKeyFrame, keyFrame.frame, "Frame"));
+                NT_REQUIRE(JSONHelpers::readValue(jKeyFrame, keyFrame.frame, "Frame"));
 
                 // translation
                 JSONHelpers::readVector(jKeyFrame, keyFrame.translation, "Translation");
@@ -351,7 +351,7 @@ void TorusObject<N, Real_t>::parseParameters(const JParams& jParams) {
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 template<Int N, class Real_t>
 Real_t Torus28Object<N, Real_t>::signedDistance(const VecN& ppos0, bool bNegativeInside /*= true*/) const {
-    __NT_REQUIRE_MSG(N == 3, "Object dimension != 3");
+    NT_REQUIRE_MSG(N == 3, "Object dimension != 3");
     auto         ppos = this->invTransform(ppos0);
     Vec2<Real_t> q    = Vec2<Real_t>(MathHelpers::norm2(ppos[0], ppos[2]) - this->m_OuterRadius, ppos[1]);
     Real_t       d    = this->m_UniformScale * (MathHelpers::norm8(q[0], q[1]) - this->m_RingRadius);
@@ -361,7 +361,7 @@ Real_t Torus28Object<N, Real_t>::signedDistance(const VecN& ppos0, bool bNegativ
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 template<Int N, class Real_t>
 Real_t Torus2InfObject<N, Real_t>::signedDistance(const VecN& ppos0, bool bNegativeInside /*= true*/) const {
-    __NT_REQUIRE_MSG(N == 3, "Object dimension != 3");
+    NT_REQUIRE_MSG(N == 3, "Object dimension != 3");
     auto ppos = this->invTransform(ppos0);
 
     Vec2<Real_t> q = Vec2<Real_t>(MathHelpers::norm2(ppos[0], ppos[2]) - this->m_OuterRadius, ppos[1]);
@@ -401,7 +401,7 @@ Real_t TorusInfInfObject<N, Real_t>::signedDistance(const VecN& ppos0, bool bNeg
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 template<Int N, class Real_t>
 Real_t CylinderObject<N, Real_t>::signedDistance(const VecN& ppos0, bool bNegativeInside /*= true*/) const {
-    __NT_REQUIRE_MSG(N == 3, "Object dimension != 3");
+    NT_REQUIRE_MSG(N == 3, "Object dimension != 3");
     auto   ppos = this->invTransform(ppos0);
     Real_t d    = this->m_UniformScale * MathHelpers::max(MathHelpers::norm2(ppos[0], ppos[2]) - m_Radius, std::abs(ppos[1]) - Real_t(1.0));
     return bNegativeInside ? d : -d;
@@ -421,7 +421,7 @@ void CylinderObject<N, Real_t>::parseParameters(const JParams& jParams) {
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 template<Int N, class Real_t>
 Real_t ConeObject<N, Real_t>::signedDistance(const VecN& ppos0, bool bNegativeInside /*= true*/) const {
-    __NT_REQUIRE_MSG(N == 3, "Object dimension != 3");
+    NT_REQUIRE_MSG(N == 3, "Object dimension != 3");
     auto   ppos  = this->invTransform(ppos0);
     Real_t theta = std::atan(m_Radius); // radius / h, where h = 1
     Real_t d1    = MathHelpers::norm2(ppos[0], ppos[2]) * cos(theta) - std::abs(Real_t(1) - ppos[1]) * sin(theta);
@@ -466,7 +466,7 @@ void PlaneObject<N, Real_t>::parseParameters(const JParams& jParams) {
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 template<Int N, class Real_t>
 Real_t TriangleObject<N, Real_t>::signedDistance(const VecN& ppos0, bool bNegativeInside /*= true*/) const {
-    __NT_REQUIRE_MSG(N == 2, "Object dimension != 2");
+    NT_REQUIRE_MSG(N == 2, "Object dimension != 2");
     auto ppos = this->invTransform(ppos0);
     if constexpr(N == 2) {
         auto p = VecNp1(ppos, 0);
@@ -497,7 +497,7 @@ Real_t TriangleObject<N, Real_t>::signedDistance(const VecN& ppos0, bool bNegati
             return bNegativeInside ? d : -d;
         }
     } else {
-        __NT_CALLED_TO_WRONG_PLACE
+        NT_CALLED_TO_WRONG_PLACE
         return 0;
     }
 }
@@ -508,9 +508,9 @@ void TriangleObject<N, Real_t>::parseParameters(const JParams& jParams) {
     GeometryObject<N, Real_t>::parseParameters(jParams);
     ////////////////////////////////////////////////////////////////////////////////
     VecN vertices[3];
-    __NT_REQUIRE(JSONHelpers::readVector(jParams, vertices[0], "V0"));
-    __NT_REQUIRE(JSONHelpers::readVector(jParams, vertices[1], "V1"));
-    __NT_REQUIRE(JSONHelpers::readVector(jParams, vertices[2], "V2"));
+    NT_REQUIRE(JSONHelpers::readVector(jParams, vertices[0], "V0"));
+    NT_REQUIRE(JSONHelpers::readVector(jParams, vertices[1], "V1"));
+    NT_REQUIRE(JSONHelpers::readVector(jParams, vertices[2], "V2"));
     for(UInt i = 0; i < 3; ++i) {
         setVertex(i, vertices[i]);
     }
@@ -519,7 +519,7 @@ void TriangleObject<N, Real_t>::parseParameters(const JParams& jParams) {
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 template<Int N, class Real_t>
 Real_t HexagonObject<N, Real_t>::signedDistance(const VecN& ppos0, bool bNegativeInside /*= true*/) const {
-    __NT_REQUIRE_MSG(N == 2, "Object dimension != 2");
+    NT_REQUIRE_MSG(N == 2, "Object dimension != 2");
     auto   ppos = this->invTransform(ppos0);
     Real_t dx   = std::abs(ppos[0]);
     Real_t dy   = std::abs(ppos[1]);
@@ -530,7 +530,7 @@ Real_t HexagonObject<N, Real_t>::signedDistance(const VecN& ppos0, bool bNegativ
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 template<Int N, class Real_t>
 Real_t TriangularPrismObject<N, Real_t>::signedDistance(const VecN& ppos0, bool bNegativeInside /*= true*/) const {
-    __NT_REQUIRE_MSG(N == 3, "Object dimension != 3");
+    NT_REQUIRE_MSG(N == 3, "Object dimension != 3");
     auto ppos = this->invTransform(ppos0);
     VecN q;
     for(Int d = 0; d < N; ++d) {
@@ -556,7 +556,7 @@ void TriangularPrismObject<N, Real_t>::parseParameters(const JParams& jParams) {
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 template<Int N, class Real_t>
 Real_t HexagonalPrismObject<N, Real_t>::signedDistance(const VecN& ppos0, bool bNegativeInside /*= true*/) const {
-    __NT_REQUIRE_MSG(N == 3, "Object dimension != 3");
+    NT_REQUIRE_MSG(N == 3, "Object dimension != 3");
     auto ppos = this->invTransform(ppos0);
     VecN q;
     for(Int d = 0; d < N; ++d) {
@@ -634,7 +634,7 @@ void EllipsoidObject<N, Real_t>::parseParameters(const JParams& jParams) {
 template<class Real_t>
 void computeSDFMesh(const StdVT<Vec3ui>& faces, const StdVT_Vec3<Real_t>& vertices, const Vec3<Real_t>& origin, Real_t cellSize,
                     UInt ni, UInt nj, UInt nk, Array<3, Real_t>& SDF, Int exactBand = 1) {
-    __NT_REQUIRE(ni > 0 && nj > 0 && nk > 0);
+    NT_REQUIRE(ni > 0 && nj > 0 && nk > 0);
 
     SDF.resize(ni, nj, nk);
     SDF.assign(Real_t(ni + nj + nk) * cellSize); // upper bound on distance
@@ -721,8 +721,8 @@ void computeSDFMesh(const StdVT<Vec3ui>& faces, const StdVT_Vec3<Real_t>& vertic
                                     for(UInt i = 0; i < ni; ++i) {
                                         total_count += intersectionCount(i, j, k);
 
-                                        if(total_count & 1) {                      // if parity of intersections so far is odd,
-                                            SDF(i, j, k) = -SDF(i, j, k);          // we are inside the mesh
+                                        if(total_count & 1) {             // if parity of intersections so far is odd,
+                                            SDF(i, j, k) = -SDF(i, j, k); // we are inside the mesh
                                         }
                                     }
                                 }
@@ -733,11 +733,11 @@ void computeSDFMesh(const StdVT<Vec3ui>& faces, const StdVT_Vec3<Real_t>& vertic
 template<Int N, class Real_t>
 Real_t TriMeshObject<N, Real_t>::signedDistance(const VecN& ppos0, bool bNegativeInside /*= true*/) const {
     if constexpr(N == 2) {
-        __NT_UNUSED(ppos0);
-        __NT_UNUSED(bNegativeInside);
+        NT_UNUSED(ppos0);
+        NT_UNUSED(bNegativeInside);
         return 0;
     } else {
-        __NT_REQUIRE(m_bSDFGenerated);
+        NT_REQUIRE(m_bSDFGenerated);
         auto   ppos    = this->invTransform(ppos0);
         auto   gridPos = m_Grid3D.getGridCoordinate(ppos);
         Real_t d       = this->m_UniformScale * ArrayHelpers::interpolateValueLinear(gridPos, m_SDFData);
@@ -752,7 +752,7 @@ void TriMeshObject<N, Real_t>::computeSDF() {
         ////////////////////////////////////////////////////////////////////////////////
         // Load mesh
         MeshLoader meshLoader;
-        __NT_REQUIRE(meshLoader.loadMesh(m_TriMeshFile));
+        NT_REQUIRE(meshLoader.loadMesh(m_TriMeshFile));
         meshLoader.scaleToBox();
 
         ////////////////////////////////////////////////////////////////////////////////
@@ -780,7 +780,7 @@ template<Int N, class Real_t>
 void TriMeshObject<N, Real_t>::parseParameters(const JParams& jParams) {
     GeometryObject<N, Real_t>::parseParameters(jParams);
     ////////////////////////////////////////////////////////////////////////////////
-    __NT_REQUIRE(JSONHelpers::readValue(jParams, meshFile(), "MeshFile"));
+    NT_REQUIRE(JSONHelpers::readValue(jParams, meshFile(), "MeshFile"));
     JSONHelpers::readValue(jParams, sdfStep(), "SDFStep");
     computeSDF();
 }
@@ -842,7 +842,7 @@ VecX<N, Real_t> CSGObject<N, Real_t>::domainDeform(const VecN& ppos) const {
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 template<Int N, class Real_t>
 VecX<N, Real_t> CSGObject<N, Real_t>::twist(const VecN& ppos) const {
-    __NT_UNUSED(ppos);
+    NT_UNUSED(ppos);
     //Real_t         c = cos(Real_t(5.0) * ppos.z);
     //Real_t         s = sin(Real_t(5.0) * ppos.z);
     //Mat2x2<Real_t> m = Mat2x2<Real_t>(c, -s, s, c);
@@ -866,25 +866,25 @@ VecX<N, Real_t> CSGObject<N, Real_t>::cheapBend(const VecN& ppos) const {
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-__NT_INSTANTIATE_CLASS_COMMON_DIMENSIONS_AND_TYPES(GeometryObject)
-__NT_INSTANTIATE_CLASS_COMMON_DIMENSIONS_AND_TYPES(BoxObject)
-__NT_INSTANTIATE_CLASS_COMMON_DIMENSIONS_AND_TYPES(SphereObject)
-__NT_INSTANTIATE_CLASS_COMMON_DIMENSIONS_AND_TYPES(TorusObject)
-__NT_INSTANTIATE_CLASS_COMMON_DIMENSIONS_AND_TYPES(Torus28Object)
-__NT_INSTANTIATE_CLASS_COMMON_DIMENSIONS_AND_TYPES(Torus2InfObject)
-__NT_INSTANTIATE_CLASS_COMMON_DIMENSIONS_AND_TYPES(Torus88Object)
-__NT_INSTANTIATE_CLASS_COMMON_DIMENSIONS_AND_TYPES(TorusInfInfObject)
-__NT_INSTANTIATE_CLASS_COMMON_DIMENSIONS_AND_TYPES(CylinderObject)
-__NT_INSTANTIATE_CLASS_COMMON_DIMENSIONS_AND_TYPES(ConeObject)
-__NT_INSTANTIATE_CLASS_COMMON_DIMENSIONS_AND_TYPES(PlaneObject)
-__NT_INSTANTIATE_CLASS_COMMON_DIMENSIONS_AND_TYPES(TriangleObject)
-__NT_INSTANTIATE_CLASS_COMMON_DIMENSIONS_AND_TYPES(HexagonObject)
-__NT_INSTANTIATE_CLASS_COMMON_DIMENSIONS_AND_TYPES(TriangularPrismObject)
-__NT_INSTANTIATE_CLASS_COMMON_DIMENSIONS_AND_TYPES(HexagonalPrismObject)
-__NT_INSTANTIATE_CLASS_COMMON_DIMENSIONS_AND_TYPES(CapsuleObject)
-__NT_INSTANTIATE_CLASS_COMMON_DIMENSIONS_AND_TYPES(EllipsoidObject)
-__NT_INSTANTIATE_CLASS_COMMON_DIMENSIONS_AND_TYPES(TriMeshObject)
-__NT_INSTANTIATE_CLASS_COMMON_DIMENSIONS_AND_TYPES(CSGObject)
+NT_INSTANTIATE_CLASS_COMMON_DIMENSIONS_AND_TYPES(GeometryObject)
+NT_INSTANTIATE_CLASS_COMMON_DIMENSIONS_AND_TYPES(BoxObject)
+NT_INSTANTIATE_CLASS_COMMON_DIMENSIONS_AND_TYPES(SphereObject)
+NT_INSTANTIATE_CLASS_COMMON_DIMENSIONS_AND_TYPES(TorusObject)
+NT_INSTANTIATE_CLASS_COMMON_DIMENSIONS_AND_TYPES(Torus28Object)
+NT_INSTANTIATE_CLASS_COMMON_DIMENSIONS_AND_TYPES(Torus2InfObject)
+NT_INSTANTIATE_CLASS_COMMON_DIMENSIONS_AND_TYPES(Torus88Object)
+NT_INSTANTIATE_CLASS_COMMON_DIMENSIONS_AND_TYPES(TorusInfInfObject)
+NT_INSTANTIATE_CLASS_COMMON_DIMENSIONS_AND_TYPES(CylinderObject)
+NT_INSTANTIATE_CLASS_COMMON_DIMENSIONS_AND_TYPES(ConeObject)
+NT_INSTANTIATE_CLASS_COMMON_DIMENSIONS_AND_TYPES(PlaneObject)
+NT_INSTANTIATE_CLASS_COMMON_DIMENSIONS_AND_TYPES(TriangleObject)
+NT_INSTANTIATE_CLASS_COMMON_DIMENSIONS_AND_TYPES(HexagonObject)
+NT_INSTANTIATE_CLASS_COMMON_DIMENSIONS_AND_TYPES(TriangularPrismObject)
+NT_INSTANTIATE_CLASS_COMMON_DIMENSIONS_AND_TYPES(HexagonalPrismObject)
+NT_INSTANTIATE_CLASS_COMMON_DIMENSIONS_AND_TYPES(CapsuleObject)
+NT_INSTANTIATE_CLASS_COMMON_DIMENSIONS_AND_TYPES(EllipsoidObject)
+NT_INSTANTIATE_CLASS_COMMON_DIMENSIONS_AND_TYPES(TriMeshObject)
+NT_INSTANTIATE_CLASS_COMMON_DIMENSIONS_AND_TYPES(CSGObject)
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+

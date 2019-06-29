@@ -229,8 +229,8 @@ __BNN_INSTANTIATE_SPARSE_MATRIX_FUNCS(UInt,   double)
 __BNN_INSTANTIATE_SPARSE_MATRIX_FUNCS(Int64,  double)
 __BNN_INSTANTIATE_SPARSE_MATRIX_FUNCS(UInt64, double)
 
-__NT_INSTANTIATE_STRUCT_COMMON_TYPES(SparseMatrix)
-__NT_INSTANTIATE_STRUCT_COMMON_TYPES(FixedSparseMatrix)
+NT_INSTANTIATE_STRUCT_COMMON_TYPES(SparseMatrix)
+NT_INSTANTIATE_STRUCT_COMMON_TYPES(FixedSparseMatrix)
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 } // end namespace NTCodeBase

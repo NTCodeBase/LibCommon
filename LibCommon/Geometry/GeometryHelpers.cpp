@@ -237,7 +237,7 @@ bool point_in_triangle_2d(Real_t x0, Real_t y0,
     }
 
     Real_t sum = a + b + c;
-    __NT_REQUIRE(sum != 0); // if the SOS signs match and are nonkero, there's no way all of a, b, and c are zero.
+    NT_REQUIRE(sum != 0); // if the SOS signs match and are nonkero, there's no way all of a, b, and c are zero.
     a /= sum;
     b /= sum;
     c /= sum;
