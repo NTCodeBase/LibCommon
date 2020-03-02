@@ -22,6 +22,8 @@
 #include "Morton2D_LUTs.h"
 #include "Morton_Common.h"
 
+#include <algorithm>
+
 // Encode methods
 template<typename morton, typename coord> inline morton m2D_e_sLUT(const coord x, const coord y);
 template<typename morton, typename coord> inline morton m2D_e_sLUT_ET(const coord x, const coord y);
@@ -63,8 +65,8 @@ inline morton m2D_e_LUT(const coord x, const coord y) {
         unsigned int shift = (i - 1) * 8;
         answer =
             answer << 16 |
-            (Morton2D_encode_x_256[(y >> shift) & EIGHTBITMASK] << 1) |
-            (Morton2D_encode_x_256[(x >> shift) & EIGHTBITMASK]);
+                (Morton2D_encode_x_256[(y >> shift) & EIGHTBITMASK] << 1) |
+                (Morton2D_encode_x_256[(x >> shift) & EIGHTBITMASK]);
     }
     return answer;
 }

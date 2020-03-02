@@ -18,7 +18,10 @@
 #include <vector>
 #include <cmath>
 
+#if !defined(Q_MOC_RUN)
 #include <tbb/tbb.h>
+#endif
+
 #include <LibCommon/ParallelHelpers/ParallelObjects.h>
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+

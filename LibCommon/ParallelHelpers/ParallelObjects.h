@@ -16,7 +16,10 @@
 
 #include <atomic>
 #include <limits>
+
+#if !defined(Q_MOC_RUN)
 #include <tbb/tbb.h>
+#endif
 
 #include <LibCommon/CommonSetup.h>
 #undef min

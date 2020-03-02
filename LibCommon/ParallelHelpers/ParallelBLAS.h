@@ -17,7 +17,10 @@
 #include <cassert>
 #include <vector>
 
+#if !defined(Q_MOC_RUN)
 #include <tbb/tbb.h>
+#endif
+
 #include <LibCommon/ParallelHelpers/ParallelObjects.h>
 #include <LibCommon/ParallelHelpers/ParallelExec.h>
 

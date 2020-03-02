@@ -58,7 +58,7 @@ win32 {
         }`
     }
 
-    LIBS += -L$$PWD/Externals/tbb_win/lib/intel64/vc14
+    LIBS += -L$$PWD/Externals/tbb_win/lib/
     LIBS += -L$$PWD/Externals/zlib_win/lib
 }
 

@@ -19,7 +19,9 @@
 #include <algorithm>
 #include <functional>
 
+#if !defined(Q_MOC_RUN)
 #include <tbb/tbb.h>
+#endif
 
 //#define __NT_NO_PARALLEL
 

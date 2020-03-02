@@ -184,8 +184,12 @@ public:
 
     template<class IndexType>
     auto getWorldCoordinate(IndexType i, IndexType j) const {
-        static_assert(N == 2, "Array dimension != 2");
+        //        static_assert(N == 2, "Array dimension != 2");
+        if constexpr (N == 2)
         return Vec2<Real_t>(i, j) * m_CellSize + m_BMin;
+        else {
+            return Vec2<Real_t>(0);
+        }
     }
 
     template<class IndexType>
