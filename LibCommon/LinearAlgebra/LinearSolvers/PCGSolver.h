@@ -53,6 +53,7 @@ public:
     void reserve(UInt size);
     Real_t residual() const noexcept { return m_OutResidual; }
     UInt     iterations() const noexcept { return m_OutIterations; }
+    Real_t     tolerance() const noexcept { return m_ToleranceFactor; }
 
     ////////////////////////////////////////////////////////////////////////////////
     void setPreconditioners(Preconditioner precond) { m_PreconditionerType = precond; }
