@@ -93,6 +93,22 @@ void SparseMatrix<Real_t>::eraseElement(IndexType i, IndexType j) {
     }
 }
 
+/****************************************************************************************************/
+template<class Real_t>
+template<class IndexType>
+bool SparseMatrix<Real_t>::hasElement(IndexType i, IndexType j) const {
+    assert(static_cast<UInt>(i) < nRows && static_cast<UInt>(j) < nRows);
+    UInt k;
+    return STLHelpers::Sorted::contain(colIndex[i], static_cast<UInt>(j), k);
+}
+
+template<class Real_t>
+template<class IndexType>
+bool SparseMatrix<Real_t>::hasElement(IndexType i, IndexType j, UInt& k) const {
+    assert(static_cast<UInt>(i) < nRows && static_cast<UInt>(j) < nRows);
+    return STLHelpers::Sorted::contain(colIndex[i], static_cast<UInt>(j), k);
+}
+
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 template<class Real_t>
 void SparseMatrix<Real_t>::printDebug(UInt maxRows /*= 0*/) const noexcept{
@@ -217,7 +233,8 @@ void FixedSparseMatrix<Real_t>::multiply(const FixedSparseMatrix<Real_t>& matrix
     template Real_t SparseMatrix<Real_t >::operator()(IntType i, IntType j) const;                        \
     template void SparseMatrix<Real_t>::setElement<IntType>(IntType i, IntType j, Real_t newValue);       \
     template void SparseMatrix<Real_t>::addElement<IntType>(IntType i, IntType j, Real_t incrementValue); \
-    template void SparseMatrix<Real_t>::eraseElement<IntType>(IntType i, IntType j);
+    template void SparseMatrix<Real_t>::eraseElement<IntType>(IntType i, IntType j);                      \
+    template bool SparseMatrix<Real_t>::hasElement<IntType>(IntType i, IntType j) const;
 
 __BNN_INSTANTIATE_SPARSE_MATRIX_FUNCS(Int,    float)
 __BNN_INSTANTIATE_SPARSE_MATRIX_FUNCS(UInt,   float)
