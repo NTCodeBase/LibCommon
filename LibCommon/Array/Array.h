@@ -229,7 +229,7 @@ public:
     template<class IndexType>
     size_t getFlatIndex(const Vec2<IndexType>& index) const {
         static_assert(N == 2, "Array dimension != 2");
-        getFlatIndex<IndexType>(index[0], index[1]);
+        return getFlatIndex<IndexType>(index[0], index[1]);
     }
 
     template<class IndexType>
